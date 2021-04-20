@@ -15,6 +15,6 @@ The project group (group 07) consists of the following two students:
 
 ## Component diagram
 
-A diagram visualizing which components are interacting in which way can be seen here: ...
+A diagram visualizing which components are interacting in which way can be seen here:
 
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
