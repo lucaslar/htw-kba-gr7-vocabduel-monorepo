@@ -11,9 +11,9 @@ public interface UserAdministration {
 
     User getUserData(int id) throws NoSuchUserException, SQLException;
 
+    User getUserData(String email) throws NoSuchUserException, SQLException;
+
     int updateUser(User user) throws AlreadyRegisteredException, SQLException;
 
     int deleteUser(User user) throws SQLException;
-
-    int deleteUser(int id) throws SQLException;
 }
