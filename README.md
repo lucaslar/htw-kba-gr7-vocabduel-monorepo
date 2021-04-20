@@ -4,8 +4,17 @@ This is a monorepo containing the project directories for each component impleme
 "Komponentenbasierte Entwicklung komplexer Anwendungen" (component-based implementation of complex applications)
 at HTW Berlin, University of Applied Sciences.
 
+## Project group
+
+The project group (group 07) consists of the following two students:
+
+[comment]: <> (TODO: Add student number)
+
+- **Sebastian Kehl,** sXXXXXXX
+- **Lucas Larisch,** s0558070
+
 ## Component diagram
 
 A diagram visualizing which components are interacting in which way can be seen here: ...
 
-[comment]: <> (TODO: Add URL/img)
+![Components diagram (./components_diagram.svg)](./components_diagram.svg)
