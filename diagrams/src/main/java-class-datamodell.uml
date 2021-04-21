@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="665.4511904761905" y="0.0">App</node>
+    <node x="181.1125" y="0.0">Item</node>
+    <node x="0.0" y="422.0">Game</node>
+    <node x="270.9511904761905" y="252.0">Book</node>
+    <node x="146.0" y="614.0">UserMgmt</node>
+    <node x="187.0" y="422.0">Learn</node>
+    <node x="268.4511904761905" y="126.0">Unit</node>
+    <node x="465.4511904761905" y="0.0">Main</node>
+    <node x="141.0" y="784.0">DatabaseConn</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Game" target="Book">
+      <point x="41.75" y="-71.0" />
+      <point x="125.25" y="397.0" />
+      <point x="289.3261904761905" y="397.0" />
+      <point x="-55.125" y="60.0" />
+    </edge>
+    <edge source="DatabaseConn" target="Book">
+      <point x="87.33333333333331" y="-71.5" />
+      <point x="359.3333333333333" y="759.0" />
+      <point x="381.9761904761905" y="759.0" />
+      <point x="381.9761904761905" y="397.0" />
+      <point x="399.5761904761905" y="397.0" />
+      <point x="55.125" y="60.0" />
+    </edge>
+    <edge source="Unit" target="Book">
+      <point x="38.0" y="38.0" />
+      <point x="382.4511904761905" y="227.0" />
+      <point x="381.2011904761905" y="227.0" />
+      <point x="36.75" y="-60.0" />
+    </edge>
+    <edge source="Book" target="Unit">
+      <point x="-36.75" y="-60.0" />
+      <point x="307.7011904761905" y="227.0" />
+      <point x="306.4511904761905" y="227.0" />
+      <point x="-38.0" y="38.0" />
+    </edge>
+    <edge source="Learn" target="Book">
+      <point x="43.0" y="-71.0" />
+      <point x="316.0" y="397.0" />
+      <point x="326.0761904761905" y="397.0" />
+      <point x="-18.375" y="60.0" />
+    </edge>
+    <edge source="Learn" target="UserMgmt">
+      <point x="43.0" y="71.0" />
+      <point x="316.0" y="584.0" />
+      <point x="263.6" y="584.0" />
+      <point x="33.60000000000002" y="-60.0" />
+    </edge>
+    <edge source="UserMgmt" target="Game">
+      <point x="-67.19999999999999" y="-60.0" />
+      <point x="162.8" y="594.0" />
+      <point x="41.75" y="594.0" />
+      <point x="-41.75" y="71.0" />
+    </edge>
+    <edge source="Unit" target="Item">
+      <point x="-38.0" y="-38.0" />
+      <point x="306.4511904761905" y="101.0" />
+      <point x="289.2375" y="101.0" />
+      <point x="21.625" y="38.0" />
+    </edge>
+    <edge source="UserMgmt" target="Learn">
+      <point x="0.0" y="-60.0" />
+      <point x="-43.0" y="71.0" />
+    </edge>
+    <edge source="Game" target="UserMgmt">
+      <point x="41.75" y="71.0" />
+      <point x="125.25" y="584.0" />
+      <point x="196.40000000000003" y="584.0" />
+      <point x="-33.599999999999966" y="-60.0" />
+    </edge>
+    <edge source="Item" target="Unit">
+      <point x="64.875" y="38.0" />
+      <point x="332.4875" y="101.0" />
+      <point x="382.4511904761905" y="101.0" />
+      <point x="38.0" y="-38.0" />
+    </edge>
+    <edge source="DatabaseConn" target="UserMgmt">
+      <point x="0.0" y="-71.5" />
+      <point x="42.0" y="60.0" />
+    </edge>
+    <edge source="UserMgmt" target="Book">
+      <point x="67.19999999999999" y="-60.0" />
+      <point x="297.2" y="594.0" />
+      <point x="369.5" y="594.0" />
+      <point x="369.5" y="397.0" />
+      <point x="362.8261904761905" y="397.0" />
+      <point x="18.375" y="60.0" />
+    </edge>
+    <edge source="Game" target="Item">
+      <point x="-41.75" y="-71.0" />
+      <point x="41.75" y="101.0" />
+      <point x="202.7375" y="101.0" />
+      <point x="-64.875" y="38.0" />
+    </edge>
+    <edge source="Learn" target="Item">
+      <point x="-43.0" y="-71.0" />
+      <point x="230.0" y="101.0" />
+      <point x="245.9875" y="101.0" />
+      <point x="-21.625" y="38.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7984848484848485" x="568.483870967742" y="264.0" />
+  <SelectedNodes>
+    <node>App</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
