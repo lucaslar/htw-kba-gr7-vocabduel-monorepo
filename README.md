@@ -10,7 +10,7 @@ The project group (group 07) consists of the following two students:
 
 [comment]: <> (TODO: Add student number)
 
-- **Sebastian Kehl,** sXXXXXXX
+- **Sebastian Kehl,** s0550355
 - **Lucas Larisch,** s0558070
 
 ## Component diagram
