@@ -1,53 +1,70 @@
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class UserMgmt {
+public interface UserMgmt{
 
     // books to learn for the user
-    private List<Book> myBooks;
+    List<Book> myBooks = null;
 
     // username
-    private String username;
+    String username = "";
 
     // Games
-    private List<Game> games;
+    List<Game> games = null;
 
     // learnings
-    private List<Learn> learnungs;
+    List<Learn> learnings = null;
+
+    List<Game> getTotalLosses();
+    List<Game> getTotalWins();
+    List<Game> getGamesWithSpecialOpponent(UserMgmt opponent);
+    List<Game> getGamesByBook(Book input);
+    List<UserMgmt> findOpponentForGame(Book book);
+
+    List<Learn> getTotalRemembered();
+    List<Learn> getTotalNonRemembered();
+    List<Learn> getLearningByDate(LocalDateTime date);
+    List<Learn> getLearningByBook(Book input);
 
 }
 
-class Game{
-    private UserMgmt opponent1;
+interface Game extends UserMgmt{
+    UserMgmt opponent1 = null;
 
     // game opponent
-    private UserMgmt opponent2;
+    UserMgmt opponent2 = null;
 
     // book in the game used
-    private Book book;
+    Book book = null;
 
     // flg whether battle is won
-    private boolean wonBattle;
+    boolean wonBattle = false;
 
     // List with used Items in this game
-    private List<Item> usedItems;
+    List<Item> usedItems = null;
+
+    Game getGame();
+    void startGame(UserMgmt opp1, UserMgmt opp2, Book book);
 
 }
 
-class Learn{
+interface Learn extends UserMgmt{
     // user who learned
-    private UserMgmt user;
+    UserMgmt user = null;
 
     // book that should be learned
-    private Book book;
+    Book book = null;
 
     // Item that should be learned
-    private Item usedItem;
+    Item usedItem = null;
 
     // Timestamp of learning
-    private LocalDateTime tmstmp;
+    LocalDateTime tmstmp = null;
 
     // flg whether item got remembered
-    private boolean remembered;
+    boolean remembered = false;
+
+    Learn getLearn();
+    void startLearn(UserMgmt user, Book book);
 
 }

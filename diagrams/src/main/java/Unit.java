@@ -1,15 +1,26 @@
 import java.util.List;
 
-public class Unit extends Book{
+public interface Unit extends Book{
 
     // List of vocabs
-    private List<Item> itemList;
+    List<Item> itemList = null;
 
     // unit Title
-    private String unitTitle;
+    String unitTitle = "";
+
+    Item getItem(int index);
+    void setItem(Item input, int index);
+
+    Unit createUnit(String unitTitle);
+    void addItem(Item input);
+    List<Item> getItemList();
+    String getUnitTitle();
 
 }
-class Item extends Unit{
-    private String unknownWord;
-    private List<String> translation;
+interface Item extends Unit{
+
+    String unknownWord = "";
+    List<String> translation = null;
+
+    Item createItem(String unknownWord, List<String> translation);
 }

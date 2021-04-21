@@ -1,29 +1,38 @@
-//import Book;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-class DatabaseConn {
+public interface DatabaseConn {
 
-    private static DatabaseConn conn;
+    // static
+    DatabaseConn conn = null;
 
-    public List<Book> getBooksByUser(UserMgmt user){
-        return new ArrayList<>();
-    }
+    // get Books with Units and Items
+    List<Book> getBooksByUser(UserMgmt user);
 
-    public List<UserMgmt> getUserByBook(Book myBook){
-        return new ArrayList<>();
-    }
+    // get User for Games by Books
+    List<UserMgmt> getUserByBook(Book myBook);
 
-    public UserMgmt getUserData(String username){
-        return new UserMgmt();
-    }
+    // get User with Games and Learnings
+    UserMgmt getUserData(String username);
 
-    public static DatabaseConn getInstance(){
+    // add user
+    void addUserMgmt(UserMgmt user);
+
+    // add Book
+    void addBook(Book book);
+    // update Book: added / removed Unit / Item
+    void updateBook(Book book);
+
+    // add Game
+    void addGame(Game input);
+
+    // add Learning
+    void addLearning(Learn input);
+
+    static DatabaseConn getInstance(){
         if (Objects.isNull(conn)){
-            return new DatabaseConn();
+            return null;
         } else {
             return conn;
         }

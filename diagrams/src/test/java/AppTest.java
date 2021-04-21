@@ -1,2 +1,2 @@
-public class AppTest {
+public interface AppTest {
 }
