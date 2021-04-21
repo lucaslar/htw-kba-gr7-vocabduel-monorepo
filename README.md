@@ -19,6 +19,10 @@ A diagram visualizing which components are interacting in which way can be seen 
 
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
 
+## UML diagram
+
+A diagram visualizing the defined classes and their interactions/relationships can be found [here (class-diagram.uml)](./class-diagram.uml).
+
 ## Build
 
 The `/target` directories of the respective Maven modules are not under version control. However, you can build them easily by running a custom Shell script:
