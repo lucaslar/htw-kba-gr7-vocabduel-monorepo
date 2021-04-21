@@ -21,7 +21,9 @@ A diagram visualizing which components are interacting in which way can be seen 
 
 ## UML diagram
 
-A diagram visualizing the defined classes and their interactions/relationships can be found [here (class-diagram.uml)](./class-diagram.uml).
+A diagram visualizing the defined classes and their interactions/relationships can be seen here:
+
+![Class diagram (./class-diagram.svg)](./class-diagram.svg)
 
 ## Build
 
