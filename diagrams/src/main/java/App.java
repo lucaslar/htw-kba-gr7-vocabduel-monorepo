@@ -6,15 +6,15 @@ import org.apache.logging.log4j.Logger;
  * From example Project in Moodle
  *
  */
-public class App {
+public interface App {
+    // static
+    Logger LOGGER = LogManager.getLogger(App.class);
 
-    public static Logger LOGGER = LogManager.getLogger(App.class);
-
-    public static void main(String[] args) {
+    static void main(String[] args) {
         printGreetings();
     }
 
-    private static void printGreetings() {
+    static void printGreetings() {
         LOGGER.debug("Method printGreetings started");
         System.out.println("Hello World!");
         LOGGER.debug("Method printGreetings finished");

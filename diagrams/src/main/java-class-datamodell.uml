@@ -3,112 +3,137 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="665.4511904761905" y="0.0">App</node>
-    <node x="181.1125" y="0.0">Item</node>
-    <node x="0.0" y="422.0">Game</node>
-    <node x="270.9511904761905" y="252.0">Book</node>
-    <node x="146.0" y="614.0">UserMgmt</node>
-    <node x="187.0" y="422.0">Learn</node>
-    <node x="268.4511904761905" y="126.0">Unit</node>
-    <node x="465.4511904761905" y="0.0">Main</node>
-    <node x="141.0" y="784.0">DatabaseConn</node>
+    <node x="803.5" y="0.0">App</node>
+    <node x="162.38333333333338" y="149.0">Unit</node>
+    <node x="217.64950980392166" y="1361.0">DatabaseConn</node>
+    <node x="123.50000000000003" y="0.0">Item</node>
+    <node x="1006.5" y="0.0">AppTest</node>
+    <node x="124.38333333333333" y="408.0">Book</node>
+    <node x="255.0" y="755.0">Game</node>
+    <node x="79.2166666666667" y="992.0">UserMgmt</node>
+    <node x="0.0" y="755.0">Learn</node>
+    <node x="603.5" y="0.0">Main</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="Game" target="Book">
-      <point x="41.75" y="-71.0" />
-      <point x="125.25" y="397.0" />
-      <point x="289.3261904761905" y="397.0" />
-      <point x="-55.125" y="60.0" />
-    </edge>
     <edge source="DatabaseConn" target="Book">
-      <point x="87.33333333333331" y="-71.5" />
-      <point x="359.3333333333333" y="759.0" />
-      <point x="381.9761904761905" y="759.0" />
-      <point x="381.9761904761905" y="397.0" />
-      <point x="399.5761904761905" y="397.0" />
-      <point x="55.125" y="60.0" />
+      <point x="98.24999999999996" y="-126.5" />
+      <point x="446.8995098039216" y="1341.0" />
+      <point x="552.5" y="1341.0" />
+      <point x="552.5" y="725.0" />
+      <point x="358.3833333333333" y="725.0" />
+      <point x="108.00000000000003" y="148.5" />
+    </edge>
+    <edge source="DatabaseConn" target="Learn">
+      <point x="-98.25000000000003" y="-126.5" />
+      <point x="250.3995098039216" y="1341.0" />
+      <point x="46.94583333333338" y="1341.0" />
+      <point x="46.94583333333338" y="972.0" />
+      <point x="18.583333333333314" y="972.0" />
+      <point x="-92.91666666666669" y="93.5" />
+    </edge>
+    <edge source="Game" target="Book">
+      <point x="-95.66666666666669" y="-93.5" />
+      <point x="302.8333333333333" y="735.0" />
+      <point x="286.3833333333333" y="735.0" />
+      <point x="36.0" y="148.5" />
     </edge>
     <edge source="Unit" target="Book">
-      <point x="38.0" y="38.0" />
-      <point x="382.4511904761905" y="227.0" />
-      <point x="381.2011904761905" y="227.0" />
-      <point x="36.75" y="-60.0" />
+      <point x="58.66666666666666" y="104.5" />
+      <point x="309.05000000000007" y="383.0" />
+      <point x="334.3833333333333" y="383.0" />
+      <point x="84.00000000000003" y="-148.5" />
     </edge>
     <edge source="Book" target="Unit">
-      <point x="-36.75" y="-60.0" />
-      <point x="307.7011904761905" y="227.0" />
-      <point x="306.4511904761905" y="227.0" />
-      <point x="-38.0" y="38.0" />
+      <point x="-83.99999999999997" y="-148.5" />
+      <point x="166.38333333333335" y="383.0" />
+      <point x="191.71666666666673" y="383.0" />
+      <point x="-58.66666666666666" y="104.5" />
     </edge>
     <edge source="Learn" target="Book">
-      <point x="43.0" y="-71.0" />
-      <point x="316.0" y="397.0" />
-      <point x="326.0761904761905" y="397.0" />
-      <point x="-18.375" y="60.0" />
+      <point x="0.0" y="-93.5" />
+      <point x="111.5" y="735.0" />
+      <point x="142.38333333333333" y="735.0" />
+      <point x="-108.0" y="148.5" />
+    </edge>
+    <edge source="DatabaseConn" target="Game">
+      <point x="32.74999999999997" y="-126.5" />
+      <point x="381.3995098039216" y="1331.0" />
+      <point x="476.9536764705883" y="1331.0" />
+      <point x="476.9536764705883" y="972.0" />
+      <point x="518.0833333333334" y="972.0" />
+      <point x="119.58333333333339" y="93.5" />
     </edge>
     <edge source="Learn" target="UserMgmt">
-      <point x="43.0" y="71.0" />
-      <point x="316.0" y="584.0" />
-      <point x="263.6" y="584.0" />
-      <point x="33.60000000000002" y="-60.0" />
-    </edge>
-    <edge source="UserMgmt" target="Game">
-      <point x="-67.19999999999999" y="-60.0" />
-      <point x="162.8" y="594.0" />
-      <point x="41.75" y="594.0" />
-      <point x="-41.75" y="71.0" />
+      <point x="18.583333333333343" y="93.5" />
+      <point x="130.08333333333334" y="972.0" />
+      <point x="152.3416666666667" y="972.0" />
+      <point x="-102.375" y="-159.5" />
     </edge>
     <edge source="Unit" target="Item">
-      <point x="-38.0" y="-38.0" />
-      <point x="306.4511904761905" y="101.0" />
-      <point x="289.2375" y="101.0" />
-      <point x="21.625" y="38.0" />
+      <point x="-58.66666666666666" y="-104.5" />
+      <point x="191.71666666666673" y="124.0" />
+      <point x="196.10000000000002" y="124.0" />
+      <point x="-48.39999999999999" y="49.5" />
+    </edge>
+    <edge source="UserMgmt" target="Game">
+      <point x="43.875" y="-159.5" />
+      <point x="298.5916666666667" y="972.0" />
+      <point x="278.91666666666663" y="972.0" />
+      <point x="-119.58333333333334" y="93.5" />
     </edge>
     <edge source="UserMgmt" target="Learn">
-      <point x="0.0" y="-60.0" />
-      <point x="-43.0" y="71.0" />
+      <point x="-160.875" y="-159.5" />
+      <point x="93.8416666666667" y="972.0" />
+      <point x="55.75" y="972.0" />
+      <point x="-55.75" y="93.5" />
     </edge>
     <edge source="Game" target="UserMgmt">
-      <point x="41.75" y="71.0" />
-      <point x="125.25" y="584.0" />
-      <point x="196.40000000000003" y="584.0" />
-      <point x="-33.599999999999966" y="-60.0" />
+      <point x="71.75000000000001" y="93.5" />
+      <point x="470.25" y="972.0" />
+      <point x="415.5916666666667" y="972.0" />
+      <point x="160.875" y="-159.5" />
     </edge>
     <edge source="Item" target="Unit">
-      <point x="64.875" y="38.0" />
-      <point x="332.4875" y="101.0" />
-      <point x="382.4511904761905" y="101.0" />
-      <point x="38.0" y="-38.0" />
+      <point x="48.400000000000034" y="49.5" />
+      <point x="292.9000000000001" y="124.0" />
+      <point x="309.05000000000007" y="124.0" />
+      <point x="58.66666666666666" y="-104.5" />
     </edge>
     <edge source="DatabaseConn" target="UserMgmt">
-      <point x="0.0" y="-71.5" />
-      <point x="42.0" y="60.0" />
+      <point x="-32.75000000000003" y="-126.5" />
+      <point x="315.8995098039216" y="1331.0" />
+      <point x="254.7166666666667" y="1331.0" />
+      <point x="0.0" y="159.5" />
     </edge>
     <edge source="UserMgmt" target="Book">
-      <point x="67.19999999999999" y="-60.0" />
-      <point x="297.2" y="594.0" />
-      <point x="369.5" y="594.0" />
-      <point x="369.5" y="397.0" />
-      <point x="362.8261904761905" y="397.0" />
-      <point x="18.375" y="60.0" />
+      <point x="-14.625" y="-159.5" />
+      <point x="240.0916666666667" y="972.0" />
+      <point x="233.5" y="972.0" />
+      <point x="233.5" y="735.0" />
+      <point x="214.38333333333333" y="735.0" />
+      <point x="-36.0" y="148.5" />
     </edge>
     <edge source="Game" target="Item">
-      <point x="-41.75" y="-71.0" />
-      <point x="41.75" y="101.0" />
-      <point x="202.7375" y="101.0" />
-      <point x="-64.875" y="38.0" />
+      <point x="95.6666666666667" y="-93.5" />
+      <point x="494.1666666666667" y="735.0" />
+      <point x="484.7453431372549" y="735.0" />
+      <point x="484.7453431372549" y="124.0" />
+      <point x="341.30000000000007" y="124.0" />
+      <point x="96.80000000000004" y="49.5" />
     </edge>
     <edge source="Learn" target="Item">
-      <point x="-43.0" y="-71.0" />
-      <point x="230.0" y="101.0" />
-      <point x="245.9875" y="101.0" />
-      <point x="-21.625" y="38.0" />
+      <point x="-74.33333333333331" y="-93.5" />
+      <point x="37.166666666666686" y="735.0" />
+      <point x="78.4666666666667" y="735.0" />
+      <point x="78.4666666666667" y="124.0" />
+      <point x="147.70000000000005" y="124.0" />
+      <point x="-96.79999999999998" y="49.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.7984848484848485" x="568.483870967742" y="264.0" />
+  <settings layout="Hierarchic Group" zoom="0.6000000000000001" x="419.72675521821606" y="419.16666666666663" />
   <SelectedNodes>
-    <node>App</node>
+    <node>Game</node>
   </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
