@@ -18,3 +18,15 @@ The project group (group 07) consists of the following two students:
 A diagram visualizing which components are interacting in which way can be seen here:
 
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
+
+## Build
+
+The `/target` directories of the respective Maven modules are not under version control. However, you can build them easily by running a custom Shell script:
+
+```shell
+sh cleaninstalleach.sh
+```
+
+This script builds the modules in the correct order.
+
+If you are not using Mac OS/Linux, you can still run this command using a Git bash.
