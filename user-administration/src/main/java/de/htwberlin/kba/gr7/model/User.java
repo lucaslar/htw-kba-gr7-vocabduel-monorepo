@@ -1,12 +1,12 @@
 package de.htwberlin.kba.gr7.model;
 
 public class User {
-    private int id;
+    private String id;
     private String email;
     private String firstName;
     private String lastName;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
