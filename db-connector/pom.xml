@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.htwberlin.kba.gr7</groupId>
-  <artifactId>vocabulary-administration</artifactId>
+  <artifactId>db-connector</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>vocabulary-administration</name>
+  <name>db-connector</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -25,18 +25,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>de.htwberlin.kba.gr7</groupId>
-          <artifactId>user-administration</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
-          <groupId>de.htwberlin.kba.gr7</groupId>
-          <artifactId>db-connector</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
   </dependencies>
 
   <build>
