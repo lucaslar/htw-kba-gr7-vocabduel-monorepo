@@ -12,5 +12,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="module" module-name="user-administration" />
+    <orderEntry type="module" module-name="vocabulary-administration" />
+    <orderEntry type="library" name="Maven: de.htwberlin.kba.gr7:score-administration:1.0-SNAPSHOT" level="project" />
   </component>
 </module>

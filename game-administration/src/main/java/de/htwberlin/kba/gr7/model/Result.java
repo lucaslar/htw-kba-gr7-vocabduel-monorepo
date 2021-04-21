@@ -1,5 +1,5 @@
 package de.htwberlin.kba.gr7.model;
 
-public enum GameResult {
+public enum Result {
     WIN, LOSS
 }
