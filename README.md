@@ -13,13 +13,19 @@ The project group (group 07) consists of the following two students:
 - **Sebastian Kehl,** s0550355
 - **Lucas Larisch,** s0558070
 
-## Component diagram
+## Diagrams
+
+The following two images are scalable vector graphics (svg files) which means you can scale them easily if they are displayed too small in this README.
+
+If there are differences between the graphic integrated in this README and the file you opened, e.g. class icons not shown in the UML diagram, try to download it and open the downloaded file.
+
+### Components
 
 A diagram visualizing which components are interacting in which way can be seen here:
 
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
 
-## UML diagram
+### Classes (UML)
 
 A diagram visualizing the defined classes and their interactions/relationships can be seen here:
 
