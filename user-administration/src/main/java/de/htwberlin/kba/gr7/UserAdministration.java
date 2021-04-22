@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface UserAdministration {
-    List<User> findUsersByString(String searchValue) throws UnauthorizedException, SQLException;
+    List<User> findUsersByEmail(String searchValue) throws UnauthorizedException, SQLException;
 
     User getUserData(int id) throws UnauthorizedException, NoSuchUserException, SQLException;
 
