@@ -1,9 +1,11 @@
 package de.htwberlin.kba.gr7.model;
 
+import java.util.List;
+
 public class UntranslatedVocable {
     private int id;
     private String vocable;
-    private String additionalForms; // e.g. "get", "got", "gotten"
+    private List<String> additionalForms; // e.g. "get", "got", "gotten"
 
     public int getId() {
         return id;
@@ -17,11 +19,11 @@ public class UntranslatedVocable {
         this.vocable = vocable;
     }
 
-    public String getAdditionalForms() {
+    public List<String> getAdditionalForms() {
         return additionalForms;
     }
 
-    public void setAdditionalForms(String additionalForms) {
+    public void setAdditionalForms(List<String> additionalForms) {
         this.additionalForms = additionalForms;
     }
 }
