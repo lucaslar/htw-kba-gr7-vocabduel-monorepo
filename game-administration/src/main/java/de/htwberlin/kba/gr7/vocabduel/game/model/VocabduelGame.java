@@ -1,7 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.VocableSet;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.VocableList;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public class VocabduelGame {
     private int id;
     private User playerA;
     private User playerB;
-    private List<VocableSet> vocableSets;
+    private List<VocableList> vocableLists;
     private List<VocabduelRound> rounds;
 
     public int getId() {
@@ -32,12 +32,12 @@ public class VocabduelGame {
         this.playerB = playerB;
     }
 
-    public List<VocableSet> getVocableSets() {
-        return vocableSets;
+    public List<VocableList> getVocableLists() {
+        return vocableLists;
     }
 
-    public void setVocableSets(List<VocableSet> vocableSets) {
-        this.vocableSets = vocableSets;
+    public void setVocableLists(List<VocableList> vocableLists) {
+        this.vocableLists = vocableLists;
     }
 
     public List<VocabduelRound> getRounds() {

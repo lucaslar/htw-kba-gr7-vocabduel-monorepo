@@ -5,11 +5,16 @@ import de.htwberlin.kba.gr7.vocabduel.user.model.User;
 import java.util.Date;
 
 public class GameScore {
+    private Long id;
     private User playerA;
     private User playerB;
     private int pointsA;
     private int pointsB;
     private Date timestamp;
+
+    public Long getId() {
+        return id;
+    }
 
     public User getPlayerA() {
         return playerA;

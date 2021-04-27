@@ -5,17 +5,14 @@ import de.htwberlin.kba.gr7.vocabduel.user.model.User;
 import java.util.Date;
 import java.util.List;
 
-public class VocableSet {
-    private int id;
+public class VocableList {
+    private Long id;
     private User author;
     private String title;
-    private String sourceName; // e.g. Book
-    private SupportedLanguage knownLanguage;
-    private SupportedLanguage learntLanguage;
     private Date timestamp;
     private List<Vocable> vocables;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -33,30 +30,6 @@ public class VocableSet {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
-    }
-
-    public SupportedLanguage getKnownLanguage() {
-        return knownLanguage;
-    }
-
-    public void setKnownLanguage(SupportedLanguage knownLanguage) {
-        this.knownLanguage = knownLanguage;
-    }
-
-    public SupportedLanguage getLearntLanguage() {
-        return learntLanguage;
-    }
-
-    public void setLearntLanguage(SupportedLanguage learntLanguage) {
-        this.learntLanguage = learntLanguage;
     }
 
     public Date getTimestamp() {
