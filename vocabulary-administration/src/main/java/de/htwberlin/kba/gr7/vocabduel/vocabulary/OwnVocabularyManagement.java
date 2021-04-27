@@ -7,23 +7,22 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.VocableUnit;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.VocableList;
 
 import java.io.File;
-import java.sql.SQLException;
 
 public interface OwnVocabularyManagement {
-    int createLanguageSet(LanguageSet languageSet) throws SQLException, DataAlreadyExistsException;
+    int createLanguageSet(LanguageSet languageSet) throws DataAlreadyExistsException;
 
-    int createUnitForLanguageSet(String title, LanguageSet languageSet) throws SQLException, DataAlreadyExistsException;
+    int createUnitForLanguageSet(String title, LanguageSet languageSet) throws DataAlreadyExistsException;
 
-    int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, DataAlreadyExistsException, SQLException;
+    int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, DataAlreadyExistsException;
 
     // Creates unit/language set if not existing yet
-    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, SQLException, DataAlreadyExistsException;
+    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, DataAlreadyExistsException;
 
-    int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListInformation, SQLException;
+    int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListInformation;
 
-    int deleteEmptyLanguagesSet(LanguageSet languageSet) throws SQLException, NotEmptyException;
+    int deleteEmptyLanguagesSet(LanguageSet languageSet) throws NotEmptyException;
 
-    int deleteEmptyVocableUnit(VocableUnit unit) throws SQLException, NotEmptyException;
+    int deleteEmptyVocableUnit(VocableUnit unit) throws NotEmptyException;
 
-    int deleteVocableList(VocableList vocables, User triggeringUser) throws SQLException, DifferentAuthorException;
+    int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException;
 }

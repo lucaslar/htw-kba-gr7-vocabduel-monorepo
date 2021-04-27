@@ -5,15 +5,14 @@ import de.htwberlin.kba.gr7.vocabduel.game.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user.model.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface GameAdministration {
-    VocabduelGame startGame(User playerA, User playerB) throws SQLException;
+    VocabduelGame startGame(User playerA, User playerB);
 
-    List<VocabduelGame> getPersonalChallengedGames(User user) throws SQLException;
+    List<VocabduelGame> getPersonalChallengedGames(User user);
 
-    VocabduelRound startRound(User player, VocabduelGame game) throws SQLException;
+    VocabduelRound startRound(User player, VocabduelGame game);
 
-    CorrectAnswerResult answerQuestion(User player, VocabduelGame game) throws SQLException;
+    CorrectAnswerResult answerQuestion(User player, VocabduelGame game);
 }
