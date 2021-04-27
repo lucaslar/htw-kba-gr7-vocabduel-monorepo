@@ -1,10 +1,10 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary.model;
 
 public class UntranslatedVocable {
-    private int id;
+    private Long id;
     private TranslationGroup vocable;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

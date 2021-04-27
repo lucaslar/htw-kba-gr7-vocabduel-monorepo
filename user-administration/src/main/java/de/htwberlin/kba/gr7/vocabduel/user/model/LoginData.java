@@ -1,10 +1,10 @@
 package de.htwberlin.kba.gr7.vocabduel.user.model;
 
 public class LoginData {
-    private int id;
+    private Long id;
     private int passwordHash;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

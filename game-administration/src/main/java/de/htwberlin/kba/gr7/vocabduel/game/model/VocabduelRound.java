@@ -6,12 +6,12 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.UntranslatedVocable;
 import java.util.List;
 
 public class VocabduelRound {
-    private int gameId;
+    private Long gameId;
     private int roundNr;
     private UntranslatedVocable question;
     private List<TranslationGroup> answers;
 
-    public int getGameId() {
+    public Long getGameId() {
         return gameId;
     }
 

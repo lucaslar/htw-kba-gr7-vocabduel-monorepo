@@ -20,7 +20,7 @@ public interface UserAdministration {
 
     List<User> findUsersByLastName(String searchValue);
 
-    User getUserData(int id) throws NoSuchUserException;
+    User getUserData(Long id) throws NoSuchUserException;
 
     User getUserData(String email) throws NoSuchUserException;
 

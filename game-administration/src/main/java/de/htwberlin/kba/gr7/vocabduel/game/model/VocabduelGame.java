@@ -6,13 +6,13 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary.model.VocableList;
 import java.util.List;
 
 public class VocabduelGame {
-    private int id;
+    private Long id;
     private User playerA;
     private User playerB;
     private List<VocableList> vocableLists;
     private List<VocabduelRound> rounds;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
