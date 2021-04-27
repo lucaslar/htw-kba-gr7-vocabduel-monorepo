@@ -13,12 +13,12 @@ public interface OwnVocabularyManagement {
 
     int createUnitForLanguageSet(String title, LanguageSet languageSet) throws DataAlreadyExistsException;
 
-    int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, DataAlreadyExistsException;
+    int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException;
 
     // Creates unit/language set if not existing yet
-    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListInformation, DataAlreadyExistsException;
+    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException;
 
-    int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListInformation;
+    int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException;
 
     int deleteEmptyLanguagesSet(LanguageSet languageSet) throws NotEmptyException;
 
