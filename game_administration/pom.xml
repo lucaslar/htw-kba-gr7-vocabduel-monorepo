@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-  <artifactId>vocabulary-administration</artifactId>
+  <artifactId>game_administration</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>vocabulary-administration</name>
+  <name>game_administration</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -27,7 +27,13 @@
     </dependency>
     <dependency>
       <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-      <artifactId>user-administration</artifactId>
+      <artifactId>user_administration</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
+      <artifactId>vocabulary_administration</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
