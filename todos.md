@@ -2,8 +2,6 @@
 
 ## General
 
-- Kebab case &rarr; snake case
-- Parent Maven project instead of simple monorepo
 - Two modules for each project
 
 ## Task II
