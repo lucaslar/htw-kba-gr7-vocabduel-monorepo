@@ -1,6 +1,3 @@
-
-
-
 # Todos
 
 ## General
@@ -8,7 +5,6 @@
 - Kebab case &rarr; snake case
 - Parent Maven project instead of simple monorepo
 - Two modules for each project
-- remove files in `./diagrams`
 
 ## Task II
 
