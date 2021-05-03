@@ -16,3 +16,7 @@
 ## Open questions
 
 - Remove interfaces/exceptions from class diagram?
+- Export-modules:
+    - name `<module>.export` &rarr; problem due to dot and resulting package naming conventions?
+    - (not export) modules have all dependencies of export modules + respective own exp. module. Is that even wanted?
+    - In the future: Is `.export` to be the module to be added as dependency? If so: how do we get the impl (`<XyImpl>.java`)? 
