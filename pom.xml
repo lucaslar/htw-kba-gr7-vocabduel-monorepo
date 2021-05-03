@@ -5,9 +5,12 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>user_administration.export</module>
-  	<module>game_administration.export</module>
-  	<module>vocabulary_administration.export</module>
+    <module>game_administration</module>
+    <module>game_administration.export</module>
+    <module>user_administration</module>
+    <module>user_administration.export</module>
+    <module>vocabulary_administration</module>
+    <module>vocabulary_administration.export</module>
   </modules>
 
   <properties>
