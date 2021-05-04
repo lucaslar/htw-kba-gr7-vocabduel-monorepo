@@ -1,9 +1,5 @@
 # Todos
 
-## General
-
-- Two modules for each project
-
 ## Task II
 
 - Re-add auth functionalities (Commit `b03101765eca832752bb564927fe2214441d359d`)
