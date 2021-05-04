@@ -10,16 +10,6 @@ import java.util.List;
 
 public class UserAdministrationImpl implements UserAdministration {
     @Override
-    public User register(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, AlreadyRegisteredException {
-        return null;
-    }
-
-    @Override
-    public User login(String email, String password) {
-        return null;
-    }
-
-    @Override
     public List<User> findUsersByString(String searchValue) {
         return null;
     }

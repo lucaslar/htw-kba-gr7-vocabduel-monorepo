@@ -10,28 +10,10 @@ import java.util.List;
 public interface UserAdministration {
 
     /**
-     * <p>Register and add a new user, who can take actions in this application.</p>
-     * @param user Dataset of the new user
-     * @param password Password for the new user. it has to be stored in a different way than the other user data
-     * @param confirmPassword The password confirmed
-     * @return The user object of the new user. password will never be given
-     * @throws PasswordsDoNotMatchException Password and confirmPassword do not match
-     * @throws AlreadyRegisteredException The user to be added already existis
-     */
-    User register(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, AlreadyRegisteredException;
-
-    /**
-     * <p>Login an existing user, so he can take actions in this application.</p>
-     * @param email User can login with his unique email address
-     * @param password The user's password
-     * @return The user object
-     */
-    User login(String email, String password);
-
-    /**
      * <p>Get list of <code>User</code> found by any string, that can include space(s).
      * Can be useed for identifying opponents for games.
      * Searching for equals in any field of <code>User</code>.</p>
+     *
      * @param searchValue
      * @return List of <code>User</code> found
      */
@@ -39,6 +21,7 @@ public interface UserAdministration {
 
     /**
      * <p>Get list of user found by mail address. Can be useed for identifying opponents for games.</p>
+     *
      * @param searchValue email address of a user
      * @return List of <code>User</code> found
      */
@@ -46,6 +29,7 @@ public interface UserAdministration {
 
     /**
      * <p>Get list of user found by first name. Can be useed for identifying opponents for games.</p>
+     *
      * @param searchValue first name of a user
      * @return List of <code>User</code> found
      */
@@ -53,6 +37,7 @@ public interface UserAdministration {
 
     /**
      * <p>get list of user found by last name. Can be used for identifying opponents for games</p>
+     *
      * @param searchValue
      * @return List of <code>User</code> found
      */
@@ -60,6 +45,7 @@ public interface UserAdministration {
 
     /**
      * <p>get user objekct by user id</p>
+     *
      * @param id user id // TODO: wo wollen wir die vorher her haben??
      * @return <code>User</code>
      * @throws NoSuchUserException
@@ -68,8 +54,9 @@ public interface UserAdministration {
 
     /**
      * <p>get user data by email address</p>
+     *
      * @param email email adress
-     * // TODO: wozu brauchen wir diesen Aufruf?? login() und register() holen schon das ganze User object
+     *              // TODO: wozu brauchen wir diesen Aufruf?? login() und register() holen schon das ganze User object
      * @return <code>User</code>
      * @throws NoSuchUserException
      */
@@ -77,6 +64,7 @@ public interface UserAdministration {
 
     /**
      * <p>update user data by user object.</p>
+     *
      * @param user The <code>User</code> with the actual data, that has to be saved
      * @return int database status of update query
      * @throws AlreadyRegisteredException
@@ -85,8 +73,9 @@ public interface UserAdministration {
 
     /**
      * <p>update user password</p>
-     * @param user <code>User</code>, whose password to be changed
-     * @param password New password
+     *
+     * @param user            <code>User</code>, whose password to be changed
+     * @param password        New password
      * @param confirmPassword New password confirmed
      * @return int database status of update query
      * @throws PasswordsDoNotMatchException
@@ -96,6 +85,7 @@ public interface UserAdministration {
 
     /**
      * <p>delete single user.</p>
+     *
      * @param user <code>User</code>
      * @return int database status of delte query
      */
