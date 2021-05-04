@@ -18,3 +18,4 @@
     - Is it okay/legal to get dependencies through dependencies? E.g. `game_administration` does only have one dependency (`game_administration.export`) but uses classes from other modules that are only imported in  `game_administration.export`
         - if so: How to manage versions if that is legal?
         - else: add dependencies to impl-modules (TODO)
+    - assumption: Exclude all classes that are not exported? If not: undo commit `272871ac99ecfae68473c52179ff23e553ecc933`! (Note: Users' passwords are not exported because of security reasons!)
