@@ -15,7 +15,7 @@ public interface GameAdministration {
      * @param playerB <code>User</code>
      * @return new <code>VocabduelGame</code>
      */
-    VocabduelGame startGame(User playerA, User playerB);
+    VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage);
 
     /**
      * get list of challenged games from one user

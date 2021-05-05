@@ -5,12 +5,14 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAn
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
 
 public class GameAdministrationImpl implements GameAdministration {
     @Override
-    public VocabduelGame startGame(User playerA, User playerB) {
+    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage) {
         return null;
     }
 
