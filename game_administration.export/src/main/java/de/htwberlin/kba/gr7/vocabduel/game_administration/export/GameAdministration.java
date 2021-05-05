@@ -38,5 +38,5 @@ public interface GameAdministration {
      * @param game <code>VocabduelGame</code>
      * @return <code>CorrectAnswerResult</code>
      */
-    CorrectAnswerResult answerQuestion(User player, VocabduelGame game);
+    CorrectAnswerResult answerQuestion(User player, VocabduelRound round, TranslationGroup answer);
 }

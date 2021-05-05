@@ -6,6 +6,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class GameAdministrationImpl implements GameAdministration {
     }
 
     @Override
-    public CorrectAnswerResult answerQuestion(User player, VocabduelGame game) {
+    public CorrectAnswerResult answerQuestion(User player, VocabduelRound round, TranslationGroup answer) {
         return null;
     }
 }
