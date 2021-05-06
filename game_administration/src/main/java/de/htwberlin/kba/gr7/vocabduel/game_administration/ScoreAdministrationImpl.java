@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ScoreAdministrationImpl implements ScoreAdministration {
     @Override
-    public List<PersonalFinishedGame> getPersonalGameScores(User user) {
+    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) {
         return null;
     }
 

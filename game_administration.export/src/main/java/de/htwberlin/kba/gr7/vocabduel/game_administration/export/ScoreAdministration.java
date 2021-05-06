@@ -23,7 +23,7 @@ public interface ScoreAdministration {
      * @param user User whose finished games are to be returned and for whom they are to be personalized.
      * @return List of finished games including result data from the given player's point of view.
      */
-    List<PersonalFinishedGame> getPersonalGameScores(User user);
+    List<PersonalFinishedGame> getPersonalFinishedGames(User user);
 
     /**
      * Counts and returns the won games of a given player.
