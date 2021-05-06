@@ -9,22 +9,32 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import java.io.File;
 import java.util.List;
 
+/**
+ * Service for managing vocabulary, i.e. adding/removing language sets, units and vocabulary lists, and for getting the
+ * publicly available vocable data.
+ *
+ * @author Sebastian Kehl, Lucas Larisch
+ * @version 1.0, May 2021
+ */
 public interface VocabularyLib {
 
     /**
+     * Creates a new language set, i.e. a set of a known and a known and a learnt language vocable units can be added to.
+     * For example: DE (known language) &rarr; ES (learnt language).
      *
-     * @param languageSet
-     * @return
-     * @throws DataAlreadyExistsException
+     * @param languageSet Set of known and learnt language to be created (no units yet).
+     * @return int database status of the insert query.
+     * @throws DataAlreadyExistsException There is already an existing set with the given known and learnt language that can be used.
      */
     int createLanguageSet(LanguageSet languageSet) throws DataAlreadyExistsException;
 
     /**
+     * Creates a unit for a given <code>{@link LanguageSet}</code>.
      *
-     * @param title
-     * @param languageSet
-     * @return
-     * @throws DataAlreadyExistsException
+     * @param title The new unit's title.
+     * @param languageSet Language set the new unit is to be added to
+     * @return int database status of the insert query.
+     * @throws DataAlreadyExistsException There is already an existing unit with the given title in the given language set.
      */
     int createUnitForLanguageSet(String title, LanguageSet languageSet) throws DataAlreadyExistsException;
 
