@@ -27,7 +27,7 @@ public interface GameAdministration {
      * @param vocableLists   List of vocable lists to be used in the game.
      * @param knownLanguage  Known language, i.e. the language in which the questions are to be asked in.
      * @param learntLanguage Learnt language, i.e. the language the answers are displayed in.
-     * @return New <code>VocabduelGame</code> instance based on the given params.
+     * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
      */
     VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage);
 
