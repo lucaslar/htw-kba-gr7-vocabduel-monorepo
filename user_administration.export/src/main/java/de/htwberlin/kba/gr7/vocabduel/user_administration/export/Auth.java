@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredMailException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
@@ -18,7 +19,7 @@ public interface Auth {
      * @throws PasswordsDoNotMatchException Password and confirmPassword do not match
      * @throws AlreadyRegisteredException   The user to be added already existis
      */
-    LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, AlreadyRegisteredException;
+    LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, AlreadyRegisteredMailException, AlreadyRegisteredUsernameException;
 
     /**
      * <p>Login an existing user, so he can take actions in this application.</p>

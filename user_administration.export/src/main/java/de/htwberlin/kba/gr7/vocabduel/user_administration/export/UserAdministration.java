@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredMailException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.NoSuchUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -43,9 +44,10 @@ public interface UserAdministration {
      *
      * @param user The <code>User</code> with the actual data, that has to be saved
      * @return int database status of update query
-     * @throws AlreadyRegisteredException
+     * @throws AlreadyRegisteredMailException
+     * @throws AlreadyRegisteredUsernameException
      */
-    int updateUser(User user) throws AlreadyRegisteredException;
+    int updateUser(User user) throws AlreadyRegisteredMailException, AlreadyRegisteredUsernameException;
 
     /**
      * <p>update user password</p>
@@ -55,9 +57,8 @@ public interface UserAdministration {
      * @param confirmPassword New password confirmed
      * @return int database status of update query
      * @throws PasswordsDoNotMatchException
-     * @throws AlreadyRegisteredException
      */
-    int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, AlreadyRegisteredException;
+    int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException;
 
     /**
      * <p>delete single user.</p>
