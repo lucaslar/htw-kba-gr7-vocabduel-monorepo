@@ -10,38 +10,14 @@ import java.util.List;
 public interface UserAdministration {
 
     /**
-     * <p>Get list of <code>User</code> found by any string, that can include space(s).
-     * Can be useed for identifying opponents for games.
-     * Searching for equals in any field of <code>User</code>.</p>
+     * Searches for users whose <code>username</code> properties match/include the given search string and returns them
+     * as list. Useful for identifying opponents for games. The search is case insensitive, i.e. a user "UserX" will be
+     * found by entering "userx".
      *
-     * @param searchValue
-     * @return List of <code>User</code> found
+     * @param searchString String users are to be searched by (compared with their usernames).
+     * @return List of users matching/including the given search string.
      */
-    List<User> findUsersByString(String searchValue);
-
-    /**
-     * <p>Get list of user found by mail address. Can be useed for identifying opponents for games.</p>
-     *
-     * @param searchValue email address of a user
-     * @return List of <code>User</code> found
-     */
-    List<User> findUsersByEmail(String searchValue);
-
-    /**
-     * <p>Get list of user found by first name. Can be useed for identifying opponents for games.</p>
-     *
-     * @param searchValue first name of a user
-     * @return List of <code>User</code> found
-     */
-    List<User> findUsersByFirstName(String searchValue);
-
-    /**
-     * <p>get list of user found by last name. Can be used for identifying opponents for games</p>
-     *
-     * @param searchValue
-     * @return List of <code>User</code> found
-     */
-    List<User> findUsersByLastName(String searchValue);
+    List<User> findUsersByUsername(String searchString);
 
     /**
      * <p>get user objekct by user id</p>

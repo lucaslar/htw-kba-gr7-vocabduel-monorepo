@@ -10,22 +10,7 @@ import java.util.List;
 
 public class UserAdministrationImpl implements UserAdministration {
     @Override
-    public List<User> findUsersByString(String searchValue) {
-        return null;
-    }
-
-    @Override
-    public List<User> findUsersByEmail(String searchValue) {
-        return null;
-    }
-
-    @Override
-    public List<User> findUsersByFirstName(String searchValue) {
-        return null;
-    }
-
-    @Override
-    public List<User> findUsersByLastName(String searchValue) {
+    public List<User> findUsersByUsername(String searchString) {
         return null;
     }
 
