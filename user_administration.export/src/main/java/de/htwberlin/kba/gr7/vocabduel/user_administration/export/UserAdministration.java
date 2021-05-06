@@ -1,9 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredMailException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.NoSuchUserException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
 import java.util.List;
@@ -58,7 +55,7 @@ public interface UserAdministration {
      * @return int database status of update query
      * @throws PasswordsDoNotMatchException
      */
-    int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException;
+    int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException;
 
     /**
      * <p>delete single user.</p>
