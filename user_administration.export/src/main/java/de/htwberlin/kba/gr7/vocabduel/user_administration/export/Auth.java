@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredMailException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidOrRegisteredMailException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PwTooWeakException;
@@ -28,10 +28,10 @@ public interface Auth {
      * @return The object of the new user. Password will never be revealed, instead, this object contains auth tokens.
      * @throws PasswordsDoNotMatchException       <code>password</code> and <code>confirmPassword</code> do not match.
      * @throws PwTooWeakException                 The given password is not strong enough.
-     * @throws AlreadyRegisteredMailException     The user's specified email is already in use and, thus, cannot be used again.
+     * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      */
-    LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, AlreadyRegisteredMailException, AlreadyRegisteredUsernameException;
+    LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException;
 
     /**
      * Authenticates an existing user in order to take actions in this application. The returned user object contains all

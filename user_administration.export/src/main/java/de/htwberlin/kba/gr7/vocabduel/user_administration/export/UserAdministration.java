@@ -47,10 +47,10 @@ public interface UserAdministration {
      *
      * @param user User object containing the (updated) data to be saved.
      * @return int database status of the update query.
-     * @throws AlreadyRegisteredMailException     The user's specified email is already in use and, thus, cannot be used again.
+     * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      */
-    int updateUser(User user) throws AlreadyRegisteredMailException, AlreadyRegisteredUsernameException;
+    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException;
 
     /**
      * Updates a user's password.

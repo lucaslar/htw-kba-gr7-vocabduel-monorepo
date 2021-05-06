@@ -28,7 +28,7 @@ public class UserAdministrationImpl implements UserAdministration {
     }
 
     @Override
-    public int updateUser(User user) throws AlreadyRegisteredMailException, AlreadyRegisteredUsernameException {
+    public int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException {
         return 0;
     }
 
