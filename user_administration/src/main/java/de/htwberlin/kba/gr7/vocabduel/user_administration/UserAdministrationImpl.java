@@ -1,10 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministration;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredMailException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.NoSuchUserException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
 import java.util.List;
@@ -16,12 +13,17 @@ public class UserAdministrationImpl implements UserAdministration {
     }
 
     @Override
-    public User getUserData(Long id) throws NoSuchUserException {
+    public User getUserDataById(Long id) {
         return null;
     }
 
     @Override
-    public User getUserData(String email) throws NoSuchUserException {
+    public User getUserDataByEmail(String email) {
+        return null;
+    }
+
+    @Override
+    public User getUserDataByUsername(String username) {
         return null;
     }
 
@@ -31,7 +33,7 @@ public class UserAdministrationImpl implements UserAdministration {
     }
 
     @Override
-    public int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException {
+    public int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException {
         return 0;
     }
 

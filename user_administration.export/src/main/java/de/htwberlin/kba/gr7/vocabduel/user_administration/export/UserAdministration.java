@@ -25,25 +25,22 @@ public interface UserAdministration {
     List<User> findUsersByUsername(String searchString);
 
     /**
-     * TODO: rm or comment
-     * <p>get user objekct by user id</p>
-     *
-     * @param id user id // TODO: wo wollen wir die vorher her haben??
-     * @return <code>User</code>
-     * @throws NoSuchUserException
+     * @param id ID the respective user is to returned for.
+     * @return User with the given ID or null if no user found.
      */
-    User getUserData(Long id) throws NoSuchUserException;
+    User getUserDataById(Long id);
 
     /**
-     * TODO: rm or comment
-     * <p>get user data by email address</p>
-     *
-     * @param email email adress
-     *              // TODO: wozu brauchen wir diesen Aufruf?? login() und register() holen schon das ganze User object
-     * @return <code>User</code>
-     * @throws NoSuchUserException
+     * @param email Email the respective user is to returned for.
+     * @return User with the given email or null if no user found.
      */
-    User getUserData(String email) throws NoSuchUserException;
+    User getUserDataByEmail(String email);
+
+    /**
+     * @param username Username the respective user is to returned for.
+     * @return User with the given username or null if no user found.
+     */
+    User getUserDataByUsername(String username);
 
     /**
      * Updates user data by a given user object.
