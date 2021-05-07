@@ -62,13 +62,13 @@ public interface Auth {
      * @param refreshToken Token to be used for refreshing auth/refresh token.
      * @return Object containing refreshed tokens, <code>null</code> if the operation was not successful.
      */
-    AuthTokens refreshAuthToken(String refreshToken);
+    AuthTokens refreshAuthTokens(String refreshToken);
 
     /**
-     * Checks whether a given auth is valid, i.e. if the user has access rights or not.
+     * Checks whether a given auth token is valid, i.e. if the user has access rights or not.
      *
      * @param token Auth token to be checked.
-     * @return <code>true</code> if the token is valid, <code>false</code> if not.
+     * @return <code>true</code> if the token is valid, <code>false</code> if not/<code>null</code>.
      */
     boolean hasAccessRights(String token);
 }
