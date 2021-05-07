@@ -24,7 +24,7 @@ public interface GameAdministration {
      *
      * @param playerA        Player initiating the game.
      * @param playerB        Opponent to be invited to play with <code>playerA</code>.
-     * @param vocableLists   List of vocable lists to be used in the game.
+     * @param vocableLists   List of vocable lists to be used in the game. The questions will randomly selected by these lists.
      * @param knownLanguage  Known language, i.e. the language in which the questions are to be asked in.
      * @param learntLanguage Learnt language, i.e. the language the answers are displayed in.
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
@@ -44,7 +44,7 @@ public interface GameAdministration {
      *
      * @param player Player the next round is to be returned for.
      * @param game   Game the next round of is to be returned for the given <code>user</code>.
-     * @return New <code>VocabduelRound</code> of a given game for a given user.
+     * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
      */
     VocabduelRound startRound(User player, VocabduelGame game);
 
