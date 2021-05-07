@@ -1,9 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidOrRegisteredMailException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PwTooWeakException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -68,26 +65,26 @@ public class AuthImplTest {
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
-    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
+    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
         auth.registerUser(new User(null), STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
-    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
+    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
         final User user = new User(null);
         user.setUsername(existingUser.getUsername());
         auth.registerUser(user, STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
+    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
         final User user = new User(null);
         user.setEmail(existingUser.getEmail());
         auth.registerUser(user, STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException {
+    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
         final User user = new User(null);
         String INVALID_MAIL = "invalidmail";
         user.setEmail(INVALID_MAIL);
@@ -95,7 +92,7 @@ public class AuthImplTest {
     }
 
     @Test
-    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
+    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
         final User user = new User(null);
         user.setEmail("newuser@user.de");
         user.setUsername(NEW_USER_NAME);

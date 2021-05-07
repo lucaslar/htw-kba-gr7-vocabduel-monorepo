@@ -49,8 +49,9 @@ public interface UserAdministration {
      * @return int database status of the update query.
      * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
+     * @throws IncompleteUserDataException           The passed user object does not contain all required user data.
      */
-    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException;
+    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
 
     /**
      * Updates a user's password.

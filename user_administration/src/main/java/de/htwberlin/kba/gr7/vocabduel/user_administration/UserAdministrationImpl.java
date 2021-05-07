@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import java.util.List;
 
 public class UserAdministrationImpl implements UserAdministration {
+
     @Override
     public List<User> findUsersByUsername(String searchString) {
         return null;
@@ -28,7 +29,7 @@ public class UserAdministrationImpl implements UserAdministration {
     }
 
     @Override
-    public int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException {
+    public int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
         return 0;
     }
 

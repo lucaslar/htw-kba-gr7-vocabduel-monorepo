@@ -1,9 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidOrRegisteredMailException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.AlreadyRegisteredUsernameException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PwTooWeakException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,7 +72,7 @@ public class ValidPwdsTest {
     }
 
     @Test(expected = Test.None.class)
-    public void shouldNotThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
+    public void shouldNotThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
         auth.registerUser(newUser, PWD, PWD);
     }
 
