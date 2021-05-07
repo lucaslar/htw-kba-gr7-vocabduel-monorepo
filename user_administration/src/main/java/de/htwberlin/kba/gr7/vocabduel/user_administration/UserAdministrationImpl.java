@@ -4,9 +4,13 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministrat
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserAdministrationImpl implements UserAdministration {
+
+    // TODO: In the future, use db instead of list and adjust tests
+    private final List<User> users = new LinkedList<User>();
 
     @Override
     public List<User> findUsersByUsername(String searchString) {
