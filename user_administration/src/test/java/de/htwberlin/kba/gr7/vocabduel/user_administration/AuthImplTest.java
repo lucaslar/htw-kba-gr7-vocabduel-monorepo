@@ -69,7 +69,7 @@ public class AuthImplTest {
 
     @Test(expected = PasswordsDoNotMatchException.class)
     public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException {
-        auth.registerUser(new User(null), STRONG_PWD, STRONG_PWD + "thisAppendixWillCauseTrouble!");
+        auth.registerUser(new User(null), STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
@@ -118,7 +118,7 @@ public class AuthImplTest {
 
     @Test
     public void shouldNotLoginIfPwdIsWrong() {
-        Assert.assertNull(auth.loginUser(existingUser.getEmail(), STRONG_PWD + "thisAppendixWillCauseTrouble!"));
+        Assert.assertNull(auth.loginUser(existingUser.getEmail(), STRONG_PWD + "thisSuffixWillCauseTrouble!"));
     }
 
     @Test
