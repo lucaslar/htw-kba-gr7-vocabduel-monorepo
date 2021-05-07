@@ -25,19 +25,19 @@ public interface UserAdministration {
     List<User> findUsersByUsername(String searchString);
 
     /**
-     * @param id ID the respective user is to returned for.
+     * @param id ID the respective user is to be returned for.
      * @return User with the given ID or null if no user found.
      */
     User getUserDataById(Long id);
 
     /**
-     * @param email Email the respective user is to returned for.
+     * @param email Email the respective user is to be returned for.
      * @return User with the given email or null if no user found.
      */
     User getUserDataByEmail(String email);
 
     /**
-     * @param username Username the respective user is to returned for.
+     * @param username Username the respective user is to be returned for.
      * @return User with the given username or null if no user found.
      */
     User getUserDataByUsername(String username);
