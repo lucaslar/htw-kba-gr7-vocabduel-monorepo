@@ -10,7 +10,3 @@
 - Implement tests
 - Show interfaces in diagram on "lollipops"
 - Regenerate both diagrams
-
-## Open questions
-
-- `getUserData` unnecessary?
