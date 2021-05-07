@@ -10,3 +10,6 @@
 - Implement tests
 - Show interfaces in diagram on "lollipops"
 - Regenerate both diagrams
+
+## Optional
+- Add Constructors to java classes? just an idea ..
