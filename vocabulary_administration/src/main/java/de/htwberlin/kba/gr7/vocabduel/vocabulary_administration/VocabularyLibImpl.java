@@ -13,6 +13,10 @@ import java.text.ParseException;
 import java.util.List;
 
 public class VocabularyLibImpl implements VocabularyLib {
+
+    // TODO: Keep list in the future?
+    private List<LanguageSet> allLanguageSets;
+
     @Override
     public int createLanguageSet(LanguageSet languageSet) throws DataAlreadyExistsException {
         return 0;
@@ -65,7 +69,7 @@ public class VocabularyLibImpl implements VocabularyLib {
 
     @Override
     public List<LanguageSet> getAllLanguageSets() {
-        return null;
+        return allLanguageSets;
     }
 
     @Override
