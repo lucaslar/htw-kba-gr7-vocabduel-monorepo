@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoPlannedAnswerResultException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -17,7 +16,6 @@ public class GameAdministrationImplAnswerQuestionTest {
     private GameAdministrationImpl gameAdministration;
     private User user;
     private VocabduelRound newRound;
-    private TranslationGroup answer;
 
     @Before
     public void setup(){
@@ -38,20 +36,28 @@ public class GameAdministrationImplAnswerQuestionTest {
     }
 
     @Test()
-    public void shouldGetNotNullObject(){
+    public void shouldGetWinWithCorrectAnswer(){
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(1));
         Assert.assertNotNull(result);
+        Assert.assertEquals(result.getResult(), Result.WIN);
+        Assert.assertNull(result.getCorrectAnswer());
     }
 
     @Test()
-    public void shouldGetWinOrLossWithCorrectAnswer() throws NoPlannedAnswerResultException {
+    public void shouldGetLossWithIncorrectAnswer(){
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(1));
-        if (result.getResult().equals(Result.WIN))
-            Assert.assertNull(result.getCorrectAnswer());
-        else if (result.getResult().equals(Result.LOSS))
-            Assert.assertNotNull(result.getCorrectAnswer());
-        else throw new NoPlannedAnswerResultException();
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getResult(), Result.LOSS);
+        Assert.assertNotNull(result.getCorrectAnswer());
+    }
+
+    @Test()
+    public void shouldGetResultWithWinOrLoss() {
+        CorrectAnswerResult result = gameAdministration.answerQuestion(
+                user, newRound, newRound.getAnswers().get(1));
+        Assert.assertTrue((result.getResult() == Result.WIN) ||
+                (result.getResult() == Result.LOSS));
     }
 }
