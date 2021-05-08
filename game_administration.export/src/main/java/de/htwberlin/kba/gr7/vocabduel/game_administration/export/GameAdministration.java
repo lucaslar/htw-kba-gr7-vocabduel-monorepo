@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.tooManyRoundsException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.TooManyRoundsException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -48,7 +48,7 @@ public interface GameAdministration {
      * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
      *         including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
-    VocabduelRound startRound(User player, VocabduelGame game) throws tooManyRoundsException;
+    VocabduelRound startRound(User player, VocabduelGame game) throws TooManyRoundsException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given

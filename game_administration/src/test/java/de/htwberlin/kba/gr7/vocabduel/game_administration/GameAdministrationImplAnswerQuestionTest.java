@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.noPlannedAnswerResultException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoPlannedAnswerResultException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -45,13 +45,13 @@ public class GameAdministrationImplAnswerQuestionTest {
     }
 
     @Test()
-    public void shouldGetWinOrLossWithCorrectAnswer() throws noPlannedAnswerResultException {
+    public void shouldGetWinOrLossWithCorrectAnswer() throws NoPlannedAnswerResultException {
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(1));
         if (result.getResult().equals(Result.WIN))
             Assert.assertNull(result.getCorrectAnswer());
         else if (result.getResult().equals(Result.LOSS))
             Assert.assertNotNull(result.getCorrectAnswer());
-        else throw new noPlannedAnswerResultException();
+        else throw new NoPlannedAnswerResultException();
     }
 }

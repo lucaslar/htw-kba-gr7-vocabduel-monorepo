@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.tooManyRoundsException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.TooManyRoundsException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -55,7 +55,7 @@ public class GameAdministrationImplStartRoundTest {
 
     }
     @Test()
-    public void shouldStartNewRound() throws tooManyRoundsException{
+    public void shouldStartNewRound() throws TooManyRoundsException {
 
         newRoundRes = gameAdministration.startRound(
                 USER_2020, newGame
@@ -71,8 +71,8 @@ public class GameAdministrationImplStartRoundTest {
         Assert.assertEquals(newGame.getId(), newRoundRes.getGameId());
     }
 
-    @Test(expected = tooManyRoundsException.class)
-    public void shouldThrowExceptionOnStartingOneRoundTooMuch() throws tooManyRoundsException {
+    @Test(expected = TooManyRoundsException.class)
+    public void shouldThrowExceptionOnStartingOneRoundTooMuch() throws TooManyRoundsException {
         for (int i = 0; i <= 10; i++){
             newRoundRes = gameAdministration.startRound(
                     USER_2020, newGame

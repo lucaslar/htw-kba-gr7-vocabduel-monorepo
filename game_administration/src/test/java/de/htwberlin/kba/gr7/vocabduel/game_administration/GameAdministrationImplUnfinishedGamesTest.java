@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.notFinishedGameGivenMoreThanOnceException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NotFinishedGameGivenMoreThanOnceException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
@@ -34,12 +34,12 @@ public class GameAdministrationImplUnfinishedGamesTest {
 
     // TODO: exception richtig gesetzt?
     @Test()
-    public void shouldGetEveryGameOnce() throws notFinishedGameGivenMoreThanOnceException {
+    public void shouldGetEveryGameOnce() throws NotFinishedGameGivenMoreThanOnceException {
         Collections.sort(unfinishedGames, compareById);
         final long[] gameId = {0};
         unfinishedGames.forEach(game -> {
             if (gameId[0] == 0 || gameId[0] != game.getId()) gameId[0] = game.getId();
-            else new notFinishedGameGivenMoreThanOnceException();
+            else new NotFinishedGameGivenMoreThanOnceException();
         });
     }
 
