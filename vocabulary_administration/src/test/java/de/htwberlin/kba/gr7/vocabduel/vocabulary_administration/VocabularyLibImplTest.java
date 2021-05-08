@@ -38,7 +38,8 @@ public class VocabularyLibImplTest {
 
     private VocabularyLibImpl vocabularyLib;
     private VocableUnit existingVocableUnit;
-    private VocableList existingVocableList;
+    private VocableList existingVocableList1;
+    private VocableList existingVocableList2;
     private User author;
 
     @Before
@@ -65,21 +66,21 @@ public class VocabularyLibImplTest {
                 {"Frambuesa", "Raspberry"},
         };
 
-        existingVocableList = new VocableList();
-        existingVocableList.setTitle("Los Dias De La Semana");
-        existingVocableList.setAuthor(author);
-        existingVocableList.setTimestamp(new Date());
-        existingVocableList.setVocables(mockVocablesEsEn(weekdaysEsEn));
+        existingVocableList1 = new VocableList();
+        existingVocableList1.setTitle("Los Dias De La Semana");
+        existingVocableList1.setAuthor(author);
+        existingVocableList1.setTimestamp(new Date());
+        existingVocableList1.setVocables(mockVocablesEsEn(weekdaysEsEn));
 
-        final VocableList secondExistingSet = new VocableList();
-        secondExistingSet.setTitle("Frutas");
-        secondExistingSet.setAuthor(author);
-        existingVocableList.setTimestamp(new Date());
-        existingVocableList.setVocables(mockVocablesEsEn(fruitsEsEn));
+        existingVocableList2 = new VocableList();
+        existingVocableList2.setTitle("Frutas");
+        existingVocableList2.setAuthor(author);
+        existingVocableList2.setTimestamp(new Date());
+        existingVocableList2.setVocables(mockVocablesEsEn(fruitsEsEn));
 
         existingVocableUnit = new VocableUnit();
         existingVocableUnit.setTitle("Español => Inglés - Vocabduel I");
-        existingVocableUnit.setVocableLists(Stream.of(existingVocableList).collect(Collectors.toList()));
+        existingVocableUnit.setVocableLists(Stream.of(existingVocableList1, existingVocableList2).collect(Collectors.toList()));
 
         final LanguageSet ls = new LanguageSet();
         ls.setKnownLanguage(SupportedLanguage.EN);
