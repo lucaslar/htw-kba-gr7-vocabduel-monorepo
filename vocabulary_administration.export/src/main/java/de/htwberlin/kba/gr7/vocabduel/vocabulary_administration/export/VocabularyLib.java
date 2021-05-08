@@ -8,6 +8,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -56,9 +57,10 @@ public interface VocabularyLib {
      * @return int database status of insert query
      * @throws DuplicateVocablesInSetException the VocableList inherits words that already exist in other lists
      * @throws IncompleteVocableListException the VocableList object to be added does not have all required data
-     * @throws DataAlreadyExistsException the VocableList has already been added to a unit
+     * @throws ParseException                  The file is either invalid or not recognized as GNU export.
      */
-    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException;
+    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
+    // TODO Find better exception than ParseException?
 
     /**
      * Edit the VocableList: add more words or change its title etc. Only the user who created the VocableList can edit it.

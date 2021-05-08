@@ -9,6 +9,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.List;
 
 public class VocabularyLibImpl implements VocabularyLib {
@@ -28,7 +29,7 @@ public class VocabularyLibImpl implements VocabularyLib {
     }
 
     @Override
-    public int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException {
+    public int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
         return 0;
     }
 
