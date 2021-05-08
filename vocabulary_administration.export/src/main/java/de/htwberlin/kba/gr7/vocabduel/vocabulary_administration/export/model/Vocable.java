@@ -5,6 +5,13 @@ import java.util.List;
 public class Vocable extends UntranslatedVocable {
     private List<TranslationGroup> translations;
 
+    public Vocable(){ }
+
+    public Vocable(TranslationGroup vocable, List<TranslationGroup> translations ){
+        this.setVocable(vocable);
+        this.translations = translations;
+    }
+
     public List<TranslationGroup> getTranslations() {
         return translations;
     }
