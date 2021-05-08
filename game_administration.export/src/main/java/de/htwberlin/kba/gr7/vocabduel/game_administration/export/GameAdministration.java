@@ -54,7 +54,7 @@ public interface GameAdministration {
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
      * <code>player</code>.
      * The information, which answer the right one is, stays server sided.
-     * This requests checks and whether the submitted answer is right or not and
+     * This request checks whether the submitted answer is right or not and
      *       returns feedback for that answer incl. the correct answer in case of
      *       having submitted a wrong one.
      * Afterwards only the check whether the user was wrong of right will be stored.

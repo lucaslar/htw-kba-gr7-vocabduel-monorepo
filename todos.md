@@ -2,7 +2,6 @@
 
 ## Task II
 
-- Java Doc for interface functions
 - Remove interfaces/exceptions from class diagram
 - _[lla]_ Discuss: Remove exceptions unused in interfaces and adjust test cases using them
 
