@@ -30,13 +30,13 @@ public class GameAdministrationImplStartGameTest {
         // Mocks
         VocabularyLib vocabService = Mockito.mock(VocabularyLib.class);
         Mockito.when(vocabService.getVocableListsOfUser(USER_2020)).thenReturn(new ArrayList<>());
-        Mockito.doReturn(Arrays.asList(new String[]{"DE", "EN"})).when(vocabService).getAllSupportedLanguage();
+        Mockito.doReturn(Arrays.asList(new String[]{"DE", "EN"})).when(vocabService).getAllSupportedLanguages();
 
         // create sample VocabduelGame
         gameAdministration = new GameAdministrationImpl();
         newGame = new VocabduelGame();
-        newGame.setKnownLanguage(vocabService.getAllSupportedLanguage().get(0));
-        newGame.setLearntLanguage(vocabService.getAllSupportedLanguage().get(1));
+        newGame.setKnownLanguage(vocabService.getAllSupportedLanguages().get(0));
+        newGame.setLearntLanguage(vocabService.getAllSupportedLanguages().get(1));
         newGame.setPlayerA(USER_2020);
         newGame.setPlayerB(USER_4711);
         newGame.setVocableLists(vocabService.getVocableListsOfUser(USER_2020));

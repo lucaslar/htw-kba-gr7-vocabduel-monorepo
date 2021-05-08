@@ -68,5 +68,5 @@ public class VocabularyLibImpl implements VocabularyLib {
     }
 
     @Override
-    public List<SupportedLanguage> getAllSupportedLanguage() { return null; }
+    public List<SupportedLanguage> getAllSupportedLanguages() { return null; }
 }

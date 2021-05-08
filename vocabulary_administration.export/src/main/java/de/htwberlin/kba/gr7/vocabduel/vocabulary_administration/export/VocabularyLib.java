@@ -120,5 +120,5 @@ public interface VocabularyLib {
      * get all Languages to learn from or to learn , which are supported in this application
      * @return List of <code>{@link SupportedLanguage}</code>
      */
-    List<SupportedLanguage> getAllSupportedLanguage();
+    List<SupportedLanguage> getAllSupportedLanguages();
 }
