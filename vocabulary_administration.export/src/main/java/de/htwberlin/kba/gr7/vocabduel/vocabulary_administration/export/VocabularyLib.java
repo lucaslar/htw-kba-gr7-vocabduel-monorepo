@@ -33,97 +33,101 @@ public interface VocabularyLib {
     /**
      * Creates a unit for a given <code>{@link LanguageSet}</code>.
      *
-     * @param title The new unit's title.
+     * @param title       The new unit's title.
      * @param languageSet Language set the new unit is to be added to
-     * @return int database status of the insert query
+     * @return int database status of the insert query.
      * @throws DataAlreadyExistsException There is already an existing unit with the given title in the given language set.
      */
     int createUnitForLanguageSet(String title, LanguageSet languageSet) throws DataAlreadyExistsException;
 
     /**
-     * Addsa  new VocableList  to an existing unit if not existing yet
-     * @param vocables add new VocableList to an existing unit in database
-     * @param unit  the specific unit, which already exists
-     * @return int database status of insert query
-     * @throws DuplicateVocablesInSetException the VocableList inherits words that already exist in other lists
-     * @throws IncompleteVocableListException the VocableList object to be added does not have all required data
-     * @throws DataAlreadyExistsException the VocableList has already been added to a unit
+     * Adds a new <code>{@link VocableList}</code> to an existing unit.
+     *
+     * @param vocables Vocable list to be added to the existing unit.
+     * @param unit     Already existing unit the vocable list is to be added to.
+     * @return int database status of the insert query.
+     * @throws DuplicateVocablesInSetException The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
+     * @throws IncompleteVocableListException  The vocable list to be inserted does not contain all required data.
+     * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
      */
     int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException;
 
     /**
-     * Creates unit/language set if not existing yet
-     * @param gnuFile the VocableList as gnuFile provided in Moodle
+     * Imports a simple <code>.txt</code> file exported by GNU (see Moodle). If the stated languages/unit name do already exist, the
+     * vocabulary list is inserted there. If not, the respective information is inserted, too.
+     *
+     * @param gnuFile        Vocable list as GNU file.
      * @param triggeringUser User triggering the import and who will be set as author of the new data.
-     * @return int database status of insert query
-     * @throws DuplicateVocablesInSetException the VocableList inherits words that already exist in other lists
-     * @throws IncompleteVocableListException the VocableList object to be added does not have all required data
+     * @return int database status of the insert query.
+     * @throws DuplicateVocablesInSetException The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
+     * @throws IncompleteVocableListException  The vocable list to be imported does not contain all required data.
+     * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
      * @throws ParseException                  The file is either invalid or not recognized as GNU export.
      */
     int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
     // TODO Find better exception than ParseException?
 
     /**
-     * Edit the VocableList: add more words or change its title etc. Only the user who created the VocableList can edit it.
-     * @param vocables a VocableList that already exists in database
+     * Updates the given vocable list. Possible changes include its title, adding more words, etc. Please note that this operation will
+     * throw an error if the <code>triggeringUser</code> is not the vocable list's author.
+     *
+     * @param vocables       Existing vocable list to be updated.
      * @param triggeringUser User triggering the update. If the user is not the vocable list's author, an exception will be thrown.
-     * @return int database status of update query
-     * @throws DuplicateVocablesInSetException the modified VocableList is still the same as before editing
-     * @throws DifferentAuthorException the VocableList in question was created by another user
+     * @return int database status of the update query.
+     * @throws DuplicateVocablesInSetException Caused by the changes, the vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
+     * @throws DifferentAuthorException        The triggering user is not authorized to update the vocable list, i.e. is not the list's author.
      * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same name.
-     * @throws IncompleteVocableListException the modified VocableList is incomplete e.g. a translation is missing or the title should be deleted
+     * @throws IncompleteVocableListException  The modified vocable list is incomplete e.g. a translation is missing or the title is empty.
      */
     int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, DataAlreadyExistsException, IncompleteVocableListException;
 
     /**
-     * delete unnecessary LanguageSets cause it does not contain VocableUnits
-     * @param languageSet the LanguageSet in question
-     * @return int database status of delete query
-     * @throws NotEmptyException the LanguageSet to be deleted is not empty
+     * Deletes a <code>{@link LanguageSet}</code> dispensable due to not containing vocable units.
+     *
+     * @param languageSet The empty language set to be deleted.
+     * @return int database status of the delete query.
+     * @throws NotEmptyException The language set to be deleted is not empty.
      */
     int deleteEmptyLanguagesSet(LanguageSet languageSet) throws NotEmptyException;
 
     /**
-     *delete unnecessary VocableUnits cause it does not contain VocableLists
-     * @param unit the VocableUnit in question
-     * @return int database status of delete query
-     * @throws NotEmptyException the VocableUnit to be deleted is not empty
+     * Deletes a <code>{@link VocableUnit}</code> dispensable due to not containing vocable lists.
+     *
+     * @param unit The empty vocable unit to be deleted.
+     * @return int database status of the delete query.
+     * @throws NotEmptyException The vocable unit to be deleted is not empty.
      */
     int deleteEmptyVocableUnit(VocableUnit unit) throws NotEmptyException;
 
     /**
-     * delete unnecessary VocableLists cause it does not contain Vocables
-     * only the user who created the VocableList can delete it
-     * @param vocables the VocableList in question
-     * @param triggeringUser the user who wants to delete the VocableList
-     * @return int database status of delete query
-     * @throws DifferentAuthorException the user who wants to delete the list has not the right to do so
+     * Deletes a vocable list if the triggering user is its author.
+     *
+     * @param vocables       The vocable list to be deleted.
+     * @param triggeringUser User triggering the deletion process.
+     * @return int database status of the delete query.
+     * @throws DifferentAuthorException The user who wants to delete the list has not the rights to do so, i.e. is not the list's author.
      */
     int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException;
 
     /**
-     * get vocabulary list by list id
-     * @param id VocableList id
-     * @return VocableList
+     * @param id ID the vocable list for is to be returned.
+     * @return Vocable list with the given <code>id</code> or <code>null</code> if no list could be found.
      */
     VocableList getVocableListById(Long id);
 
     /**
-     * get vocabulary list created by a user
-     * @param user the author of the VocableList
-     * @return List of assigned <code>{@link VocableList}</code>
+     * @param user User whose vocable lists, i.e. the lists she/he is the author of, are to be returned.
+     * @return The given user's vocable lists (can be empty).
      */
     List<VocableList> getVocableListsOfUser(User user);
 
     /**
-     * get all available language sets
-     * @return List of <code>{@link LanguageSet}</code>
+     * @return List containing all available language sets.
      */
     List<LanguageSet> getAllLanguageSets();
 
     /**
-     * get all Languages to learn from or to learn , which are supported in this application
-     * @return List of <code>{@link SupportedLanguage}</code>
+     * @return List containing all languages for learning/translating supported by this application.
      */
     List<SupportedLanguage> getAllSupportedLanguages();
 }

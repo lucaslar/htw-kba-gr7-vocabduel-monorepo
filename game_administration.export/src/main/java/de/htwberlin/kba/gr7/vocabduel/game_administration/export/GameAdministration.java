@@ -25,7 +25,7 @@ public interface GameAdministration {
      *
      * @param playerA        Player initiating the game.
      * @param playerB        Opponent to be invited to play with <code>playerA</code>.
-     * @param vocableLists   List of vocable lists to be used in the game. The questions will randomly selected by these lists.
+     * @param vocableLists   List of vocable lists to be used in the game. The questions will be randomly picked from these lists.
      * @param knownLanguage  Known language, i.e. the language in which the questions are to be asked in.
      * @param learntLanguage Learnt language, i.e. the language the answers are displayed in.
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
