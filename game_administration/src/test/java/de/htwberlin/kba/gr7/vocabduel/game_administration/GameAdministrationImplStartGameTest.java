@@ -30,7 +30,7 @@ public class GameAdministrationImplStartGameTest {
         // Mocks
         VocabularyLib vocabService = Mockito.mock(VocabularyLib.class);
         Mockito.when(vocabService.getVocableListsOfUser(USER_2020)).thenReturn(new ArrayList<>());
-        Mockito.doReturn(Arrays.asList(new String[]{"DE", "EN"})).when(vocabService).getAllSupportedLanguages();
+        Mockito.doReturn((new String[]{"DE", "EN"})).when(vocabService).getAllSupportedLanguages();
 
         // create sample VocabduelGame
         gameAdministration = new GameAdministrationImpl();
@@ -43,7 +43,7 @@ public class GameAdministrationImplStartGameTest {
 
     }
     @Test()
-    public void testStartGame() {
+    public void testGetStartedGameAsInput() {
 
         newGameRes = gameAdministration.startGame(
                 newGame.getPlayerA(),
@@ -53,10 +53,6 @@ public class GameAdministrationImplStartGameTest {
                 newGame.getLearntLanguage()
         );
         Assert.assertNotNull(newGameRes);
-    }
-
-    @Test()
-    public void testNewGameContent(){
 
         // check given Input
         Assert.assertEquals(newGameRes.getKnownLanguage(), newGame.getKnownLanguage());
@@ -65,4 +61,34 @@ public class GameAdministrationImplStartGameTest {
         Assert.assertEquals(newGameRes.getPlayerB(), newGame.getPlayerB());
         Assert.assertEquals(newGameRes.getVocableLists(), newGame.getVocableLists());
     }
+
+    @Test()
+    public void testNewGameWithEmptyRoundList(){
+        newGameRes = gameAdministration.startGame(
+                newGame.getPlayerA(),
+                newGame.getPlayerB(),
+                newGame.getVocableLists(),
+                newGame.getKnownLanguage(),
+                newGame.getLearntLanguage()
+        );
+        Assert.assertNotNull(newGameRes);
+        Assert.assertTrue(newGame.getRounds().isEmpty());
+    }
+
+    @Test()
+    public void testNewGameWithNewId(){
+        newGameRes = gameAdministration.startGame(
+                newGame.getPlayerA(),
+                newGame.getPlayerB(),
+                newGame.getVocableLists(),
+                newGame.getKnownLanguage(),
+                newGame.getLearntLanguage()
+        );
+        Assert.assertNotNull(newGameRes);
+        Assert.assertNotNull(newGame.getId());
+
+        // TODO: check if gameId already exists?? -> new interface List<VocabduelGame> getGameById()
+    }
+
+
 }
