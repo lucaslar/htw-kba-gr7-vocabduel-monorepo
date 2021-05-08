@@ -8,55 +8,62 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Tra
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class GameAdministrationImplAnswerQuestionTest {
 
     private GameAdministrationImpl gameAdministration;
+
     private User user;
     private VocabduelRound newRound;
 
     @Before
     public void setup(){
-        gameAdministration = new GameAdministrationImpl();
+        gameAdministration = Mockito.mock(GameAdministrationImpl.class);
         user = new User(2020L);
-        // set VocabduelRound
+
+        // set object VocabduelRound
         newRound = new VocabduelRound();
-        TranslationGroup poss1 = new TranslationGroup();
-        poss1.setSynonyms(Arrays.asList("three"));
-        TranslationGroup poss2 = new TranslationGroup();
-        poss2.setSynonyms(Arrays.asList("tree"));
-        TranslationGroup poss3 = new TranslationGroup();
-        poss3.setSynonyms(Arrays.asList("tre"));
-        TranslationGroup poss4 = new TranslationGroup();
-        poss4.setSynonyms(Arrays.asList("stock"));
-        newRound.setAnswers(Arrays.asList(poss1, poss2, poss3, poss4));
-
-    }
-
-    @Test()
-    public void shouldGetWinWithCorrectAnswer(){
-        CorrectAnswerResult result = gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(1));
-        Assert.assertNotNull(result);
-        Assert.assertEquals(result.getResult(), Result.WIN);
-        Assert.assertNull(result.getCorrectAnswer());
+        newRound.setAnswers(Arrays.asList(
+                new TranslationGroup(Collections.singletonList("wrongAnswer1")),
+                new TranslationGroup(Collections.singletonList("rightAnswer")),
+                new TranslationGroup(Collections.singletonList("wrongAnswer2")),
+                new TranslationGroup(Collections.singletonList("wrongAnswer3"))
+        ));
     }
 
     @Test()
     public void shouldGetLossWithIncorrectAnswer(){
+        Mockito.when(gameAdministration.answerQuestion(
+                user, newRound, newRound.getAnswers().get(2))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response for correct Answer
         CorrectAnswerResult result = gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(1));
+                user, newRound, newRound.getAnswers().get(2));
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getResult(), Result.LOSS);
+        Assert.assertEquals(Result.LOSS, result.getResult());
         Assert.assertNotNull(result.getCorrectAnswer());
+        Assert.assertEquals(result.getCorrectAnswer(), newRound.getAnswers().get(1));
     }
 
     @Test()
-    public void shouldGetResultWithWinOrLoss() {
+    public void shouldGetWinWithCorrectAnswer(){
+        Mockito.when(gameAdministration.answerQuestion(
+                user, newRound, newRound.getAnswers().get(1))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response for correct Answer
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(1));
+        Assert.assertNotNull(result);
+        Assert.assertEquals(Result.WIN, result.getResult());
+        Assert.assertNull(result.getCorrectAnswer());
+    }
+
+    @Test()
+    public void shouldGetResultOnlyWithWinOrLoss() {
+        Mockito.when(gameAdministration.answerQuestion(
+                user, newRound, newRound.getAnswers().get(3))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response
+        CorrectAnswerResult result = gameAdministration.answerQuestion(
+                user, newRound, newRound.getAnswers().get(3));
         Assert.assertTrue((result.getResult() == Result.WIN) ||
                 (result.getResult() == Result.LOSS));
     }

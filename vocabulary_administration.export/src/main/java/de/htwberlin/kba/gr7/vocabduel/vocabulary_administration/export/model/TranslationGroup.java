@@ -6,6 +6,15 @@ public class TranslationGroup {
     private List<String> synonyms;
     private List<String> exemplarySentencesOrAdditionalInfo;
 
+    public TranslationGroup(){ }
+
+    public TranslationGroup(List<String> synonyms){ this.synonyms = synonyms; }
+
+    public TranslationGroup(List<String> synonyms, List<String> exemplarySentencesOrAdditionalInfo){
+        this.synonyms = synonyms;
+        this.exemplarySentencesOrAdditionalInfo = exemplarySentencesOrAdditionalInfo;
+    }
+
     public List<String> getSynonyms() {
         return synonyms;
     }
