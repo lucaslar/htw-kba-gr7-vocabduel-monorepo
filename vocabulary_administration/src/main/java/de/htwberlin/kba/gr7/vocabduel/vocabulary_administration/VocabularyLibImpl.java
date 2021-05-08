@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyLib;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 
@@ -65,4 +66,7 @@ public class VocabularyLibImpl implements VocabularyLib {
     public List<LanguageSet> getAllLanguageSets() {
         return null;
     }
+
+    @Override
+    public List<SupportedLanguage> getAllSupportedLanguage() { return null; }
 }

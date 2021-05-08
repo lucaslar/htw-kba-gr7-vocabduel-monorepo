@@ -47,10 +47,12 @@ public interface ScoreAdministration {
      * (e.g. result = Two points for the given player, one point for its opponent &rarr; return an object marked as a
      * <code>WIN</code>).
      *
+     * This Method is in ScoreAdministration cause it results in an object with scores.
+     * All objects with scores have to be found here.
+     *
      * @param user User the finished game incl. result is to be personalized for.
      * @param game Game the final score of is to be determined and stored.
      * @return Finished game including result and meta-data from the given player's point of view.
      */
     PersonalFinishedGame finishGame(User user, VocabduelGame game);
-    // TODO: sollte finish game nicht in game administration rein?
 }

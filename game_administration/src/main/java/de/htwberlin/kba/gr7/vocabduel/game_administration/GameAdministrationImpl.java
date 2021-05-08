@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameAdministration;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.tooManyRoundsException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -23,7 +24,7 @@ public class GameAdministrationImpl implements GameAdministration {
     }
 
     @Override
-    public VocabduelRound startRound(User player, VocabduelGame game) {
+    public VocabduelRound startRound(User player, VocabduelGame game) throws tooManyRoundsException {
         return null;
     }
 

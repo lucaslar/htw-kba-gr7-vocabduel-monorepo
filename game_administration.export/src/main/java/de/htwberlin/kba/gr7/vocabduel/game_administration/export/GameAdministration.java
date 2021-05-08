@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.tooManyRoundsException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -24,7 +25,7 @@ public interface GameAdministration {
      *
      * @param playerA        Player initiating the game.
      * @param playerB        Opponent to be invited to play with <code>playerA</code>.
-     * @param vocableLists   List of vocable lists to be used in the game.
+     * @param vocableLists   List of vocable lists to be used in the game. The questions will randomly selected by these lists.
      * @param knownLanguage  Known language, i.e. the language in which the questions are to be asked in.
      * @param learntLanguage Learnt language, i.e. the language the answers are displayed in.
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
@@ -44,14 +45,20 @@ public interface GameAdministration {
      *
      * @param player Player the next round is to be returned for.
      * @param game   Game the next round of is to be returned for the given <code>user</code>.
-     * @return New <code>VocabduelRound</code> of a given game for a given user.
+     * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
+     *         including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
-    VocabduelRound startRound(User player, VocabduelGame game);
+    VocabduelRound startRound(User player, VocabduelGame game) throws tooManyRoundsException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
-     * <code>player</code> and returns feedback for that answer incl. the correct answer in case of
-     * having submitted a wrong one.
+     * <code>player</code>.
+     * The information, which answer the right one is, stays server sided.
+     * This requests checks and whether the submitted answer is right or not and
+     *       returns feedback for that answer incl. the correct answer in case of
+     *       having submitted a wrong one.
+     * Afterwards only the check whether the user was wrong of right will be stored.
+     * The information, which answer the user chose, will be lost.
      *
      * @param player Player who has answered the question.
      * @param round  Round the answer has been submitted for.
