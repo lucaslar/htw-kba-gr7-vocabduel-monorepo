@@ -292,18 +292,17 @@ public class VocabularyLibImplTest {
 
     @Test
     public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException {
-        final int initialUnitsLength = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().size();
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_unit.txt";
         final File f = new File(pathname);
         Assert.assertTrue("This test requires a file: " + pathname, f.exists());
 
-        final int initialListsLength = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0).getVocableLists().size();
+        final int initialUnitsLength = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().size();
         final int statusCode = vocabularyLib.importGnuVocableList(f, new User(42L));
         Assert.assertEquals(0, statusCode);
 
         final String expectedUnitTitle = "GNU Unit title";
         final List<VocableUnit> refreshedUnits = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits();
-        Assert.assertEquals(initialListsLength + 1, refreshedUnits.size());
+        Assert.assertEquals(initialUnitsLength + 1, refreshedUnits.size());
         final String infoMsg = "Please make sure, your gnu file's unit title is \"" + expectedUnitTitle + "\"";
         Assert.assertTrue(infoMsg, refreshedUnits.stream().anyMatch(u -> u.getTitle().equals(expectedUnitTitle)));
         // See previous test for checking if insertion itself works
@@ -311,11 +310,11 @@ public class VocabularyLibImplTest {
 
     @Test
     public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException {
-        final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_language_set.txt";
         final File f = new File(pathname);
         Assert.assertTrue("This test requires a file: " + pathname, f.exists());
 
+        final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
         final int statusCode = vocabularyLib.importGnuVocableList(f, new User(42L));
         Assert.assertEquals(0, statusCode);
 
