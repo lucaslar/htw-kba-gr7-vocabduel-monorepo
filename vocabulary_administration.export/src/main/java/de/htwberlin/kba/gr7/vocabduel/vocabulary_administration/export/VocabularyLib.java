@@ -70,9 +70,10 @@ public interface VocabularyLib {
      * @return int database status of update query
      * @throws DuplicateVocablesInSetException the modified VocableList is still the same as before editing
      * @throws DifferentAuthorException the VocableList in question was created by another user
+     * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same name.
      * @throws IncompleteVocableListException the modified VocableList is incomplete e.g. a translation is missing or the title should be deleted
      */
-    int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException;
+    int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, DataAlreadyExistsException, IncompleteVocableListException;
 
     /**
      * delete unnecessary LanguageSets cause it does not contain VocableUnits

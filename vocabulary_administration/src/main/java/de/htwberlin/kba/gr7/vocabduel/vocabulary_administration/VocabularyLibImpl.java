@@ -34,7 +34,7 @@ public class VocabularyLibImpl implements VocabularyLib {
     }
 
     @Override
-    public int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException {
+    public int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, DataAlreadyExistsException, IncompleteVocableListException {
         return 0;
     }
 
