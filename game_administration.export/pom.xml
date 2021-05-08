@@ -14,8 +14,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>game_administration.export</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <!-- local module, so no url -->
 
   <dependencies>
     <dependency>
