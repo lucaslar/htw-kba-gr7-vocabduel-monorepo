@@ -86,8 +86,7 @@ public class GameAdministrationImplStartGameTest {
         );
         Assert.assertNotNull(newGameRes);
         Assert.assertNotNull(newGame.getId());
-
-        // TODO: check if gameId already exists?? -> new interface List<VocabduelGame> getGameById()
+        // Mocking test against database not now
     }
 
 
