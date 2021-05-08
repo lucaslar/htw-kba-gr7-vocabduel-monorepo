@@ -23,56 +23,68 @@ import java.util.stream.Stream;
 @RunWith(MockitoJUnitRunner.class)
 public class VocabularyLibImplTest {
 
-    private static List<Vocable> mockVocablesWeekdaysEs() {
-        final Vocable monday = new Vocable();
-        final TranslationGroup mondayEs = new TranslationGroup();
-        final TranslationGroup mondayEn = new TranslationGroup();
-        mondayEs.setSynonyms(Stream.of("Lunes").collect(Collectors.toList()));
-        mondayEn.setSynonyms(Stream.of("Monday").collect(Collectors.toList()));
-        monday.setVocable(mondayEs);
-        monday.setTranslations(Stream.of(mondayEn).collect(Collectors.toList()));
-
-        final Vocable tuesday = new Vocable();
-        final TranslationGroup tuesdayEs = new TranslationGroup();
-        final TranslationGroup tuesdayEn = new TranslationGroup();
-        tuesdayEs.setSynonyms(Stream.of("Martes").collect(Collectors.toList()));
-        tuesdayEn.setSynonyms(Stream.of("Tuesday").collect(Collectors.toList()));
-        tuesday.setVocable(tuesdayEs);
-        tuesday.setTranslations(Stream.of(tuesdayEn).collect(Collectors.toList()));
-
-        final Vocable wednesday = new Vocable();
-        final TranslationGroup wednesdayEs = new TranslationGroup();
-        final TranslationGroup wednesdayEn = new TranslationGroup();
-        wednesdayEs.setSynonyms(Stream.of("Miercoles").collect(Collectors.toList()));
-        wednesdayEn.setSynonyms(Stream.of("Wednesday").collect(Collectors.toList()));
-        wednesday.setVocable(wednesdayEs);
-        wednesday.setTranslations(Stream.of(wednesdayEn).collect(Collectors.toList()));
-
-        // ... and so on
-
-        return Stream.of(monday, tuesday, wednesday).collect(Collectors.toList());
+    private static List<Vocable> mockVocablesEsEn(final String[][] vocables) {
+        return Stream.of(vocables).map(words -> {
+            final Vocable vocable = new Vocable();
+            final TranslationGroup en = new TranslationGroup();
+            final TranslationGroup es = new TranslationGroup();
+            es.setSynonyms(Stream.of(words[0]).collect(Collectors.toList()));
+            en.setSynonyms(Stream.of(words[1]).collect(Collectors.toList()));
+            vocable.setVocable(es);
+            vocable.setVocable(en);
+            return vocable;
+        }).collect(Collectors.toList());
     }
 
     private VocabularyLibImpl vocabularyLib;
+    private VocableUnit existingVocableUnit;
+    private VocableList existingVocableList;
+    private User author;
 
     @Before
     public void setup() {
         vocabularyLib = new VocabularyLibImpl();
+        author = new User(42L);
 
-        final VocableList vocableList = new VocableList();
-        vocableList.setTitle("Los Dias De La Semana");
-        vocableList.setAuthor(new User(42L));
-        vocableList.setTimestamp(new Date());
-        vocableList.setVocables(mockVocablesWeekdaysEs());
+        final String[][] weekdaysEsEn = {
+                {"Lunes", "Monday"},
+                {"Martes", "Tuesday"},
+                {"Miércoles", "Wednesday"},
+                {"Jueves", "Thursday"},
+                {"Viernes", "Friday"},
+                {"Sábado", "Saturday"},
+                {"Domingo", "Sunday"},
+        };
 
-        final VocableUnit unit = new VocableUnit();
-        unit.setTitle("Español => Inglés - Vocabduel I");
-        unit.setVocableLists(Stream.of(vocableList).collect(Collectors.toList()));
+        final String[][] fruitsEsEn = {
+                {"Manzana", "Apple"},
+                {"Plátano", "Banana"},
+                {"Pera", "Pear"},
+                {"Fresa", "Strawberry"},
+                {"Arándano", "Blueberry"},
+                {"Frambuesa", "Raspberry"},
+        };
+
+        existingVocableList = new VocableList();
+        existingVocableList.setTitle("Los Dias De La Semana");
+        existingVocableList.setAuthor(author);
+        existingVocableList.setTimestamp(new Date());
+        existingVocableList.setVocables(mockVocablesEsEn(weekdaysEsEn));
+
+        final VocableList secondExistingSet = new VocableList();
+        secondExistingSet.setTitle("Frutas");
+        secondExistingSet.setAuthor(author);
+        existingVocableList.setTimestamp(new Date());
+        existingVocableList.setVocables(mockVocablesEsEn(fruitsEsEn));
+
+        existingVocableUnit = new VocableUnit();
+        existingVocableUnit.setTitle("Español => Inglés - Vocabduel I");
+        existingVocableUnit.setVocableLists(Stream.of(existingVocableList).collect(Collectors.toList()));
 
         final LanguageSet ls = new LanguageSet();
         ls.setKnownLanguage(SupportedLanguage.EN);
         ls.setLearntLanguage(SupportedLanguage.ES);
-        ls.setVocableUnits(Stream.of(unit).collect(Collectors.toList()));
+        ls.setVocableUnits(Stream.of(existingVocableUnit).collect(Collectors.toList()));
 
         final List<LanguageSet> languages = Stream.of(ls).collect(Collectors.toList());
         // Mock existing languages (private field => Whitebox#setInternalState)
