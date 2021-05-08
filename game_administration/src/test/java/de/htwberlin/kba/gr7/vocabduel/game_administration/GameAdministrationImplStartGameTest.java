@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyLib;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class GameAdministrationImplStartGameTest {
         // Mocks
         VocabularyLib vocabService = Mockito.mock(VocabularyLib.class);
         Mockito.when(vocabService.getVocableListsOfUser(USER_2020)).thenReturn(new ArrayList<>());
-        Mockito.doReturn((new String[]{"DE", "EN"})).when(vocabService).getAllSupportedLanguages();
+        Mockito.doReturn(Arrays.asList(SupportedLanguage.DE, SupportedLanguage.EN)).when(vocabService).getAllSupportedLanguages();
 
         // create sample VocabduelGame
         gameAdministration = new GameAdministrationImpl();
@@ -60,6 +61,8 @@ public class GameAdministrationImplStartGameTest {
         Assert.assertEquals(newGameRes.getPlayerA(), newGame.getPlayerA());
         Assert.assertEquals(newGameRes.getPlayerB(), newGame.getPlayerB());
         Assert.assertEquals(newGameRes.getVocableLists(), newGame.getVocableLists());
+        Assert.assertNotNull(newGame.getId());
+        // Mocking test against database (gameId is unique and set) not now
     }
 
     @Test()
@@ -74,20 +77,5 @@ public class GameAdministrationImplStartGameTest {
         Assert.assertNotNull(newGameRes);
         Assert.assertTrue(newGame.getRounds().isEmpty());
     }
-
-    @Test()
-    public void testNewGameWithNewId(){
-        newGameRes = gameAdministration.startGame(
-                newGame.getPlayerA(),
-                newGame.getPlayerB(),
-                newGame.getVocableLists(),
-                newGame.getKnownLanguage(),
-                newGame.getLearntLanguage()
-        );
-        Assert.assertNotNull(newGameRes);
-        Assert.assertNotNull(newGame.getId());
-        // Mocking test against database not now
-    }
-
 
 }
