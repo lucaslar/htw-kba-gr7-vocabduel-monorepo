@@ -29,12 +29,12 @@ public class VocabularyLibImpl implements VocabularyLib {
     }
 
     @Override
-    public int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
+    public int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
         return 0;
     }
 
     @Override
-    public int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException {
+    public int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException {
         return 0;
     }
 

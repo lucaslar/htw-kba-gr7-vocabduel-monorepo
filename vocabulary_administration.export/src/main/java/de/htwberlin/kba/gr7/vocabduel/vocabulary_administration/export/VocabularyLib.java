@@ -54,23 +54,25 @@ public interface VocabularyLib {
     /**
      * Creates unit/language set if not existing yet
      * @param gnuFile the VocableList as gnuFile provided in Moodle
+     * @param triggeringUser User triggering the import and who will be set as author of the new data.
      * @return int database status of insert query
      * @throws DuplicateVocablesInSetException the VocableList inherits words that already exist in other lists
      * @throws IncompleteVocableListException the VocableList object to be added does not have all required data
      * @throws ParseException                  The file is either invalid or not recognized as GNU export.
      */
-    int importGnuVocableList(File gnuFile) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
+    int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
     // TODO Find better exception than ParseException?
 
     /**
      * Edit the VocableList: add more words or change its title etc. Only the user who created the VocableList can edit it.
      * @param vocables a VocableList that already exists in database
+     * @param triggeringUser User triggering the update. If the user is not the vocable list's author, an exception will be thrown.
      * @return int database status of update query
      * @throws DuplicateVocablesInSetException the modified VocableList is still the same as before editing
      * @throws DifferentAuthorException the VocableList in question was created by another user
      * @throws IncompleteVocableListException the modified VocableList is incomplete e.g. a translation is missing or the title should be deleted
      */
-    int updateVocableList(VocableList vocables) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException;
+    int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, IncompleteVocableListException;
 
     /**
      * delete unnecessary LanguageSets cause it does not contain VocableUnits
