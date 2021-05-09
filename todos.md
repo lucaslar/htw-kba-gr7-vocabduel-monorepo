@@ -18,4 +18,5 @@
 - refactor auth_admin tests
 - refactor score_admin tests
 - refactor game_admin tests
-- intellij project to eclipse project
+- generate pdf from readme
+- import zipped project (from GitHub) to Eclipse (test again before handing in assignment!)
