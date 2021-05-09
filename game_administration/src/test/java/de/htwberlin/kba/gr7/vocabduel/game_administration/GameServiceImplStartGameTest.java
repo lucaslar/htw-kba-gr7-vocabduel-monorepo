@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameAdministrationMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -12,19 +12,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameAdministrationImplStartGameTest {
+public class GameServiceImplStartGameTest {
 
-    private GameAdministrationImpl gameAdministration;
+    private GameServiceImpl gameAdministration;
     private VocabduelGame newGame;
     private VocabduelGame newGameRes;
-    private GameAdministrationMock mock;
+    private GameDataMock mock;
 
     @Before
     public void setup() {
 
         // mock sample VocabduelGame
-        gameAdministration = new GameAdministrationImpl();
-        mock = new GameAdministrationMock();
+        gameAdministration = new GameServiceImpl();
+        mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
     }
     @Test()
@@ -63,7 +63,7 @@ public class GameAdministrationImplStartGameTest {
                 mock.mockLearntLanguage()
         );
         Assert.assertNotNull(newGameRes);
-        Assert.assertEquals(newGameRes.getRounds().size(), GameAdministrationImpl.getFixNumberOfRoundsPerGame());
+        Assert.assertEquals(newGameRes.getRounds().size(), GameServiceImpl.getFixNumberOfRoundsPerGame());
     }
 
     @Test()
@@ -79,7 +79,7 @@ public class GameAdministrationImplStartGameTest {
                 mock.mockLearntLanguage()
         );
         Assert.assertNotNull(newGameRes);
-        Assert.assertEquals(newGameRes.getRounds().size(), GameAdministrationImpl.getFixNumberOfRoundsPerGame());
+        Assert.assertEquals(newGameRes.getRounds().size(), GameServiceImpl.getFixNumberOfRoundsPerGame());
     }
 
     @Test()

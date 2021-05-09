@@ -17,7 +17,7 @@ import java.util.List;
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021
  */
-public interface GameAdministration {
+public interface GameService {
 
     /**
      * Integer: Fix number of Rounds per game

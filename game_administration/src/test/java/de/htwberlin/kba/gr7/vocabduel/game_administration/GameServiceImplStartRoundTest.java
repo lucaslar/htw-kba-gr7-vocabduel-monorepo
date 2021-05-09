@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameAdministrationMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.RoundAlreadyFinishedException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import org.junit.Assert;
@@ -8,17 +8,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class GameAdministrationImplStartRoundTest {
+public class GameServiceImplStartRoundTest {
 
-    private GameAdministrationImpl gameAdministration;
+    private GameServiceImpl gameAdministration;
     private VocabduelRound newRoundRes;
-    private GameAdministrationMock mock;
+    private GameDataMock mock;
 
 
     @Before
     public void setup() {
-        gameAdministration = new GameAdministrationImpl();
-        mock = new GameAdministrationMock();
+        gameAdministration = new GameServiceImpl();
+        mock = new GameDataMock();
     }
     @Test()
     public void shouldHaveData() throws RoundAlreadyFinishedException {

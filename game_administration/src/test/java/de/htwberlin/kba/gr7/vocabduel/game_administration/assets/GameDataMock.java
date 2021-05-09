@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.assets;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameAdministration;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -9,12 +9,12 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class GameAdministrationMock {
+public class GameDataMock {
     private final User playerA;
     private final User playerB;
     private final VocabduelGame newGame;
 
-    public GameAdministrationMock(){
+    public GameDataMock(){
         playerA = new User(11L);
         playerB = new User(12L);
         List<VocableList> vocableList = new ArrayList<>();
@@ -25,7 +25,7 @@ public class GameAdministrationMock {
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
-        for (int i = 1; i <= GameAdministration.NR_OF_ROUNDS; i++){
+        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
             VocabduelRound newRound = new VocabduelRound(newGame.getId(), i);
             newRound.setAnswers(Arrays.asList(
                     new TranslationGroup(Collections.singletonList("wrongAnswer1")),
@@ -49,7 +49,7 @@ public class GameAdministrationMock {
 
         // set Vocables
         List<Vocable> tempVocableList = myVocList.getVocables();
-        for (int i = 1; i <= GameAdministration.NR_OF_ROUNDS; i++){
+        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
             Vocable myVoc = new Vocable(
                     new TranslationGroup(Collections.singletonList("unknownWord" + i)),
                     Collections.singletonList(new TranslationGroup(Collections.singletonList("translation" + i))));
@@ -143,7 +143,7 @@ public class GameAdministrationMock {
     } // empty List<VocableList>
 
     private List<Vocable> addVocables(List<Vocable> input, String title){
-        for (int i = 1; i <= (GameAdministration.NR_OF_ROUNDS / 2); i++){
+        for (int i = 1; i <= (GameService.NR_OF_ROUNDS / 2); i++){
             Vocable tempVoc = new Vocable(
                     new TranslationGroup(Collections.singletonList(title + "unknownWord" + i)),
                     Collections.singletonList(new TranslationGroup(Collections.singletonList(title + "translation" + i)))

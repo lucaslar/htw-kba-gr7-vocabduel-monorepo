@@ -1,21 +1,21 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameAdministrationMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GameAdministrationImplAnswerQuestionTest {
+public class GameServiceImplAnswerQuestionTest {
 
-    private GameAdministrationImpl gameAdministration;
-    private GameAdministrationMock mock;
+    private GameServiceImpl gameAdministration;
+    private GameDataMock mock;
 
     @Before
     public void setup(){
-        gameAdministration = new GameAdministrationImpl();
-        mock = new GameAdministrationMock();
+        gameAdministration = new GameServiceImpl();
+        mock = new GameDataMock();
     }
 
     @Test()

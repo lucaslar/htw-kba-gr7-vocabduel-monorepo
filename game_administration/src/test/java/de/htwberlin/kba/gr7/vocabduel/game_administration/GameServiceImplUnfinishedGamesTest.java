@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class GameAdministrationImplUnfinishedGamesTest {
+public class GameServiceImplUnfinishedGamesTest {
 
     private List<VocabduelGame> unfinishedGames;
     private User user;
-    private GameAdministrationImpl gameAdministration;
+    private GameServiceImpl gameAdministration;
 
     @Before
     public void setup() {
         user = new User(2020L);
-        gameAdministration = new GameAdministrationImpl();
+        gameAdministration = new GameServiceImpl();
     }
 
     @Test()
