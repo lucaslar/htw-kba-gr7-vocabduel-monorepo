@@ -6,11 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 public class VocableList {
-    private Long id;
+    private final Long id;
     private User author;
     private String title;
     private Date timestamp;
     private List<Vocable> vocables;
+
+    public VocableList(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;

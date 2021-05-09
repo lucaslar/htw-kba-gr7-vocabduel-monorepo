@@ -66,13 +66,13 @@ public class VocabularyLibImplTest {
                 {"Frambuesa", "Raspberry"},
         };
 
-        existingVocableList1 = new VocableList();
+        existingVocableList1 = new VocableList(42L);
         existingVocableList1.setTitle("Los Dias De La Semana");
         existingVocableList1.setAuthor(author);
         existingVocableList1.setTimestamp(new Date());
         existingVocableList1.setVocables(mockVocablesEsEn(weekdaysEsEn));
 
-        existingVocableList2 = new VocableList();
+        existingVocableList2 = new VocableList(4711L);
         existingVocableList2.setTitle("Frutas");
         existingVocableList2.setAuthor(author);
         existingVocableList2.setTimestamp(new Date());
@@ -140,7 +140,7 @@ public class VocabularyLibImplTest {
     @Test(expected = DataAlreadyExistsException.class)
     public void shouldNotInertVocableListWithExistingTitle() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException {
         final VocableUnit unit = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0);
-        final VocableList vocableList = new VocableList();
+        final VocableList vocableList = new VocableList(123L);
         final String existingTitle = unit.getVocableLists().get(0).getTitle();
         vocableList.setTitle(existingTitle);
         vocabularyLib.insertVocableListInUnit(vocableList, unit);
@@ -156,7 +156,7 @@ public class VocabularyLibImplTest {
         final Vocable untranslatedVocable = new Vocable();
         untranslatedVocable.setVocable(unknownWord);
 
-        final VocableList vocableList = new VocableList();
+        final VocableList vocableList = new VocableList(123L);
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(untranslatedVocable).collect(Collectors.toList()));
 
@@ -176,7 +176,7 @@ public class VocabularyLibImplTest {
         untranslatedVocable.setVocable(unknownWord);
         untranslatedVocable.setTranslations(Stream.of(emptyTrimmedTranslation).collect(Collectors.toList()));
 
-        final VocableList vocableList = new VocableList();
+        final VocableList vocableList = new VocableList(123L);
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(untranslatedVocable).collect(Collectors.toList()));
 
@@ -208,7 +208,7 @@ public class VocabularyLibImplTest {
         vocable2.setVocable(duplicate2);
         vocable2.setTranslations(Stream.of(translation2).collect(Collectors.toList()));
 
-        final VocableList vocableList = new VocableList();
+        final VocableList vocableList = new VocableList(123L);
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(vocable1, vocable2).collect(Collectors.toList()));
 
@@ -232,7 +232,7 @@ public class VocabularyLibImplTest {
         vocable.setVocable(unknownWord);
         vocable.setTranslations(Stream.of(translation).collect(Collectors.toList()));
 
-        final VocableList vocableList = new VocableList();
+        final VocableList vocableList = new VocableList(123L);
         vocableList.setTitle(newTitle);
         vocableList.setVocables(Stream.of(vocable).collect(Collectors.toList()));
 

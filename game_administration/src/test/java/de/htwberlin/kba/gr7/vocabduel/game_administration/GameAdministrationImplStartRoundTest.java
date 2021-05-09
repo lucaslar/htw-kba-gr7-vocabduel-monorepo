@@ -36,7 +36,7 @@ public class GameAdministrationImplStartRoundTest {
         // new VocabduelGame
         newGame = new VocabduelGame();
         // new VocableList
-        myList = new VocableList();
+        myList = new VocableList(42L);
         myList.setAuthor(USER_2020);
         myList.setTimestamp(new Timestamp(System.currentTimeMillis()));
         myList.setTitle("myTitle");
