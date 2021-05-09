@@ -21,13 +21,13 @@ shown in the UML diagram, try to open the respective file itself (same directory
 
 ### Components
 
-A diagram visualizing which components are interacting in which way can be seen here:
+A diagram visualizing which components are interacting in which way can be seen here (`./components_diagram.svg`):
 
 _**Note:** At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because in
 the future, it could either directly communicate with the modules (as microservices) or communicate through an
 interconnected backend._
 
-![Components diagram (./components_diagram.svg)](./components_diagram.svg)
+![](./components_diagram.svg)
 
 ### UML
 
