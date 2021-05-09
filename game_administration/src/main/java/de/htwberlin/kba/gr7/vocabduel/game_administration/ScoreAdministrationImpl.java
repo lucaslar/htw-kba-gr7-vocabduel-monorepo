@@ -5,11 +5,14 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.Unfi
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
 import java.util.List;
 
 public class ScoreAdministrationImpl implements ScoreAdministration {
+
+    private UserAdministration userService;
 
     // TODO: In the future, replace by db
     private List<FinishedVocabduelGame> allFinishedGames;
