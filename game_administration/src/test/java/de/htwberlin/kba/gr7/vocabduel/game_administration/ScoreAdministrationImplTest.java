@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
@@ -137,8 +138,17 @@ public class ScoreAdministrationImplTest {
         Assert.assertEquals(2, scoreAdministration.getTotalLossesOfUser(playerA));
     }
 
+    @Test(expected = UnfinishedGameException.class)
+    public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException {
+        final VocabduelGame game = new VocabduelGame();
+        game.setPlayerA(playerA);
+        game.setPlayerA(playerB);
+        game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(),  new VocabduelRound()).collect(Collectors.toList()));
+        scoreAdministration.finishGame(playerA, game);
+    }
+
     @Test
-    public void shouldFinishGameProperly() {
+    public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException {
         final VocabduelGame game = new VocabduelGame();
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);

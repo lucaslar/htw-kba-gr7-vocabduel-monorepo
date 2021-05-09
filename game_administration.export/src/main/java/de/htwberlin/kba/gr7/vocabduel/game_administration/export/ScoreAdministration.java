@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -46,13 +47,13 @@ public interface ScoreAdministration {
      * result personalized from the given player's point of view including easily interpretable meta data is returned
      * (e.g. result = Two points for the given player, one point for its opponent &rarr; return an object marked as a
      * <code>WIN</code>).
-     *
      * This Method is in ScoreAdministration cause it results in an object with scores.
      * All objects with scores have to be found here.
      *
      * @param user User the finished game incl. result is to be personalized for.
      * @param game Game the final score of is to be determined and stored.
+     * @throws UnfinishedGameException The game does still have unfinished rounds, i.e. cannot be finished.
      * @return Finished game including result and meta-data from the given player's point of view.
      */
-    PersonalFinishedGame finishGame(User user, VocabduelGame game);
+    PersonalFinishedGame finishGame(User user, VocabduelGame game) throws UnfinishedGameException; // TODO: Also add and test exception "User is not player" => use exception from game administration
 }
