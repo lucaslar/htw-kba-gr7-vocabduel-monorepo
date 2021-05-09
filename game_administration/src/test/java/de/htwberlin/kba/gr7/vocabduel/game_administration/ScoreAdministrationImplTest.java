@@ -155,6 +155,7 @@ public class ScoreAdministrationImplTest {
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
 
         final PersonalFinishedGame finishedGame = scoreAdministration.finishGame(playerA, game);
+        Assert.assertNotNull(finishedGame);
         Assert.assertEquals(Result.WIN, finishedGame.getGameResult());
         Assert.assertEquals(3, finishedGame.getOwnPoints());
         Assert.assertEquals(0, finishedGame.getOpponentPoints());
