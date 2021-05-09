@@ -147,7 +147,8 @@ public class VocabularyLibImplTest {
         vocabularyLib.insertVocableListInUnit(vocableList, existingVocableUnit);
     }
 
-    // TODO: Following two tests to be added for each potentially null/empty trimmed field? (same for update)
+    // The following two tests could be implemented for each potentially null/empty trimmed field (same for update)
+    // using a parameterized test. However, this would lead to an unnecessarily large number of tests.
 
     @Test(expected = IncompleteVocableListException.class)
     public void shouldNotInsertIncompleteVocableData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException {

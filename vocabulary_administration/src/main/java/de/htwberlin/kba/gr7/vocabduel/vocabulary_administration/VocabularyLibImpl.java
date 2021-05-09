@@ -14,7 +14,7 @@ import java.util.List;
 
 public class VocabularyLibImpl implements VocabularyLib {
 
-    // TODO: Keep list in the future?
+    // TODO: Mainly for mocking purposes => Keep list in real implementation?
     private List<LanguageSet> allLanguageSets;
 
     @Override

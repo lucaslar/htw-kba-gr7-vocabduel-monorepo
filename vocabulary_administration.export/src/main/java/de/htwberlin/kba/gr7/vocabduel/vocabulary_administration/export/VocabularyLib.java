@@ -65,7 +65,6 @@ public interface VocabularyLib {
      * @throws ParseException                  The file is either invalid or not recognized as GNU export.
      */
     int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
-    // TODO Find better exception than ParseException?
 
     /**
      * Updates the given vocable list. Possible changes include its title, adding more words, etc. Please note that this operation will
