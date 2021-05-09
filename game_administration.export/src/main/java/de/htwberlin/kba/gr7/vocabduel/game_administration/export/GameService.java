@@ -22,7 +22,7 @@ public interface GameService {
     /**
      * Integer: Fix number of Rounds per game
      */
-    int NR_OF_ROUNDS = 10;
+    int NR_OF_ROUNDS = 9;
 
     /**
      * Starts a new game as <code>playerA</code> against <code>playerB</code> with the given parameters
