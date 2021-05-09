@@ -33,7 +33,7 @@ public interface GameAdministration {
      * @param vocableLists   List of vocable lists to be used in the game. The questions will be randomly picked from these lists.
      * @param knownLanguage  Known language, i.e. the language the answers are displayed in.
      * @param learntLanguage Learnt language, i.e. the language in which the questions are to be asked in.
-     * @exception NoSecondPlayerException the user starts a game against himself
+     * @throws NoSecondPlayerException the user starts a game against himself
      * @throws KnownLangEqualsLearntLangException KnownLanguage and LearntLanguage do equal
      * @throws NotEnoughVocabularyException the provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
      * @throws NotEnoughVocableListsException the provided List<VocableList> is empty
@@ -54,6 +54,7 @@ public interface GameAdministration {
      *
      * @param player Player the next round is to be returned for.
      * @param game   Game the next round of is to be returned for the given <code>user</code>.
+     *@throws RoundAlreadyFinishedException the game has no round left to start
      * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
