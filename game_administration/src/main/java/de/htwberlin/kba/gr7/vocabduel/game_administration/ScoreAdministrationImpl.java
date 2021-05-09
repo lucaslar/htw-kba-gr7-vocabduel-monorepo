@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreAdministration;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -8,6 +9,10 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import java.util.List;
 
 public class ScoreAdministrationImpl implements ScoreAdministration {
+
+    // TODO: In the future, replace by db
+    private List<FinishedVocabduelGame> allFinishedGames;
+
     @Override
     public List<PersonalFinishedGame> getPersonalFinishedGames(User user) {
         return null;
