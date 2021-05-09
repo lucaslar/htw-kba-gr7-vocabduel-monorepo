@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UserIsNotPlayerException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
@@ -139,7 +140,16 @@ public class ScoreAdministrationImplTest {
     }
 
     @Test(expected = UnfinishedGameException.class)
-    public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException {
+    public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, UserIsNotPlayerException {
+        final VocabduelGame game = new VocabduelGame();
+        game.setPlayerA(playerA);
+        game.setPlayerA(playerB);
+        game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
+        scoreAdministration.finishGame(playerC, game);
+    }
+
+    @Test(expected = UserIsNotPlayerException.class)
+    public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException, UserIsNotPlayerException {
         final VocabduelGame game = new VocabduelGame();
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);
@@ -148,7 +158,7 @@ public class ScoreAdministrationImplTest {
     }
 
     @Test
-    public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException {
+    public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException, UserIsNotPlayerException {
         final VocabduelGame game = new VocabduelGame();
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);
