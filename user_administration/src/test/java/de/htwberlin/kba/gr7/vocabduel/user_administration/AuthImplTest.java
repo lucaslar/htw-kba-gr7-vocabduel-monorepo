@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class AuthImplTest {
 
     @Mock
-    private UserAdministrationImpl userAdministration;
+    private UserServiceImpl userAdministration;
     private AuthImpl auth;
     private User existingUser;
     private User newUser;

@@ -40,7 +40,7 @@ public class ValidPwdsTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private UserAdministrationImpl userAdministration;
+    private UserServiceImpl userAdministration;
     private AuthImpl auth;
     private User newUser;
     private User existingUser;

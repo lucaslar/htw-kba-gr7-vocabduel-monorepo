@@ -12,7 +12,7 @@ import java.util.List;
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021
  */
-public interface UserAdministration {
+public interface UserService {
 
     /**
      * Searches for users whose <code>username</code> properties match/include the given search string and returns them

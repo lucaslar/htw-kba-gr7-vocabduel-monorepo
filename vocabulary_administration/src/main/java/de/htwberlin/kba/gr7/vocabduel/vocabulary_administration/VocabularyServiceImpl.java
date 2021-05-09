@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministration;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class VocabularyServiceImpl implements VocabularyService {
 
-    private UserAdministration userService;
+    private UserService userService;
 
     // TODO: Mainly for mocking purposes => Keep list in real implementation?
     private List<LanguageSet> allLanguageSets;

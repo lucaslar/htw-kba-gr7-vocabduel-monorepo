@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserAdministrationImplTest {
+public class UserServiceImplTest {
 
-    private UserAdministrationImpl userAdministration;
+    private UserServiceImpl userAdministration;
 
     private final Long EXISTING_USER_ID = 4711L;
     private final String EXISTING_EMAIL1 = "user1@vocabduel.de";
@@ -32,7 +32,7 @@ public class UserAdministrationImplTest {
 
     @Before
     public void setUp() {
-        userAdministration = new UserAdministrationImpl();
+        userAdministration = new UserServiceImpl();
         user1 = new User(42L);
         user2 = new User(123L);
         user3 = new User(456L);

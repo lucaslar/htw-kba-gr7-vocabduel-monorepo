@@ -8,7 +8,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
 public class AuthImpl implements Auth {
 
-    private UserAdministrationImpl userService;
+    private UserServiceImpl userService;
 
     @Override
     public LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
@@ -35,11 +35,11 @@ public class AuthImpl implements Auth {
         return false;
     }
 
-    public UserAdministrationImpl getUserService() {
+    public UserServiceImpl getUserService() {
         return userService;
     }
 
-    public void setUserService(UserAdministrationImpl userService) {
+    public void setUserService(UserServiceImpl userService) {
         this.userService = userService;
     }
 }
