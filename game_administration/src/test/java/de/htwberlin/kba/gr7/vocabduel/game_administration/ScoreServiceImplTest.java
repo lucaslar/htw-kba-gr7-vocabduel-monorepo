@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScoreAdministrationImplTest {
+public class ScoreServiceImplTest {
 
     private static FinishedVocabduelGame mockFinishedGame(User playerA, int pointsA, User playerB, int pointsB) {
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame();
@@ -39,11 +39,11 @@ public class ScoreAdministrationImplTest {
     private User playerC; // 2 wins, 1 against A, 1 against B
     private User playerD; // 0 - 0
 
-    private ScoreAdministrationImpl scoreAdministration;
+    private ScoreServiceImpl scoreAdministration;
 
     @Before
     public void setup() {
-        scoreAdministration = new ScoreAdministrationImpl();
+        scoreAdministration = new ScoreServiceImpl();
 
         playerA = new User(4711L);
         playerB = new User(42L);

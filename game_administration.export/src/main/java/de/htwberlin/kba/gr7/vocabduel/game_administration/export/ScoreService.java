@@ -14,7 +14,7 @@ import java.util.List;
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021
  */
-public interface ScoreAdministration {
+public interface ScoreService {
 
     /**
      * Collects and returns the games finished by a given user, personalized in respect of this player's view (e.g.

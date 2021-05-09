@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreAdministration;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UserIsNotPlayerException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
@@ -11,7 +11,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
 import java.util.List;
 
-public class ScoreAdministrationImpl implements ScoreAdministration {
+public class ScoreServiceImpl implements ScoreService {
 
     private UserService userService;
 
