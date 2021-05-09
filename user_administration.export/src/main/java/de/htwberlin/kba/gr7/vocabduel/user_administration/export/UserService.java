@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Service for managing users and user data beyond authentication purposes (for auth, incl. registration and login,
- * please check {@link Auth}).
+ * please check {@link AuthService}).
  *
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021

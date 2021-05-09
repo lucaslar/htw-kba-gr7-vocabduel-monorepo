@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AuthImplTest {
+public class AuthServiceImplTest {
 
     @Mock
     private UserServiceImpl userAdministration;
-    private AuthImpl auth;
+    private AuthServiceImpl auth;
     private User existingUser;
     private User newUser;
 
@@ -45,7 +45,7 @@ public class AuthImplTest {
 
     @Before
     public void setup() {
-        auth = new AuthImpl();
+        auth = new AuthServiceImpl();
         auth.setUserService(userAdministration);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";

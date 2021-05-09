@@ -41,7 +41,7 @@ public class ValidPwdsTest {
 
     @Mock
     private UserServiceImpl userAdministration;
-    private AuthImpl auth;
+    private AuthServiceImpl auth;
     private User newUser;
     private User existingUser;
     private final String PWD;
@@ -54,7 +54,7 @@ public class ValidPwdsTest {
 
     @Before
     public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        auth = new AuthImpl();
+        auth = new AuthServiceImpl();
 
         newUser = new User(null);
         newUser.setEmail("newuser@user.de");

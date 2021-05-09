@@ -12,12 +12,12 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021
  */
-public interface Auth {
+public interface AuthService {
 
     /**
      * Registers a new user who can take actions in this application. After having successfully stored the new user data,
      * a <code>{@link LoggedInUser}</code> object is returned which is used for authentication using tokens without
-     * revealing the user's password. (see <code>{@link Auth#loginUser}</code>).
+     * revealing the user's password. (see <code>{@link AuthService#loginUser}</code>).
      *
      * @param user            Dataset of the new user.
      * @param password        Password for the new user, will be stored in a different way than the other user data

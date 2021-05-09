@@ -1,12 +1,12 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.Auth;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
-public class AuthImpl implements Auth {
+public class AuthServiceImpl implements AuthService {
 
     private UserServiceImpl userService;
 
