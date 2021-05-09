@@ -45,8 +45,9 @@ public interface GameAdministration {
      *
      * @param player Player the next round is to be returned for.
      * @param game   Game the next round of is to be returned for the given <code>user</code>.
+     *               TODO: explain TooManyRoundsException! (or rm?)
      * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
-     *         including the 1 correct and the other wrong answer possibilities without knowing which is what
+     * including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
     VocabduelRound startRound(User player, VocabduelGame game) throws TooManyRoundsException;
 
@@ -55,8 +56,8 @@ public interface GameAdministration {
      * <code>player</code>.
      * The information, which answer the right one is, stays server sided.
      * This request checks whether the submitted answer is right or not and
-     *       returns feedback for that answer incl. the correct answer in case of
-     *       having submitted a wrong one.
+     * returns feedback for that answer incl. the correct answer in case of
+     * having submitted a wrong one.
      * Afterwards only the check whether the user was wrong of right will be stored.
      * The information, which answer the user chose, will be lost.
      *
