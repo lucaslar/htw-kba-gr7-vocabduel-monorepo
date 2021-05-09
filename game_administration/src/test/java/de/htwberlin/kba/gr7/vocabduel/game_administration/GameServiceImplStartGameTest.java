@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GameServiceImplStartGameTest {
@@ -27,6 +28,7 @@ public class GameServiceImplStartGameTest {
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
     }
+
     @Test()
     public void shouldGetStartedGameAsInput() throws NoSecondPlayerException,
             KnownLangEqualsLearntLangException, NotEnoughVocabularyException,
@@ -96,6 +98,21 @@ public class GameServiceImplStartGameTest {
         Assert.assertNotNull(newGameRes);
         List<VocabduelRound> uniques = newGameRes.getRounds().stream().distinct().collect(Collectors.toList());
         Assert.assertEquals(uniques.size(), newGameRes.getRounds().size());
+    }
+
+    @Test
+    public void shouldStartGameWithUniqueQuestions() throws NoSecondPlayerException, NotEnoughVocableListsException, NotEnoughVocabularyException, KnownLangEqualsLearntLangException {
+        newGameRes = gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                mock.mockVocableLists(),
+                mock.mockKnownLanguage(),
+                mock.mockLearntLanguage()
+        );
+        Assert.assertNotNull(newGameRes);
+        newGameRes.getRounds().stream().map(r -> r.getQuestion().getVocable())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .forEach((key, value) -> Assert.assertEquals(1, value.intValue()));
     }
 
     @Test()
