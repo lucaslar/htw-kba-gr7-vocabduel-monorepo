@@ -23,13 +23,17 @@ shown in the UML diagram, try to open the respective file itself (same directory
 
 A diagram visualizing which components are interacting in which way can be seen here:
 
-_Note: At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because in
+_**Note:** At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because in
 the future, it could either directly communicate with the modules (as microservices) or communicate through an
 interconnected backend._
 
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
 
 ### UML
+
+_**Note:**_ From our point of view, components should only provide what is actually needed. Some information, however, should not leave the component. Examples include:
+- Exported class `User` &rarr; no password property
+- Exported class `VocabduelRound` &rarr; no `correctAnswer` property since the data will be visible in the client/accessible through an API and, if the correct answer is included, the game could easily be manipulated when checking the network console
 
 #### Model only
 
@@ -50,7 +54,9 @@ please check the visualization here (`./complete-class-diagram.svg`):
 
 ### IDE
 
-This project has been implemented using IntelliJ IDEA Ultimate. However, the necessary files for importing it as an Eclipse project (from zip) have been added, too. If you have troubles with Eclipse (even though the import has been tested carefully) or any other IDE, please feel free to contact us.
+This project has been implemented using IntelliJ IDEA Ultimate. However, the necessary files for importing it as an
+Eclipse project (from zip) have been added, too. If you have troubles with Eclipse (even though the import has been
+tested carefully) or any other IDE, please feel free to contact us.
 
 ### Generate diagrams
 
@@ -88,6 +94,6 @@ are the steps to reproduce the class diagram:
     - In the top bar, select: _Export to Image File..._
     - In the following dialog:
         - Make sure you save the file in the repository root
-        - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the file format
-          dropdown)
+        - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the
+          file format dropdown)
         - Accept the dialog informing about replacing the current file
