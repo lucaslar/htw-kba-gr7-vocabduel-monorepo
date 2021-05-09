@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VocabularyLibImplTest {
+public class VocabularyServiceImplTest {
 
     private static List<Vocable> mockVocablesEsEn(final String[][] vocables) {
         return Stream.of(vocables).map(words -> {
@@ -34,7 +34,7 @@ public class VocabularyLibImplTest {
         }).collect(Collectors.toList());
     }
 
-    private VocabularyLibImpl vocabularyLib;
+    private VocabularyServiceImpl vocabularyLib;
     private LanguageSet existingLanguageSet;
     private LanguageSet emptyLanguagesSet;
     private VocableUnit existingVocableUnit;
@@ -45,7 +45,7 @@ public class VocabularyLibImplTest {
 
     @Before
     public void setup() {
-        vocabularyLib = new VocabularyLibImpl();
+        vocabularyLib = new VocabularyServiceImpl();
         author = new User(42L);
 
         final String[][] weekdaysEsEn = {

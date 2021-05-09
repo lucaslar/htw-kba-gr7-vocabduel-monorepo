@@ -18,7 +18,7 @@ import java.util.List;
  * @author Sebastian Kehl, Lucas Larisch
  * @version 1.0, May 2021
  */
-public interface VocabularyLib {
+public interface VocabularyService {
 
     /**
      * Creates a new language set, i.e. a set of a known and a known and a learnt language vocable units can be added to.

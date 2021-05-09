@@ -7,7 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyLib;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
@@ -17,7 +17,7 @@ import java.util.List;
 public class GameAdministrationImpl implements GameAdministration {
 
     private UserAdministration userService;
-    private VocabularyLib vocabularyService;
+    private VocabularyService vocabularyService;
 
     public static int getFixNumberOfRoundsPerGame(){
         return GameAdministration.NR_OF_ROUNDS;

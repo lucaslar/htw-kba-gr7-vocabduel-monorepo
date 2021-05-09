@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserAdministration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyLib;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
@@ -13,7 +13,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.List;
 
-public class VocabularyLibImpl implements VocabularyLib {
+public class VocabularyServiceImpl implements VocabularyService {
 
     private UserAdministration userService;
 
