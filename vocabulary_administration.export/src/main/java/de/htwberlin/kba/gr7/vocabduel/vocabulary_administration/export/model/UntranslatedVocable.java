@@ -4,6 +4,8 @@ public class UntranslatedVocable {
     private Long id;
     private TranslationGroup vocable;
 
+    public UntranslatedVocable(TranslationGroup vocable){ this.vocable = vocable; }
+
     public UntranslatedVocable(Long id, TranslationGroup vocable){ this.id = id; this.vocable = vocable; }
 
     public Long getId() {
