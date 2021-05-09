@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
+import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthImplTest {
@@ -28,6 +29,9 @@ public class AuthImplTest {
     private UserAdministrationImpl userAdministration;
     private AuthImpl auth;
     private User existingUser;
+    private User newUser;
+
+    private SecretKeySpec secretKey;
 
     private String validRefreshToken;
     private String expiredRefreshToken;
@@ -45,11 +49,21 @@ public class AuthImplTest {
         auth = new AuthImpl();
         auth.setUserService(userAdministration);
 
+        final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
+        final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
+        secretKey = new SecretKeySpec(Base64.getDecoder().decode(encoded), SignatureAlgorithm.HS256.getJcaName());
+
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");
         existingUser.setUsername("existinguser");
         existingUser.setFirstName("Existing");
         existingUser.setLastName("User");
+
+        newUser = new User(null);
+        newUser.setEmail("newuser@user.de");
+        newUser.setUsername(NEW_USER_NAME);
+        newUser.setFirstName("New");
+        newUser.setLastName("User");
 
         validRefreshToken = generateRefreshToken(false, existingUser.getEmail());
         expiredRefreshToken = generateRefreshToken(true, existingUser.getEmail());
@@ -61,7 +75,7 @@ public class AuthImplTest {
         Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
         Mockito.when(userAdministration.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null);
         Mockito.when(userAdministration.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
-        Mockito.when(userAdministration.getUserDataByUsername(NEW_USER_NAME)).thenReturn(existingUser);
+        Mockito.when(userAdministration.getUserDataByUsername(NEW_USER_NAME)).thenReturn(newUser);
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
@@ -93,19 +107,25 @@ public class AuthImplTest {
 
     @Test
     public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        final User user = new User(null);
-        user.setEmail("newuser@user.de");
-        user.setUsername(NEW_USER_NAME);
-        user.setFirstName("New");
-        user.setLastName("User");
-
-        final LoggedInUser loggedInUser = auth.registerUser(user, STRONG_PWD, STRONG_PWD);
-        final User registeredUser = userAdministration.getUserDataByUsername(user.getUsername());
+        final LoggedInUser loggedInUser = auth.registerUser(newUser, STRONG_PWD, STRONG_PWD);
+        final User registeredUser = userAdministration.getUserDataByUsername(newUser.getUsername());
 
         Assert.assertNotNull(registeredUser);
         Assert.assertNotNull(loggedInUser);
         Assert.assertNotNull(loggedInUser.getAuthTokens());
-        Assert.assertEquals(user.toString(), registeredUser.toString());
+        Assert.assertEquals(newUser.toString(), registeredUser.toString());
+
+        Stream.of(loggedInUser.getAuthTokens().getToken(), loggedInUser.getAuthTokens().getRefreshToken()).forEach(token -> {
+            final Object emailClaim = Jwts
+                    .parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(loggedInUser.getAuthTokens().getToken())
+                    .getBody()
+                    .get("email");
+            Assert.assertEquals(emailClaim, newUser.getEmail());
+        });
+
     }
 
     @Test
@@ -127,6 +147,17 @@ public class AuthImplTest {
         Assert.assertEquals(expected.getUsername(), loggedInUser.getUsername());
         Assert.assertEquals(expected.getFirstName(), loggedInUser.getFirstName());
         Assert.assertEquals(expected.getLastName(), loggedInUser.getLastName());
+
+        Stream.of(loggedInUser.getAuthTokens().getToken(), loggedInUser.getAuthTokens().getRefreshToken()).forEach(token -> {
+            final Object emailClaim = Jwts
+                    .parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(loggedInUser.getAuthTokens().getToken())
+                    .getBody()
+                    .get("email");
+            Assert.assertEquals(emailClaim, existingUser.getEmail());
+        });
     }
 
     @Test
@@ -148,8 +179,7 @@ public class AuthImplTest {
     public void shouldFetchUser() {
         final User fetchedUser = auth.fetchUser(validAuthToken);
         Assert.assertNotNull(fetchedUser);
-        final User expectedUser = userAdministration.getUserDataByEmail(existingUser.getEmail());
-        Assert.assertEquals(fetchedUser.toString(), expectedUser.toString());
+        Assert.assertEquals(existingUser.toString(), fetchedUser.toString());
     }
 
     @Test
@@ -180,6 +210,11 @@ public class AuthImplTest {
     }
 
     @Test
+    public void shouldNotHaveAccessRightsIfAuthTokenIsOfUnknownUser() {
+        Assert.assertFalse(auth.hasAccessRights(authTokenOfUnknownUser));
+    }
+
+    @Test
     public void shouldNotHaveAccessRightsIfAuthTokenExpired() {
         Assert.assertFalse(auth.hasAccessRights(expiredAuthToken));
     }
@@ -192,14 +227,12 @@ public class AuthImplTest {
     // TODO: in the future, use component's secret / move token generation
 
     private String generateToken(boolean isExpired, String email, Date expiration) {
-        final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
-        final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
         final Instant now = Instant.now();
         return Jwts.builder()
                 .claim("email", email)
                 .setIssuedAt(Date.from(now.minus(isExpired ? 100 : 0, ChronoUnit.DAYS)))
                 .setExpiration(expiration)
-                .signWith(new SecretKeySpec(Base64.getDecoder().decode(encoded), SignatureAlgorithm.HS256.getJcaName()))
+                .signWith(secretKey)
                 .compact();
     }
 
