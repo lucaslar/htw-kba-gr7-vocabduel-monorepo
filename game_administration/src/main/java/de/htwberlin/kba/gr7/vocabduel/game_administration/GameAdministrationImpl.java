@@ -1,7 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameAdministration;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.TooManyRoundsException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -13,8 +13,14 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import java.util.List;
 
 public class GameAdministrationImpl implements GameAdministration {
+
+    public static int getFixNumberOfRoundsPerGame(){
+        return GameAdministration.NR_OF_ROUNDS;
+    }
+
     @Override
-    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage) {
+    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
+        throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException {
         return null;
     }
 
@@ -24,7 +30,7 @@ public class GameAdministrationImpl implements GameAdministration {
     }
 
     @Override
-    public VocabduelRound startRound(User player, VocabduelGame game) throws TooManyRoundsException {
+    public VocabduelRound startRound(User player, VocabduelGame game) throws RoundAlreadyFinishedException {
         return null;
     }
 

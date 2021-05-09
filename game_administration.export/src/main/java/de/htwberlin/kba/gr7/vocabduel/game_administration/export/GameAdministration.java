@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.TooManyRoundsException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -20,6 +20,11 @@ import java.util.List;
 public interface GameAdministration {
 
     /**
+     * Integer: Fix number of Rounds per game
+     */
+    int NR_OF_ROUNDS = 10;
+
+    /**
      * Starts a new game as <code>playerA</code> against <code>playerB</code> with the given parameters
      * (languages/vocable lists) and returns an instance of that newly started match.
      *
@@ -28,9 +33,13 @@ public interface GameAdministration {
      * @param vocableLists   List of vocable lists to be used in the game. The questions will be randomly picked from these lists.
      * @param knownLanguage  Known language, i.e. the language the answers are displayed in.
      * @param learntLanguage Learnt language, i.e. the language in which the questions are to be asked in.
+     * @exception NoSecondPlayerException the user starts a game against himself
+     * @throws KnownLangEqualsLearntLangException KnownLanguage and LearntLanguage do equal
+     * @throws NotEnoughVocabularyException the provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
+     * @throws NotEnoughVocableListsException the provided List<VocableList> is empty
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
-     */
-    VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage);
+     */VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
+            throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.
@@ -45,11 +54,10 @@ public interface GameAdministration {
      *
      * @param player Player the next round is to be returned for.
      * @param game   Game the next round of is to be returned for the given <code>user</code>.
-     *               TODO: explain TooManyRoundsException! (or rm?)
      * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
-    VocabduelRound startRound(User player, VocabduelGame game) throws TooManyRoundsException;
+    VocabduelRound startRound(User player, VocabduelGame game) throws RoundAlreadyFinishedException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
