@@ -17,19 +17,50 @@ The following two images are scalable vector graphics (`.svg` files) which means
 displayed too small in this README.
 
 If there are differences between the graphic integrated in this README and the file you opened, e.g. class icons not
-shown in the UML diagram, try to download it and open the downloaded file.
+shown in the UML diagram, try to open the respective file itself (same directory level as this README).
 
 ### Components
 
 A diagram visualizing which components are interacting in which way can be seen here:
 
+_Note: At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because in
+the future, it could either directly communicate with the modules (as microservices) or communicate through an
+interconnected backend._
+
 ![Components diagram (./components_diagram.svg)](./components_diagram.svg)
 
-### Classes (UML)
+### UML
 
-A diagram visualizing the defined classes and their interactions/relationships can be seen here:
+#### Model only
 
-![Class diagram (./class-diagram.svg)](./class-diagram.svg)
+A diagram visualizing the defined model and its relationships can be seen here (`./class-diagram.svg`):
+
+![](./class-diagram.svg)
+
+#### All Java files
+
+If all Java files, i.e. Exceptions and Interfaces in addition to the classes in the diagram above, are of interest,
+please check the visualization here (`./complete-class-diagram.svg`):
+
+![](./complete-class-diagram.svg)
+
+[comment]: <> (TODO: check if diagram has been inserted correctly after having generated it)
+
+## Developer information
+
+### IDE
+
+This project has been implemented using IntelliJ IDEA Ultimate. However, the necessary files for importing it as an Eclipse project (from zip) have been added, too. If you have troubles with Eclipse (even though the import has been tested carefully) or any other IDE, please feel free to contact us.
+
+### Generate diagrams
+
+#### Component diagram
+
+The component diagram has been generated using draw.io. If you have access to this repository, select GitHub as file
+source, authenticate and open/edit it there. Please make sure to both commit changes in both the `.io` and the `.svg`
+file.
+
+#### UML
 
 UML diagrams can be generated in IntelliJ (`.uml` files) and then be exported to `.svg`.
 
@@ -42,8 +73,8 @@ are the steps to reproduce the class diagram:
     - In the following dialog:
         - Make sure you save the file in the repository root
         - Name it `class-diagram.uml`
-1. **Import the data** - Drag and drop each Java class, enum and interface of each module into the diagram (make sure
-   you do not drop packages)
+1. **Import the data** - Drag and drop each Java class etc. to be displayed into the diagram (make sure you do not drop
+   packages)
 1. **Show the data** - In the top bar, select:
     - _Fields_
     - _Methods_
@@ -57,5 +88,6 @@ are the steps to reproduce the class diagram:
     - In the top bar, select: _Export to Image File..._
     - In the following dialog:
         - Make sure you save the file in the repository root
-        - Name it `class-diagram.svg` (or simply select `svg` in the file format dropdown)
+        - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the file format
+          dropdown)
         - Accept the dialog informing about replacing the current file
