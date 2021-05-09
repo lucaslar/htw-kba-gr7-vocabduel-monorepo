@@ -13,6 +13,7 @@ public class GameDataMock {
     private final User playerA;
     private final User playerB;
     private final VocabduelGame newGame;
+    private final VocabduelGame newGame2;
 
     public GameDataMock(){
         playerA = new User(11L);
@@ -22,6 +23,9 @@ public class GameDataMock {
         SupportedLanguage learntLanguage = SupportedLanguage.EN;
 
         newGame = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableList);
+
+        // only important for check if unfinished games > 1 in order to check game uniqueness:
+        newGame2 = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableList);
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
@@ -64,6 +68,10 @@ public class GameDataMock {
 
     public VocabduelGame mockVocabduelGame(){
         return newGame;
+    }
+
+    public VocabduelGame mockVocabduelGame2(){
+        return newGame2;
     }
 
     public VocabduelRound mockVocabduelRound(){
