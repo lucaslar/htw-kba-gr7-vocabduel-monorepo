@@ -93,6 +93,7 @@ public class GameAdministrationImplStartGameTest {
                 mock.mockKnownLanguage(),
                 mock.mockLearntLanguage()
         );
+        Assert.assertNotNull(newGameRes);
         List<VocabduelRound> uniques = newGameRes.getRounds().stream().distinct().collect(Collectors.toList());
         Assert.assertEquals(uniques.size(), newGameRes.getRounds().size());
     }

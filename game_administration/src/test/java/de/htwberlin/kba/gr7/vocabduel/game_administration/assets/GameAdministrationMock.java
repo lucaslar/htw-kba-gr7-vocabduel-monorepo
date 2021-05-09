@@ -12,17 +12,12 @@ import java.util.*;
 public class GameAdministrationMock {
     private final User playerA;
     private final User playerB;
-    private List<VocableList> vocableList;
     private final VocabduelGame newGame;
-
-    private VocabduelRound newRound;
-
-    private VocableList myVocList;
 
     public GameAdministrationMock(){
         playerA = new User(11L);
         playerB = new User(12L);
-        vocableList = new ArrayList<>();
+        List<VocableList> vocableList = new ArrayList<>();
         SupportedLanguage knownLanguage = SupportedLanguage.DE;
         SupportedLanguage learntLanguage = SupportedLanguage.EN;
 
@@ -31,7 +26,7 @@ public class GameAdministrationMock {
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
         for (int i = 1; i <= GameAdministration.NR_OF_ROUNDS; i++){
-            newRound = new VocabduelRound(newGame.getId(), i);
+            VocabduelRound newRound = new VocabduelRound(newGame.getId(), i);
             newRound.setAnswers(Arrays.asList(
                     new TranslationGroup(Collections.singletonList("wrongAnswer1")),
                     new TranslationGroup(Collections.singletonList("rightAnswer")),
@@ -42,12 +37,12 @@ public class GameAdministrationMock {
             if (tempRoundList == null) {
                 tempRoundList = new ArrayList<>();
             }
-            tempRoundList.add(newRound);
+            tempRoundList.set(i - 1, newRound);
         }
         newGame.setRounds(tempRoundList);
 
         // normal VocableList with 10 Entries (each Round one Vocable)
-        myVocList = new VocableList(42L);
+        VocableList myVocList = new VocableList(42L);
         myVocList.setAuthor(playerA);
         myVocList.setTimestamp(new Timestamp(System.currentTimeMillis()));
         myVocList.setTitle("myTitle");
@@ -64,6 +59,7 @@ public class GameAdministrationMock {
             tempVocableList.add(myVoc);
         }
         myVocList.setVocables(tempVocableList);
+        newGame.setVocableLists(Collections.singletonList(myVocList));
     }
 
     public VocabduelGame mockVocabduelGame(){
@@ -115,6 +111,7 @@ public class GameAdministrationMock {
                         Collections.singletonList(new TranslationGroup(Collections.singletonList("translation")))
                 )
         ));
+        myList = new ArrayList<>(myList);
         myList.add(new VocableList(11L, mockSampleUser(), "myTitle2"));
         myList.get(myList.size() - 1).setVocables(
                 Collections.singletonList((
@@ -133,6 +130,7 @@ public class GameAdministrationMock {
         List<Vocable> tempVocList = myList.get(0).getVocables();
 
         myList.get(0).setVocables(addVocables(tempVocList, myList.get(0).getTitle()));
+        myList = new ArrayList<>(myList);
         myList.add(new VocableList(11L, mockSampleUser(), "myTitle2"));
         tempVocList = myList.get(myList.size() - 1).getVocables();
         myList.get(myList.size() - 1).setVocables(addVocables(tempVocList, myList.get(myList.size() - 1).getTitle()));
@@ -141,9 +139,7 @@ public class GameAdministrationMock {
     } // 2 VocableLists each with 5 Vocables
 
     public List<VocableList> mockEmptyVocableLists() {
-        List<VocableList> myList = newGame.getVocableLists();
-        myList.clear();
-        return myList;
+        return new ArrayList<>();
     } // empty List<VocableList>
 
     private List<Vocable> addVocables(List<Vocable> input, String title){
