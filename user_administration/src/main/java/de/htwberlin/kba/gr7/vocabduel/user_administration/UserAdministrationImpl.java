@@ -38,7 +38,7 @@ public class UserAdministrationImpl implements UserAdministration {
     }
 
     @Override
-    public int updateUserPassword(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException {
+    public int updateUserPassword(User user, String currentPassword, String password, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
         return 0;
     }
 

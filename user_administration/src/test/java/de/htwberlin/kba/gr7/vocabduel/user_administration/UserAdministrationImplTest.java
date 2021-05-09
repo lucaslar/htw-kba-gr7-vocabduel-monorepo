@@ -27,6 +27,9 @@ public class UserAdministrationImplTest {
     private User user1, user2, user3, user4;
     private List<User> usersList;
 
+    // TODO: mock => previous pwd was indeed the user's previous pwd
+    private final String PREVIOUS_PWD = "pr€V10U5PwD";
+
     @Before
     public void setUp() {
         userAdministration = new UserAdministrationImpl();
@@ -168,13 +171,27 @@ public class UserAdministrationImplTest {
         Assert.assertEquals(foundUser.toString(), user3.toString());
     }
 
-    // Tests concerning missing user data: InvalidUserDataTest (TODO Implement)
     // Tests concerning valid (= should not throw exception)/invalid passwords => ValidPwdsTest / InvalidPwdsTest
 
-    @Test
-    public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException {
+    @Test(expected = InvalidFirstPwdException.class)
+    public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        final int statusCode = userAdministration.updateUserPassword(user1, newPwd, newPwd);
+        final int statusCode = userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd);
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test(expected = PasswordsDoNotMatchException.class)
+    public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
+        final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
+        final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
+        final int statusCode = userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd2);
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test
+    public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
+        final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
+        final int statusCode = userAdministration.updateUserPassword(user1, PREVIOUS_PWD, newPwd, newPwd);
         Assert.assertEquals(0, statusCode);
     }
 

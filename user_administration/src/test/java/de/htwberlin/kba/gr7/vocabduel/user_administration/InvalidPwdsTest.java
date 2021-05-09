@@ -17,11 +17,6 @@ import java.util.Arrays;
 @RunWith(Parameterized.class)
 public class InvalidPwdsTest {
 
-    // Rule instead of @RunWith since one class can only have one @RunWith,
-    // see: https://stackoverflow.com/a/12606503/8228988
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
-
     @Parameterized.Parameters(name = "{index}: registration and pwd update test with invalid password \"{0}\"")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -33,6 +28,10 @@ public class InvalidPwdsTest {
         });
     }
 
+    // Rule instead of @RunWith since one class can only have one @RunWith,
+    // see: https://stackoverflow.com/a/12606503/8228988
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private UserAdministrationImpl userAdministration;
@@ -41,12 +40,14 @@ public class InvalidPwdsTest {
     private User existingUser;
     private final String PWD;
 
+    private final String PREVIOUS_PWD = "ThisWasTheUser'sPreviousPwd"; // TODO: Mock => this pwd was indeed the user's previous pwd
+
     public InvalidPwdsTest(final String pwd) {
         this.PWD = pwd;
     }
 
     @Before
-    public void setup() throws PasswordsDoNotMatchException, PwTooWeakException {
+    public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
         auth = new AuthImpl();
 
         newUser = new User(null);
@@ -61,9 +62,11 @@ public class InvalidPwdsTest {
         existingUser.setFirstName("Existing");
         existingUser.setLastName("User");
 
-        // Don't mock updateUserPassword function
+        // In the future, this method will be called in `updateUserPassword` => mock it in tests
         Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
-        Mockito.when(userAdministration.updateUserPassword(existingUser, PWD, PWD)).thenCallRealMethod();
+
+        // Don't mock updateUserPassword function
+        Mockito.when(userAdministration.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD)).thenCallRealMethod();
     }
 
     @Test(expected = PwTooWeakException.class)
@@ -72,7 +75,7 @@ public class InvalidPwdsTest {
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException {
-        userAdministration.updateUserPassword(existingUser, PWD, PWD);
+    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
+        userAdministration.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }
