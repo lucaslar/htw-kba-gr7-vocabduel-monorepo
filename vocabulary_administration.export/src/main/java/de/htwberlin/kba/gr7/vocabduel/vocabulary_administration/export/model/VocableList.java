@@ -16,6 +16,12 @@ public class VocableList {
         this.id = id;
     }
 
+    public VocableList(Long id, User author, String title){
+        this.id = id;
+        this.author = author;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }

@@ -11,6 +11,10 @@ public class VocabduelRound {
     private UntranslatedVocable question;
     private List<TranslationGroup> answers;
 
+    public VocabduelRound(Long gameId){ this.gameId = gameId; }
+
+    public VocabduelRound(Long gameId, int roundNr){ this.gameId = gameId; this.roundNr = roundNr; }
+
     public Long getGameId() {
         return gameId;
     }

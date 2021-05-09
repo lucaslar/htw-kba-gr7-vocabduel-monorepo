@@ -4,6 +4,8 @@ public class FinishedVocabduelRound extends VocabduelRound {
     private Result resultPlayerA;
     private Result resultPlayerB;
 
+    FinishedVocabduelRound(Long gameId){ super(gameId); }
+
     public Result getResultPlayerA() {
         return resultPlayerA;
     }

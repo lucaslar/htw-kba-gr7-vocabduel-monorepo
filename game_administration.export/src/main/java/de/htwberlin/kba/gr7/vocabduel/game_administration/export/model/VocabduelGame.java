@@ -1,9 +1,11 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameAdministration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class VocabduelGame {
@@ -14,6 +16,17 @@ public class VocabduelGame {
     private SupportedLanguage learntLanguage;
     private List<VocableList> vocableLists;
     private List<VocabduelRound> rounds;
+
+    public VocabduelGame(){ }
+
+    public VocabduelGame(User playerA, User playerB, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage, List<VocableList> vocableLists){
+        this.playerA = playerA;
+        this.playerB = playerB;
+        this.knownLanguage = knownLanguage;
+        this.learntLanguage = learntLanguage;
+        this.vocableLists = vocableLists;
+        this.rounds = Arrays.asList(new VocabduelRound[GameAdministration.NR_OF_ROUNDS]);
+    }
 
     public Long getId() {
         return id;
