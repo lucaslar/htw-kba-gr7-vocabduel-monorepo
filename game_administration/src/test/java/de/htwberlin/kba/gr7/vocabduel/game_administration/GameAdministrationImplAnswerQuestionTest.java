@@ -37,8 +37,6 @@ public class GameAdministrationImplAnswerQuestionTest {
 
     @Test()
     public void shouldGetLossWithIncorrectAnswer(){
-        Mockito.when(gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(2))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response for correct Answer
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(2));
         Assert.assertNotNull(result);
@@ -49,22 +47,10 @@ public class GameAdministrationImplAnswerQuestionTest {
 
     @Test()
     public void shouldGetWinWithCorrectAnswer(){
-        Mockito.when(gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(1))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response for correct Answer
         CorrectAnswerResult result = gameAdministration.answerQuestion(
                 user, newRound, newRound.getAnswers().get(1));
         Assert.assertNotNull(result);
         Assert.assertEquals(Result.WIN, result.getResult());
         Assert.assertNull(result.getCorrectAnswer());
-    }
-
-    @Test()
-    public void shouldGetResultOnlyWithWinOrLoss() {
-        Mockito.when(gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(3))).thenReturn(null); // TODO: Continue with implementation - Mock should return server response
-        CorrectAnswerResult result = gameAdministration.answerQuestion(
-                user, newRound, newRound.getAnswers().get(3));
-        Assert.assertTrue((result.getResult() == Result.WIN) ||
-                (result.getResult() == Result.LOSS));
     }
 }

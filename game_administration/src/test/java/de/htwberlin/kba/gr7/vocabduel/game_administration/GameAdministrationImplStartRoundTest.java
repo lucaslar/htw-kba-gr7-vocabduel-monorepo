@@ -57,7 +57,7 @@ public class GameAdministrationImplStartRoundTest {
 
         // check given Input
         Assert.assertEquals(newGame.getId(), newRoundRes.getGameId());
-        Assert.assertFalse(newRoundRes.getAnswers().isEmpty());
+        Assert.assertFalse(newRoundRes.getAnswers().isEmpty()); // ändern in: mind 2 möglichkeiten
         Assert.assertNotNull(newRoundRes.getQuestion());
     }
 
@@ -75,7 +75,6 @@ public class GameAdministrationImplStartRoundTest {
                 temp1.add(newRoundRes);
                 newGame.setRounds(temp1);
             }
-            i++;
         }
         newGame.getRounds().sort(compareById);
 
@@ -88,20 +87,8 @@ public class GameAdministrationImplStartRoundTest {
         }
     }
 
-    @Test(expected = TooManyRoundsException.class)
-    public void shouldThrowExceptionOnStartingOneRoundTooMuch() throws TooManyRoundsException {
-        for (int i = 0; i <= 10; i++){
-            newRoundRes = gameAdministration.startRound(
-                    USER_2020, newGame
-            );
-            if (newGame.getRounds() == null) newGame.setRounds(Collections.singletonList(newRoundRes));
-            else {
-                ArrayList<VocabduelRound> temp1 = new ArrayList<>(newGame.getRounds());
-                temp1.add(newRoundRes);
-                newGame.setRounds(temp1);
-            }
-        }
-    }
+    // delete exc tooMayRounds
+    // exc: RoundAlreadyFinished
 
     Comparator<VocabduelRound> compareById = Comparator.comparingInt(VocabduelRound::getRoundNr);
 

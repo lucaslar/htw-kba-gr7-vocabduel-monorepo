@@ -62,11 +62,12 @@ public class GameAdministrationImplStartGameTest {
         Assert.assertEquals(newGameRes.getPlayerB(), newGame.getPlayerB());
         Assert.assertEquals(newGameRes.getVocableLists(), newGame.getVocableLists());
         Assert.assertNotNull(newGame.getId());
-        // Mocking test against database (gameId is unique and set) not now
+        // Mocking test against database (gameId is unique) not now
     }
 
     @Test()
-    public void testNewGameWithEmptyRoundList(){
+    public void testNewGameWithFixedRoundList(){
+        // obergrenze an Runden in der gameAdminImpl as getter
         newGameRes = gameAdministration.startGame(
                 newGame.getPlayerA(),
                 newGame.getPlayerB(),
@@ -75,7 +76,13 @@ public class GameAdministrationImplStartGameTest {
                 newGame.getLearntLanguage()
         );
         Assert.assertNotNull(newGameRes);
-        Assert.assertTrue(newGame.getRounds().isEmpty());
+        // Assert.assertTrue(newGame.getRounds().isEmpty());
     }
+
+    // tests: sind die Runden unique (unterschiedliche Fragen)
+    // exc: notEnoughVocabulary
+    // exc: notEnoughVocabLists
+    // exc: knownLang = LearntLang
+    // exc: playerA = playerB
 
 }
