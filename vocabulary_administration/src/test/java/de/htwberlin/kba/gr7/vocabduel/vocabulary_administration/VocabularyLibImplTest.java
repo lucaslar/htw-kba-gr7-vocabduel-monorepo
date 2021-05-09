@@ -1,9 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DataAlreadyExistsException;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DuplicateVocablesInSetException;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.IncompleteVocableListException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,7 +35,10 @@ public class VocabularyLibImplTest {
     }
 
     private VocabularyLibImpl vocabularyLib;
+    private LanguageSet existingLanguageSet;
+    private LanguageSet emptyLanguagesSet;
     private VocableUnit existingVocableUnit;
+    private VocableUnit emptyVocableUnit;
     private VocableList existingVocableList1;
     private VocableList existingVocableList2;
     private User author;
@@ -82,21 +83,26 @@ public class VocabularyLibImplTest {
         existingVocableUnit.setTitle("Español => Inglés - Vocabduel I");
         existingVocableUnit.setVocableLists(Stream.of(existingVocableList1, existingVocableList2).collect(Collectors.toList()));
 
-        final LanguageSet ls = new LanguageSet();
-        ls.setKnownLanguage(SupportedLanguage.EN);
-        ls.setLearntLanguage(SupportedLanguage.ES);
-        ls.setVocableUnits(Stream.of(existingVocableUnit).collect(Collectors.toList()));
+        emptyVocableUnit = new VocableUnit();
+        emptyVocableUnit.setTitle("This unit is empty");
 
-        final List<LanguageSet> languages = Stream.of(ls).collect(Collectors.toList());
+        existingLanguageSet = new LanguageSet();
+        existingLanguageSet.setKnownLanguage(SupportedLanguage.EN);
+        existingLanguageSet.setLearntLanguage(SupportedLanguage.ES);
+        existingLanguageSet.setVocableUnits(Stream.of(existingVocableUnit, emptyVocableUnit).collect(Collectors.toList()));
+
+        emptyLanguagesSet = new LanguageSet();
+        emptyLanguagesSet.setKnownLanguage(SupportedLanguage.AR);
+        emptyLanguagesSet.setLearntLanguage(SupportedLanguage.JA);
+
+        final List<LanguageSet> languages = Stream.of(existingLanguageSet, emptyLanguagesSet).collect(Collectors.toList());
         // Mock existing languages (private field => Whitebox#setInternalState)
         Whitebox.setInternalState(vocabularyLib, "allLanguageSets", languages);
     }
 
     @Test(expected = DataAlreadyExistsException.class)
     public void shouldNotCreateExistingLanguageSet() throws DataAlreadyExistsException {
-        // Make sure the language set exists in this test by calling mocked method
-        final LanguageSet existingSet = vocabularyLib.getAllLanguageSets().get(0);
-        vocabularyLib.createLanguageSet(existingSet);
+        vocabularyLib.createLanguageSet(existingLanguageSet);
     }
 
     @Test
@@ -109,26 +115,23 @@ public class VocabularyLibImplTest {
 
     @Test
     public void shouldCreateInvertedExistingLanguageSet() throws DataAlreadyExistsException {
-        final LanguageSet existingSet = vocabularyLib.getAllLanguageSets().get(0);
         final LanguageSet invertedSet = new LanguageSet();
-        invertedSet.setLearntLanguage(existingSet.getKnownLanguage());
-        invertedSet.setKnownLanguage(existingSet.getLearntLanguage());
+        invertedSet.setLearntLanguage(existingLanguageSet.getKnownLanguage());
+        invertedSet.setKnownLanguage(existingLanguageSet.getLearntLanguage());
         sharedSuccessfulLanguageSetInsertionAssertions(invertedSet);
     }
 
     @Test(expected = DataAlreadyExistsException.class)
     public void shouldNotCreateUnitWithSameTitleInLanguageSet() throws DataAlreadyExistsException {
-        final LanguageSet languageSet = vocabularyLib.getAllLanguageSets().get(0);
-        final String existingTitle = languageSet.getVocableUnits().get(0).getTitle();
-        vocabularyLib.createUnitForLanguageSet(existingTitle, languageSet);
+        final String existingTitle = existingVocableUnit.getTitle();
+        vocabularyLib.createUnitForLanguageSet(existingTitle, existingLanguageSet);
     }
 
     @Test
     public void shouldCreateUnitWithDifferentTitleInLanguageSet() throws DataAlreadyExistsException {
-        final LanguageSet languageSet = vocabularyLib.getAllLanguageSets().get(0);
-        final int initialNrOfUnits = languageSet.getVocableUnits().size();
+        final int initialNrOfUnits = existingLanguageSet.getVocableUnits().size();
         final String newTitle = "Some new title";
-        final int statusCode = vocabularyLib.createUnitForLanguageSet(newTitle, languageSet);
+        final int statusCode = vocabularyLib.createUnitForLanguageSet(newTitle, existingLanguageSet);
 
         Assert.assertEquals(0, statusCode);
 
@@ -139,14 +142,12 @@ public class VocabularyLibImplTest {
 
     @Test(expected = DataAlreadyExistsException.class)
     public void shouldNotInertVocableListWithExistingTitle() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException {
-        final VocableUnit unit = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0);
         final VocableList vocableList = new VocableList(123L);
-        final String existingTitle = unit.getVocableLists().get(0).getTitle();
-        vocableList.setTitle(existingTitle);
-        vocabularyLib.insertVocableListInUnit(vocableList, unit);
+        vocableList.setTitle(existingVocableUnit.getTitle());
+        vocabularyLib.insertVocableListInUnit(vocableList, existingVocableUnit);
     }
 
-    // TODO: Following two tests to be added for each potentially null/empty trimmed field?
+    // TODO: Following two tests to be added for each potentially null/empty trimmed field? (same for update)
 
     @Test(expected = IncompleteVocableListException.class)
     public void shouldNotInsertIncompleteVocableData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException {
@@ -160,8 +161,7 @@ public class VocabularyLibImplTest {
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(untranslatedVocable).collect(Collectors.toList()));
 
-        final VocableUnit unit = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0);
-        vocabularyLib.insertVocableListInUnit(vocableList, unit);
+        vocabularyLib.insertVocableListInUnit(vocableList, existingVocableUnit);
     }
 
     @Test(expected = IncompleteVocableListException.class)
@@ -180,8 +180,7 @@ public class VocabularyLibImplTest {
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(untranslatedVocable).collect(Collectors.toList()));
 
-        final VocableUnit unit = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0);
-        vocabularyLib.insertVocableListInUnit(vocableList, unit);
+        vocabularyLib.insertVocableListInUnit(vocableList, existingVocableUnit);
     }
 
     @Test(expected = DuplicateVocablesInSetException.class)
@@ -212,8 +211,7 @@ public class VocabularyLibImplTest {
         vocableList.setTitle("Some new title");
         vocableList.setVocables(Stream.of(vocable1, vocable2).collect(Collectors.toList()));
 
-        final VocableUnit unit = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0);
-        vocabularyLib.insertVocableListInUnit(vocableList, unit);
+        vocabularyLib.insertVocableListInUnit(vocableList, existingVocableUnit);
     }
 
     @Test
@@ -292,7 +290,7 @@ public class VocabularyLibImplTest {
         final File f = new File(pathname);
         Assert.assertTrue("This test requires a file: " + pathname, f.exists());
 
-        final int initialListsLength = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0).getVocableLists().size();
+        final int initialListsLength = existingVocableUnit.getVocableLists().size();
         final int statusCode = vocabularyLib.importGnuVocableList(f, new User(42L));
         Assert.assertEquals(0, statusCode);
 
@@ -309,7 +307,7 @@ public class VocabularyLibImplTest {
         final File f = new File(pathname);
         Assert.assertTrue("This test requires a file: " + pathname, f.exists());
 
-        final int initialUnitsLength = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().size();
+        final int initialUnitsLength = existingLanguageSet.getVocableUnits().size();
         final int statusCode = vocabularyLib.importGnuVocableList(f, new User(42L));
         Assert.assertEquals(0, statusCode);
 
@@ -336,7 +334,181 @@ public class VocabularyLibImplTest {
         // See previous test for checking if insertion of units works
     }
 
-    // TODO: Continue testing update(...) and following functions
+    @Test(expected = DifferentAuthorException.class)
+    public void shouldNotUpdateVocablesIfTriggeringUserIsNotAuthor() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        vocabularyLib.updateVocableList(existingVocableList1, new User(4711L));
+    }
+
+    @Test(expected = DataAlreadyExistsException.class)
+    public void shouldNotUpdateVocablesIfSameTitleExistsInUnit() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        existingVocableList1.setTitle(existingVocableList2.getTitle());
+        vocabularyLib.updateVocableList(existingVocableList1, author);
+    }
+
+    @Test(expected = DuplicateVocablesInSetException.class)
+    public void shouldNotUpdateVocablesListContainingDuplicates() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        final List<Vocable> vocables = existingVocableList1.getVocables();
+        final Vocable duplicate = new Vocable();
+
+        final TranslationGroup duplicateTg = new TranslationGroup();
+        duplicateTg.setSynonyms(vocables.get(0).getVocable().getSynonyms());
+
+        final TranslationGroup someTranslation = new TranslationGroup();
+        someTranslation.setSynonyms(Stream.of("some translation").collect(Collectors.toList()));
+
+        duplicate.setVocable(duplicateTg);
+        duplicate.setTranslations(Stream.of(someTranslation).collect(Collectors.toList()));
+        vocabularyLib.updateVocableList(existingVocableList1, author);
+    }
+
+    @Test(expected = IncompleteVocableListException.class)
+    public void shouldNotUpdateVocableListWithEmptyTrimmedTranslation() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        final TranslationGroup unknownWord = new TranslationGroup();
+        unknownWord.setSynonyms(Stream.of("I have a blank translation").collect(Collectors.toList()));
+
+        final TranslationGroup emptyTrimmedTranslation = new TranslationGroup();
+        emptyTrimmedTranslation.setSynonyms(Stream.of("     ").collect(Collectors.toList()));
+
+        final Vocable untranslatedVocable = new Vocable();
+        untranslatedVocable.setVocable(unknownWord);
+        untranslatedVocable.setTranslations(Stream.of(emptyTrimmedTranslation).collect(Collectors.toList()));
+
+        existingVocableList1.getVocables().add(untranslatedVocable);
+        vocabularyLib.updateVocableList(existingVocableList1, author);
+    }
+
+    @Test
+    public void shouldUpdateVocableListTitle() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        final String newTitle = "New title for vocable list";
+        existingVocableList1.setTitle(newTitle);
+        final int statusCode = vocabularyLib.updateVocableList(existingVocableList1, author);
+        Assert.assertEquals(0, statusCode);
+
+        final VocableList foundVocables = vocabularyLib.getVocableListById(existingVocableList1.getId());
+        Assert.assertNotNull(foundVocables);
+        Assert.assertEquals(newTitle, foundVocables.getTitle());
+    }
+
+    @Test
+    public void shouldUpdateVocableListByRm() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        final int initialLength = existingVocableList1.getVocables().size();
+        existingVocableList1.getVocables().remove(existingVocableList1.getVocables().get(0));
+
+        final int statusCode = vocabularyLib.updateVocableList(existingVocableList1, author);
+        Assert.assertEquals(0, statusCode);
+
+        final VocableList foundVocables = vocabularyLib.getVocableListById(existingVocableList1.getId());
+        Assert.assertNotNull(foundVocables);
+        Assert.assertEquals(initialLength - 1, foundVocables.getVocables().size());
+    }
+
+    @Test
+    public void shouldUpdateVocableListByAdding() throws DataAlreadyExistsException, DifferentAuthorException, DuplicateVocablesInSetException, IncompleteVocableListException {
+        final int initialLength = existingVocableList1.getVocables().size();
+
+        final TranslationGroup unknownWord = new TranslationGroup();
+        unknownWord.setSynonyms(Stream.of("Some word").collect(Collectors.toList()));
+        unknownWord.setExemplarySentencesOrAdditionalInfo(Stream.of("This sentence will help me...").collect(Collectors.toList()));
+
+        final TranslationGroup translation = new TranslationGroup();
+        translation.setSynonyms(Stream.of("Some translation").collect(Collectors.toList()));
+        unknownWord.setExemplarySentencesOrAdditionalInfo(Stream.of("This sentence will help me, too...").collect(Collectors.toList()));
+
+        final Vocable vocable = new Vocable();
+        vocable.setVocable(unknownWord);
+        vocable.setTranslations(Stream.of(translation).collect(Collectors.toList()));
+
+        existingVocableList1.getVocables().add(vocable);
+        final int statusCode = vocabularyLib.updateVocableList(existingVocableList1, author);
+        Assert.assertEquals(0, statusCode);
+
+        final VocableList foundVocables = vocabularyLib.getVocableListById(existingVocableList1.getId());
+        Assert.assertNotNull(foundVocables);
+        Assert.assertEquals(initialLength + 1, foundVocables.getVocables().size());
+    }
+
+    @Test(expected = NotEmptyException.class)
+    public void shouldNotDeleteLanguagesSetWithUnits() throws NotEmptyException {
+        vocabularyLib.deleteEmptyLanguagesSet(existingLanguageSet);
+    }
+
+    @Test
+    public void shouldDeleteEmptyLanguagesSet() throws NotEmptyException {
+        final int statusCode = vocabularyLib.deleteEmptyLanguagesSet(emptyLanguagesSet);
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test(expected = NotEmptyException.class)
+    public void shouldNotDeleteVocableUnitWithVocableLists() throws NotEmptyException {
+        vocabularyLib.deleteEmptyVocableUnit(existingVocableUnit);
+    }
+
+    @Test
+    public void shouldDeleteEmptyVocableUnit() throws NotEmptyException {
+        final int statusCode = vocabularyLib.deleteEmptyVocableUnit(emptyVocableUnit);
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test(expected = DifferentAuthorException.class)
+    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException {
+        vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));
+    }
+
+    @Test
+    public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException {
+        final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test
+    public void shouldFindVocableListByExistingId() {
+        final VocableList foundList = vocabularyLib.getVocableListById(existingVocableList2.getId());
+        Assert.assertNotNull(foundList);
+        Assert.assertEquals(foundList.toString(), existingVocableList2.toString());
+    }
+
+    @Test
+    public void shouldNotFindVocableListIfUnknownId() {
+        Assert.assertNull(vocabularyLib.getVocableListById(123456L));
+    }
+
+    @Test
+    public void shouldFindVocableListsOfUser() {
+        final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(author);
+        Assert.assertNotNull(foundLists);
+        Assert.assertEquals(2, foundLists.size());
+        foundLists.forEach(fl -> Assert.assertEquals(fl.getAuthor().toString(), author.toString()));
+    }
+
+    @Test
+    public void shouldReturnEmptyListForUserWhoIsNoAuthor() {
+        final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(new User(4711L));
+        Assert.assertNotNull(foundLists);
+        Assert.assertEquals(0, foundLists.size());
+    }
+
+    @Test
+    public void shouldReturnAllLanguageSets() {
+        final List<LanguageSet> languageSets = vocabularyLib.getAllLanguageSets();
+        Assert.assertNotNull(languageSets);
+        Assert.assertEquals(2, languageSets.size());
+    }
+
+    @Test
+    public void shouldSupportAtLeastFiveLanguages() {
+        // at least two are required for the game to make sense. 5 can be seen as some sort of goal for the application to be built
+        final List<SupportedLanguage> supportedLanguages = vocabularyLib.getAllSupportedLanguages();
+        Assert.assertNotNull(supportedLanguages);
+        Assert.assertTrue(supportedLanguages.size() >= 5);
+    }
+
+    @Test
+    public void shouldOnlyListUniqueLanguagesAsSupported() {
+        final List<SupportedLanguage> supportedLanguages = vocabularyLib.getAllSupportedLanguages();
+        Assert.assertNotNull(supportedLanguages);
+        List<SupportedLanguage> uniques = supportedLanguages.stream().distinct().collect(Collectors.toList());
+        Assert.assertEquals(uniques.size(), supportedLanguages.size());
+    }
 
     private void sharedSuccessfulLanguageSetInsertionAssertions(final LanguageSet languageSet) throws DataAlreadyExistsException {
         final int initialLanguagesLength = vocabularyLib.getAllLanguageSets().size();
