@@ -41,7 +41,6 @@ public class AuthImplTest {
     private String authTokenOfUnknownUser;
 
     private final String STRONG_PWD = "PR€T7Y_5TR0NG_P@S$W0RD";
-    private final String NEW_USER_NAME = "newuser";
     private final String UNKNOWN_MAIL = "unknown@mail.de";
 
     @Before
@@ -59,9 +58,10 @@ public class AuthImplTest {
         existingUser.setFirstName("Existing");
         existingUser.setLastName("User");
 
+        final String newUserName = "newuser";
         newUser = new User(null);
         newUser.setEmail("newuser@user.de");
-        newUser.setUsername(NEW_USER_NAME);
+        newUser.setUsername(newUserName);
         newUser.setFirstName("New");
         newUser.setLastName("User");
 
@@ -75,7 +75,7 @@ public class AuthImplTest {
         Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
         Mockito.when(userAdministration.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null);
         Mockito.when(userAdministration.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
-        Mockito.when(userAdministration.getUserDataByUsername(NEW_USER_NAME)).thenReturn(newUser);
+        Mockito.when(userAdministration.getUserDataByUsername(newUserName)).thenReturn(newUser);
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
@@ -100,9 +100,16 @@ public class AuthImplTest {
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
         final User user = new User(null);
-        String INVALID_MAIL = "invalidmail";
-        user.setEmail(INVALID_MAIL);
+        String invalidMail = "invalidmail";
+        user.setEmail(invalidMail);
         auth.registerUser(user, STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
+        final User user = new User(null);
+        user.setFirstName("    "); // Check for each invalid field could be parameterized but would produce unnecessarily many tests.
+        auth.registerUser(newUser, STRONG_PWD, STRONG_PWD);
     }
 
     @Test
