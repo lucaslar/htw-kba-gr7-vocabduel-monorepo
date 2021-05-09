@@ -176,16 +176,14 @@ public class UserAdministrationImplTest {
     @Test(expected = InvalidFirstPwdException.class)
     public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        final int statusCode = userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd);
-        Assert.assertEquals(0, statusCode);
+        userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd);
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
     public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
-        final int statusCode = userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd2);
-        Assert.assertEquals(0, statusCode);
+        userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd2);
     }
 
     @Test
