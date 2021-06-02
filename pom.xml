@@ -11,6 +11,8 @@
     <module>user_administration.export</module>
     <module>vocabulary_administration</module>
     <module>vocabulary_administration.export</module>
+    <module>vocabduel_ui</module>
+    <module>vocabduel_ui.export</module>
   </modules>
 
   <properties>
