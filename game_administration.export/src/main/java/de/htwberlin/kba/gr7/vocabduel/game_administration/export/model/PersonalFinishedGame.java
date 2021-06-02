@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PersonalFinishedGame {
     private User opponent;
-    private Result gameResult;
+    private GameResult gameResult;
     private int ownPoints;
     private int opponentPoints;
     private List<VocableList> vocableLists;
@@ -23,11 +23,11 @@ public class PersonalFinishedGame {
         this.opponent = opponent;
     }
 
-    public Result getGameResult() {
+    public GameResult getGameResult() {
         return gameResult;
     }
 
-    public void setGameResult(Result gameResult) {
+    public void setGameResult(GameResult gameResult) {
         this.gameResult = gameResult;
     }
 

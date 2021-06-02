@@ -74,7 +74,7 @@ public class ScoreServiceImplTest {
 
         games.forEach(g -> {
             Assert.assertTrue(g.getOwnPoints() < g.getOpponentPoints());
-            Assert.assertEquals(Result.LOSS, g.getGameResult());
+            Assert.assertEquals(GameResult.LOSS, g.getGameResult());
         });
     }
 
@@ -86,7 +86,7 @@ public class ScoreServiceImplTest {
 
         games.forEach(g -> {
             Assert.assertTrue(g.getOwnPoints() > g.getOpponentPoints());
-            Assert.assertEquals(Result.WIN, g.getGameResult());
+            Assert.assertEquals(GameResult.WIN, g.getGameResult());
         });
     }
 
@@ -95,8 +95,8 @@ public class ScoreServiceImplTest {
         final User player = playerB;
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
         sharedPersonalFinishedGameLogic(games, player);
-        Assert.assertTrue(games.stream().anyMatch(g -> g.getGameResult() == Result.WIN && g.getOwnPoints() > g.getOpponentPoints()));
-        Assert.assertTrue(games.stream().anyMatch(g -> g.getGameResult() == Result.LOSS && g.getOwnPoints() < g.getOpponentPoints()));
+        Assert.assertTrue(games.stream().anyMatch(g -> g.getGameResult() == GameResult.WIN && g.getOwnPoints() > g.getOpponentPoints()));
+        Assert.assertTrue(games.stream().anyMatch(g -> g.getGameResult() == GameResult.LOSS && g.getOwnPoints() < g.getOpponentPoints()));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ScoreServiceImplTest {
 
         final PersonalFinishedGame finishedGame = scoreAdministration.finishGame(playerA, game);
         Assert.assertNotNull(finishedGame);
-        Assert.assertEquals(Result.WIN, finishedGame.getGameResult());
+        Assert.assertEquals(GameResult.WIN, finishedGame.getGameResult());
         Assert.assertEquals(3, finishedGame.getOwnPoints());
         Assert.assertEquals(0, finishedGame.getOpponentPoints());
     }
