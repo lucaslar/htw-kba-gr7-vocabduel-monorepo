@@ -59,12 +59,12 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void initializeFunctionsMap() {
         actions = new HashMap<>();
         for (final VocabduelCliAction action : actionsList) {
-            savePutFunctionToMap(action.getName(), action);
-            if (action.getShortName() != null) savePutFunctionToMap(action.getShortName(), action);
+            safelyPutFunctionToMap(action.getName(), action);
+            if (action.getShortName() != null) safelyPutFunctionToMap(action.getShortName(), action);
         }
     }
 
-    private void savePutFunctionToMap(String key, VocabduelCliAction value) {
+    private void safelyPutFunctionToMap(String key, VocabduelCliAction value) {
         if (actions.get(key) == null) actions.put(key, value);
         else VIEW.printWarningActionKey(key);
     }
