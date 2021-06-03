@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 @Component
 public class VocabduelView {
@@ -31,5 +32,15 @@ public class VocabduelView {
 
     public void printQuit() {
         System.out.println("Bye bye");
+    }
+
+    public void printNoParamFor(final String actionName, final Pattern regex) {
+        System.out.println("! Hint: No params were given for `" + actionName + "`. This is not false, but might not result in what you want. Thus, please consider:");
+        System.out.println("!       " + actionName + " -argKey Some Value -<argKey2> 123");
+        System.out.println("!       (Must match: \"" + regex+"\")");
+    }
+
+    public void printWarningActionKey(final String key) {
+        System.err.println("Dev Info: `" + key + "` does already exist and will not be put into the action map. Please fix this problem!");
     }
 }

@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
 public class VocabduelControllerImpl implements VocabduelController {
 
     private final VocabduelView VIEW;
+
+    private final Pattern PARAM_PATTERN = Pattern.compile("-[a-z]+\\s((?!-).)+");
 
     private HashMap<String, VocabduelCliAction> actions;
     private List<VocabduelCliAction> actionsList;
@@ -31,7 +35,11 @@ public class VocabduelControllerImpl implements VocabduelController {
         initializeFunctionsMap();
 
         do {
-            handleUserInput(VIEW.scanInput().trim().split("\\s+"));
+            try {
+                handleUserInput(VIEW.scanInput().trim().split("\\s+"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } while (!isQuit);
     }
 
@@ -39,17 +47,28 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList = new ArrayList<>();
         actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", this::onHelpCalled, "h"));
         actionsList.add(new VocabduelCliAction("quit", "Quit this application", this::onQuitCalled, "q"));
+
+        // TODO only for testing => rm
+        actionsList.add(new VocabduelCliAction("argtest", "test fn", (HashMap<String, String> args) -> {
+            System.out.println("Test fn has been called with " + args.keySet().size() + " arg(s)");
+            args.keySet().forEach(k -> System.out.println("..." + k + " => " + args.get(k)));
+        }, "at"));
     }
 
     private void initializeFunctionsMap() {
         actions = new HashMap<>();
         for (final VocabduelCliAction action : actionsList) {
-            actions.put(action.getName(), action);
-            if (action.getShortName() != null) actions.put(action.getShortName(), action);
+            savePutFunctionToMap(action.getName(), action);
+            if (action.getShortName() != null) savePutFunctionToMap(action.getShortName(), action);
         }
     }
 
-    private void handleUserInput(final String[] userInput) {
+    private void savePutFunctionToMap(String key, VocabduelCliAction value) {
+        if (actions.get(key) == null) actions.put(key, value);
+        else VIEW.printWarningActionKey(key);
+    }
+
+    private void handleUserInput(final String[] userInput) throws Exception {
         final String actionName = userInput[0];
         final VocabduelCliAction action = actions.get(actionName);
 
@@ -58,10 +77,29 @@ public class VocabduelControllerImpl implements VocabduelController {
         else action.getAction().accept(createArgsMap(userInput));
     }
 
-    private HashMap<String, String> createArgsMap(final String[] userInput) {
+    private HashMap<String, String> createArgsMap(final String[] userInput) throws Exception {
         final HashMap<String, String> map = new HashMap<>();
         final String[] params = Arrays.copyOfRange(userInput, 1, userInput.length);
-        // TODO Implement
+
+        if (params.length == 0) VIEW.printNoParamFor(userInput[0], PARAM_PATTERN);
+        else {
+            final String joinedParams = (String.join(" ", params));
+            final boolean containsIllegalParams = joinedParams.split(String.valueOf(PARAM_PATTERN)).length != 0;
+            if (joinedParams.charAt(0) != '-' || containsIllegalParams) {
+                throw new Exception(
+                        "Invalid param format. Please call actions as follows:\n<action name> -<arg key> <arg value (lower case)> -<second arg key (lower case)> <second arg value> (must match: \""
+                                + PARAM_PATTERN + "\")"
+                );
+            } else {
+                final Matcher matcher = PARAM_PATTERN.matcher(joinedParams);
+                while (matcher.find()) {
+                    final String key = matcher.group(0).split(" ")[0].substring(1);
+                    final String value = matcher.group(0).substring(key.length() + 2).trim();
+                    map.put(key, value);
+                }
+            }
+        }
+
         return map;
     }
 
@@ -80,5 +118,4 @@ public class VocabduelControllerImpl implements VocabduelController {
         VIEW.printQuit();
         isQuit = true;
     }
-
 }
