@@ -49,7 +49,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction("quit", "Quit this application", this::onQuitCalled, "q"));
 
         // TODO only for testing => rm
-        actionsList.add(new VocabduelCliAction("argtest", "test fn", (HashMap<String, String> args) -> {
+        actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", (HashMap<String, String> args) -> {
             System.out.println("Test fn has been called with " + args.keySet().size() + " arg(s)");
             args.keySet().forEach(k -> System.out.println("..." + k + " => " + args.get(k)));
         }, "at"));
@@ -104,14 +104,13 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onHelpCalled() {
-        VIEW.printHelp(
-                actionsList.stream().map(a -> new String[]{
-                        a.getShortName() != null
-                                ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
-                                : "`" + a.getName() + "`",
-                        a.getDescription()
-                }).collect(Collectors.toList())
-        );
+        VIEW.printHelp(actionsList.stream().map(a -> {
+                    final String cmd = a.getShortName() != null
+                            ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
+                            : "`" + a.getName() + "`";
+                    return cmd + " => " + a.getDescription();
+                }
+        ).sorted().collect(Collectors.toList()));
     }
 
     private void onQuitCalled() {

@@ -25,9 +25,9 @@ public class VocabduelView {
         System.out.println("Unknown action \"" + action + "\" => type `help` or `h` in order to get a list of all possible actions");
     }
 
-    public void printHelp(final List<String[]> actionAndDescription) {
+    public void printHelp(final List<String> actionAndDescription) {
         System.out.println("Here's a list of all actions available in this application:");
-        for (final String[] ad : actionAndDescription) System.out.println("... " + ad[0] + " => " + ad[1]);
+        for (final String ad : actionAndDescription) System.out.println("... " + ad);
     }
 
     public void printQuit() {
