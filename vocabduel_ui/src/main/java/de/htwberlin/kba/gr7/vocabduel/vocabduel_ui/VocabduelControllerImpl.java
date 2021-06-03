@@ -47,6 +47,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList = new ArrayList<>();
         actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", "h", this::onHelpCalled));
         actionsList.add(new VocabduelCliAction("quit", "Quit this application", "q", this::onQuitCalled));
+        actionsList.add(new VocabduelCliAction("login", "Sign in with an existing account", "l", this::onLoginCalled, "user", "pwd"));
 
         // TODO only for testing => rm
         actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
@@ -137,5 +138,10 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onQuitCalled() {
         VIEW.printQuit();
         isQuit = true;
+    }
+
+    private void onLoginCalled(HashMap<String, String> args) {
+        // TODO implement (Example for function with args)
+        System.out.println("login as user \"" + args.get("user") + "\" with password \"" + args.get("pwd") + "\"");
     }
 }
