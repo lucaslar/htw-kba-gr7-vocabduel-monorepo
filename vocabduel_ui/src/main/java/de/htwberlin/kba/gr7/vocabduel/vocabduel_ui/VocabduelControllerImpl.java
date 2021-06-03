@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Controller
 public class VocabduelControllerImpl implements VocabduelController {
@@ -37,19 +37,13 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void initializeFunctionsList() {
-        // Exemplary function / TODO remove
-        final Consumer<String[]> testFn = (String... args) -> {
-            System.out.println("Called help fn with " + args.length + " arg(s)");
-            for (final String arg : args) System.out.println(" => " + arg);
-        };
-
         actionsList = new ArrayList<>();
-        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", testFn, "h"));
+        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", (String... args) -> onHelpCalled(), "h"));
         actionsList.add(new VocabduelCliAction("quit", "Quit this application", (String... args) -> isQuit = true, "q"));
     }
 
     private void initializeFunctionsMap() {
-        actions = new HashMap<String, VocabduelCliAction>();
+        actions = new HashMap<>();
         for (final VocabduelCliAction action : actionsList) {
             actions.put(action.getName(), action);
             if (action.getShortName() != null) actions.put(action.getShortName(), action);
@@ -60,5 +54,16 @@ public class VocabduelControllerImpl implements VocabduelController {
         final VocabduelCliAction action = actions.get(actionName);
         if (action == null) VIEW.printUnknownParam(actionName);
         else action.getAction().accept(args);
+    }
+
+    private void onHelpCalled() {
+        VIEW.printHelp(
+                actionsList.stream().map(a -> new String[]{
+                        a.getShortName() != null
+                                ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
+                                : "`" + a.getName() + "`",
+                        a.getDescription()
+                }).collect(Collectors.toList())
+        );
     }
 }
