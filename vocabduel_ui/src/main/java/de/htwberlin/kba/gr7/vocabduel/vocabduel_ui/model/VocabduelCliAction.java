@@ -10,31 +10,34 @@ public class VocabduelCliAction {
     private Consumer<HashMap<String, String>> action;
     private Runnable noArgsAction;
     private String shortName;
+    private String[] requiredArgs;
 
-    public VocabduelCliAction(String name, String description, Consumer<HashMap<String, String>> action) {
+    public VocabduelCliAction(final String name, final String description, final Consumer<HashMap<String, String>> action, final String... requiredArgs) {
         this.name = name;
         this.description = description;
         this.action = action;
+        this.requiredArgs = requiredArgs;
     }
 
-    public VocabduelCliAction(String name, String description, Consumer<HashMap<String, String>> action, String shortName) {
+    public VocabduelCliAction(final String name, final String description, final String shortName, final Consumer<HashMap<String, String>> action, final String... requiredArgs) {
         this.name = name;
         this.description = description;
         this.action = action;
         this.shortName = shortName;
+        this.requiredArgs = requiredArgs;
     }
 
-    public VocabduelCliAction(String name, String description, Runnable action) {
+    public VocabduelCliAction(final String name, final String description, final Runnable action) {
         this.name = name;
         this.description = description;
         this.noArgsAction = action;
     }
 
-    public VocabduelCliAction(String name, String description, Runnable action, String shortName) {
+    public VocabduelCliAction(final String name, final String description, final String shortName, final Runnable action) {
         this.name = name;
         this.description = description;
-        this.noArgsAction = action;
         this.shortName = shortName;
+        this.noArgsAction = action;
     }
 
     public String getName() {
@@ -55,5 +58,9 @@ public class VocabduelCliAction {
 
     public String getShortName() {
         return shortName;
+    }
+
+    public String[] getRequiredArgs() {
+        return requiredArgs;
     }
 }

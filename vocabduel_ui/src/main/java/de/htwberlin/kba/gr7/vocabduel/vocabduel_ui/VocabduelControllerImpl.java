@@ -45,14 +45,14 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void initializeFunctionsList() {
         actionsList = new ArrayList<>();
-        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", this::onHelpCalled, "h"));
-        actionsList.add(new VocabduelCliAction("quit", "Quit this application", this::onQuitCalled, "q"));
+        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", "h", this::onHelpCalled));
+        actionsList.add(new VocabduelCliAction("quit", "Quit this application", "q", this::onQuitCalled));
 
         // TODO only for testing => rm
-        actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", (HashMap<String, String> args) -> {
+        actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
             System.out.println("Test fn has been called with " + args.keySet().size() + " arg(s)");
             args.keySet().forEach(k -> System.out.println("..." + k + " => " + args.get(k)));
-        }, "at"));
+        }, "reqa", "reqb"));
     }
 
     private void initializeFunctionsMap() {
@@ -74,15 +74,18 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
-        else action.getAction().accept(createArgsMap(userInput));
+        else {
+            final HashMap<String, String> args = createArgsMap(userInput);
+            checkRequiredArgs(action, args);
+            action.getAction().accept(args);
+        }
     }
 
     private HashMap<String, String> createArgsMap(final String[] userInput) throws Exception {
         final HashMap<String, String> map = new HashMap<>();
         final String[] params = Arrays.copyOfRange(userInput, 1, userInput.length);
 
-        if (params.length == 0) VIEW.printNoParamFor(userInput[0], PARAM_PATTERN);
-        else {
+        if (params.length > 0) {
             final String joinedParams = (String.join(" ", params));
             final boolean containsIllegalParams = joinedParams.split(String.valueOf(PARAM_PATTERN)).length != 0;
             if (joinedParams.charAt(0) != '-' || containsIllegalParams) {
@@ -101,6 +104,21 @@ public class VocabduelControllerImpl implements VocabduelController {
         }
 
         return map;
+    }
+
+    private void checkRequiredArgs(final VocabduelCliAction action, final HashMap<String, String> args) throws Exception {
+        if (action.getRequiredArgs() != null) {
+            final List<String> missingParams = Arrays
+                    .stream(action.getRequiredArgs())
+                    .filter(r -> args.get(r) == null)
+                    .collect(Collectors.toList());
+            if (missingParams.size() > 0) {
+                final String missingJoined = String.join(", ", missingParams);
+                final String paramsExample = Arrays.stream(action.getRequiredArgs()).map(p -> "-" + p + " <value>").collect(Collectors.joining(" "));
+                throw new Exception("The following params are required for `" + action.getName() + "` but where missing in your command: "
+                        + missingJoined + "\nPlease run: " + action.getName() + " " + paramsExample);
+            }
+        }
     }
 
     private void onHelpCalled() {

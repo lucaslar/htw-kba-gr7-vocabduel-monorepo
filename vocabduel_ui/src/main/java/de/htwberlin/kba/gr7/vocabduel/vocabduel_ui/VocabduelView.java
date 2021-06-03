@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 @Component
 public class VocabduelView {
@@ -32,12 +31,6 @@ public class VocabduelView {
 
     public void printQuit() {
         System.out.println("Bye bye");
-    }
-
-    public void printNoParamFor(final String actionName, final Pattern regex) {
-        System.out.println("! Hint: `" + actionName + "` requires arguments but none were given. Please check the logs below and call:");
-        System.out.println("!       " + actionName + " -<arg key> Some Value -<second arg key> 123");
-        System.out.println("!       (args must match: \"" + regex+"\")\n");
     }
 
     public void printWarningActionKey(final String key) {
