@@ -10,7 +10,7 @@ public class VocabduelView {
     private final Scanner SCANNER = new Scanner(System.in);
 
     public String scanInput() {
-        System.out.print("$ ");
+        System.out.print("\n$ ");
         return SCANNER.nextLine();
     }
 
