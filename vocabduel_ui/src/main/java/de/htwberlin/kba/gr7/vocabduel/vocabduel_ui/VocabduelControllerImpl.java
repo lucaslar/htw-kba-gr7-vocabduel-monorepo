@@ -126,7 +126,10 @@ public class VocabduelControllerImpl implements VocabduelController {
                     final String cmd = a.getShortName() != null
                             ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
                             : "`" + a.getName() + "`";
-                    return cmd + " => " + a.getDescription();
+                    final String requiredArgs = a.getRequiredArgs() != null
+                            ? "[Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
+                            : "[No required args]";
+                    return cmd + requiredArgs + " => " + " " + a.getDescription();
                 }
         ).sorted().collect(Collectors.toList()));
     }
