@@ -31,15 +31,14 @@ public class VocabduelControllerImpl implements VocabduelController {
         initializeFunctionsMap();
 
         do {
-            final String[] userInput = VIEW.scanInput().trim().split("\\s+");
-            handleUserInput(userInput[0], Arrays.copyOfRange(userInput, 1, userInput.length));
+            handleUserInput(VIEW.scanInput().trim().split("\\s+"));
         } while (!isQuit);
     }
 
     private void initializeFunctionsList() {
         actionsList = new ArrayList<>();
-        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", (String... args) -> onHelpCalled(), "h"));
-        actionsList.add(new VocabduelCliAction("quit", "Quit this application", (String... args) -> isQuit = true, "q"));
+        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", this::onHelpCalled, "h"));
+        actionsList.add(new VocabduelCliAction("quit", "Quit this application", this::onQuitCalled, "q"));
     }
 
     private void initializeFunctionsMap() {
@@ -50,10 +49,20 @@ public class VocabduelControllerImpl implements VocabduelController {
         }
     }
 
-    private void handleUserInput(String actionName, String... args) {
+    private void handleUserInput(final String[] userInput) {
+        final String actionName = userInput[0];
         final VocabduelCliAction action = actions.get(actionName);
+
         if (action == null) VIEW.printUnknownParam(actionName);
-        else action.getAction().accept(args);
+        else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
+        else action.getAction().accept(createArgsMap(userInput));
+    }
+
+    private HashMap<String, String> createArgsMap(final String[] userInput) {
+        final HashMap<String, String> map = new HashMap<>();
+        final String[] params = Arrays.copyOfRange(userInput, 1, userInput.length);
+        // TODO Implement
+        return map;
     }
 
     private void onHelpCalled() {
@@ -66,4 +75,10 @@ public class VocabduelControllerImpl implements VocabduelController {
                 }).collect(Collectors.toList())
         );
     }
+
+    private void onQuitCalled() {
+        VIEW.printQuit();
+        isQuit = true;
+    }
+
 }

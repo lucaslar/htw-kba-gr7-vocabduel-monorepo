@@ -28,4 +28,8 @@ public class VocabduelView {
         System.out.println("Here's a list of all actions available in this application:");
         for (final String[] ad : actionAndDescription) System.out.println("... " + ad[0] + " => " + ad[1]);
     }
+
+    public void printQuit() {
+        System.out.println("Bye bye");
+    }
 }
