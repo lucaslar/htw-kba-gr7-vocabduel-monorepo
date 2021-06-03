@@ -87,7 +87,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             final boolean containsIllegalParams = joinedParams.split(String.valueOf(PARAM_PATTERN)).length != 0;
             if (joinedParams.charAt(0) != '-' || containsIllegalParams) {
                 throw new Exception(
-                        "Invalid param format. Please call actions as follows:\n<action name> -<arg key> <arg value (lower case)> -<second arg key (lower case)> <second arg value> (must match: \""
+                        "Invalid param format. Please call actions as follows:\n<action name> -<arg key> <arg value (lower case)> -<second arg key (lower case)> <second arg value> (args must match: \""
                                 + PARAM_PATTERN + "\")"
                 );
             } else {

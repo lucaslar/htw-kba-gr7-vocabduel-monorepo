@@ -35,9 +35,9 @@ public class VocabduelView {
     }
 
     public void printNoParamFor(final String actionName, final Pattern regex) {
-        System.out.println("! Hint: No params were given for `" + actionName + "`. This is not false, but might not result in what you want. Thus, please consider:");
-        System.out.println("!       " + actionName + " -argKey Some Value -<argKey2> 123");
-        System.out.println("!       (Must match: \"" + regex+"\")\n");
+        System.out.println("! Hint: `" + actionName + "` requires arguments but none were given. Please check the logs below and call:");
+        System.out.println("!       " + actionName + " -<arg key> Some Value -<second arg key> 123");
+        System.out.println("!       (args must match: \"" + regex+"\")\n");
     }
 
     public void printWarningActionKey(final String key) {
