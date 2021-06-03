@@ -4,15 +4,19 @@ import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Controller
 public class VocabduelControllerImpl implements VocabduelController {
 
     private final VocabduelView VIEW;
-    private final HashMap<String, VocabduelCliAction> ACTIONS = new HashMap<String, VocabduelCliAction>();
+
+    private HashMap<String, VocabduelCliAction> actions;
+    private List<VocabduelCliAction> actionsList;
 
     private boolean isQuit = false;
 
@@ -23,7 +27,8 @@ public class VocabduelControllerImpl implements VocabduelController {
     @Override
     public void run() {
         VIEW.printHello();
-        initializeFunctions();
+        initializeFunctionsList();
+        initializeFunctionsMap();
 
         do {
             final String[] userInput = VIEW.scanInput().trim().split("\\s+");
@@ -31,26 +36,28 @@ public class VocabduelControllerImpl implements VocabduelController {
         } while (!isQuit);
     }
 
-    private void initializeFunctions() {
+    private void initializeFunctionsList() {
         // Exemplary function / TODO remove
         final Consumer<String[]> testFn = (String... args) -> {
             System.out.println("Called help fn with " + args.length + " arg(s)");
             for (final String arg : args) System.out.println(" => " + arg);
         };
 
-        final VocabduelCliAction[] actionsList = {
-                new VocabduelCliAction("help", "Get a list of all possible actions", testFn, "h"),
-                new VocabduelCliAction("quit", "Quit this application", (String... args) -> isQuit = true, "q")
-        };
+        actionsList = new ArrayList<>();
+        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", testFn, "h"));
+        actionsList.add(new VocabduelCliAction("quit", "Quit this application", (String... args) -> isQuit = true, "q"));
+    }
 
+    private void initializeFunctionsMap() {
+        actions = new HashMap<String, VocabduelCliAction>();
         for (final VocabduelCliAction action : actionsList) {
-            ACTIONS.put(action.getName(), action);
-            if (action.getShortName() != null) ACTIONS.put(action.getShortName(), action);
+            actions.put(action.getName(), action);
+            if (action.getShortName() != null) actions.put(action.getShortName(), action);
         }
     }
 
     private void handleUserInput(String actionName, String... args) {
-        final VocabduelCliAction action = ACTIONS.get(actionName);
+        final VocabduelCliAction action = actions.get(actionName);
         if (action == null) VIEW.printUnknownParam(actionName);
         else action.getAction().accept(args);
     }
