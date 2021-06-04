@@ -18,6 +18,24 @@
   <dependencies>
     <dependency>
       <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
+      <artifactId>game_administration</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
+      <artifactId>user_administration</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
+      <artifactId>vocabulary_administration</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
       <artifactId>vocabduel_ui</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>

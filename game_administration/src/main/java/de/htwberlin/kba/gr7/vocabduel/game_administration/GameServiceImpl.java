@@ -11,9 +11,11 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.Vocabular
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GameServiceImpl implements GameService {
 
     private UserService userService;

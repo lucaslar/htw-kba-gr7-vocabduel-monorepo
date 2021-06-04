@@ -8,11 +8,13 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Lan
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.text.ParseException;
 import java.util.List;
 
+@Service
 public class VocabularyServiceImpl implements VocabularyService {
 
     private UserService userService;

@@ -8,9 +8,11 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalF
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ScoreServiceImpl implements ScoreService {
 
     private UserService userService;

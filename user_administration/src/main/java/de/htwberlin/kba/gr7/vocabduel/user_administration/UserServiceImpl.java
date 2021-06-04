@@ -3,10 +3,12 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     // TODO: In the future, use db instead of list and adjust tests

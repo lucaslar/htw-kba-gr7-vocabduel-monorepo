@@ -5,7 +5,9 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthServiceImpl implements AuthService {
 
     private UserServiceImpl userService;
