@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,9 +25,18 @@ public class VocabduelView {
         System.out.println("Unknown action \"" + action + "\" => type `help` or `h` in order to get a list of all possible actions");
     }
 
-    public void printHelp(final List<String> actionAndDescription) {
+    public void printHelp(final List<VocabduelCliAction> actions) {
         System.out.println("Here's a list of all actions available in this application:");
-        for (final String ad : actionAndDescription) System.out.println("... " + ad);
+        actions.stream().map(a -> {
+                    final String cmd = a.getShortName() != null
+                            ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
+                            : "`" + a.getName() + "`";
+                    final String requiredArgs = a.getRequiredArgs() != null
+                            ? "[Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
+                            : "[No required args]";
+                    return "..." + cmd + requiredArgs + " => " + " " + a.getDescription();
+                }
+        ).sorted().forEach(System.out::println);
     }
 
     public void printQuit() {

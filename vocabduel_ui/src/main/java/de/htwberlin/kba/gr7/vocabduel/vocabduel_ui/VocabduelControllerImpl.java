@@ -123,16 +123,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onHelpCalled() {
-        VIEW.printHelp(actionsList.stream().map(a -> {
-                    final String cmd = a.getShortName() != null
-                            ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
-                            : "`" + a.getName() + "`";
-                    final String requiredArgs = a.getRequiredArgs() != null
-                            ? "[Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
-                            : "[No required args]";
-                    return cmd + requiredArgs + " => " + " " + a.getDescription();
-                }
-        ).sorted().collect(Collectors.toList()));
+        VIEW.printHelp(actionsList);
     }
 
     private void onQuitCalled() {
