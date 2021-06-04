@@ -1,5 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 public class VocabduelControllerImpl implements VocabduelController {
 
     private final VocabduelView VIEW;
+    private final CliSessionStorage STORAGE;
+
+    private final AuthService AUTH_SERVICE;
 
     private final Pattern PARAM_PATTERN = Pattern.compile("-[a-z]+\\s((?!-).)+");
 
@@ -24,8 +29,14 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private boolean isQuit = false;
 
-    public VocabduelControllerImpl(final VocabduelView view) {
-        this.VIEW = view;
+    public VocabduelControllerImpl(
+            final VocabduelView view,
+            final CliSessionStorage storage,
+            final AuthService authService
+    ) {
+        VIEW = view;
+        STORAGE = storage;
+        AUTH_SERVICE = authService;
     }
 
     @Override
@@ -47,7 +58,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList = new ArrayList<>();
         actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", "h", this::onHelpCalled));
         actionsList.add(new VocabduelCliAction("quit", "Quit this application", "q", this::onQuitCalled));
-        actionsList.add(new VocabduelCliAction("login", "Sign in with an existing account", "l", this::onLoginCalled, "user", "pwd"));
+        actionsList.add(new VocabduelCliAction("login", "Sign in with an existing account", "l", this::onLoginCalled, "email", "pwd"));
 
         // TODO only for testing => rm
         actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
@@ -132,7 +143,14 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onLoginCalled(HashMap<String, String> args) {
-        // TODO implement (Example for function with args)
-        System.out.println("login as user \"" + args.get("user") + "\" with password \"" + args.get("pwd") + "\"");
+        if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
+        else {
+            final LoggedInUser user = AUTH_SERVICE.loginUser(args.get("email"), args.get("pwd"));
+            if (user == null) VIEW.printInvalidLogin();
+            else {
+                STORAGE.setLoggedInUser(user);
+                VIEW.printSuccessfulLogin(user);
+            }
+        }
     }
 }

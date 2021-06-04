@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Component;
 
@@ -45,5 +46,23 @@ public class VocabduelView {
 
     public void printWarningActionKey(final String key) {
         System.err.println("Dev Info: `" + key + "` does already exist and will not be put into the action map. Please fix this problem!");
+    }
+
+    public void printInvalidLogin() {
+        System.out.println("Invalid login, please try again.");
+    }
+
+    public void printCurrentlyLoggedInAs(final LoggedInUser user) {
+        System.out.println("Logged in as " + user.getFirstName() + " " + user.getLastName() + " (" + user.getUsername() + " / " + user.getEmail() + ")");
+    }
+
+    public void printLogoutBeforeLogin(final LoggedInUser user) {
+        System.out.println("You are already logged in. Please logout before re-logging in.");
+        printCurrentlyLoggedInAs(user);
+    }
+
+    public void printSuccessfulLogin(final LoggedInUser user) {
+        System.out.println("Successful login!");
+        printCurrentlyLoggedInAs(user);
     }
 }
