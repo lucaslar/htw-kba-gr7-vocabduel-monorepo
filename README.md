@@ -60,6 +60,11 @@ tested carefully) or any other IDE, please feel free to contact us.
 
 ### Generate diagrams
 
+#### Database
+Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/.
+We recommend installing the MySQL Installer, where you can decide which type of server you want to install 
+and add new user to the server. We are currently using the default root user with a password.
+
 #### Component diagram
 
 The component diagram has been generated using draw.io. If you have access to this repository, select GitHub as file
