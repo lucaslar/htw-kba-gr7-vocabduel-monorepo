@@ -23,7 +23,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     private List<LanguageSet> allLanguageSets;
 
     @Override
-    public int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
+    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
         return 0;
     }
 

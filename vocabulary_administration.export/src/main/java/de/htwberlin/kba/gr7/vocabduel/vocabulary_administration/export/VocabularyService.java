@@ -24,7 +24,7 @@ public interface VocabularyService {
      * Imports a simple <code>.txt</code> file exported by GNU (see Moodle). If the stated languages/unit name do already exist, the
      * vocabulary list is inserted there. If not, the respective information is inserted, too.
      *
-     * @param gnuFile        Vocable list as GNU file.
+     * @param gnuContent     Content of a GNU file as string.
      * @param triggeringUser User triggering the import and who will be set as author of the new data.
      * @return int database status of the insert query.
      * @throws DuplicateVocablesInSetException The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
@@ -32,7 +32,7 @@ public interface VocabularyService {
      * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
      * @throws ParseException                  The file is either invalid or not recognized as GNU export.
      */
-    int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
+    int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException;
 
     // TODO: Which of the two following is to be deleted? (delete list is prefered to be implemented)
 
