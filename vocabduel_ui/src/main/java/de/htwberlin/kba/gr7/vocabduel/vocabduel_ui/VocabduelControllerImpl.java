@@ -56,12 +56,13 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void initializeFunctionsList() {
         actionsList = new ArrayList<>();
-        actionsList.add(new VocabduelCliAction("help", "Get a list of all possible actions", "h", this::onHelpCalled));
-        actionsList.add(new VocabduelCliAction("quit", "Quit this application", "q", this::onQuitCalled));
-        actionsList.add(new VocabduelCliAction("login", "Sign in with an existing account", "l", this::onLoginCalled, "email", "pwd"));
+        actionsList.add(new VocabduelCliAction(false, "help", "Get a list of all possible actions", "h", this::onHelpCalled));
+        actionsList.add(new VocabduelCliAction(false, "quit", "Quit this application", "q", this::onQuitCalled));
+        actionsList.add(new VocabduelCliAction(false, "login", "Sign in with an existing account", "li", this::onLoginCalled, "email", "pwd"));
+        actionsList.add(new VocabduelCliAction(true, "logout", "Log out from the application", "lo", this::onLogoutCalled));
 
         // TODO only for testing => rm
-        actionsList.add(new VocabduelCliAction("argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
+        actionsList.add(new VocabduelCliAction(false, "argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
             System.out.println("Test fn has been called with " + args.keySet().size() + " arg(s)");
             args.keySet().forEach(k -> System.out.println("..." + k + " => " + args.get(k)));
         }, "reqa", "reqb"));
@@ -85,6 +86,9 @@ public class VocabduelControllerImpl implements VocabduelController {
         final VocabduelCliAction action = actions.get(actionName);
 
         if (action == null) VIEW.printUnknownParam(actionName);
+        else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
+            VIEW.printActionRequiresLogin();
+        }
         else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
         else {
             final HashMap<String, String> args = createArgsMap(userInput);
@@ -152,5 +156,10 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printSuccessfulLogin(user);
             }
         }
+    }
+
+    private void onLogoutCalled() {
+        STORAGE.setLoggedInUser(null);
+        VIEW.printLogoutSuccessful();
     }
 }

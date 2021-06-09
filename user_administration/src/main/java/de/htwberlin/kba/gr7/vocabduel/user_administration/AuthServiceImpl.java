@@ -19,7 +19,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoggedInUser loginUser(String email, String password) {
-        return null;
+        // TODO: remove mock data
+        final LoggedInUser user = new LoggedInUser(42L);
+        user.setEmail(email);
+        user.setFirstName("Arnold");
+        user.setLastName("Schwarzenegger");
+        user.setUsername("arnie1947");
+        user.setAuthTokens(new AuthTokens());
+        user.getAuthTokens().setToken("123");
+        user.getAuthTokens().setRefreshToken("123");
+        return user;
     }
 
     @Override

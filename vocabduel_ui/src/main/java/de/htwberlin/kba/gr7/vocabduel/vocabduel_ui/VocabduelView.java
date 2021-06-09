@@ -33,9 +33,10 @@ public class VocabduelView {
                             ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
                             : "`" + a.getName() + "`";
                     final String requiredArgs = a.getRequiredArgs() != null
-                            ? "[Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
-                            : "[No required args]";
-                    return "..." + cmd + requiredArgs + " => " + " " + a.getDescription();
+                            ? " [Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
+                            : "";
+                    final String guardedInfo = a.isGuarded() ? " [Requires preceding login]" : "";
+                    return "..." + cmd + requiredArgs + guardedInfo + " => " + a.getDescription();
                 }
         ).sorted().forEach(System.out::println);
     }
@@ -64,5 +65,13 @@ public class VocabduelView {
     public void printSuccessfulLogin(final LoggedInUser user) {
         System.out.println("Successful login!");
         printCurrentlyLoggedInAs(user);
+    }
+
+    public void printLogoutSuccessful() {
+        System.out.println("Successfully logged out!");
+    }
+
+    public void printActionRequiresLogin() {
+        System.out.println("The action you tried to call requires a preceding login!");
     }
 }

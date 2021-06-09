@@ -11,4 +11,14 @@ public class AuthTokens {
     public String getRefreshToken() {
         return refreshToken;
     }
+
+    // TODO Keep setters?
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

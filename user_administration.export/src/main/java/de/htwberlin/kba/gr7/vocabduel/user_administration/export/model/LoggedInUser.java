@@ -10,4 +10,9 @@ public class LoggedInUser extends User {
     public AuthTokens getAuthTokens() {
         return authTokens;
     }
+
+    // TODO: Keep setter?
+    public void setAuthTokens(AuthTokens authTokens) {
+        this.authTokens = authTokens;
+    }
 }
