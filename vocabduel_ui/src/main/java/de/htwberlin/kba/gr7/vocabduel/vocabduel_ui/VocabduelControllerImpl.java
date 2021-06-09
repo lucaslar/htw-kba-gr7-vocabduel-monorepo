@@ -22,7 +22,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private final AuthService AUTH_SERVICE;
 
-    private final Pattern PARAM_PATTERN = Pattern.compile("-[a-z]+\\s((?!-).)+");
+    private final Pattern PARAM_PATTERN = Pattern.compile("--[a-z]+\\s((?!--).)+");
 
     private HashMap<String, VocabduelCliAction> actions;
     private List<VocabduelCliAction> actionsList;
@@ -88,8 +88,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
             VIEW.printActionRequiresLogin();
-        }
-        else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
+        } else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
         else {
             final HashMap<String, String> args = createArgsMap(userInput);
             checkRequiredArgs(action, args);
@@ -104,15 +103,15 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (params.length > 0) {
             final String joinedParams = (String.join(" ", params));
             final boolean containsIllegalParams = joinedParams.split(String.valueOf(PARAM_PATTERN)).length != 0;
-            if (joinedParams.charAt(0) != '-' || containsIllegalParams) {
+            if (joinedParams.charAt(0) != '-' || joinedParams.charAt(1) != '-' || containsIllegalParams) {
                 throw new Exception(
-                        "Invalid param format. Please call actions as follows:\n<action name> -<arg key> <arg value (lower case)> -<second arg key (lower case)> <second arg value> (args must match: \""
+                        "Invalid param format. Please call actions as follows:\n<action name> --<arg key> <arg value (lower case)> --<second arg key (lower case)> <second arg value> (args must match: \""
                                 + PARAM_PATTERN + "\")"
                 );
             } else {
                 final Matcher matcher = PARAM_PATTERN.matcher(joinedParams);
                 while (matcher.find()) {
-                    final String key = matcher.group(0).split(" ")[0].substring(1);
+                    final String key = matcher.group(0).split(" ")[0].substring(2);
                     final String value = matcher.group(0).substring(key.length() + 2).trim();
                     map.put(key, value);
                 }
@@ -130,7 +129,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     .collect(Collectors.toList());
             if (missingParams.size() > 0) {
                 final String missingJoined = String.join(", ", missingParams);
-                final String paramsExample = Arrays.stream(action.getRequiredArgs()).map(p -> "-" + p + " <value>").collect(Collectors.joining(" "));
+                final String paramsExample = Arrays.stream(action.getRequiredArgs()).map(p -> "--" + p + " <value>").collect(Collectors.joining(" "));
                 throw new Exception("The following params are required for `" + action.getName() + "` but where missing in your command: "
                         + missingJoined + "\nPlease run: " + action.getName() + " " + paramsExample);
             }
@@ -146,7 +145,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         isQuit = true;
     }
 
-    private void onLoginCalled(HashMap<String, String> args) {
+    private void onLoginCalled(final HashMap<String, String> args) {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
             final LoggedInUser user = AUTH_SERVICE.loginUser(args.get("email"), args.get("pwd"));
