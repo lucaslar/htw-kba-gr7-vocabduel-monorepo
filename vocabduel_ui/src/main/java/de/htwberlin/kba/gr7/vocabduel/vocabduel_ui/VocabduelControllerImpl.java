@@ -47,7 +47,12 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         do {
             try {
-                handleUserInput(VIEW.scanInput().trim().split("\\s+"));
+                final String input = VIEW.scanInput().trim();
+                final String actionName = input.split("--")[0].trim();
+                final String[] userInputArgs = input.contains("--")
+                        ? input.substring(input.indexOf("--")).split("\\s+")
+                        : null;
+                handleUserInput(actionName, userInputArgs);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -81,24 +86,21 @@ public class VocabduelControllerImpl implements VocabduelController {
         else VIEW.printWarningActionKey(key);
     }
 
-    private void handleUserInput(final String[] userInput) throws Exception {
-        final String actionName = userInput[0];
+    private void handleUserInput(final String actionName, final String[] userInputArgs) throws Exception {
         final VocabduelCliAction action = actions.get(actionName);
-
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
             VIEW.printActionRequiresLogin();
         } else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
         else {
-            final HashMap<String, String> args = createArgsMap(userInput);
+            final HashMap<String, String> args = createArgsMap(userInputArgs);
             checkRequiredArgs(action, args);
             action.getAction().accept(args);
         }
     }
 
-    private HashMap<String, String> createArgsMap(final String[] userInput) throws Exception {
+    private HashMap<String, String> createArgsMap(final String[] params) throws Exception {
         final HashMap<String, String> map = new HashMap<>();
-        final String[] params = Arrays.copyOfRange(userInput, 1, userInput.length);
 
         if (params.length > 0) {
             final String joinedParams = (String.join(" ", params));
