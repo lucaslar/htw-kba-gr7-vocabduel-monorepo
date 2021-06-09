@@ -23,32 +23,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     private List<LanguageSet> allLanguageSets;
 
     @Override
-    public int createLanguageSet(LanguageSet languageSet) throws DataAlreadyExistsException {
-        return 0;
-    }
-
-    @Override
-    public int createUnitForLanguageSet(String title, LanguageSet languageSet) throws DataAlreadyExistsException {
-        return 0;
-    }
-
-    @Override
-    public int insertVocableListInUnit(VocableList vocables, VocableUnit unit) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException {
-        return 0;
-    }
-
-    @Override
     public int importGnuVocableList(File gnuFile, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, ParseException {
-        return 0;
-    }
-
-    @Override
-    public int updateVocableList(VocableList vocables, User triggeringUser) throws DuplicateVocablesInSetException, DifferentAuthorException, DataAlreadyExistsException, IncompleteVocableListException {
-        return 0;
-    }
-
-    @Override
-    public int deleteEmptyLanguagesSet(LanguageSet languageSet) throws NotEmptyException {
         return 0;
     }
 
