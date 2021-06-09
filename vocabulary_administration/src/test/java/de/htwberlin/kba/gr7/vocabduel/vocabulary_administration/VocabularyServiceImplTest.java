@@ -12,7 +12,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -102,37 +101,25 @@ public class VocabularyServiceImplTest {
     }
 
     @Test(expected = DuplicateVocablesInSetException.class)
-    public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_duplicate_vocabulary.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = DataAlreadyExistsException.class)
-    public void shouldNotImportGnuListWithExistingTitleInUnit() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldNotImportGnuListWithExistingTitleInUnit() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_title_already_exists.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = IncompleteVocableListException.class)
-    public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_incomplete_list.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
-    @Test(expected = ParseException.class)
-    public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
-        final String pathname = "./src/test/assets/gnu_invalid_format.txt";
-        vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
-    }
-
-    @Test(expected = ParseException.class)
-    public void shouldThrowExceptionOnImportingNotExistingGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
-        final String pathname = "./src/test/assets/not_existing_file.txt";
-        vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
-    }
-
     @Test
-    public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_valid_format.txt";
         final int initialListsLength = existingVocableUnit.getVocableLists().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
@@ -146,7 +133,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_unit.txt";
         final int initialUnitsLength = existingLanguageSet.getVocableUnits().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
@@ -161,7 +148,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, ParseException, FileNotFoundException {
+    public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException {
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_language_set.txt";
         final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
