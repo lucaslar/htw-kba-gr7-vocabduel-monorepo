@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Component;
 
@@ -53,16 +53,16 @@ public class VocabduelView {
         System.out.println("Invalid login, please try again.");
     }
 
-    public void printCurrentlyLoggedInAs(final LoggedInUser user) {
-        System.out.println("Logged in as " + user.getFirstName() + " " + user.getLastName() + " (" + user.getUsername() + " / " + user.getEmail() + ")");
+    public void printCurrentlyLoggedInAs(final User user) {
+        System.out.println("Logged in as " + user.toString());
     }
 
-    public void printLogoutBeforeLogin(final LoggedInUser user) {
-        System.out.println("You are already logged in. Please logout before re-logging in.");
+    public void printLogoutBeforeLogin(final User user) {
+        System.out.println("You are currently logged in. Please logout before re-logging in/registration.");
         printCurrentlyLoggedInAs(user);
     }
 
-    public void printSuccessfulLogin(final LoggedInUser user) {
+    public void printSuccessfulLogin(final User user) {
         System.out.println("Successful login!");
         printCurrentlyLoggedInAs(user);
     }
@@ -79,7 +79,7 @@ public class VocabduelView {
         System.out.println("The following GNU vocabulary has been imported successfully: " + file);
     }
 
-    public void printSuccessfulRegistration(LoggedInUser loggedInUser) {
+    public void printSuccessfulRegistration(User loggedInUser) {
         System.out.println("Welcome on board, " + loggedInUser.getFirstName() + "! (successful registration)");
     }
 }
