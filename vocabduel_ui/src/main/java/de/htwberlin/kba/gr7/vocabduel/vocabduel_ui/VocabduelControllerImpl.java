@@ -120,6 +120,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
             if (tokens != null) {
                 STORAGE.getLoggedInUser().setAuthTokens(tokens);
+                VIEW.printSuccessfullyRefreshedTokens();
                 handleUserInput(actionName, userInputArgs);
             } else {
                 VIEW.printInvalidRefreshToken();

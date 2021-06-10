@@ -108,4 +108,8 @@ public class VocabduelView {
     public void printInvalidRefreshToken() {
         System.out.println("Invalid/expired refresh token. You have been logged out.");
     }
+
+    public void printSuccessfullyRefreshedTokens() {
+        System.out.println("Successfully refreshed tokens!");
+    }
 }
