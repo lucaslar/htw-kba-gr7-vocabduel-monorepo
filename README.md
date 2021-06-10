@@ -59,9 +59,27 @@ Eclipse project (from zip) have been added, too. If you have troubles with Eclip
 tested carefully) or any other IDE, please feel free to contact us.
 
 ### Database
+
+#### Manual setup
+
 Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/.
 We recommend installing the MySQL Installer, where you can decide which type of server you want to install
 and add new user to the server. We are currently using the default root user with a password.
+
+#### Docker
+
+You can also use Docker to set up the database by running: 
+
+```shell
+docker run -p 3306:3306 --name vocabduel-db -d -e MYSQL_RANDOM_ROOT_PASSWORD=true mysql
+```
+
+- `-p`: Map exposed port from Docker to `3306` (MyDQL default) on your machine
+- `--name vocabduel-db`: Name the container `vocabduel-db` (optional)
+- `d`: Run container in detached mode
+- `-e MYSQL_RANDOM_ROOT_PASSWORD=true`: generate a random password for the db automatically (one of three required options)
+
+[comment]: <> (TODO: Custom image with setup script?)
 
 ### Generate diagrams
 
