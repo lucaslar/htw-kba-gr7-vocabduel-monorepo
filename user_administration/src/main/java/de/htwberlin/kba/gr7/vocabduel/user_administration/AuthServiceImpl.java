@@ -25,9 +25,17 @@ public class AuthServiceImpl implements AuthService {
         Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
         Validation.passwordValidation(password, confirmPassword);
 
-        // TODO registration
+        // TODO implement actual registration
 
-        return null;
+        final LoggedInUser user = new LoggedInUser(42L);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        user.setAuthTokens(new AuthTokens());
+        user.getAuthTokens().setToken("123");
+        user.getAuthTokens().setRefreshToken("123");
+        return user;
     }
 
     @Override
