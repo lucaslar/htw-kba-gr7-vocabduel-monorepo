@@ -71,11 +71,11 @@ and add new user to the server. We are currently using the default root user wit
 You can also use Docker to set up the database by running: 
 
 ```shell
-docker run -p 3306:3306 -e MYSQL_RANDOM_ROOT_PASSWORD=true --name vocabduel-db -d mysql
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD="Test#-#44" --name vocabduel-db -d mysql
 ```
 
 - `-p`: Map exposed port from Docker container to `3306` on your machine (MySQL default port)
-- `-e MYSQL_RANDOM_ROOT_PASSWORD=true`: generate a random password for the db automatically (one of three options)
+- `-e MYSQL_ROOT_PASSWORD="Test#-#44"`: Set the password for the DB's root user
 - `--name vocabduel-db`: Name the container `vocabduel-db` (optional)
 - `d`: Run container in detached mode (optional)
 
