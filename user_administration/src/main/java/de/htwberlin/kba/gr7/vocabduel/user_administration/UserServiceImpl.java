@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -36,11 +37,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
+        Validation.completeDataValidation(user);
+        Validation.uniqueUserDataValidation(user.getUsername(), user.getEmail(), this, user.getId());
+        // TODO Update in DB
         return 0;
     }
 
     @Override
     public int updateUserPassword(User user, String currentPassword, String password, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
+        // TODO check current pwd
+        Validation.passwordValidation(password, confirmPassword);
+        // TODO Implement
         return 0;
     }
 

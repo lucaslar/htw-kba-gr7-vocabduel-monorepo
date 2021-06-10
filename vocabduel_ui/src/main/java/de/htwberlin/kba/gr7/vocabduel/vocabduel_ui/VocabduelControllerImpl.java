@@ -1,9 +1,9 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
@@ -26,6 +26,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final CliSessionStorage STORAGE;
 
     private final AuthService AUTH_SERVICE;
+    private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
 
     private final Pattern PARAM_PATTERN = Pattern.compile("--[a-z]+\\s((?!--).)+");
@@ -39,12 +40,13 @@ public class VocabduelControllerImpl implements VocabduelController {
             final VocabduelView view,
             final CliSessionStorage storage,
             final AuthService authService,
+            final UserService userService,
             final VocabularyService vocabularyService
     ) {
         VIEW = view;
         STORAGE = storage;
-        STORAGE.setLoggedInUser(new LoggedInUser(42L)); // TODO Rm
         AUTH_SERVICE = authService;
+        USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
     }
 
@@ -53,6 +55,15 @@ public class VocabduelControllerImpl implements VocabduelController {
         VIEW.printHello();
         initializeFunctionsList();
         initializeFunctionsMap();
+
+
+        // TODO: RM
+        try {
+            handleUserInput("login", new String[]{"--pwd", "123", "--email", "arnie1947@mail.at"});
+        } catch (Exception e) {
+            System.err.println("Initial login error");
+            e.printStackTrace();
+        }
 
         do {
             try {
@@ -77,6 +88,9 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
         actionsList.add(new VocabduelCliAction(true, "vocab samples", "Import default vocabulary lists", "vs", this::onVocableSampleCalled));
         actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
+        actionsList.add(new VocabduelCliAction(true, "update user", "Update the currently logged in user's data", "u user", this::onUpdateCalled));
+        actionsList.add(new VocabduelCliAction(true, "update pwd", "Update the currently logged in user's password", "u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
+        actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
     }
 
     private void initializeFunctionsMap() {
@@ -212,5 +226,44 @@ public class VocabduelControllerImpl implements VocabduelController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void onUpdateCalled(final HashMap<String, String> args) {
+        VIEW.optionalParamsInfo(args.keySet(), "username", "email", "firstname", "lastname");
+        final LoggedInUser user = STORAGE.getLoggedInUser();
+
+        final String prevUsername = user.getUsername();
+        final String prevFirstname = user.getFirstName();
+        final String prevLastname = user.getLastName();
+        final String prevEmail = user.getEmail();
+
+        if (args.get("username") != null) user.setUsername(args.get("username"));
+        if (args.get("email") != null) user.setEmail(args.get("email"));
+        if (args.get("firstname") != null) user.setFirstName(args.get("firstname"));
+        if (args.get("lastname") != null) user.setLastName(args.get("lastname"));
+
+        try {
+            USER_SERVICE.updateUser(user);
+            VIEW.successfulUserUpdate(user);
+        } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {
+            user.setEmail(prevEmail);
+            user.setUsername(prevUsername);
+            user.setFirstName(prevFirstname);
+            user.setLastName(prevLastname);
+            e.printStackTrace();
+        }
+    }
+
+    private void onUpdatePwdCalled(final HashMap<String, String> args) {
+        try {
+            USER_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get("currentpwd"), args.get("newpwd"), args.get("confirm"));
+            VIEW.successfulPwdUpdate();
+        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onWhoAmICalled() {
+        VIEW.printCurrentlyLoggedInAs(STORAGE.getLoggedInUser());
     }
 }

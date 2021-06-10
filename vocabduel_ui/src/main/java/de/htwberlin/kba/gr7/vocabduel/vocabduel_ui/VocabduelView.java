@@ -4,8 +4,8 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class VocabduelView {
@@ -81,5 +81,22 @@ public class VocabduelView {
 
     public void printSuccessfulRegistration(User loggedInUser) {
         System.out.println("Welcome on board, " + loggedInUser.getFirstName() + "! (successful registration)");
+    }
+
+    public void optionalParamsInfo(final Set<String> givenKeys, final String... argKeys) {
+        final List<String> validGiven = givenKeys.stream()
+                .filter(gk -> Arrays.asList(argKeys).contains(gk))
+                .collect(Collectors.toList());
+
+        System.out.println("This function accepts the following optional params: " + Arrays.stream(argKeys).collect(Collectors.toList()));
+        System.out.println("Calling it with param(s): " + validGiven + " (unknown params are ignored in this list)");
+    }
+
+    public void successfulUserUpdate(final User user) {
+        System.out.println("User data has been updated successfully: " + user.toString());
+    }
+
+    public void successfulPwdUpdate() {
+        System.out.println("Password has been updated successfully!");
     }
 }
