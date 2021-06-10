@@ -108,7 +108,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private HashMap<String, String> createArgsMap(final String[] params) throws Exception {
         final HashMap<String, String> map = new HashMap<>();
 
-        if (params.length > 0) {
+        if (params != null && params.length > 0) {
             final String joinedParams = (String.join(" ", params));
             final boolean containsIllegalParams = joinedParams.split(String.valueOf(PARAM_PATTERN)).length != 0;
             if (joinedParams.charAt(0) != '-' || joinedParams.charAt(1) != '-' || containsIllegalParams) {
