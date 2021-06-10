@@ -14,6 +14,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
+        System.out.println("to be implemented..."); // TODO Implement
         return null;
     }
 

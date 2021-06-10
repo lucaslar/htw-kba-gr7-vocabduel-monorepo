@@ -78,4 +78,8 @@ public class VocabduelView {
     public void printGnuImportSuccessful(final String file) {
         System.out.println("The following GNU vocabulary has been imported successfully: " + file);
     }
+
+    public void printSuccessfulRegistration(LoggedInUser loggedInUser) {
+        System.out.println("Welcome on board, " + loggedInUser.getFirstName() + "! (successful registration)");
+    }
 }

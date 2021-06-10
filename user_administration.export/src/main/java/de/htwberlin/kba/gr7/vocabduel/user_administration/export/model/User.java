@@ -1,11 +1,14 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export.model;
 
 public class User {
-    private final Long id;
+    private Long id;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
+
+    public User() {
+    }
 
     public User(Long id) {
         this.id = id;

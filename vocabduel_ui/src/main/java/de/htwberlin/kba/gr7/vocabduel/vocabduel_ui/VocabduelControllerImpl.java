@@ -1,7 +1,9 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
@@ -74,12 +76,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "logout", "Log out from the application", "lo", this::onLogoutCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
         actionsList.add(new VocabduelCliAction(true, "vocab samples", "Import default vocabulary lists", "vs", this::onVocableSampleCalled));
-
-        // TODO only for testing => rm
-        actionsList.add(new VocabduelCliAction(false, "argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
-            System.out.println("Test fn has been called with " + args.keySet().size() + " arg(s)");
-            args.keySet().forEach(k -> System.out.println("..." + k + " => " + args.get(k)));
-        }, "reqa", "reqb"));
+        actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
     }
 
     private void initializeFunctionsMap() {
@@ -201,6 +198,21 @@ public class VocabduelControllerImpl implements VocabduelController {
             final HashMap<String, String> args = new HashMap<>();
             args.put("file", path + file);
             onVocableImportCalled(args);
+        }
+    }
+
+    private void onRegistrationCalled(final HashMap<String, String> args) {
+        final User user = new User();
+        user.setEmail(args.get("email"));
+        user.setFirstName(args.get("firstname"));
+        user.setLastName(args.get("lastname"));
+        user.setUsername(args.get("username"));
+        try {
+            final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(user, args.get("pwd"), args.get("confirm"));
+            STORAGE.setLoggedInUser(loggedInUser);
+            VIEW.printSuccessfulRegistration(loggedInUser);
+        } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {
+            e.printStackTrace();
         }
     }
 }
