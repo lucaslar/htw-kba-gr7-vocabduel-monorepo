@@ -4,12 +4,15 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DataAlreadyExistsException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DuplicateVocablesInSetException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.IncompleteVocableListException;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final CliSessionStorage STORAGE;
 
     private final AuthService AUTH_SERVICE;
+    private final VocabularyService VOCABULARY_SERVICE;
 
     private final Pattern PARAM_PATTERN = Pattern.compile("--[a-z]+\\s((?!--).)+");
 
@@ -32,11 +36,14 @@ public class VocabduelControllerImpl implements VocabduelController {
     public VocabduelControllerImpl(
             final VocabduelView view,
             final CliSessionStorage storage,
-            final AuthService authService
+            final AuthService authService,
+            final VocabularyService vocabularyService
     ) {
         VIEW = view;
         STORAGE = storage;
+        STORAGE.setLoggedInUser(new LoggedInUser(42L)); // TODO Rm
         AUTH_SERVICE = authService;
+        VOCABULARY_SERVICE = vocabularyService;
     }
 
     @Override
@@ -65,6 +72,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "quit", "Quit this application", "q", this::onQuitCalled));
         actionsList.add(new VocabduelCliAction(false, "login", "Sign in with an existing account", "li", this::onLoginCalled, "email", "pwd"));
         actionsList.add(new VocabduelCliAction(true, "logout", "Log out from the application", "lo", this::onLogoutCalled));
+        actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
+        actionsList.add(new VocabduelCliAction(true, "vocab samples", "Import default vocabulary lists", "vs", this::onVocableSampleCalled));
 
         // TODO only for testing => rm
         actionsList.add(new VocabduelCliAction(false, "argtest", "test fn to be removed soon!", "at", (HashMap<String, String> args) -> {
@@ -162,5 +171,36 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onLogoutCalled() {
         STORAGE.setLoggedInUser(null);
         VIEW.printLogoutSuccessful();
+    }
+
+    private void onVocableImportCalled(final HashMap<String, String> args) {
+        Scanner input = null;
+        try {
+            input = new Scanner(new File(args.get("file")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (input != null) {
+            final StringBuilder gnuContent = new StringBuilder();
+            while (input.hasNext()) gnuContent.append(input.nextLine()).append("\n");
+            input.close();
+
+            try {
+                final int result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
+                if (result == 0) VIEW.printGnuImportSuccessful(args.get("file"));
+            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void onVocableSampleCalled() {
+        final String path = "./vocabduel_ui/assets/vocabulary/";
+        for (String file : Objects.requireNonNull(new File(path).list())) {
+            final HashMap<String, String> args = new HashMap<>();
+            args.put("file", path + file);
+            onVocableImportCalled(args);
+        }
     }
 }

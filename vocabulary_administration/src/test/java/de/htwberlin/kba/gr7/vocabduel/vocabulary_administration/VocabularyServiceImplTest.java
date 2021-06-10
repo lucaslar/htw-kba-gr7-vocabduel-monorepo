@@ -12,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -23,14 +24,11 @@ public class VocabularyServiceImplTest {
 
     private static List<Vocable> mockVocablesEsEn(final String[][] vocables) {
         return Stream.of(vocables).map(words -> {
-            final Vocable vocable = new Vocable();
             final TranslationGroup en = new TranslationGroup();
             final TranslationGroup es = new TranslationGroup();
             es.setSynonyms(Stream.of(words[0]).collect(Collectors.toList()));
             en.setSynonyms(Stream.of(words[1]).collect(Collectors.toList()));
-            vocable.setVocable(es);
-            vocable.setVocable(en);
-            return vocable;
+            return new Vocable(es, Collections.singletonList(en));
         }).collect(Collectors.toList());
     }
 

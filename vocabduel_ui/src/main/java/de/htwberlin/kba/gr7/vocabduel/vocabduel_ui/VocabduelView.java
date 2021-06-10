@@ -74,4 +74,8 @@ public class VocabduelView {
     public void printActionRequiresLogin() {
         System.out.println("The action you tried to call requires a preceding login!");
     }
+
+    public void printGnuImportSuccessful(final String file) {
+        System.out.println("The following GNU vocabulary has been imported successfully: " + file);
+    }
 }
