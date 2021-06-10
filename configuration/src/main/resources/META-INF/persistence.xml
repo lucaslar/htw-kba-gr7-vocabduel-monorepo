@@ -18,7 +18,7 @@
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound</class>
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult</class>
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame</class>
-        <!-- emun hinzufügen??-->
+        <!-- TODO: Enum hinzufügen??-->
 
         <!--vocabulary_administration.export -->
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup</class>
@@ -27,7 +27,7 @@
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList</class>
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet</class>
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit</class>
-        <!-- enum hinzufügen?? -->
+        <!-- TODO: Enum hinzufügen??-->
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />

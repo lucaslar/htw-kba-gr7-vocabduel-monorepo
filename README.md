@@ -13,17 +13,15 @@ The project group (group 07) consists of the following two students:
 
 ## Run this project
 
-### Database
+### Database setup
 
-#### DB setup
-
-##### First option: Manual setup
+#### First option: Manual setup
 
 Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/.
 We recommend installing the MySQL Installer, where you can decide which type of server you want to install
 and add a new user to the server. We are currently using the default root user with password `Test#-#44`.
 
-##### Second option: Docker
+#### Second option: Docker
 
 You can also use Docker to set up the database by running:
 
@@ -35,14 +33,6 @@ docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD="Test#-#44" --name vocabduel-db -
 - `-e MYSQL_ROOT_PASSWORD="Test#-#44"`: Set the password for the DB's root user
 - `--name vocabduel-db`: Name the container `vocabduel-db` (optional)
 - `d`: Run container in detached mode (optional)
-
-#### Initialization
-
-Afterwards, please run the main method of the following class:
-
-```
-configuration/src/main/java/de/htwberlin/kba/gr7/vocabduel/configuration/ConfigurationMySQLImpl.java
-```
 
 ### Run UI
 

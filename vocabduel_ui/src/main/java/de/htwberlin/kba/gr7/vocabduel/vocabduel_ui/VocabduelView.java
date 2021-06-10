@@ -20,7 +20,6 @@ public class VocabduelView {
     public void printHello() {
         System.out.println("Welcome to the gr7-vocabduel command line interface!");
         System.out.println("If you haven't used this tool before, type `help` or `h` to get a list of all possible actions.");
-        System.out.println("Also, please make sure you have initialized the database as described in the parent project's README.");
     }
 
     public void printUnknownParam(final String action) {
