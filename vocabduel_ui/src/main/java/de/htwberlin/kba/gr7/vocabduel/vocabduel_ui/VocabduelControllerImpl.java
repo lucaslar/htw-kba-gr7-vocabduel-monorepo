@@ -203,12 +203,8 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onRegistrationCalled(final HashMap<String, String> args) {
         final User user = new User();
-        user.setEmail(args.get("email"));
-        user.setFirstName(args.get("firstname"));
-        user.setLastName(args.get("lastname"));
-        user.setUsername(args.get("username"));
         try {
-            final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(user, args.get("pwd"), args.get("confirm"));
+            final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get("username"), args.get("email"), args.get("firstname"), args.get("lastname"), args.get("pwd"), args.get("confirm"));
             STORAGE.setLoggedInUser(loggedInUser);
             VIEW.printSuccessfulRegistration(loggedInUser);
         } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {

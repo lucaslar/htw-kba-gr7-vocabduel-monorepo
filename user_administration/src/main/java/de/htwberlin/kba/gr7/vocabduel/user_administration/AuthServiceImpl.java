@@ -16,15 +16,15 @@ public class AuthServiceImpl implements AuthService {
     private UserServiceImpl userService;
 
     @Override
-    public LoggedInUser registerUser(User user, String password, String confirmPassword)
+    public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword)
             throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
-        final boolean isComplete = user.getEmail() == null || user.getUsername() == null || user.getFirstName() == null || user.getLastName() == null || password == null || confirmPassword == null;
+        final boolean isComplete = email == null || username == null || firstname == null || lastname == null || password == null || confirmPassword == null;
         if (isComplete) throw new IncompleteUserDataException();
-        else if (!Pattern.compile("^(.+)@(.+)$").matcher(user.getEmail()).matches()) {
+        else if (!Pattern.compile("^(.+)@(.+)$").matcher(email).matches()) {
             throw new InvalidOrRegisteredMailException("Invalid mail format");
-        } else if (userService.getUserDataByEmail(user.getEmail()) != null) {
+        } else if (userService.getUserDataByEmail(email) != null) {
             throw new InvalidOrRegisteredMailException("Email is already registered");
-        } else if (userService.getUserDataByUsername(user.getUsername()) != null) {
+        } else if (userService.getUserDataByUsername(username) != null) {
             throw new AlreadyRegisteredUsernameException("");
         }
 

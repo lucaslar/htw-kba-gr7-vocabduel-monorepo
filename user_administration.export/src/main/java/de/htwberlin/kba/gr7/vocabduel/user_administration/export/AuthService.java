@@ -19,7 +19,10 @@ public interface AuthService {
      * a <code>{@link LoggedInUser}</code> object is returned which is used for authentication using tokens without
      * revealing the user's password. (see <code>{@link AuthService#loginUser}</code>).
      *
-     * @param user            Dataset of the new user.
+     * @param username        Username to be set.
+     * @param email           Email to be set.
+     * @param firstname       First name of the new user.
+     * @param lastname        Family name of the new user.
      * @param password        Password for the new user, will be stored in a different way than the other user data
      * @param confirmPassword Repeated password for confirmation purposes (must match with <code>password</code>).
      * @return The object of the new user. Password will never be revealed, instead, this object contains auth tokens.
@@ -29,7 +32,7 @@ public interface AuthService {
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      * @throws IncompleteUserDataException           The passed user object does not contain all required user data.
      */
-    LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
+    LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
 
     /**
      * Authenticates an existing user in order to take actions in this application. The returned user object contains all

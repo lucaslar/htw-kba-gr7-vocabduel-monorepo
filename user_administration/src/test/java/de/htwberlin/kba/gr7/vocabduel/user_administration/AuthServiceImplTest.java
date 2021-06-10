@@ -80,29 +80,22 @@ public class AuthServiceImplTest {
 
     @Test(expected = PasswordsDoNotMatchException.class)
     public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        auth.registerUser(new User(null), STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
+        auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
     public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        final User user = new User(null);
-        user.setUsername(existingUser.getUsername());
-        auth.registerUser(user, STRONG_PWD, STRONG_PWD);
+        auth.registerUser(existingUser.getUsername(), "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        final User user = new User(null);
-        user.setEmail(existingUser.getEmail());
-        auth.registerUser(user, STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username", existingUser.getEmail(), "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
-        final User user = new User(null);
-        String invalidMail = "invalidmail";
-        user.setEmail(invalidMail);
-        auth.registerUser(user, STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username","invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     // The following test could be implemented for each potentially null/empty trimmed field
@@ -111,13 +104,12 @@ public class AuthServiceImplTest {
     @Test(expected = IncompleteUserDataException.class)
     public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
         final User user = new User(null);
-        user.setFirstName("    ");
-        auth.registerUser(newUser, STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username","invalidmail", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test
     public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        final LoggedInUser loggedInUser = auth.registerUser(newUser, STRONG_PWD, STRONG_PWD);
+        final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
         final User registeredUser = userAdministration.getUserDataByUsername(newUser.getUsername());
 
         Assert.assertNotNull(registeredUser);

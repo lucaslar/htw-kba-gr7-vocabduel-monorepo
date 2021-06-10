@@ -50,12 +50,6 @@ public class InvalidPwdsTest {
     public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
         auth = new AuthServiceImpl();
 
-        newUser = new User(null);
-        newUser.setEmail("newuser@user.de");
-        newUser.setUsername("newuser");
-        newUser.setFirstName("New");
-        newUser.setLastName("User");
-
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");
         existingUser.setUsername("existinguser");
@@ -71,7 +65,7 @@ public class InvalidPwdsTest {
 
     @Test(expected = PwTooWeakException.class)
     public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
-        auth.registerUser(newUser, PWD, PWD);
+        auth.registerUser("newuser", "newuser@user.de", "New", "User", PWD, PWD);
     }
 
     @Test(expected = PwTooWeakException.class)
