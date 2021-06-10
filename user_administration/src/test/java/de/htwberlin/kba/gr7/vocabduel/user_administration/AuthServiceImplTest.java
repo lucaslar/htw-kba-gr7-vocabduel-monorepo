@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
@@ -45,8 +46,7 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl();
-        auth.setUserService(userAdministration);
+        auth = new AuthServiceImpl(new UserServiceImpl());
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));

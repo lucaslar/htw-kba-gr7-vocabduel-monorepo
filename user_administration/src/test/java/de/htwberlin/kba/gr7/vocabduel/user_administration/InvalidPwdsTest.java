@@ -48,7 +48,7 @@ public class InvalidPwdsTest {
 
     @Before
     public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        auth = new AuthServiceImpl();
+        auth = new AuthServiceImpl(new UserServiceImpl());
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");

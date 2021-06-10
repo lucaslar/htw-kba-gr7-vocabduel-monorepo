@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
@@ -8,18 +9,20 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
-import java.util.regex.Pattern;
-
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private UserServiceImpl userService;
+    private final UserService USER_SERVICE;
+
+    public AuthServiceImpl(final UserService userService) {
+        USER_SERVICE = userService;
+    }
 
     @Override
     public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword)
             throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
         Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
-        Validation.uniqueUserDataValidation(username, email, userService);
+        Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
         Validation.passwordValidation(password, confirmPassword);
 
         // TODO registration
@@ -54,13 +57,5 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean hasAccessRights(String token) {
         return false;
-    }
-
-    public UserServiceImpl getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserServiceImpl userService) {
-        this.userService = userService;
     }
 }
