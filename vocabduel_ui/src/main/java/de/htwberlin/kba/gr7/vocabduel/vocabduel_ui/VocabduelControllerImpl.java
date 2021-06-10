@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
@@ -35,6 +36,9 @@ public class VocabduelControllerImpl implements VocabduelController {
     private List<VocabduelCliAction> actionsList;
 
     private boolean isQuit = false;
+
+    private final String LO_KEY = "logout";
+    private final String LO_SHORT = "lo";
 
     public VocabduelControllerImpl(
             final VocabduelView view,
@@ -84,7 +88,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "help", "Get a list of all possible actions", "h", this::onHelpCalled));
         actionsList.add(new VocabduelCliAction(false, "quit", "Quit this application", "q", this::onQuitCalled));
         actionsList.add(new VocabduelCliAction(false, "login", "Sign in with an existing account", "li", this::onLoginCalled, "email", "pwd"));
-        actionsList.add(new VocabduelCliAction(true, "logout", "Log out from the application", "lo", this::onLogoutCalled));
+        actionsList.add(new VocabduelCliAction(true, LO_KEY, "Log out from the application", LO_SHORT, this::onLogoutCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
         actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "vis", this::onVocableSampleCalled));
         actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
@@ -111,6 +115,16 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
             VIEW.printActionRequiresLogin();
+        } else if (action.isGuarded() && !actionName.equals(LO_KEY) && !actionName.equals(LO_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
+            VIEW.printInvalidAuthToken();
+            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
+            if (tokens != null) {
+                STORAGE.getLoggedInUser().setAuthTokens(tokens);
+                handleUserInput(actionName, userInputArgs);
+            } else {
+                VIEW.printInvalidRefreshToken();
+                STORAGE.setLoggedInUser(null);
+            }
         } else if (action.getNoArgsAction() != null) action.getNoArgsAction().run();
         else {
             final HashMap<String, String> args = createArgsMap(userInputArgs);

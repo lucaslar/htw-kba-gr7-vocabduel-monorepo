@@ -99,4 +99,12 @@ public class VocabduelView {
     public void printSuccessfulPwdUpdate() {
         System.out.println("Password has been updated successfully!");
     }
+
+    public void printInvalidAuthToken() {
+        System.out.println("Invalid/expired auth token. Don't worry. Token is tried to be refreshed...");
+    }
+
+    public void printInvalidRefreshToken() {
+        System.out.println("Invalid/expired refresh token. You have been logged out.");
+    }
 }

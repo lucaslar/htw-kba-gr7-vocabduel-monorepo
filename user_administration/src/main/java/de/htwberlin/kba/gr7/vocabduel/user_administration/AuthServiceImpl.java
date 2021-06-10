@@ -59,11 +59,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthTokens refreshAuthTokens(String refreshToken) {
-        return null;
+        final AuthTokens tokens = new AuthTokens();
+        tokens.setToken("valid token");
+        tokens.setRefreshToken("some refresh token");
+        return tokens; // TODO Implement correctly using db
     }
 
     @Override
     public boolean hasAccessRights(String token) {
-        return false;
+        return token.equals("valid token"); // TODO Implement correctly using db
     }
 }
