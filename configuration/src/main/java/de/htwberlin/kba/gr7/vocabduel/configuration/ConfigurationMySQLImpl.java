@@ -6,11 +6,11 @@ import javax.persistence.Persistence;
 
 public class ConfigurationMySQLImpl {
 
-    public static void main (String[] args ) {
+    public static void main(String[] args) {
         try {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU");
             EntityManager em = emf.createEntityManager();
-        }catch (Exception exc){
+        } catch (Exception exc) {
             exc.printStackTrace();
         }
     }
