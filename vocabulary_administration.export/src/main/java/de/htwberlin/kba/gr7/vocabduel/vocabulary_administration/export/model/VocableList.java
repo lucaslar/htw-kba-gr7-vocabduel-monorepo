@@ -2,14 +2,22 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class VocableList {
+    @Id
     private Long id;
+    @OneToOne
     private User author;
     private String title;
     private Date timestamp;
+    @OneToMany
     private List<Vocable> vocables;
 
     public VocableList() {}

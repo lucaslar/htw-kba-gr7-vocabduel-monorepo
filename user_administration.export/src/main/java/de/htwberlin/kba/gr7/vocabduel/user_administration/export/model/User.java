@@ -1,6 +1,11 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.export.model;
 
+import javax.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
+    @Id
     private Long id;
     private String username;
     private String email;

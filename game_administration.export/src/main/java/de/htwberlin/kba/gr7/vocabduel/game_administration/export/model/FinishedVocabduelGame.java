@@ -1,7 +1,11 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.util.Date;
 
+@Entity
+@DiscriminatorValue("1")
 public class FinishedVocabduelGame extends VocabduelGame {
     private int totalPointsA;
     private int totalPointsB;

@@ -1,9 +1,20 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class TranslationGroup {
+    @Id
+    private Long id;
+
+    @Column(name = "synonyms", nullable = false)
+    @ElementCollection
+//    @CollectionTable(name="Synonyms", joinColumns = @JoinColumn(name=""))
     private List<String> synonyms;
+
+    @Column(name = "example_sentence_info", nullable = false)
+    @ElementCollection
     private List<String> exemplarySentencesOrAdditionalInfo;
 
     public TranslationGroup(){ }

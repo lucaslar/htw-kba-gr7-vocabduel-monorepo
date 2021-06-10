@@ -1,20 +1,32 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "game_finished", discriminatorType = DiscriminatorType.INTEGER)
 public class VocabduelGame {
+    @Id
     private Long id;
+    @OneToOne(targetEntity = User.class)
     private User playerA;
+    @OneToOne(targetEntity = User.class)
     private User playerB;
+    @Enumerated(EnumType.STRING)
     private SupportedLanguage knownLanguage;
+    @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
+    @OneToMany
     private List<VocableList> vocableLists;
+    @OneToMany
     private List<VocabduelRound> rounds;
 
     public VocabduelGame(){ }

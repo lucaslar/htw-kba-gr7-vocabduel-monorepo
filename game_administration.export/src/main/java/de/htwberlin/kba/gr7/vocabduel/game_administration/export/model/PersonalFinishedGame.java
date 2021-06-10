@@ -3,16 +3,23 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class PersonalFinishedGame {
+    @OneToOne
     private User opponent;
+    @Enumerated(EnumType.STRING)
     private GameResult gameResult;
     private int ownPoints;
     private int opponentPoints;
+    @OneToMany
     private List<VocableList> vocableLists;
+    @OneToMany
     private List<FinishedVocabduelRound> rounds;
+    @Id
     private Date finishedTimestamp;
 
     public User getOpponent() {

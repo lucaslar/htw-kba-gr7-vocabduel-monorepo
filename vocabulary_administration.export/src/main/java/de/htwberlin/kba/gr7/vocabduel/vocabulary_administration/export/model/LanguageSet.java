@@ -1,11 +1,17 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class LanguageSet {
+    @Id
     private Long id;
+    @Enumerated(EnumType.STRING)
     private SupportedLanguage knownLanguage;
+    @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
+    @OneToMany
     private List<VocableUnit> vocableUnits;
 
     public Long getId() {

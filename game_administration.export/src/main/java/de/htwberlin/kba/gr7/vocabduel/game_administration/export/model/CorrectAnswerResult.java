@@ -2,8 +2,14 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 
+import javax.persistence.*;
+
+@Entity
 public class CorrectAnswerResult {
+    @Id
+    @Enumerated(EnumType.STRING)
     private Result result;
+    @OneToOne
     private TranslationGroup correctAnswer;
 
     public Result getResult() {
