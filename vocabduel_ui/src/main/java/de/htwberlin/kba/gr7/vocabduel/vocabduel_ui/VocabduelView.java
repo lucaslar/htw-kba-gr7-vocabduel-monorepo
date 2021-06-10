@@ -83,7 +83,7 @@ public class VocabduelView {
         System.out.println("Welcome on board, " + loggedInUser.getFirstName() + "! (successful registration)");
     }
 
-    public void optionalParamsInfo(final Set<String> givenKeys, final String... argKeys) {
+    public void printOptionalParamsInfo(final Set<String> givenKeys, final String... argKeys) {
         final List<String> validGiven = givenKeys.stream()
                 .filter(gk -> Arrays.asList(argKeys).contains(gk))
                 .collect(Collectors.toList());
@@ -92,11 +92,11 @@ public class VocabduelView {
         System.out.println("Calling it with param(s): " + validGiven + " (unknown params are ignored in this list)");
     }
 
-    public void successfulUserUpdate(final User user) {
+    public void printSuccessfulUserUpdate(final User user) {
         System.out.println("User data has been updated successfully: " + user.toString());
     }
 
-    public void successfulPwdUpdate() {
+    public void printSuccessfulPwdUpdate() {
         System.out.println("Password has been updated successfully!");
     }
 }

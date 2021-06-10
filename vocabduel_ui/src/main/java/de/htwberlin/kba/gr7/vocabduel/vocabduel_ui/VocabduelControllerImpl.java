@@ -229,7 +229,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onUpdateCalled(final HashMap<String, String> args) {
-        VIEW.optionalParamsInfo(args.keySet(), "username", "email", "firstname", "lastname");
+        VIEW.printOptionalParamsInfo(args.keySet(), "username", "email", "firstname", "lastname");
         final LoggedInUser user = STORAGE.getLoggedInUser();
 
         final String prevUsername = user.getUsername();
@@ -244,7 +244,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         try {
             USER_SERVICE.updateUser(user);
-            VIEW.successfulUserUpdate(user);
+            VIEW.printSuccessfulUserUpdate(user);
         } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {
             user.setEmail(prevEmail);
             user.setUsername(prevUsername);
@@ -257,7 +257,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onUpdatePwdCalled(final HashMap<String, String> args) {
         try {
             USER_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get("currentpwd"), args.get("newpwd"), args.get("confirm"));
-            VIEW.successfulPwdUpdate();
+            VIEW.printSuccessfulPwdUpdate();
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
             e.printStackTrace();
         }
