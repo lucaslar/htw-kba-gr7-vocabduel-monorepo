@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class Validation {
     public static void passwordValidation(final String pwd, final String confirmPwd) throws PasswordsDoNotMatchException, PwTooWeakException {
-        if (!pwd.equals(confirmPwd)) throw new PasswordsDoNotMatchException();
+        if (!pwd.equals(confirmPwd)) throw new PasswordsDoNotMatchException("The given passwords do not match");
         else if (!isValidPassword(pwd)) {
             throw new PwTooWeakException("Pwd too weak. Expected: at least two of four: [lower case, upper case, digit, special character] and min. 8 characters length");
         }
