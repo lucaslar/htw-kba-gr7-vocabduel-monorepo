@@ -4,11 +4,15 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class PersonalFinishedGame {
+public class PersonalFinishedGame implements Serializable {
+    @Id
+    @OneToOne(targetEntity = VocabduelGame.class)
+    private Long id;
     @OneToOne
     private User opponent;
     @Enumerated(EnumType.STRING)
@@ -17,9 +21,8 @@ public class PersonalFinishedGame {
     private int opponentPoints;
     @OneToMany
     private List<VocableList> vocableLists;
-    @OneToMany
+    @OneToMany(mappedBy = "gameId")
     private List<FinishedVocabduelRound> rounds;
-    @Id
     private Date finishedTimestamp;
 
     public User getOpponent() {

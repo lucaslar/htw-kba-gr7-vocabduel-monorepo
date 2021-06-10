@@ -4,12 +4,14 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Tra
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.UntranslatedVocable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "round_finished", discriminatorType = DiscriminatorType.INTEGER)
-public class VocabduelRound {
+public class VocabduelRound implements Serializable {
+    @Id
     @ManyToOne(targetEntity = VocabduelGame.class)
     private Long gameId;
     @Id

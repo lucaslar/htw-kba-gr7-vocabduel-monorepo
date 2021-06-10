@@ -26,7 +26,7 @@ public class VocabduelGame {
     private SupportedLanguage learntLanguage;
     @OneToMany
     private List<VocableList> vocableLists;
-    @OneToMany
+    @OneToMany(mappedBy = "gameId")
     private List<VocabduelRound> rounds;
 
     public VocabduelGame(){ }
