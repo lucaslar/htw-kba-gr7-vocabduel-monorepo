@@ -7,6 +7,8 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInU
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -14,7 +16,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoggedInUser registerUser(User user, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
-        System.out.println("to be implemented..."); // TODO Implement
+        final boolean isComplete = user.getEmail() == null || user.getUsername() == null || user.getFirstName() == null || user.getLastName() == null || password == null || confirmPassword == null;
+        if (isComplete) throw new IncompleteUserDataException();
+        else if (!password.equals(confirmPassword)) throw new PasswordsDoNotMatchException();
+        else if (!isValidPassword(password)) {
+            throw new PwTooWeakException("Pwd too weak. Expected: at least two of four: [lower case, upper case, digit, special character] and min. 8 characters length");
+        } else if (!Pattern.compile("^(.+)@(.+)$").matcher(user.getEmail()).matches()) {
+            throw new InvalidOrRegisteredMailException("Invalid mail format");
+        } else if (userService.getUserDataByEmail(user.getEmail()) != null) {
+            throw new InvalidOrRegisteredMailException("Email is already registered");
+        } else if (userService.getUserDataByUsername(user.getUsername()) != null) {
+            throw new AlreadyRegisteredUsernameException("");
+        }
+
+        // TODO registration
+
         return null;
     }
 
@@ -53,5 +69,14 @@ public class AuthServiceImpl implements AuthService {
 
     public void setUserService(UserServiceImpl userService) {
         this.userService = userService;
+    }
+
+    private boolean isValidPassword(final String password) {
+        int matches = 0;
+        if (Pattern.compile("\\d+").matcher(password).find()) matches++;
+        if (Pattern.compile("[a-z]+").matcher(password).find()) matches++;
+        if (Pattern.compile("[A-Z]+").matcher(password).find()) matches++;
+        if (Pattern.compile("(?=.*[-+_!@#$%^&*., ?]).+").matcher(password).find()) matches++;
+        return password.length() >= 8 && matches >= 2;
     }
 }
