@@ -32,7 +32,7 @@ public class VocabduelView {
                     final String cmd = a.getShortName() != null
                             ? "`" + a.getName() + "` or `" + a.getShortName() + "`"
                             : "`" + a.getName() + "`";
-                    final String requiredArgs = a.getRequiredArgs() != null
+                    final String requiredArgs = a.getRequiredArgs() != null && a.getRequiredArgs().length > 0
                             ? " [Required args: " + String.join(", ", a.getRequiredArgs()) + "]"
                             : "";
                     final String guardedInfo = a.isGuarded() ? " [Requires preceding login]" : "";
