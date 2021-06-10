@@ -1,8 +1,10 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.model;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PasswordsDoNotMatchException;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.PwTooWeakException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Validation {
@@ -13,6 +15,16 @@ public class Validation {
         }
     }
 
+    public static void completeDataValidation(final String... data) throws IncompleteUserDataException {
+        if (Arrays.stream(data).anyMatch(d -> d == null || d.isEmpty())) {
+            throw new IncompleteUserDataException("One or more of the required user data is null/empty!");
+        }
+    }
+
+    public static void completeDataValidation(final User user) throws IncompleteUserDataException {
+        completeDataValidation(user.getEmail(), user.getUsername(), user.getFirstName(), user.getLastName());
+    }
+
     private static boolean isValidPassword(final String password) {
         int matches = 0;
         if (Pattern.compile("\\d+").matcher(password).find()) matches++;
@@ -20,5 +32,25 @@ public class Validation {
         if (Pattern.compile("[A-Z]+").matcher(password).find()) matches++;
         if (Pattern.compile("(?=.*[-+_!@#$%^&*., ?]).+").matcher(password).find()) matches++;
         return password.length() >= 8 && matches >= 2;
+    }
+
+    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException {
+        uniqueUserDataValidation(username, email, userService, null);
+    }
+
+    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService, final Long id) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException {
+        if (!Pattern.compile("^(.+)@(.+)$").matcher(email).matches()) {
+            throw new InvalidOrRegisteredMailException("Invalid mail format");
+        } else {
+            final User foundByMail = userService.getUserDataByEmail(email);
+            if (foundByMail != null && (id == null || !id.equals(foundByMail.getId()))) {
+                throw new InvalidOrRegisteredMailException("Email is already registered");
+            }
+
+            final User foundByUsername = userService.getUserDataByUsername(username);
+            if (foundByUsername != null && (id == null || !id.equals(foundByUsername.getId()))) {
+                throw new AlreadyRegisteredUsernameException("Username is already registered");
+            }
+        }
     }
 }

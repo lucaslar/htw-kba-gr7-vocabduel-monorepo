@@ -18,16 +18,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword)
             throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
-        final boolean isComplete = email == null || username == null || firstname == null || lastname == null || password == null || confirmPassword == null;
-        if (isComplete) throw new IncompleteUserDataException();
-        else if (!Pattern.compile("^(.+)@(.+)$").matcher(email).matches()) {
-            throw new InvalidOrRegisteredMailException("Invalid mail format");
-        } else if (userService.getUserDataByEmail(email) != null) {
-            throw new InvalidOrRegisteredMailException("Email is already registered");
-        } else if (userService.getUserDataByUsername(username) != null) {
-            throw new AlreadyRegisteredUsernameException("");
-        }
-
+        Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
+        Validation.uniqueUserDataValidation(username, email, userService);
         Validation.passwordValidation(password, confirmPassword);
 
         // TODO registration
