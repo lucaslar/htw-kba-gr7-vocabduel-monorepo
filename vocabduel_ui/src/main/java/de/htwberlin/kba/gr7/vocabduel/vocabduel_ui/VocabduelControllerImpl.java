@@ -86,7 +86,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "login", "Sign in with an existing account", "li", this::onLoginCalled, "email", "pwd"));
         actionsList.add(new VocabduelCliAction(true, "logout", "Log out from the application", "lo", this::onLogoutCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
-        actionsList.add(new VocabduelCliAction(true, "vocab samples", "Import default vocabulary lists", "vs", this::onVocableSampleCalled));
+        actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "vis", this::onVocableSampleCalled));
         actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
         actionsList.add(new VocabduelCliAction(true, "update user", "Update the currently logged in user's data", "u user", this::onUpdateCalled));
         actionsList.add(new VocabduelCliAction(true, "update pwd", "Update the currently logged in user's password", "u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
