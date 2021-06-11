@@ -14,8 +14,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.List;
 
 @Service
@@ -31,8 +29,7 @@ public class GameServiceImpl implements GameService {
     }
 
     public GameServiceImpl() {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_game");
-        ENTITY_MANAGER = emf.createEntityManager();
+        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
     }
 
     @Override

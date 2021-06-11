@@ -10,8 +10,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -23,8 +21,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthServiceImpl(final UserService userService) {
         USER_SERVICE = userService;
 
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_user");
-        ENTITY_MANAGER = emf.createEntityManager();
+        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
     }
 
     @Override
