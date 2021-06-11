@@ -6,14 +6,24 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final EntityManager ENTITY_MANAGER;
+
     // TODO: In the future, use db instead of list and adjust tests
     private final List<User> users = new LinkedList<User>();
+
+    public UserServiceImpl() {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_user");
+        ENTITY_MANAGER = emf.createEntityManager();
+    }
 
     @Override
     public List<User> findUsersByUsername(String searchString) {

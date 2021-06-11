@@ -7,6 +7,9 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exception
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,8 +30,13 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private UserService userService;
 
+    private final EntityManager ENTITY_MANAGER;
+
     VocabularyServiceImpl() {
         initializeLangMapping();
+
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_vocabulary");
+        ENTITY_MANAGER = emf.createEntityManager();
     }
 
     @Override
@@ -143,7 +151,9 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         return vocData.stream().map((synonyms) -> {
             final TranslationGroup tg = new TranslationGroup(synonyms);
-            if (explanations.get(synonyms) != null) tg.setExemplarySentencesOrAdditionalInfo(explanations.get(synonyms));
+            if (explanations.get(synonyms) != null) {
+                tg.setExemplarySentencesOrAdditionalInfo(explanations.get(synonyms));
+            }
             return tg;
         }).collect(Collectors.toList());
     }

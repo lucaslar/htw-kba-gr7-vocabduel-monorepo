@@ -13,6 +13,9 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Tra
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.List;
 
 @Service
@@ -21,13 +24,20 @@ public class GameServiceImpl implements GameService {
     private UserService userService;
     private VocabularyService vocabularyService;
 
-    public static int getFixNumberOfRoundsPerGame(){
+    private final EntityManager ENTITY_MANAGER;
+
+    public static int getFixNumberOfRoundsPerGame() {
         return GameService.NR_OF_ROUNDS;
+    }
+
+    public GameServiceImpl() {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_game");
+        ENTITY_MANAGER = emf.createEntityManager();
     }
 
     @Override
     public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
-        throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException {
+            throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException {
         return null;
     }
 
