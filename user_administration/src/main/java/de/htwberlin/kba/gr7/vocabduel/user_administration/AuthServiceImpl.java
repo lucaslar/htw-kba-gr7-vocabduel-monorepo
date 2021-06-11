@@ -12,6 +12,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -33,18 +34,10 @@ public class AuthServiceImpl implements AuthService {
         Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
         Validation.passwordValidation(password, confirmPassword);
 
-        final User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setFirstName(firstname);
-        user.setLastName(lastname);
+        final User user = new User(username, email, firstname, lastname);
 
         ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(user);
-        ENTITY_MANAGER.getTransaction().commit();
-
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(new LoginData(USER_SERVICE.getUserDataByEmail(email), hashPassword(password)));
+        ENTITY_MANAGER.persist(new LoginData(user, hashPassword(password)));
         ENTITY_MANAGER.getTransaction().commit();
 
         return loginUser(email, password);
@@ -52,16 +45,26 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoggedInUser loginUser(String email, String password) {
-        // TODO: remove mock data
-        final LoggedInUser user = new LoggedInUser(42L);
-        user.setEmail(email);
-        user.setFirstName("Arnold");
-        user.setLastName("Schwarzenegger");
-        user.setUsername("arnie1947");
-        user.setAuthTokens(new AuthTokens());
-        user.getAuthTokens().setToken("123");
-        user.getAuthTokens().setRefreshToken("123");
-        return user;
+
+        ENTITY_MANAGER.getTransaction().begin();
+        LoginData loginData = null;
+        try {
+            loginData = (LoginData) ENTITY_MANAGER
+                    .createQuery("SELECT l FROM LoginData l INNER JOIN l.user u WHERE u.email LIKE :email")
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException ignored) {
+        }
+
+        ENTITY_MANAGER.getTransaction().commit();
+        if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
+            final LoggedInUser user = new LoggedInUser(loginData.getUser());
+            user.setAuthTokens(new AuthTokens());
+            user.getAuthTokens().setToken("123");
+            user.getAuthTokens().setRefreshToken("123");
+            // TODO Generate real tokens
+            return user;
+        } else return null;
     }
 
     @Override
@@ -84,5 +87,9 @@ public class AuthServiceImpl implements AuthService {
 
     private String hashPassword(final String pwd) {
         return BCrypt.withDefaults().hashToString(12, pwd.toCharArray());
+    }
+
+    private boolean validatePassword(final String hashedPwd, final String pwd) {
+        return BCrypt.verifyer().verify(pwd.toCharArray(), hashedPwd).verified;
     }
 }

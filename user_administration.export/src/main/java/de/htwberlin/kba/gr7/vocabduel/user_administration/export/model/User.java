@@ -16,6 +16,10 @@ public class User {
     public User() {
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     public User(final String username, final String email, final String firstName, final String lastName) {
         this.username = username;
         this.email = email;
@@ -23,8 +27,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public User(Long id) {
+    public User(final Long id, final String username, final String email, final String firstName, final String lastName) {
         this.id = id;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Long getId() {

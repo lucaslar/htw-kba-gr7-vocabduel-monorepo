@@ -13,8 +13,8 @@ public class LoggedInUser extends User {
     })
     private AuthTokens authTokens;
 
-    public LoggedInUser(Long id) {
-        super(id);
+    public LoggedInUser(User user) {
+        super(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName());
     }
 
     public AuthTokens getAuthTokens() {
