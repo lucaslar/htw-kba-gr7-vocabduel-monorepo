@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String username;
     private String email;
@@ -13,6 +14,13 @@ public class User {
     private String lastName;
 
     public User() {
+    }
+
+    public User(final String username, final String email, final String firstName, final String lastName) {
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User(Long id) {

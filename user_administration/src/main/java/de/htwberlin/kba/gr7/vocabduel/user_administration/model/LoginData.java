@@ -1,14 +1,29 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.model;
 
-public class LoginData {
-    private Long id;
-    private int passwordHash;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
-    public Long getId() {
-        return id;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import java.io.Serializable;
+
+@Entity
+public class LoginData implements Serializable {
+    @Id
+    @OneToOne
+    private User user;
+    private String passwordHash;
+
+    public LoginData(final User user, final String passwordHash) {
+        this.user = user;
+        this.passwordHash = passwordHash;
     }
 
-    public int getPasswordHash() {
+    public User getUser() {
+        return user;
+    }
+
+    public String getPasswordHash() {
         return passwordHash;
     }
 }
