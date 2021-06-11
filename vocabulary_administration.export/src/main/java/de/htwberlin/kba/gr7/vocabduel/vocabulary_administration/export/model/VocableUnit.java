@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -10,7 +11,7 @@ public class VocableUnit {
     @Id
     private Long id;
     private String title;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableList> vocableLists;
 
     public Long getId() {

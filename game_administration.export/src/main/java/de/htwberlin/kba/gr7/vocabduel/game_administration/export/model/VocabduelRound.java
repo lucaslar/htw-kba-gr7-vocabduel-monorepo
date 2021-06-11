@@ -18,7 +18,7 @@ public class VocabduelRound implements Serializable {
     private int roundNr;
     @OneToOne
     private UntranslatedVocable question;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<TranslationGroup> answers;
 
     public VocabduelRound(Long gameId){ this.gameId = gameId; }

@@ -11,7 +11,7 @@ public class LanguageSet {
     private SupportedLanguage knownLanguage;
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableUnit> vocableUnits;
 
     public Long getId() {
