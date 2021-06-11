@@ -18,6 +18,11 @@ public class VocabduelView {
     }
 
     public void printHello() {
+        System.out.println("\n###############################################");
+        System.out.println("###                                         ###");
+        System.out.println("###              VOCABDUEL CLI              ###");
+        System.out.println("###                                         ###");
+        System.out.println("###############################################\n");
         System.out.println("Welcome to the gr7-vocabduel command line interface!");
         System.out.println("If you haven't used this tool before, type `help` or `h` to get a list of all possible actions.");
     }
