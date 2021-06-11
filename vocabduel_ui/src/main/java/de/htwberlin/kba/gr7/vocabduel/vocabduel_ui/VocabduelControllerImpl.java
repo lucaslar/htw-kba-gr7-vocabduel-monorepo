@@ -35,8 +35,6 @@ public class VocabduelControllerImpl implements VocabduelController {
     private HashMap<String, VocabduelCliAction> actions;
     private List<VocabduelCliAction> actionsList;
 
-    private boolean isQuit = false;
-
     private final String LO_KEY = "logout";
     private final String LO_SHORT = "lo";
 
@@ -69,18 +67,21 @@ public class VocabduelControllerImpl implements VocabduelController {
             e.printStackTrace();
         }
 
-        do {
-            try {
-                final String input = VIEW.scanInput().trim();
-                final String actionName = input.split("--")[0].trim();
-                final String[] userInputArgs = input.contains("--")
-                        ? input.substring(input.indexOf("--")).split("\\s+")
-                        : null;
-                handleUserInput(actionName, userInputArgs);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } while (!isQuit);
+        runCore();
+    }
+
+    private void runCore() {
+        try {
+            final String input = VIEW.scanInput().trim();
+            final String actionName = input.split("--")[0].trim();
+            final String[] userInputArgs = input.contains("--")
+                    ? input.substring(input.indexOf("--")).split("\\s+")
+                    : null;
+            handleUserInput(actionName, userInputArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        runCore();
     }
 
     private void initializeFunctionsList() {
@@ -179,7 +180,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onQuitCalled() {
         VIEW.printQuit();
-        isQuit = true;
+        System.exit(0);
     }
 
     private void onLoginCalled(final HashMap<String, String> args) {
