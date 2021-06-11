@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,17 +30,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserDataById(Long id) {
-        return null;
+        ENTITY_MANAGER.getTransaction().begin();
+        final User user = ENTITY_MANAGER.find(User.class, id);
+        ENTITY_MANAGER.getTransaction().commit();
+        return user;
     }
 
     @Override
     public User getUserDataByEmail(String email) {
-        return null;
+        ENTITY_MANAGER.getTransaction().begin();
+        User user = null;
+        try {
+            final String query = "from User as u where u.email like :email";
+            user = (User) ENTITY_MANAGER
+                    .createQuery(query)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+        return user;
     }
 
     @Override
     public User getUserDataByUsername(String username) {
-        return null;
+        ENTITY_MANAGER.getTransaction().begin();
+        User user = null;
+        try {
+            final String query = "from User as u where u.username like :username";
+            user = (User) ENTITY_MANAGER
+                    .createQuery(query)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+        return user;
     }
 
     @Override
