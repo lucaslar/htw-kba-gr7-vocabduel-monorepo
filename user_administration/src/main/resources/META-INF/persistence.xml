@@ -9,7 +9,6 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User</class>
-        <class>de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens</class>
 
         <class>de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken</class>
         <class>de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData</class>
