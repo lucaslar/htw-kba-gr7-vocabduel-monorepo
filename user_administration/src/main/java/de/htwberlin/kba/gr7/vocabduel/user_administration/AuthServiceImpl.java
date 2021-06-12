@@ -10,8 +10,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -61,7 +60,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoggedInUser loginUser(String email, String password) {
-
         ENTITY_MANAGER.getTransaction().begin();
         LoginData loginData = null;
         try {
@@ -74,9 +72,13 @@ public class AuthServiceImpl implements AuthService {
 
         ENTITY_MANAGER.getTransaction().commit();
 
+
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
-            return manageUserTokens(loginData.getUser());
-        } else return null;
+            final LoggedInUser user = new LoggedInUser(loginData.getUser());
+            user.setAuthTokens(insertNewUserTokens(user));
+            return user;
+        }
+        return null;
     }
 
     @Override
@@ -85,14 +87,28 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthTokens refreshAuthTokens(String refreshToken) {
-        return new AuthTokens("some refresh token", "valid token");
-        // TODO Implement correctly using db
+    public AuthTokens refreshAuthTokens(final LoggedInUser user) {
+        ENTITY_MANAGER.getTransaction().begin();
+        try {
+            final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
+                    .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
+                    .setParameter("user", user)
+                    .setParameter("token", user.getAuthTokens().getRefreshToken())
+                    .getSingleResult();
+            if (validateToken(foundToken.getRefreshToken())) {
+                ENTITY_MANAGER.remove(foundToken);
+                ENTITY_MANAGER.getTransaction().commit();
+                return insertNewUserTokens(user);
+            }
+        } catch (NoResultException ignored) {
+            ENTITY_MANAGER.getTransaction().commit();
+        }
+        return null;
     }
 
     @Override
-    public boolean hasAccessRights(String token) {
-        return token.equals("valid token"); // TODO Implement correctly using db
+    public boolean hasAccessRights(final String token) {
+        return validateToken(token);
     }
 
     private String hashPassword(final String pwd) {
@@ -103,11 +119,9 @@ public class AuthServiceImpl implements AuthService {
         return BCrypt.verifyer().verify(pwd.toCharArray(), hashedPwd).verified;
     }
 
-    private LoggedInUser manageUserTokens(final User foundUser) {
-        final LoggedInUser user = new LoggedInUser(foundUser);
+    private AuthTokens insertNewUserTokens(final User user) {
         final String refreshToken = generateRefreshToken(user);
         final String token = generateAuthToken(user);
-
         ENTITY_MANAGER.getTransaction().begin();
         try {
             final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) ENTITY_MANAGER
@@ -120,18 +134,16 @@ public class AuthServiceImpl implements AuthService {
 
         ENTITY_MANAGER.persist(new StoredRefreshToken(user, refreshToken));
         ENTITY_MANAGER.getTransaction().commit();
-
-        user.setAuthTokens(new AuthTokens(refreshToken, token));
-        return user;
+        return new AuthTokens(refreshToken, token);
     }
 
     private String generateRefreshToken(final User user) {
-        final Date expiration = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
+        final Date expiration = Date.from(Instant.now().plus(15, ChronoUnit.SECONDS));
         return generateToken(user.getEmail(), expiration);
     }
 
     private String generateAuthToken(final User user) {
-        final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.MINUTES));
+        final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.SECONDS));
         return generateToken(user.getEmail(), expiration);
     }
 
@@ -143,5 +155,24 @@ public class AuthServiceImpl implements AuthService {
                 .setExpiration(expiration)
                 .signWith(TOKEN_KEY)
                 .compact();
+    }
+
+    private boolean validateToken(final String token) {
+        try {
+            if (token != null) {
+                parseToken(token);
+                return true;
+            }
+        } catch (ExpiredJwtException ignored) {
+        }
+        return false;
+    }
+
+    private Claims parseToken(final String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(TOKEN_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

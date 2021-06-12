@@ -118,7 +118,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printActionRequiresLogin();
         } else if (action.isGuarded() && !actionName.equals(LO_KEY) && !actionName.equals(LO_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
             VIEW.printInvalidAuthToken();
-            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
+            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser());
             if (tokens != null) {
                 STORAGE.getLoggedInUser().setAuthTokens(tokens);
                 VIEW.printSuccessfullyRefreshedTokens();

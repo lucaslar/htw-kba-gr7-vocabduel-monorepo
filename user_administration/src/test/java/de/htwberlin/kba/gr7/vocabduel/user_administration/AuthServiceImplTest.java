@@ -191,17 +191,23 @@ public class AuthServiceImplTest {
 
     @Test
     public void shouldNotRefreshTokensIfRefreshTokenExpired() {
-        Assert.assertNull(auth.refreshAuthTokens(expiredRefreshToken));
+        final LoggedInUser u = new LoggedInUser(new User());
+        u.setAuthTokens(new AuthTokens(expiredRefreshToken, null));
+        Assert.assertNull(auth.refreshAuthTokens(u));
     }
 
     @Test
     public void shouldNotRefreshTokensIfNoUserIsFoundForToken() {
-        Assert.assertNull(auth.refreshAuthTokens(refreshTokenOfUnknownUser));
+        final LoggedInUser u = new LoggedInUser(new User());
+        u.setAuthTokens(new AuthTokens(refreshTokenOfUnknownUser, null));
+        Assert.assertNull(auth.refreshAuthTokens(u));
     }
 
     @Test
     public void shouldRefreshTokens() {
-        final AuthTokens newTokens = auth.refreshAuthTokens(validRefreshToken);
+        final LoggedInUser u = new LoggedInUser(new User());
+        u.setAuthTokens(new AuthTokens(refreshTokenOfUnknownUser, null));
+        final AuthTokens newTokens = auth.refreshAuthTokens(u);
         Assert.assertNotNull(newTokens);
         Assert.assertNotEquals(newTokens.getRefreshToken(), validRefreshToken);
     }
