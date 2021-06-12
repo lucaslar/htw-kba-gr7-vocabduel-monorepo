@@ -163,18 +163,6 @@ public class VocabularyServiceImplTest {
         // See previous test for checking if insertion of units works
     }
 
-
-    @Test(expected = NotEmptyException.class)
-    public void shouldNotDeleteVocableUnitWithVocableLists() throws NotEmptyException {
-        vocabularyLib.deleteEmptyVocableUnit(existingVocableUnit);
-    }
-
-    @Test
-    public void shouldDeleteEmptyVocableUnit() throws NotEmptyException {
-        final int statusCode = vocabularyLib.deleteEmptyVocableUnit(emptyVocableUnit);
-        Assert.assertEquals(0, statusCode);
-    }
-
     @Test(expected = DifferentAuthorException.class)
     public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException {
         vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));

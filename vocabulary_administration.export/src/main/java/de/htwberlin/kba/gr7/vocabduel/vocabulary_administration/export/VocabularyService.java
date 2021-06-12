@@ -34,17 +34,6 @@ public interface VocabularyService {
      */
     int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException;
 
-    // TODO: Which of the two following is to be deleted? (delete list is prefered to be implemented)
-
-    /**
-     * Deletes a <code>{@link VocableUnit}</code> dispensable due to not containing vocable lists.
-     *
-     * @param unit The empty vocable unit to be deleted.
-     * @return int database status of the delete query.
-     * @throws NotEmptyException The vocable unit to be deleted is not empty.
-     */
-    int deleteEmptyVocableUnit(VocableUnit unit) throws NotEmptyException;
-
     /**
      * Deletes a vocable list if the triggering user is its author.
      *

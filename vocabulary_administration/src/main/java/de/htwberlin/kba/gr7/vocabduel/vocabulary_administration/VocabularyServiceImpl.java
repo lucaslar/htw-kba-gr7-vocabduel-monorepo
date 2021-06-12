@@ -62,11 +62,6 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int deleteEmptyVocableUnit(VocableUnit unit) throws NotEmptyException {
-        return 0;
-    }
-
-    @Override
     public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException {
         return 0;
     }
