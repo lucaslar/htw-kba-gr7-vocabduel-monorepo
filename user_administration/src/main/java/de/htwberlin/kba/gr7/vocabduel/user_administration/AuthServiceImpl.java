@@ -94,8 +94,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthTokens refreshAuthTokens(final String refreshToken) {
-        ENTITY_MANAGER.getTransaction().begin();
         try {
+            ENTITY_MANAGER.getTransaction().begin();
             final User user = fetchUser(refreshToken);
             if (user != null) {
                 final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
@@ -110,8 +110,8 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
         } catch (NoResultException ignored) {
-            ENTITY_MANAGER.getTransaction().commit();
         }
+        ENTITY_MANAGER.getTransaction().commit();
         return null;
     }
 
