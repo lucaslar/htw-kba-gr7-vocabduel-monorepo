@@ -6,8 +6,9 @@ import javax.persistence.*;
 @Table(name = "vocable")
 public class UntranslatedVocable {
     @Id
+    @GeneratedValue
     private Long id;
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TranslationGroup_id")
     private TranslationGroup vocable;
 

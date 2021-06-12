@@ -5,10 +5,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exception
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 
-import java.io.File;
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public interface VocabularyService {
      * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
      * @throws UnknownLanguagesException       One or both given language(s) are not supported or wrongly referred to.
      */
-    int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException;
+    int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, InvalidVocableListException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException;
 
     /**
      * Deletes a vocable list if the triggering user is its author.

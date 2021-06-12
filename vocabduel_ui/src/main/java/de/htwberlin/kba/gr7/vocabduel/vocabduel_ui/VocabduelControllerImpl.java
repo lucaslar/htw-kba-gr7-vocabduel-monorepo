@@ -9,10 +9,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DataAlreadyExistsException;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DuplicateVocablesInSetException;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.IncompleteVocableListException;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.UnknownLanguagesException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
@@ -254,7 +251,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 final int result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
                 if (result == 0) VIEW.printGnuImportSuccessful(args.get("file"));
-            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException e) {
+            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException e) {
                 e.printStackTrace();
             }
         }

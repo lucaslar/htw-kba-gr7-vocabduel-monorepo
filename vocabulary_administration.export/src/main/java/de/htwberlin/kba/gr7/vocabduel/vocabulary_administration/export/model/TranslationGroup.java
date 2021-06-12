@@ -6,6 +6,7 @@ import java.util.List;
 @Entity
 public class TranslationGroup {
     @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "synonyms", nullable = false)

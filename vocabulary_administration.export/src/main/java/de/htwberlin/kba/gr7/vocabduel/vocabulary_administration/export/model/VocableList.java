@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 public class VocableList {
     @Id
+    @GeneratedValue
     private Long id;
     @OneToOne
     private User author;

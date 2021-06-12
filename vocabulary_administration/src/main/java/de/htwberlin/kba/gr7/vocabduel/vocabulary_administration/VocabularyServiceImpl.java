@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -41,23 +42,40 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException {
+    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException {
         final List<String> lines = Arrays.stream(gnuContent.split("\n")).collect(Collectors.toList());
-        final List<String> headline = parseGnuHeadlineData(lines.get(0));
-        lines.remove(0);
+        if (lines.size() < 2) throw new IncompleteVocableListException("Not enough lines, expected at least two");
 
-        // TODO: Necessary to collect parent objects at this point? If so => return objects using headline data (prev. called fn)
-//        final SupportedLanguage langFrom = languageMapping.get(headline.get(1).toLowerCase());
-//        final SupportedLanguage langTo = languageMapping.get(headline.get(2));
-//        final String unitName = headline.get(3);
+        final List<String> headline = parseGnuHeadlineData(lines.get(0));
+        if (headline.size() != 4 || headline.stream().anyMatch(e -> e == null || e.isEmpty())) {
+            throw new IncompleteVocableListException("Expected four non-empty/null elements in headline");
+        }
+
+        lines.remove(0);
+        final SupportedLanguage langFrom = mapLanguageReference(headline.get(1));
+        final SupportedLanguage langTo = mapLanguageReference(headline.get(2));
+        final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
         final String listName = headline.get(0);
+
+        if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
+        else if (unit.getVocableLists().stream().anyMatch(vl -> vl.getTitle().equals(listName))) {
+            throw new DataAlreadyExistsException("List named " + listName + " does already exist!");
+        }
+
+        final List<Vocable> vocables = parseGnuVocableData(lines);
+        validateVocables(vocables);
 
         final VocableList list = new VocableList();
         list.setTitle(listName);
         list.setAuthor(triggeringUser);
         list.setVocables(parseGnuVocableData(lines));
         list.setTimestamp(new Date());
-        // TODO insert / check errors ...
+        unit.getVocableLists().add(list);
+
+        ENTITY_MANAGER.getTransaction().begin();
+        ENTITY_MANAGER.persist(unit);
+        ENTITY_MANAGER.getTransaction().commit();
+
         return 0;
     }
 
@@ -119,22 +137,31 @@ public class VocabularyServiceImpl implements VocabularyService {
         return hlData;
     }
 
-    private List<Vocable> parseGnuVocableData(final List<String> lines) {
-        return lines.stream()
-                .map(l -> l.charAt(0) == '#' ? l.substring(1) : l)
-                .map(l -> {
-                    final String[] vocAndTranslations = l.split(":");
-                    final TranslationGroup vocable = getVocableFromString(vocAndTranslations[0]);
-                    final List<TranslationGroup> translations = getTranslationVocableTranslationsFromString(vocAndTranslations[1]);
-                    return new Vocable(vocable, translations);
-                })
+    private List<Vocable> parseGnuVocableData(final List<String> lines) throws InvalidVocableListException {
+        final List<String[]> splitted = lines.stream()
+                .map(l -> (l.charAt(0) == '#' ? l.substring(1) : l).split(":"))
                 .collect(Collectors.toList());
+
+        if (splitted.stream().anyMatch(s -> s.length != 2)) {
+            throw new InvalidVocableListException("Invalid vocable format (must be split by colon character)");
+        }
+
+        List<Vocable> vocables = new ArrayList<>();
+        for (final String[] vocAndTranslations : splitted) {
+            final TranslationGroup vocable = getVocableFromString(vocAndTranslations[0]);
+            final List<TranslationGroup> translations = getTranslationVocableTranslationsFromString(vocAndTranslations[1]);
+            vocables.add(new Vocable(vocable, translations));
+        }
+        return vocables;
     }
 
-    private TranslationGroup getVocableFromString(final String str) {
+    private TranslationGroup getVocableFromString(final String str) throws InvalidVocableListException {
         final Matcher vocMatcher = ONE_BRACKET_PATTERN.matcher(str);
         final List<String> vocData = new ArrayList<>();
         while (vocMatcher.find()) vocData.add(vocMatcher.group(1).trim());
+        if (vocData.size() == 0) {
+            throw new InvalidVocableListException("Invalid vocable data in learnt language (no match for " + ONE_BRACKET_PATTERN + "):\n" + str);
+        }
 
         final TranslationGroup tg = new TranslationGroup();
         tg.setSynonyms(asSynonymList(vocData.get(0)));
@@ -143,8 +170,9 @@ public class VocabularyServiceImpl implements VocabularyService {
         return tg;
     }
 
-    private List<TranslationGroup> getTranslationVocableTranslationsFromString(final String str) {
+    private List<TranslationGroup> getTranslationVocableTranslationsFromString(final String str) throws InvalidVocableListException {
         final Matcher vocMatcher = ONE_BRACKET_PATTERN.matcher(str);
+
         final List<List<String>> vocData = new ArrayList<>();
         final Map<List<String>, List<String>> explanations = new HashMap<>();
 
@@ -153,6 +181,10 @@ public class VocabularyServiceImpl implements VocabularyService {
                 final String exp = vocMatcher.group(1).substring(2).trim();
                 if (!exp.isEmpty()) explanations.put(vocData.get(vocData.size() - 1), asSynonymList(exp));
             } else vocData.add(asSynonymList(vocMatcher.group(1).trim()));
+        }
+
+        if (vocData.size() == 0) {
+            throw new InvalidVocableListException("Invalid vocable data in known language (no match for " + ONE_BRACKET_PATTERN + "):\n" + str);
         }
 
         return vocData.stream().map((synonyms) -> {
@@ -168,5 +200,61 @@ public class VocabularyServiceImpl implements VocabularyService {
         return Arrays.stream(gnuVocable.split("(?<!\\\\),\\s"))
                 .map(v -> v.replace("\\\\,", ",").replace("\\;", ";").trim())
                 .collect(Collectors.toList());
+    }
+
+    private SupportedLanguage mapLanguageReference(final String reference) throws UnknownLanguagesException {
+        final SupportedLanguage lang = languageMapping.get(reference.toLowerCase());
+        if (lang == null) throw new UnknownLanguagesException("Unknown or wrongly referred language: " + reference);
+        else return lang;
+    }
+
+    private VocableUnit getOrCreateLanguageUnit(final String unitName, final SupportedLanguage from, final SupportedLanguage to) {
+        final LanguageSet ls = getOrCreateLangaugeSet(from, to);
+        VocableUnit unit = null;
+        Optional<VocableUnit> foundUnit = null;
+        if (ls.getVocableUnits() == null) {
+            ls.setVocableUnits(new ArrayList<>());
+        } else foundUnit = ls.getVocableUnits().stream().filter(u -> u.getTitle().equals(unitName)).findFirst();
+
+        if (foundUnit != null && foundUnit.isPresent()) unit = foundUnit.get();
+        else {
+            unit = new VocableUnit(unitName);
+            ls.getVocableUnits().add(unit);
+            ENTITY_MANAGER.getTransaction().begin();
+            ENTITY_MANAGER.persist(ls);
+            ENTITY_MANAGER.getTransaction().commit();
+        }
+
+        return unit;
+    }
+
+    private LanguageSet getOrCreateLangaugeSet(final SupportedLanguage from, final SupportedLanguage to) {
+        LanguageSet languageSet = null;
+        ENTITY_MANAGER.getTransaction().begin();
+        try {
+            final String query = "from LanguageSet as l where l.learntLanguage like :learntLanguage and l.knownLanguage like :knownLanguage";
+            languageSet = (LanguageSet) ENTITY_MANAGER
+                    .createQuery(query)
+                    .setParameter("learntLanguage", from)
+                    .setParameter("knownLanguage", to)
+                    .getSingleResult();
+        } catch (NoResultException ignored) {
+            languageSet = new LanguageSet(from, to);
+            ENTITY_MANAGER.persist(languageSet);
+        }
+
+        ENTITY_MANAGER.getTransaction().commit();
+        return languageSet;
+    }
+
+    private void validateVocables(final List<Vocable> vocables) throws DuplicateVocablesInSetException {
+        final List<String> mappedVocables = vocables.stream().map(vocable -> vocable.getVocable().getSynonyms().get(0)).collect(Collectors.toList());
+        final int unique = new ArrayList<>(new HashSet<>(mappedVocables)).size();
+        if (unique != vocables.size()) {
+            final HashSet<String> stringSet = new HashSet<>();
+            final HashSet<String> duplicates = new HashSet<>();
+            for (String element : mappedVocables) if (!stringSet.add(element)) duplicates.add(element);
+            throw new DuplicateVocablesInSetException("The given list contains duplicate values: " + new ArrayList<>(duplicates));
+        }
     }
 }
