@@ -30,8 +30,9 @@ public interface VocabularyService {
      * @throws DuplicateVocablesInSetException The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
      * @throws IncompleteVocableListException  The vocable list to be imported does not contain all required data.
      * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
+     * @throws UnknownLanguagesException       One or both given language(s) are not supported or wrongly referred to.
      */
-    int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException;
+    int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException;
 
     // TODO: Which of the two following is to be deleted? (delete list is prefered to be implemented)
 

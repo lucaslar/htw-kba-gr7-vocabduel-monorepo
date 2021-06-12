@@ -12,6 +12,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.Vocabular
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DataAlreadyExistsException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.DuplicateVocablesInSetException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.IncompleteVocableListException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.UnknownLanguagesException;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
@@ -253,7 +254,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 final int result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
                 if (result == 0) VIEW.printGnuImportSuccessful(args.get("file"));
-            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException e) {
+            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException e) {
                 e.printStackTrace();
             }
         }

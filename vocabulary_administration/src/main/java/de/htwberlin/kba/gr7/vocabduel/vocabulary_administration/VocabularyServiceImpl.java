@@ -41,7 +41,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException {
+    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException {
         final List<String> lines = Arrays.stream(gnuContent.split("\n")).collect(Collectors.toList());
         final List<String> headline = parseGnuHeadlineData(lines.get(0));
         lines.remove(0);
