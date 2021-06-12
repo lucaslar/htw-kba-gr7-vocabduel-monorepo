@@ -60,10 +60,10 @@ public interface AuthService {
      * Note: After having called this method successfully, the <code>refreshToken</code> passed in as a param is
      * obsolete and instead, the new refresh token (<code>{@link AuthTokens#getRefreshToken()}</code>) is to be used.
      *
-     * @param user User object containing user data and the token to be used for refreshing auth/refresh token.
+     * @param refreshToken Token to be used for refreshing auth/refresh token.
      * @return Object containing refreshed tokens, <code>null</code> if the operation was not successful.
      */
-    AuthTokens refreshAuthTokens(LoggedInUser user);
+    AuthTokens refreshAuthTokens(String refreshToken);
 
     /**
      * Checks whether a given auth token is valid, i.e. if the user has access rights or not.

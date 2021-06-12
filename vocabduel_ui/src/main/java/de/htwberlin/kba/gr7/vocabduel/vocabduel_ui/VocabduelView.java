@@ -1,5 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import org.springframework.stereotype.Component;
@@ -67,9 +69,16 @@ public class VocabduelView {
         printCurrentlyLoggedInAs(user);
     }
 
-    public void printSuccessfulLogin(final User user) {
+    public void printSuccessfulLogin(final LoggedInUser user) {
         System.out.println("Successful login!");
         printCurrentlyLoggedInAs(user);
+        printTokens(user.getAuthTokens());
+    }
+
+    public void printTokens(final AuthTokens tokens) {
+        System.out.println("Until refreshed, you can directly use these tokens to log in:");
+        System.out.println(" --token " + tokens.getToken());
+        System.out.println(" --refresh " + tokens.getRefreshToken());
     }
 
     public void printLogoutSuccessful() {
@@ -113,7 +122,27 @@ public class VocabduelView {
         System.out.println("Invalid/expired refresh token. You have been logged out.");
     }
 
-    public void printSuccessfullyRefreshedTokens() {
+    public void printSuccessfullyRefreshedTokens(final AuthTokens tokens) {
         System.out.println("Successfully refreshed tokens!");
+        printTokens(tokens);
+    }
+
+    public void printInvalidAuthTokenInLogin() {
+        System.out.println("Invalid/expired auth token. Don't worry. The stated refresh token is tried to be used...");
+    }
+
+    public void printInvalidLoginWithToken() {
+        System.out.println("Invalid login. This means that either both the auth and the refresh token are invalid or that they do not belong to an existing user.");
+    }
+
+    public void printSuccessfulLoginWithToken(final LoggedInUser user) {
+        System.out.println("Successful login using JWT token(s)!");
+        printCurrentlyLoggedInAs(user);
+    }
+
+    public void printSuccessfulLoginWithRefreshedToken(final LoggedInUser user) {
+        printSuccessfulLoginWithToken(user);
+        System.out.println("The tokens have been updated during this process.");
+        printTokens(user.getAuthTokens());
     }
 }

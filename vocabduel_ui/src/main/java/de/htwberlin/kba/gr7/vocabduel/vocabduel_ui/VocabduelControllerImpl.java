@@ -5,6 +5,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
@@ -88,7 +89,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList = new ArrayList<>();
         actionsList.add(new VocabduelCliAction(false, "help", "Get a list of all possible actions", "h", this::onHelpCalled));
         actionsList.add(new VocabduelCliAction(false, "quit", "Quit this application", "q", this::onQuitCalled));
-        actionsList.add(new VocabduelCliAction(false, "login", "Sign in with an existing account", "li", this::onLoginCalled, "email", "pwd"));
+        actionsList.add(new VocabduelCliAction(false, "login", "Sign in to your existing account", "li", this::onLoginCalled, "email", "pwd"));
+        actionsList.add(new VocabduelCliAction(false, "login jwt", "Sign in with to your existing account using JWT tokens", "lt", this::onLoginJwtCalled, "token", "refresh"));
         actionsList.add(new VocabduelCliAction(true, LO_KEY, "Log out from the application", LO_SHORT, this::onLogoutCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
         actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "vis", this::onVocableSampleCalled));
@@ -118,10 +120,10 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printActionRequiresLogin();
         } else if (action.isGuarded() && !actionName.equals(LO_KEY) && !actionName.equals(LO_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
             VIEW.printInvalidAuthToken();
-            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser());
+            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
             if (tokens != null) {
                 STORAGE.getLoggedInUser().setAuthTokens(tokens);
-                VIEW.printSuccessfullyRefreshedTokens();
+                VIEW.printSuccessfullyRefreshedTokens(tokens);
                 handleUserInput(actionName, userInputArgs);
             } else {
                 VIEW.printInvalidRefreshToken();
@@ -192,6 +194,39 @@ public class VocabduelControllerImpl implements VocabduelController {
                 STORAGE.setLoggedInUser(user);
                 VIEW.printSuccessfulLogin(user);
             }
+        }
+    }
+
+    private void onLoginJwtCalled(final HashMap<String, String> args) {
+        if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
+        else {
+            String token = args.get("token");
+            String refreshToken = args.get("refresh");
+            final boolean isValidInitialToken = AUTH_SERVICE.hasAccessRights(token);
+
+            if (!isValidInitialToken) {
+                VIEW.printInvalidAuthTokenInLogin();
+                final AuthTokens newTokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
+                if (newTokens == null) token = null;
+                else {
+                    token = newTokens.getToken();
+                    refreshToken = newTokens.getRefreshToken();
+                }
+            }
+
+            LoggedInUser user = null;
+            if (token != null) {
+                final User fetchedUser = AUTH_SERVICE.fetchUser(token);
+                if (fetchedUser != null) {
+                    user = new LoggedInUser(fetchedUser);
+                    user.setAuthTokens(new AuthTokens(refreshToken, token));
+                    STORAGE.setLoggedInUser(user);
+                    if (isValidInitialToken) VIEW.printSuccessfulLoginWithToken(user);
+                    else VIEW.printSuccessfulLoginWithRefreshedToken(user);
+                }
+            }
+
+            if (user == null) VIEW.printInvalidLoginWithToken();
         }
     }
 

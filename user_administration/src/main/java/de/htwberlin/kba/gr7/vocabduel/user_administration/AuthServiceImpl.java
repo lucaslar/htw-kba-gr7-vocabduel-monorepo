@@ -72,7 +72,6 @@ public class AuthServiceImpl implements AuthService {
 
         ENTITY_MANAGER.getTransaction().commit();
 
-
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
             final LoggedInUser user = new LoggedInUser(loginData.getUser());
             user.setAuthTokens(insertNewUserTokens(user));
@@ -82,23 +81,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User fetchUser(String token) {
+    public User fetchUser(final String token) {
+        if (token != null) {
+            try {
+                final Claims claims = parseToken(token);
+                return USER_SERVICE.getUserDataByEmail(claims.get("email", String.class));
+            } catch (JwtException ignored) {
+            }
+        }
         return null;
     }
 
     @Override
-    public AuthTokens refreshAuthTokens(final LoggedInUser user) {
+    public AuthTokens refreshAuthTokens(final String refreshToken) {
         ENTITY_MANAGER.getTransaction().begin();
         try {
-            final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
-                    .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
-                    .setParameter("user", user)
-                    .setParameter("token", user.getAuthTokens().getRefreshToken())
-                    .getSingleResult();
-            if (validateToken(foundToken.getRefreshToken())) {
-                ENTITY_MANAGER.remove(foundToken);
-                ENTITY_MANAGER.getTransaction().commit();
-                return insertNewUserTokens(user);
+            final User user = fetchUser(refreshToken);
+            if (user != null) {
+                final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
+                        .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
+                        .setParameter("user", user)
+                        .setParameter("token", refreshToken)
+                        .getSingleResult();
+                if (validateToken(foundToken.getRefreshToken())) {
+                    ENTITY_MANAGER.remove(foundToken);
+                    ENTITY_MANAGER.getTransaction().commit();
+                    return insertNewUserTokens(user);
+                }
             }
         } catch (NoResultException ignored) {
             ENTITY_MANAGER.getTransaction().commit();
@@ -138,12 +147,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String generateRefreshToken(final User user) {
-        final Date expiration = Date.from(Instant.now().plus(15, ChronoUnit.SECONDS));
+        final Date expiration = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
         return generateToken(user.getEmail(), expiration);
     }
 
     private String generateAuthToken(final User user) {
-        final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.SECONDS));
+        final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.MINUTES));
         return generateToken(user.getEmail(), expiration);
     }
 
@@ -163,12 +172,12 @@ public class AuthServiceImpl implements AuthService {
                 parseToken(token);
                 return true;
             }
-        } catch (ExpiredJwtException ignored) {
+        } catch (JwtException ignored) {
         }
         return false;
     }
 
-    private Claims parseToken(final String token) {
+    private Claims parseToken(final String token) throws JwtException {
         return Jwts.parserBuilder()
                 .setSigningKey(TOKEN_KEY)
                 .build()
