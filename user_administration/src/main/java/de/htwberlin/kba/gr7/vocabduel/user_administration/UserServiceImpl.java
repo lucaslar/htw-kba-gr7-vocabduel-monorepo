@@ -38,33 +38,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserDataByEmail(String email) {
-        ENTITY_MANAGER.getTransaction().begin();
         User user = null;
-        try {
-            final String query = "from User as u where u.email like :email";
-            user = (User) ENTITY_MANAGER
-                    .createQuery(query)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (NoResultException ignored) {
+        if (email != null) {
+            ENTITY_MANAGER.getTransaction().begin();
+            try {
+                final String query = "from User as u where u.email like :email";
+                user = (User) ENTITY_MANAGER
+                        .createQuery(query)
+                        .setParameter("email", email)
+                        .getSingleResult();
+            } catch (NoResultException ignored) {
+            }
+            ENTITY_MANAGER.getTransaction().commit();
         }
-        ENTITY_MANAGER.getTransaction().commit();
         return user;
     }
 
     @Override
     public User getUserDataByUsername(String username) {
-        ENTITY_MANAGER.getTransaction().begin();
         User user = null;
-        try {
-            final String query = "from User as u where u.username like :username";
-            user = (User) ENTITY_MANAGER
-                    .createQuery(query)
-                    .setParameter("username", username)
-                    .getSingleResult();
-        } catch (NoResultException ignored) {
+        if (username != null) {
+            ENTITY_MANAGER.getTransaction().begin();
+            try {
+                final String query = "from User as u where u.username like :username";
+                user = (User) ENTITY_MANAGER
+                        .createQuery(query)
+                        .setParameter("username", username)
+                        .getSingleResult();
+            } catch (NoResultException ignored) {
+            }
+            ENTITY_MANAGER.getTransaction().commit();
         }
-        ENTITY_MANAGER.getTransaction().commit();
         return user;
     }
 
