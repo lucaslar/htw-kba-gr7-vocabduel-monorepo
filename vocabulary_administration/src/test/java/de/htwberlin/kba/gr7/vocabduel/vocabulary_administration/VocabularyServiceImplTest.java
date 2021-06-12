@@ -222,6 +222,8 @@ public class VocabularyServiceImplTest {
         Assert.assertTrue(supportedLanguages.size() >= 5);
     }
 
+    // TODO test "references"
+
     @Test
     public void shouldOnlyListUniqueLanguagesAsSupported() {
         final List<SupportedLanguage> supportedLanguages = vocabularyLib.getAllSupportedLanguages();

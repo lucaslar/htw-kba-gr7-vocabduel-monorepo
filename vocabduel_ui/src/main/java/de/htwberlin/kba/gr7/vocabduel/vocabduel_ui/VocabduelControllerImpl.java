@@ -98,6 +98,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "update user", "Update the currently logged in user's data", "u user", this::onUpdateCalled));
         actionsList.add(new VocabduelCliAction(true, "update pwd", "Update the currently logged in user's password", "u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
         actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
+        actionsList.add(new VocabduelCliAction(false, "vocab supported", "See a list of all supported languages", "vs", this::onVocabSupportedCalled));
+        actionsList.add(new VocabduelCliAction(false, "vocab supported codes", "See a list of all supported languages (codes only)", "vsc", this::onVocabSupportedCodesCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -316,5 +318,22 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onWhoAmICalled() {
         VIEW.printCurrentlyLoggedInAs(STORAGE.getLoggedInUser());
+    }
+
+    private void onVocabSupportedCalled() {
+        final List<List<String>> languages = VOCABULARY_SERVICE.getAllSupportedLanguages()
+                .stream()
+                .sorted()
+                .map(key -> {
+                    final List<String> references = VOCABULARY_SERVICE.getSupportedLanguageReferences(key);
+                    references.add(0, key.toString());
+                    return references;
+                })
+                .collect(Collectors.toList());
+        VIEW.printSupportedLanguages(languages);
+    }
+
+    private void onVocabSupportedCodesCalled() {
+        VIEW.printSupportedLanguagesCodeOnly(VOCABULARY_SERVICE.getAllSupportedLanguages());
     }
 }

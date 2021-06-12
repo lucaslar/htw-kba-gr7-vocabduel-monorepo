@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthToken
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -144,5 +145,18 @@ public class VocabduelView {
         printSuccessfulLoginWithToken(user);
         System.out.println("The tokens have been updated during this process.");
         printTokens(user.getAuthTokens());
+    }
+
+    public void printSupportedLanguages(final List<List<String>> languages) {
+        System.out.println("Here's a list of all supported languages incl. names they can be referred to:");
+        languages.forEach(langList -> {
+            System.out.print(" - " + String.format("%-3s", langList.get(0)));
+            System.out.println(" => [" + langList.stream().skip(1).collect(Collectors.joining(" - ")) + "]");
+        });
+    }
+
+    public void printSupportedLanguagesCodeOnly(final List<SupportedLanguage> languages) {
+        System.out.println("Here's a list of all supported languages (codes only):");
+        languages.stream().sorted().forEach(l -> System.out.println(" - " + l));
     }
 }

@@ -21,6 +21,7 @@ import static de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.mo
 public class VocabularyServiceImpl implements VocabularyService {
 
     private HashMap<String, SupportedLanguage> languageMapping;
+    private HashMap<SupportedLanguage, String[]> reverseLanguageMapping;
 
     private final Pattern THREE_BRACKETS_PATTERN = Pattern.compile("\\{\\{\\{(.*?)}}}");
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
@@ -90,20 +91,30 @@ public class VocabularyServiceImpl implements VocabularyService {
         return new ArrayList<>(new HashSet<>(languageMapping.values()));
     }
 
+    @Override
+    public List<String> getSupportedLanguageReferences(SupportedLanguage language) {
+        return Arrays.stream(reverseLanguageMapping.get(language)).collect(Collectors.toList());
+    }
+
     private void initializeLangMapping() {
+        reverseLanguageMapping = new HashMap<>();
+        reverseLanguageMapping.put(AR, new String[]{"ar", "arabic", "arabisch", "العربية"});
+        reverseLanguageMapping.put(CMN, new String[]{"cmn", "chinese", "chinesisch", "中国人"});
+        reverseLanguageMapping.put(DE, new String[]{"de", "german", "deutsch"});
+        reverseLanguageMapping.put(EN, new String[]{"en", "english", "englisch"});
+        reverseLanguageMapping.put(ES, new String[]{"es", "spanish", "spanisch", "español"});
+        reverseLanguageMapping.put(FR, new String[]{"fr", "french", "französisch", "français"});
+        reverseLanguageMapping.put(HI, new String[]{"hi", "hindi", "हिंदी"});
+        reverseLanguageMapping.put(IT, new String[]{"it", "italian", "italienisch", "italiano"});
+        reverseLanguageMapping.put(JA, new String[]{"ja", "japanese", "japanisch", "日本語"});
+        reverseLanguageMapping.put(KO, new String[]{"ko", "korean", "koreanisch", "한국어"});
+        reverseLanguageMapping.put(PT, new String[]{"pt", "portuguese", "portugiesisch", "portugês"});
+        reverseLanguageMapping.put(RU, new String[]{"ru", "russian", "russisch", "русский"});
+
         languageMapping = new HashMap<>();
-        for (final String l : new String[]{"ar", "arabic", "arabisch", "العربية"}) languageMapping.put(l, AR);
-        for (final String l : new String[]{"cmn", "chinese", "chinesisch", "中国人"}) languageMapping.put(l, CMN);
-        for (final String l : new String[]{"de", "german", "deutsch"}) languageMapping.put(l, DE);
-        for (final String l : new String[]{"en", "english", "englisch"}) languageMapping.put(l, EN);
-        for (final String l : new String[]{"es", "spanish", "spanisch", "español"}) languageMapping.put(l, ES);
-        for (final String l : new String[]{"fr", "french", "französisch", "français"}) languageMapping.put(l, FR);
-        for (final String l : new String[]{"hi", "hindi", "हिंदी"}) languageMapping.put(l, HI);
-        for (final String l : new String[]{"it", "italian", "italienisch", "italiano"}) languageMapping.put(l, IT);
-        for (final String l : new String[]{"ja", "japanese", "japanisch", "日本語"}) languageMapping.put(l, JA);
-        for (final String l : new String[]{"ko", "korean", "koreanisch", "한국어"}) languageMapping.put(l, KO);
-        for (final String l : new String[]{"pt", "portuguese", "portugiesisch", "portugês"}) languageMapping.put(l, PT);
-        for (final String l : new String[]{"ru", "russian", "russisch", "русский"}) languageMapping.put(l, RU);
+        reverseLanguageMapping.keySet().forEach(key -> {
+            for (final String l : reverseLanguageMapping.get(key)) languageMapping.put(l, key);
+        });
     }
 
     private List<String> parseGnuHeadlineData(final String line) {

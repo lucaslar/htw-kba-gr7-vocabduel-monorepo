@@ -75,4 +75,9 @@ public interface VocabularyService {
      * @return List containing all languages for learning/translating supported by this application.
      */
     List<SupportedLanguage> getAllSupportedLanguages();
+
+    /**
+     * @return List containing all references to the given supported language.
+     */
+    List<String> getSupportedLanguageReferences(SupportedLanguage language);
 }
