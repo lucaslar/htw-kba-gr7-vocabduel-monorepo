@@ -248,7 +248,9 @@ public class VocabduelView {
                                     toBePrinted.append("|-- ");
 
                                     toBePrinted.append(vocable.getVocable().getSynonyms());
-                                    if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0) {
+                                    if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo() != null &&
+                                            vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0
+                                    ) {
                                         toBePrinted.append(vocable.getVocable().getExemplarySentencesOrAdditionalInfo());
                                     }
                                     toBePrinted.append(" => ");
@@ -257,7 +259,9 @@ public class VocabduelView {
                                         toBePrinted
                                                 .append("[")
                                                 .append(String.join(", ", t.getSynonyms()));
-                                        if (t.getExemplarySentencesOrAdditionalInfo().size() > 0) {
+                                        if (t.getExemplarySentencesOrAdditionalInfo() != null &&
+                                                t.getExemplarySentencesOrAdditionalInfo().size() > 0
+                                        ) {
                                             toBePrinted.append(" (");
                                             t.getExemplarySentencesOrAdditionalInfo().forEach(toBePrinted::append);
                                             toBePrinted.append(")");
