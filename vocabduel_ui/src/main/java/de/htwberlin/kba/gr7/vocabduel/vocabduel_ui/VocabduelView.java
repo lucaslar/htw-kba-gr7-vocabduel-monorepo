@@ -217,60 +217,17 @@ public class VocabduelView {
                             else toBePrinted.append("|   ");
                             toBePrinted.append("|-- ");
 
-                            toBePrinted
-                                    .append("[ID: ")
-                                    .append(sortedVl.get(k).getId())
-                                    .append("] ")
-                                    .append(sortedVl.get(k).getTitle())
-                                    .append(" (")
-                                    .append(sortedVl.get(k).getVocables().size())
-                                    .append(" vocables, added by user ")
-                                    .append(sortedVl.get(k).getAuthor().getFirstName())
-                                    .append(" ")
-                                    .append(sortedVl.get(k).getAuthor().getLastName())
-                                    .append(" (@")
-                                    .append(sortedVl.get(k).getAuthor().getUsername())
-                                    .append(") on ")
-                                    .append(sortedVl.get(k).getTimestamp().toString())
-                                    .append(")\n");
+                            toBePrinted.append(createVocableListTitleString(sortedVl.get(k)));
 
                             if (depth > 3) {
-                                final List<Vocable> sortedV = sortedVl.get(k).getVocables()
-                                        .stream().sorted(Comparator.comparing(v -> v.getVocable().getSynonyms().get(0)))
-                                        .collect(Collectors.toList());
-                                for (final Vocable vocable : sortedV) {
-                                    if (i == sortedLs.size() - 1) toBePrinted.append("    ");
-                                    else toBePrinted.append("|   ");
-                                    if (j == sortedVu.size() - 1) toBePrinted.append("    ");
-                                    else toBePrinted.append("|   ");
-                                    if (k == sortedVl.size() - 1) toBePrinted.append("    ");
-                                    else toBePrinted.append("|   ");
-                                    toBePrinted.append("|-- ");
-
-                                    toBePrinted.append(vocable.getVocable().getSynonyms());
-                                    if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo() != null &&
-                                            vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0
-                                    ) {
-                                        toBePrinted.append(vocable.getVocable().getExemplarySentencesOrAdditionalInfo());
-                                    }
-                                    toBePrinted.append(" => ");
-
-                                    vocable.getTranslations().forEach(t -> {
-                                        toBePrinted
-                                                .append("[")
-                                                .append(String.join(", ", t.getSynonyms()));
-                                        if (t.getExemplarySentencesOrAdditionalInfo() != null &&
-                                                t.getExemplarySentencesOrAdditionalInfo().size() > 0
-                                        ) {
-                                            toBePrinted.append(" (");
-                                            t.getExemplarySentencesOrAdditionalInfo().forEach(toBePrinted::append);
-                                            toBePrinted.append(")");
-                                        }
-                                        toBePrinted.append("]");
-                                    });
-
-                                    toBePrinted.append("\n");
-                                }
+                                StringBuilder prefix = new StringBuilder();
+                                if (i == sortedLs.size() - 1) prefix.append("    ");
+                                else prefix.append("|   ");
+                                if (j == sortedVu.size() - 1) prefix.append("    ");
+                                else prefix.append("|   ");
+                                if (k == sortedVl.size() - 1) prefix.append("    ");
+                                else prefix.append("|   ");
+                                toBePrinted.append(createVocableListString(prefix.toString(), sortedVl.get(k)));
                             }
                         }
                     }
@@ -279,5 +236,72 @@ public class VocabduelView {
         }
 
         System.out.println(toBePrinted);
+    }
+
+    public void printVocableList(final VocableList vocableList) {
+        System.out.println(createVocableListTitleString(vocableList) + createVocableListString(vocableList));
+    }
+
+    private String createVocableListString(final VocableList vocableList) {
+        return createVocableListString("", vocableList);
+    }
+
+    private String createVocableListString(final String vocablePrefix, final VocableList vocableList) {
+        final StringBuilder toBePrinted = new StringBuilder();
+        final List<Vocable> sortedVocables = vocableList.getVocables()
+                .stream().sorted(Comparator.comparing(v -> v.getVocable().getSynonyms().get(0)))
+                .collect(Collectors.toList());
+        for (final Vocable vocable : sortedVocables) {
+            toBePrinted.append(vocablePrefix).append("|-- ").append(vocable.getVocable().getSynonyms());
+            if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo() != null &&
+                    vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0
+            ) {
+                toBePrinted.append(vocable.getVocable().getExemplarySentencesOrAdditionalInfo());
+            }
+            toBePrinted.append(" => ");
+
+            vocable.getTranslations().forEach(t -> {
+                toBePrinted
+                        .append("[")
+                        .append(String.join(", ", t.getSynonyms()));
+                if (t.getExemplarySentencesOrAdditionalInfo() != null &&
+                        t.getExemplarySentencesOrAdditionalInfo().size() > 0
+                ) {
+                    toBePrinted.append(" (");
+                    t.getExemplarySentencesOrAdditionalInfo().forEach(toBePrinted::append);
+                    toBePrinted.append(")");
+                }
+                toBePrinted.append("]");
+            });
+
+            toBePrinted.append("\n");
+        }
+        return toBePrinted.toString();
+    }
+
+    private String createVocableListTitleString(final VocableList vocableList) {
+        return "[ID: " +
+                vocableList.getId() +
+                "] " +
+                vocableList.getTitle() +
+                " (" +
+                vocableList.getVocables().size() +
+                " vocables, added by user " +
+                vocableList.getAuthor().getFirstName() +
+                " " +
+                vocableList.getAuthor().getLastName() +
+                " (@" +
+                vocableList.getAuthor().getUsername() +
+                ") on " +
+                vocableList.getTimestamp().toString() +
+                ")\n";
+    }
+
+    public void printInvalidIdFormat(final String id) {
+        System.out.println("Invalid Id. \"" + id + "\" cannot be parsed!");
+    }
+
+    public void printNoVocableListFound() {
+        System.out.println("No vocable list found for the given ID.");
     }
 }

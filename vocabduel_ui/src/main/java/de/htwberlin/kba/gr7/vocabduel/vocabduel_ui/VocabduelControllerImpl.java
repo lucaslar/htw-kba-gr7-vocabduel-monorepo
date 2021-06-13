@@ -11,6 +11,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
@@ -100,6 +101,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "supported ls", "See a list of all supported languages", "s ls", this::onVocabSupportedCalled));
         actionsList.add(new VocabduelCliAction(false, "supported ls codes", "See a list of all supported languages (codes only)", "s ls c", this::onVocabSupportedCodesCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
+        actionsList.add(new VocabduelCliAction(false, "vocab get", "Get a vocable list by ID", "v get", this::onGetVocabListCalled, "id"));
     }
 
     private void initializeFunctionsMap() {
@@ -347,5 +349,16 @@ public class VocabduelControllerImpl implements VocabduelController {
         options.add(new String[]{"list", "See previous command + vocable lists of each unit"});
         options.add(new String[]{"vocab", "See previous command + vocables of each list"});
         VIEW.printConfigurableThroughParam("level", options);
+    }
+
+    private void onGetVocabListCalled(final HashMap<String, String> args) {
+        try {
+            Long id = Long.parseLong(args.get("id"));
+            VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
+            if (list != null) VIEW.printVocableList(list);
+            else VIEW.printNoVocableListFound();
+        } catch (NumberFormatException e) {
+            VIEW.printInvalidIdFormat(args.get("id"));
+        }
     }
 }

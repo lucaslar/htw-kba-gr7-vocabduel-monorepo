@@ -81,7 +81,10 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public VocableList getVocableListById(Long id) {
-        return null;
+        ENTITY_MANAGER.getTransaction().begin();
+        final VocableList vocableList = ENTITY_MANAGER.find(VocableList.class, id);
+        ENTITY_MANAGER.getTransaction().commit();
+        return vocableList;
     }
 
     @Override
