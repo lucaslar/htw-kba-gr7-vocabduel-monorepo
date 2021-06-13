@@ -202,7 +202,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private List<String> asSynonymList(final String gnuVocable) {
         return Arrays.stream(gnuVocable.split("(?<!\\\\),\\s"))
-                .map(v -> v.replace("\\\\,", ",").replace("\\;", ";").trim())
+                .map(v -> v.replace("\\,", ",").replace("\\;", ";").trim())
                 .collect(Collectors.toList());
     }
 
