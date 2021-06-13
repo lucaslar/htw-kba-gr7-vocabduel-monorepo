@@ -4,7 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthToken
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -158,5 +158,122 @@ public class VocabduelView {
     public void printSupportedLanguagesCodeOnly(final List<SupportedLanguage> languages) {
         System.out.println("Here's a list of all supported languages (codes only):");
         languages.stream().sorted().forEach(l -> System.out.println(" - " + l));
+    }
+
+    public void printConfigurableThroughParam(final String param, final List<String[]> options) {
+        System.out.println("\nNot seeing all information you would like to see? This action is configurable though the param \"" + param + "\"");
+        int i = 0;
+        for (String[] o : options) {
+            System.out.print("  --" + param + " " + o[0]);
+            if (i++ == 0) System.out.print(" (default)");
+            System.out.println(" => " + o[1]);
+        }
+    }
+
+    public void printLanguageSets(final List<LanguageSet> languageSets, String level) {
+        int depth = 1;
+        if (level != null && level.equals("unit")) depth = 2;
+        else if (level != null && level.equals("list")) depth = 3;
+        else if (level != null && level.equals("vocab")) depth = 4;
+
+        final List<LanguageSet> sortedLs = languageSets
+                .stream()
+                .sorted(Comparator.comparing(ls -> ls.getLearntLanguage() + " " + ls.getKnownLanguage()))
+                .collect(Collectors.toList());
+
+        final StringBuilder toBePrinted = new StringBuilder();
+
+        for (int i = 0; i < sortedLs.size(); i++) {
+            toBePrinted
+                    .append("|-- ")
+                    .append(String.format("%-3s", sortedLs.get(i).getLearntLanguage()))
+                    .append(" => ")
+                    .append(String.format("%-3s", sortedLs.get(i).getKnownLanguage()))
+                    .append("(")
+                    .append(sortedLs.get(i).getVocableUnits().size())
+                    .append(" vocable units)\n");
+
+            if (depth > 1) {
+                final List<VocableUnit> sortedVu = languageSets.get(i).getVocableUnits()
+                        .stream().sorted(Comparator.comparing(VocableUnit::getTitle))
+                        .collect(Collectors.toList());
+                for (int j = 0; j < sortedVu.size(); j++) {
+                    if (i == sortedLs.size() - 1) toBePrinted.append("    |-- ");
+                    else toBePrinted.append("|   |-- ");
+                    toBePrinted
+                            .append(sortedVu.get(j).getTitle())
+                            .append(" (")
+                            .append(sortedVu.get(j).getVocableLists().size())
+                            .append(" vocable lists)\n");
+
+                    if (depth > 2) {
+                        final List<VocableList> sortedVl = sortedVu.get(j).getVocableLists()
+                                .stream().sorted(Comparator.comparing(VocableList::getTitle))
+                                .collect(Collectors.toList());
+                        for (int k = 0; k < sortedVl.size(); k++) {
+                            if (i == sortedLs.size() - 1) toBePrinted.append("    ");
+                            else toBePrinted.append("|   ");
+                            if (j == sortedVu.size() - 1) toBePrinted.append("    ");
+                            else toBePrinted.append("|   ");
+                            toBePrinted.append("|-- ");
+
+                            toBePrinted
+                                    .append("[ID: ")
+                                    .append(sortedVl.get(k).getId())
+                                    .append("] ")
+                                    .append(sortedVl.get(k).getTitle())
+                                    .append(" (")
+                                    .append(sortedVl.get(k).getVocables().size())
+                                    .append(" vocables, added by user ")
+                                    .append(sortedVl.get(k).getAuthor().getFirstName())
+                                    .append(" ")
+                                    .append(sortedVl.get(k).getAuthor().getLastName())
+                                    .append(" (@")
+                                    .append(sortedVl.get(k).getAuthor().getUsername())
+                                    .append(") on ")
+                                    .append(sortedVl.get(k).getTimestamp().toString())
+                                    .append(")\n");
+
+                            if (depth > 3) {
+                                final List<Vocable> sortedV = sortedVl.get(k).getVocables()
+                                        .stream().sorted(Comparator.comparing(v -> v.getVocable().getSynonyms().get(0)))
+                                        .collect(Collectors.toList());
+                                for (final Vocable vocable : sortedV) {
+                                    if (i == sortedLs.size() - 1) toBePrinted.append("    ");
+                                    else toBePrinted.append("|   ");
+                                    if (j == sortedVu.size() - 1) toBePrinted.append("    ");
+                                    else toBePrinted.append("|   ");
+                                    if (k == sortedVl.size() - 1) toBePrinted.append("    ");
+                                    else toBePrinted.append("|   ");
+                                    toBePrinted.append("|-- ");
+
+                                    toBePrinted.append(vocable.getVocable().getSynonyms());
+                                    if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0) {
+                                        toBePrinted.append(vocable.getVocable().getExemplarySentencesOrAdditionalInfo());
+                                    }
+                                    toBePrinted.append(" => ");
+
+                                    vocable.getTranslations().forEach(t -> {
+                                        toBePrinted
+                                                .append("[")
+                                                .append(String.join(", ", t.getSynonyms()));
+                                        if (t.getExemplarySentencesOrAdditionalInfo().size() > 0) {
+                                            toBePrinted.append(" (");
+                                            t.getExemplarySentencesOrAdditionalInfo().forEach(toBePrinted::append);
+                                            toBePrinted.append(")");
+                                        }
+                                        toBePrinted.append("]");
+                                    });
+
+                                    toBePrinted.append("\n");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println(toBePrinted);
     }
 }

@@ -10,6 +10,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.export.VocabduelController;
 import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
@@ -98,6 +99,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
         actionsList.add(new VocabduelCliAction(false, "supported ls", "See a list of all supported languages", "s ls", this::onVocabSupportedCalled));
         actionsList.add(new VocabduelCliAction(false, "supported ls codes", "See a list of all supported languages (codes only)", "s ls c", this::onVocabSupportedCodesCalled));
+        actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -333,5 +335,17 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onVocabSupportedCodesCalled() {
         VIEW.printSupportedLanguagesCodeOnly(VOCABULARY_SERVICE.getAllSupportedLanguages());
+    }
+
+    private void onVocabListsCalled(final HashMap<String, String> args) {
+        final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets();
+        VIEW.printLanguageSets(languageSets, args == null ? null : args.get("level"));
+
+        List<String[]> options = new ArrayList<>();
+        options.add(new String[]{"lang", "Only list the language sets"});
+        options.add(new String[]{"unit", "See previous command + vocable units of each language set"});
+        options.add(new String[]{"list", "See previous command + vocable lists of each unit"});
+        options.add(new String[]{"vocab", "See previous command + vocables of each list"});
+        VIEW.printConfigurableThroughParam("level", options);
     }
 }

@@ -27,11 +27,6 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final Pattern THREE_BRACKETS_PATTERN = Pattern.compile("\\{\\{\\{(.*?)}}}");
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
 
-    // TODO: Mainly for mocking purposes => Keep list in real implementation?
-    private List<LanguageSet> allLanguageSets;
-
-    private UserService userService;
-
     private final EntityManager ENTITY_MANAGER;
 
     VocabularyServiceImpl() {
@@ -59,7 +54,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
         else if (unit.getVocableLists().stream().anyMatch(vl -> vl.getTitle().equals(listName))) {
-            throw new DataAlreadyExistsException("List named " + listName + " does already exist!");
+            throw new DataAlreadyExistsException("List named \"" + listName + "\" does already exist!");
         }
 
         final List<Vocable> vocables = parseGnuVocableData(lines);
@@ -96,7 +91,16 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public List<LanguageSet> getAllLanguageSets() {
-        return allLanguageSets;
+        List<LanguageSet> languageSets = null;
+        try {
+            ENTITY_MANAGER.getTransaction().begin();
+            languageSets = (List<LanguageSet>) ENTITY_MANAGER
+                    .createQuery("from LanguageSet")
+                    .getResultList();
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+        return languageSets;
     }
 
     @Override

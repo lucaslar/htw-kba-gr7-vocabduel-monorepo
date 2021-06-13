@@ -11,7 +11,10 @@ public class Vocable extends UntranslatedVocable {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<TranslationGroup> translations;
 
-    public Vocable(TranslationGroup vocable, List<TranslationGroup> translations ){
+    public Vocable() {
+    }
+
+    public Vocable(TranslationGroup vocable, List<TranslationGroup> translations) {
         super(vocable);
         this.translations = translations;
     }
