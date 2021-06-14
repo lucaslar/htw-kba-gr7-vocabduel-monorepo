@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
@@ -76,6 +75,14 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException {
+        final User author = vocables.getAuthor();
+        if (!author.getId().equals(triggeringUser.getId())) {
+            throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
+        }
+        ENTITY_MANAGER.getTransaction().begin();
+        ENTITY_MANAGER.remove(vocables);
+        // TODO: fix / currently not working due to cascades!
+        ENTITY_MANAGER.getTransaction().commit();
         return 0;
     }
 

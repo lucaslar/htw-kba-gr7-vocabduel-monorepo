@@ -335,4 +335,8 @@ public class VocabduelView {
     public void printUser(final User user) {
         System.out.println(user.toString());
     }
+
+    public void printSuccessfullyDeletedVocabList(final long id) {
+        System.out.println("Successfully deleted vocable list with ID "+id);
+    }
 }

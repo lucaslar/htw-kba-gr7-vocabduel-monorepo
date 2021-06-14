@@ -105,6 +105,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "vocab ls user", "Get all vocable lists imported by a given user (determined by optional params)", "v ls u", this::onGetVocabListsByUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
         actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "uf", this::onFindUserCalled));
+        actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
     }
 
     private void initializeFunctionsMap() {
@@ -407,5 +408,21 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (user == null) VIEW.printCouldNotDetermineUser();
 
         return user;
+    }
+
+    private void onDeleteVocabListCalled(final HashMap<String, String> args) {
+        try {
+            final long id = Long.parseLong(args.get("id"));
+            final VocableList vocableList = VOCABULARY_SERVICE.getVocableListById(id);
+            if (vocableList == null) VIEW.printNoVocableListFound();
+            else {
+                VOCABULARY_SERVICE.deleteVocableList(vocableList, STORAGE.getLoggedInUser());
+                VIEW.printSuccessfullyDeletedVocabList(id);
+            }
+        } catch (NumberFormatException e) {
+            VIEW.printInvalidIdFormat(args.get("id"));
+        } catch (DifferentAuthorException e) {
+            e.printStackTrace();
+        }
     }
 }
