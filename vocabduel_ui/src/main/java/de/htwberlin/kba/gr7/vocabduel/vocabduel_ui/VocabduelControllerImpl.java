@@ -101,7 +101,10 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "supported ls", "See a list of all supported languages", "s ls", this::onVocabSupportedCalled));
         actionsList.add(new VocabduelCliAction(false, "supported ls codes", "See a list of all supported languages (codes only)", "s ls c", this::onVocabSupportedCodesCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
-        actionsList.add(new VocabduelCliAction(false, "vocab get", "Get a vocable list by ID", "v get", this::onGetVocabListCalled, "id"));
+        actionsList.add(new VocabduelCliAction(false, "vocab find", "Get a vocable list by ID", "v find", this::onFindVocabListCalled, "id"));
+        actionsList.add(new VocabduelCliAction(false, "vocab ls user", "Get all vocable lists imported by a given user (determined by optional params)", "v ls u", this::onGetVocabListsByUserCalled));
+        actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
+        actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "uf", this::onFindUserCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -351,14 +354,58 @@ public class VocabduelControllerImpl implements VocabduelController {
         VIEW.printConfigurableThroughParam("level", options);
     }
 
-    private void onGetVocabListCalled(final HashMap<String, String> args) {
+    private void onFindVocabListCalled(final HashMap<String, String> args) {
         try {
-            Long id = Long.parseLong(args.get("id"));
-            VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
+            final Long id = Long.parseLong(args.get("id"));
+            final VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
             if (list != null) VIEW.printVocableList(list);
             else VIEW.printNoVocableListFound();
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get("id"));
         }
+    }
+
+    private void onGetVocabListsByUserCalled(final HashMap<String, String> args) {
+        final User user = findUser(args);
+        if (user != null) {
+            List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
+            if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(user, lists);
+            else VIEW.printNoVocableListsByUser(user);
+        }
+    }
+
+    private void onGetOwnVocabListsCalled() {
+        List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(STORAGE.getLoggedInUser());
+        if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(STORAGE.getLoggedInUser(), lists);
+        else VIEW.printNoVocableListsByUser(STORAGE.getLoggedInUser());
+    }
+
+    private void onFindUserCalled(final HashMap<String, String> args) {
+        final User user = findUser(args);
+        if (user != null) VIEW.printUser(user);
+    }
+
+    private User findUser(final HashMap<String, String> args) {
+        VIEW.printOptionalParamsInfo(args.keySet(), "id", "username", "email");
+        User user = null;
+        if (args.get("id") != null) {
+            VIEW.printDeterminingUserBy("id");
+            try {
+                final Long id = Long.parseLong(args.get("id"));
+                user = USER_SERVICE.getUserDataById(id);
+            } catch (NumberFormatException e) {
+                VIEW.printInvalidIdFormat(args.get("id"));
+            }
+        } else if (args.get("username") != null) {
+            VIEW.printDeterminingUserBy("username");
+            user = USER_SERVICE.getUserDataByUsername(args.get("username"));
+        } else if (args.get("email") != null) {
+            VIEW.printDeterminingUserBy("email");
+            user = USER_SERVICE.getUserDataByEmail(args.get("email"));
+        } else VIEW.printPleaseAddParamForUser();
+
+        if (user == null) VIEW.printCouldNotDetermineUser();
+
+        return user;
     }
 }

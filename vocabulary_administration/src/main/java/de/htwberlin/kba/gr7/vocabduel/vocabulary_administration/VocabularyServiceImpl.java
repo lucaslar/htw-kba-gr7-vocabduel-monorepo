@@ -89,7 +89,17 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public List<VocableList> getVocableListsOfUser(User user) {
-        return null;
+        List<VocableList> vocableLists = null;
+        try {
+            ENTITY_MANAGER.getTransaction().begin();
+            vocableLists = (List<VocableList>) ENTITY_MANAGER
+                    .createQuery("select vl from VocableList vl inner join vl.author a where a.id = :id")
+                    .setParameter("id", user.getId())
+                    .getResultList();
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+        return vocableLists;
     }
 
     @Override

@@ -304,4 +304,34 @@ public class VocabduelView {
     public void printNoVocableListFound() {
         System.out.println("No vocable list found for the given ID.");
     }
+
+    public void printDeterminingUserBy(final String param) {
+        System.out.println("Determining user by " + param + "...");
+    }
+
+    public void printCouldNotDetermineUser() {
+        System.out.println("Could not determine user.");
+    }
+
+    public void printPleaseAddParamForUser() {
+        System.out.println("Please add one of the params listed above in order to find a user.");
+    }
+
+    public void printVocableListsByUser(final User user, final List<VocableList> vocableLists) {
+        System.out.println(user.toString() + " has imported the following " + vocableLists.size() + " vocable list(s):");
+        System.out.println(vocableLists
+                .stream()
+                .map(vl -> " - " + createVocableListTitleString(vl) + createVocableListString("   ", vl))
+                .collect(Collectors.joining("\n"))
+        );
+        System.out.println("[end of lists imported by " + user + "]");
+    }
+
+    public void printNoVocableListsByUser(final User user) {
+        System.out.println("No vocable lists for " + user.toString());
+    }
+
+    public void printUser(final User user) {
+        System.out.println(user.toString());
+    }
 }
