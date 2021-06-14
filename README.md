@@ -15,6 +15,8 @@ The project group (group 07) consists of the following two students:
 
 ### Database setup
 
+This application requires a MySQL database running on port `3306` (default port).
+
 #### First option: Manual setup
 
 Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/.
@@ -29,7 +31,7 @@ You can also use Docker to set up the database by running:
 docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD="Test#-#44" --name vocabduel-db -d mysql
 ```
 
-- `-p`: Map exposed port from Docker container to `3306` on your machine (MySQL default port)
+- `-p`: Map exposed port from Docker container to `3306` on your machine
 - `-e MYSQL_ROOT_PASSWORD="Test#-#44"`: Set the password for the DB's root user
 - `--name vocabduel-db`: Name the container `vocabduel-db` (optional)
 - `d`: Run container in detached mode (optional)
