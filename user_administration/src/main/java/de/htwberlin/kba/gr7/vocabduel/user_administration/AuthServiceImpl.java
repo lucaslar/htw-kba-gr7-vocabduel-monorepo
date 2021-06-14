@@ -14,6 +14,7 @@ import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.nio.charset.StandardCharsets;
@@ -43,10 +44,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword)
-            throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
+    public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
         Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
         Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
+        Validation.nameValidation(firstname);
+        Validation.nameValidation(lastname);
         Validation.passwordValidation(password, confirmPassword);
 
         final User user = new User(username, email, firstname, lastname);

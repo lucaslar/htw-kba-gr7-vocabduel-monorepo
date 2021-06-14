@@ -6,18 +6,15 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.stereotype.Service;
 
+import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final EntityManager ENTITY_MANAGER;
-
-    // TODO: In the future, use db instead of list and adjust tests
-    private final List<User> users = new LinkedList<User>();
 
     public UserServiceImpl() {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
@@ -73,10 +70,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException {
+    public int updateUser(final User user) throws InvalidUserException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
+        if (user == null || getUserDataById(user.getId()) == null) throw new InvalidUserException();
+
         Validation.completeDataValidation(user);
+        Validation.nameValidation(user.getFirstName());
+        Validation.nameValidation(user.getLastName());
         Validation.uniqueUserDataValidation(user.getUsername(), user.getEmail(), this, user.getId());
-        // TODO Update in DB
+
+        ENTITY_MANAGER.getTransaction().begin();
+        ENTITY_MANAGER.merge(user);
+        ENTITY_MANAGER.getTransaction().commit();
+
         return 0;
     }
 

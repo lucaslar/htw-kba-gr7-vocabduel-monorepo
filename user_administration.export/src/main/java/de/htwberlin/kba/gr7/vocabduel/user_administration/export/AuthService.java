@@ -5,6 +5,8 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthToken
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import javax.naming.InvalidNameException;
+
 /**
  * Service for managing authentication, i.e. user logins/registrations, checking access rights using auth tokens and
  * token management.
@@ -31,8 +33,9 @@ public interface AuthService {
      * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      * @throws IncompleteUserDataException        The passed user object does not contain all required user data.
+     * @throws InvalidNameException               The passed user user does have an invalid first/ last name.
      */
-    LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
+    LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException;
 
     /**
      * Authenticates an existing user in order to take actions in this application. The returned user object contains all

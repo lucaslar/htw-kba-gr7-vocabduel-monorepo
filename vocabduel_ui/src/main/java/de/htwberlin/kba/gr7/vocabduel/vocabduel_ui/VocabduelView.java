@@ -317,6 +317,9 @@ public class VocabduelView {
     public void printPleaseAddParamForUser() {
         System.out.println("Please add one of the params listed above in order to find a user.");
     }
+    public void printPleaseAddParamForUserUpdate() {
+        System.out.println("Please add one of the params listed above in order to update a user property.");
+    }
 
     public void printVocableListsByUser(final User user, final List<VocableList> vocableLists) {
         System.out.println(user.toString() + " has imported the following " + vocableLists.size() + " vocable list(s):");

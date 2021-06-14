@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.export;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import javax.naming.InvalidNameException;
 import java.util.List;
 
 /**
@@ -50,8 +51,9 @@ public interface UserService {
      * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      * @throws IncompleteUserDataException        The passed user object does not contain all required user data.
+     * @throws InvalidUserException               The given user is null or does not exist.
      */
-    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
+    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidUserException, InvalidNameException;
 
     /**
      * Deletes a single user.

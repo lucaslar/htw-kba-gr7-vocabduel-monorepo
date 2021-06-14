@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.naming.InvalidNameException;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -137,25 +138,25 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowExceptionOnUpdatingIfMailAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException {
+    public void shouldThrowExceptionOnUpdatingIfMailAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setEmail(user2.getEmail());
         userAdministration.updateUser(user3);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException {
+    public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setEmail("invalidmail");
         userAdministration.updateUser(user3);
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
-    public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException {
+    public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setUsername(user1.getUsername());
         userAdministration.updateUser(user3);
     }
 
     @Test
-    public void shouldUpdateUserData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException {
+    public void shouldUpdateUserData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
@@ -167,6 +168,8 @@ public class UserServiceImplTest {
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user3.toString());
     }
+
+    // TODO also test InvalidUserException (same for auth service's update pwd) and InvalidNameException
 
     @Test
     public void shouldDeleteUser() {

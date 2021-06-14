@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
+import javax.naming.InvalidNameException;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,13 @@ public class Validation {
     public static void completeDataValidation(final String... data) throws IncompleteUserDataException {
         if (Arrays.stream(data).anyMatch(d -> d == null || d.isEmpty())) {
             throw new IncompleteUserDataException("One or more of the required user data is null/empty!");
+        }
+    }
+
+    public static void nameValidation(final String name) throws InvalidNameException {
+        final Pattern pattern = Pattern.compile("\\p{Upper}(\\p{Lower}+\\s?)");
+        if (!pattern.matcher(name).matches()) {
+            throw new InvalidNameException("Invalid name (" + name + ") - validation using regex: " + pattern);
         }
     }
 

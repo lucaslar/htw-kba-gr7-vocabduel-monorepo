@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import javax.naming.InvalidNameException;
 import java.util.Arrays;
 
 @RunWith(Parameterized.class)
@@ -63,7 +64,7 @@ public class InvalidPwdsTest {
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
+    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser("newuser", "newuser@user.de", "New", "User", PWD, PWD);
     }
 

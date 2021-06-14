@@ -14,6 +14,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Lan
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Controller;
 
+import javax.naming.InvalidNameException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -281,7 +282,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get("username"), args.get("email"), args.get("firstname"), args.get("lastname"), args.get("pwd"), args.get("confirm"));
                 STORAGE.setLoggedInUser(loggedInUser);
                 VIEW.printSuccessfulRegistration(loggedInUser);
-            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {
+            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
                 e.printStackTrace();
             }
         }
@@ -301,16 +302,18 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (args.get("firstname") != null) user.setFirstName(args.get("firstname"));
         if (args.get("lastname") != null) user.setLastName(args.get("lastname"));
 
-        try {
-            USER_SERVICE.updateUser(user);
-            VIEW.printSuccessfulUserUpdate(user);
-        } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException e) {
-            user.setEmail(prevEmail);
-            user.setUsername(prevUsername);
-            user.setFirstName(prevFirstname);
-            user.setLastName(prevLastname);
-            e.printStackTrace();
-        }
+        if (args.get("username") != null || args.get("email") != null || args.get("firstname") != null || args.get("lastname") != null) {
+            try {
+                USER_SERVICE.updateUser(LoggedInUser.asUser(user));
+                VIEW.printSuccessfulUserUpdate(user);
+            } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException e) {
+                user.setEmail(prevEmail);
+                user.setUsername(prevUsername);
+                user.setFirstName(prevFirstname);
+                user.setLastName(prevLastname);
+                e.printStackTrace();
+            }
+        } else VIEW.printPleaseAddParamForUserUpdate();
     }
 
     private void onUpdatePwdCalled(final HashMap<String, String> args) {

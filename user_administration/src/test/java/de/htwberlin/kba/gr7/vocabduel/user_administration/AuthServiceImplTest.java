@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.naming.InvalidNameException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -79,22 +80,22 @@ public class AuthServiceImplTest {
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
-    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
+    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
-    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
+    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser(existingUser.getUsername(), "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
+    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser("username", existingUser.getEmail(), "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
+    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser("username","invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
@@ -102,13 +103,13 @@ public class AuthServiceImplTest {
     // using a parameterized test. However, this would lead to an unnecessarily large number of tests.
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException {
+    public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
         final User user = new User(null);
         auth.registerUser("username","invalidmail", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test
-    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException {
+    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
         final User registeredUser = userAdministration.getUserDataByUsername(newUser.getUsername());
 
