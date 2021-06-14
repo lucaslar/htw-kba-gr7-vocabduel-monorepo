@@ -30,7 +30,7 @@ public interface AuthService {
      * @throws PwTooWeakException                 The given password is not strong enough.
      * @throws InvalidOrRegisteredMailException   The user's specified email is either already in use or invalid and, thus, cannot be used again.
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
-     * @throws IncompleteUserDataException           The passed user object does not contain all required user data.
+     * @throws IncompleteUserDataException        The passed user object does not contain all required user data.
      */
     LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
 
@@ -72,4 +72,19 @@ public interface AuthService {
      * @return <code>true</code> if the token is valid, <code>false</code> if not/<code>null</code>.
      */
     boolean hasAccessRights(String token);
+
+    /**
+     * Updates a user's password if the current password is correct and the new password is both valid and matching the
+     * confirm password.
+     *
+     * @param user            User whose password is to be changed.
+     * @param currentPassword The user's current password for authentication purposes.
+     * @param newPassword     The user's new password - will be stored in a different way than the other user data.
+     * @param confirmPassword Repeated password for confirmation purposes (must match with <code>password</code>).
+     * @return int database status of the update query.
+     * @throws InvalidFirstPwdException     <code>currentPassword</code> is wrong.
+     * @throws PasswordsDoNotMatchException <code>newPassword</code> and <code>confirmPassword</code> do not match.
+     * @throws PwTooWeakException           The given password is not strong enough.
+     */
+    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException;
 }

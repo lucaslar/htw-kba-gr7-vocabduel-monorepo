@@ -27,9 +27,6 @@ public class UserServiceImplTest {
     private User user1, user2, user3, user4;
     private List<User> usersList;
 
-    // TODO: mock => previous pwd was indeed the user's previous pwd
-    private final String PREVIOUS_PWD = "pr€V10U5PwD";
-
     @Before
     public void setUp() {
         userAdministration = new UserServiceImpl();
@@ -169,28 +166,6 @@ public class UserServiceImplTest {
         final User foundUser = userAdministration.getUserDataById(user3.getId());
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user3.toString());
-    }
-
-    // Tests concerning valid (= should not throw exception)/invalid passwords => ValidPwdsTest / InvalidPwdsTest
-
-    @Test(expected = InvalidFirstPwdException.class)
-    public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd);
-    }
-
-    @Test(expected = PasswordsDoNotMatchException.class)
-    public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
-        userAdministration.updateUserPassword(user1, "123thisWasNotMyPrevPwd", newPwd, newPwd2);
-    }
-
-    @Test
-    public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        final int statusCode = userAdministration.updateUserPassword(user1, PREVIOUS_PWD, newPwd, newPwd);
-        Assert.assertEquals(0, statusCode);
     }
 
     @Test

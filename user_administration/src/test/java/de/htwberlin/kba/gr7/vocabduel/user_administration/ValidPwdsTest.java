@@ -66,7 +66,7 @@ public class ValidPwdsTest {
         Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
 
         // Don't mock updateUserPassword function
-        Mockito.when(userAdministration.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD)).thenCallRealMethod();
+        Mockito.when(auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD)).thenCallRealMethod();
     }
 
     @Test(expected = Test.None.class)
@@ -76,6 +76,6 @@ public class ValidPwdsTest {
 
     @Test(expected = Test.None.class)
     public void shouldNotThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
-        userAdministration.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
+        auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }

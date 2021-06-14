@@ -81,14 +81,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUserPassword(User user, String currentPassword, String password, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
-        // TODO check current pwd
-        Validation.passwordValidation(password, confirmPassword);
-        // TODO Implement
-        return 0;
-    }
-
-    @Override
     public int deleteUser(User user) {
         return 0;
     }

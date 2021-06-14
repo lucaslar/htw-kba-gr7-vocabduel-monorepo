@@ -54,21 +54,6 @@ public interface UserService {
     int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException;
 
     /**
-     * Updates a user's password if the current password is correct and the new password is both valid and matching the
-     * confirm password.
-     *
-     * @param user            User whose password is to be changed.
-     * @param currentPassword      The user's current password for authentication purposes.
-     * @param newPassword     The user's new password - will be stored in a different way than the other user data.
-     * @param confirmPassword Repeated password for confirmation purposes (must match with <code>password</code>).
-     * @return int database status of the update query.
-     * @throws InvalidFirstPwdException     <code>currentPassword</code> is wrong.
-     * @throws PasswordsDoNotMatchException <code>newPassword</code> and <code>confirmPassword</code> do not match.
-     * @throws PwTooWeakException           The given password is not strong enough.
-     */
-    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException;
-
-    /**
      * Deletes a single user.
      *
      * @param user User to be deleted.
