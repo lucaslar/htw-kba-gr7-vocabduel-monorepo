@@ -116,10 +116,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public int updateUserPassword(User user, String currentPassword, String password, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
-        // TODO check current pwd
+    public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
+        if (user == null) throw new InvalidUserException();
+
+        LoginData loginData = null;
+        ENTITY_MANAGER.getTransaction().begin();
+        try {
+            loginData = (LoginData) ENTITY_MANAGER
+                    .createQuery("SELECT l FROM LoginData l INNER JOIN l.user u WHERE u = :user")
+                    .setParameter("user", user)
+                    .getSingleResult();
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+
+        if (loginData == null) throw new InvalidUserException();
+        else if (!validatePassword(loginData.getPasswordHash(), currentPassword)) {
+            throw new InvalidFirstPwdException("Invalid current password.");
+        }
+
         Validation.passwordValidation(password, confirmPassword);
-        // TODO Implement
+
+        loginData.setPasswordHash(hashPassword(password));
+        ENTITY_MANAGER.getTransaction().begin();
+        ENTITY_MANAGER.persist(loginData);
+        ENTITY_MANAGER.getTransaction().commit();
+
         return 0;
     }
 

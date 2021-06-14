@@ -53,7 +53,7 @@ public class ValidPwdsTest {
     }
 
     @Before
-    public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
+    public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
         auth = new AuthServiceImpl(new UserServiceImpl());
 
         existingUser = new User(42L);
@@ -75,7 +75,7 @@ public class ValidPwdsTest {
     }
 
     @Test(expected = Test.None.class)
-    public void shouldNotThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException {
+    public void shouldNotThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
         auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }

@@ -317,7 +317,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         try {
             AUTH_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get("currentpwd"), args.get("newpwd"), args.get("confirm"));
             VIEW.printSuccessfulPwdUpdate();
-        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
+        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException e) {
             e.printStackTrace();
         }
     }

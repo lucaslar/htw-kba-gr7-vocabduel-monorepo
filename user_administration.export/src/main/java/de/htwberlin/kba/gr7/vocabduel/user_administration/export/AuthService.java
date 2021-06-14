@@ -85,6 +85,7 @@ public interface AuthService {
      * @throws InvalidFirstPwdException     <code>currentPassword</code> is wrong.
      * @throws PasswordsDoNotMatchException <code>newPassword</code> and <code>confirmPassword</code> do not match.
      * @throws PwTooWeakException           The given password is not strong enough.
+     * @throws InvalidUserException         The given user is null or does not exist.
      */
-    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException;
+    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException, InvalidUserException;
 }
