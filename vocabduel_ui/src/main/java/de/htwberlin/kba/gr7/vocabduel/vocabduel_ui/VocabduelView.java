@@ -317,6 +317,7 @@ public class VocabduelView {
     public void printPleaseAddParamForUser() {
         System.out.println("Please add one of the params listed above in order to find a user.");
     }
+
     public void printPleaseAddParamForUserUpdate() {
         System.out.println("Please add one of the params listed above in order to update a user property.");
     }
@@ -340,6 +341,15 @@ public class VocabduelView {
     }
 
     public void printSuccessfullyDeletedVocabList(final long id) {
-        System.out.println("Successfully deleted vocable list with ID "+id);
+        System.out.println("Successfully deleted vocable list with ID " + id);
+    }
+
+    public void printNoUsersFound() {
+        System.out.println("No users found for your search string.");
+    }
+
+    public void printFoundUsers(final List<User> users, final String searchStr) {
+        System.out.println("Here's a list of all users found for your search string \"" + searchStr + "\" (" + users.size() + " hit(s)):");
+        for (final User u : users) System.out.println("..." + u);
     }
 }

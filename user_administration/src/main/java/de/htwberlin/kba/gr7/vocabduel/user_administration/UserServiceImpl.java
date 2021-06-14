@@ -21,8 +21,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUsersByUsername(String searchString) {
-        return null;
+    public List<User> findUsersByUsername(final String searchString) {
+        List<User> users = null;
+        if (searchString != null) {
+            ENTITY_MANAGER.getTransaction().begin();
+            try {
+                final String query = "select u from User u where lower(u.username) like :searchString";
+                users = (List<User>) ENTITY_MANAGER
+                        .createQuery(query)
+                        .setParameter("searchString", searchString.toLowerCase() + "%")
+                        .getResultList();
+            } catch (NoResultException ignored) {
+            }
+            ENTITY_MANAGER.getTransaction().commit();
+        }
+        return users;
     }
 
     @Override

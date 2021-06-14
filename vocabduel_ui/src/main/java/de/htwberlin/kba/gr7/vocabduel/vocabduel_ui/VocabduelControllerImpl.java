@@ -107,6 +107,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
         actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "uf", this::onFindUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
+        actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
     }
 
     private void initializeFunctionsMap() {
@@ -427,5 +428,12 @@ public class VocabduelControllerImpl implements VocabduelController {
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
         }
+    }
+
+    private void onUserSearchCalled(final HashMap<String, String> args) {
+        final String searchStr = args.get("str");
+        final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
+        if (users == null ||users.size() == 0) VIEW.printNoUsersFound();
+        else VIEW.printFoundUsers(users, searchStr);
     }
 }
