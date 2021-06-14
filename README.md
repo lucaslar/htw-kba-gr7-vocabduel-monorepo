@@ -34,7 +34,7 @@ docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD="Test#-#44" --name vocabduel-db -
 - `-p`: Map exposed port from Docker container to `3306` on your machine
 - `-e MYSQL_ROOT_PASSWORD="Test#-#44"`: Set the password for the DB's root user
 - `--name vocabduel-db`: Name the container `vocabduel-db` (optional)
-- `d`: Run container in detached mode (optional)
+- `-d`: Run container in detached mode (optional)
 
 ### Run UI
 
