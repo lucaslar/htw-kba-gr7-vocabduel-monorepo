@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
@@ -34,13 +35,13 @@ public interface GameService {
      * @param knownLanguage  Known language, i.e. the language the answers are displayed in.
      * @param learntLanguage Learnt language, i.e. the language in which the questions are to be asked in.
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
-     * @throws NoSecondPlayerException            the user starts a game against himself
-     * @throws KnownLangEqualsLearntLangException KnownLanguage and LearntLanguage do equal
-     * @throws NotEnoughVocabularyException       the provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
-     * @throws NotEnoughVocableListsException     the provided List<VocableList> is empty
+     * @throws InvalidUserException                 One of the given users could not be found.
+     * @throws InvalidGameSetupException            The setup of the game is not valid for a reason described in the given error message.
+     * @throws KnownLangEqualsLearntLangException   KnownLanguage and LearntLanguage do equal
+     * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
      */
     VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
-            throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException;
+            throws InvalidUserException, InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.

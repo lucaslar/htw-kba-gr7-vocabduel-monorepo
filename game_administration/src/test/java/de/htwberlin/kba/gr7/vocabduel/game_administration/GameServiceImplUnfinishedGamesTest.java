@@ -2,7 +2,9 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +17,12 @@ public class GameServiceImplUnfinishedGamesTest {
 
     private GameServiceImpl gameAdministration;
     private GameDataMock mock;
+    private UserService userService;
+    private VocabularyService vocabularyService;
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl();
+        gameAdministration = new GameServiceImpl(userService, vocabularyService);
         mock = new GameDataMock();
     }
 

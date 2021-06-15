@@ -119,7 +119,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
-        if (user == null) throw new InvalidUserException();
+        if (user == null) throw new InvalidUserException("Invalid user");
 
         LoginData loginData = null;
         ENTITY_MANAGER.getTransaction().begin();
@@ -132,7 +132,7 @@ public class AuthServiceImpl implements AuthService {
         }
         ENTITY_MANAGER.getTransaction().commit();
 
-        if (loginData == null) throw new InvalidUserException();
+        if (loginData == null) throw new InvalidUserException("User could not be found");
         else if (!validatePassword(loginData.getPasswordHash(), currentPassword)) {
             throw new InvalidFirstPwdException("Invalid current password.");
         }

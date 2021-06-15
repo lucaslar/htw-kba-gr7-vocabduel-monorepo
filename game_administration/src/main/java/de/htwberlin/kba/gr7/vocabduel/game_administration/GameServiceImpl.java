@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedV
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
@@ -21,39 +22,25 @@ import java.util.Random;
 @Service
 public class GameServiceImpl implements GameService {
 
-    private UserService userService;
-    private VocabularyService vocabularyService;
-
     private final EntityManager ENTITY_MANAGER;
+
+    private final UserService USER_SERVICE;
+    private final VocabularyService VOCABULARY_SERVICE;
 
     public static int getFixNumberOfRoundsPerGame() {
         return GameService.NR_OF_ROUNDS;
     }
 
-    public GameServiceImpl() {
+    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService) {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
+        USER_SERVICE = userService;
+        VOCABULARY_SERVICE = vocabularyService;
     }
 
     @Override
     public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
-            throws NoSecondPlayerException, KnownLangEqualsLearntLangException, NotEnoughVocableListsException, NotEnoughVocabularyException {
-        // checks first
-        if (playerA.getId() == 0 || playerB.getId() == 0) {
-            throw new NoSecondPlayerException();
-        }
-        if (learntLanguage == knownLanguage) {
-            throw new KnownLangEqualsLearntLangException();
-        }
-        if (vocableLists.isEmpty()) {
-            throw new NotEnoughVocableListsException();
-        }
-        int vocableCount = 0;
-        for (VocableList vocableList : vocableLists) {
-            vocableCount += vocableList.getVocables().size();
-        }
-        if (vocableCount < getFixNumberOfRoundsPerGame()) {
-            throw new NotEnoughVocabularyException();
-        }
+            throws InvalidUserException, InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException {
+        verifyGameSetup(playerA, playerB, vocableLists, knownLanguage, learntLanguage);
 
         // persist new Game
         // TODO: kapseln, sonst funzen die Tests nicht mehr
@@ -132,5 +119,38 @@ public class GameServiceImpl implements GameService {
     @Override
     public CorrectAnswerResult answerQuestion(User player, VocabduelRound round, TranslationGroup answer) {
         return null;
+    }
+
+    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage) throws InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidUserException {
+        if (vocableLists == null) {
+            throw new InvalidGameSetupException("No vocable lists provided!");
+        }
+
+        if (learntLanguage == knownLanguage) {
+            throw new KnownLangEqualsLearntLangException("Known and learnt language must be different, but where 2x " + learntLanguage.toString());
+        }
+
+        final int nrOfVocabs = vocableLists.stream().map(l -> l.getVocables().size()).reduce(0, Integer::sum);
+        if (nrOfVocabs < getFixNumberOfRoundsPerGame()) {
+            throw new NotEnoughVocabularyException("Not enough vocabulary to fit the nr of rounds (required: min. " + getFixNumberOfRoundsPerGame() + ", given: " + nrOfVocabs + ") => please add more lists to start.");
+        }
+
+        if (USER_SERVICE.getUserDataById(playerA.getId()) == null) {
+            throw new InvalidUserException("Player A (initiator) is not a known user!");
+        }
+
+        if (USER_SERVICE.getUserDataById(playerB.getId()) == null) {
+            throw new InvalidUserException("Player B (opponent) is not a known user!");
+        }
+
+        if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == knownLanguage)) {
+            throw new InvalidGameSetupException("Known language (" + knownLanguage.toString() + ") is ont supported (or not set)");
+        }
+
+        if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == learntLanguage)) {
+            throw new InvalidGameSetupException("Learnt language (" + learntLanguage.toString() + ") is ont supported (or not set)");
+        }
+
+        // TODO: Check if all lists are of same language set (remove lang from / lang to? / requires db changes in order to support bi-directionality vocable list ( => unit) <> language set)
     }
 }
