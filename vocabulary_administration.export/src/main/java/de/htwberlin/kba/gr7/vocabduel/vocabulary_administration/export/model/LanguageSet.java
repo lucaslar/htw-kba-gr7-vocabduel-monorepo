@@ -12,7 +12,7 @@ public class LanguageSet implements Serializable {
     @Id
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentLanguageSet")
     private List<VocableUnit> vocableUnits;
 
     public LanguageSet() {

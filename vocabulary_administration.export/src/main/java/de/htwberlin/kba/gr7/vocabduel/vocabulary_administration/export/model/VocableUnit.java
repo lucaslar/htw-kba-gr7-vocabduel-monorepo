@@ -11,6 +11,12 @@ public class VocableUnit {
     private String title;
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableList> vocableLists;
+    @ManyToOne(targetEntity = LanguageSet.class) // TODO map vu to vl in order access languages from vl
+    @JoinColumns({
+            @JoinColumn(name = "knownLanguage", insertable = false, updatable = false),
+            @JoinColumn(name = "learntLanguage", insertable = false, updatable = false)
+    })
+    private LanguageSet parentLanguageSet;
 
     public VocableUnit() {
     }
