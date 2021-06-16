@@ -43,7 +43,6 @@ public class GameServiceImpl implements GameService {
         // persist new Game
         // TODO: kapseln, sonst funzen die Tests nicht mehr
         final VocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
-        // TODO: Persist properly!
         ENTITY_MANAGER.getTransaction().begin();
         ENTITY_MANAGER.persist(newGame);
         ENTITY_MANAGER.getTransaction().commit();

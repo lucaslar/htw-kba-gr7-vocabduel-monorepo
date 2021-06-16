@@ -15,6 +15,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "game_finished", discriminatorType = DiscriminatorType.INTEGER)
 public class VocabduelGame {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @OneToOne(targetEntity = User.class)
     private User playerA;
@@ -24,7 +25,7 @@ public class VocabduelGame {
     private SupportedLanguage knownLanguage;
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<VocableList> vocableLists;
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocabduelRound> rounds;

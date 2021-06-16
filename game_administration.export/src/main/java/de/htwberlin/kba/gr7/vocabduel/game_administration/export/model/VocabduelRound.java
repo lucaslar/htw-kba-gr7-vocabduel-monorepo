@@ -15,11 +15,11 @@ public class VocabduelRound implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     // TODO: Makes sense? game should be derived
     private Long id;
-    @Id
+//    @Id
     private int roundNr;
     @OneToOne
     private UntranslatedVocable question;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<TranslationGroup> answers;
 
     public VocabduelRound() {}
