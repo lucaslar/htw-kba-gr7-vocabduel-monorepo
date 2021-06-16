@@ -302,6 +302,10 @@ public class VocabduelView {
         System.out.println("Invalid Id. \"" + id + "\" cannot be parsed!");
     }
 
+    public void printInvalidIdPartFormat(final String ids) {
+        System.out.println("At least one id is not valid. \"" + ids + "\" cannot (white spaces = split) be parsed!");
+    }
+
     public void printNoVocableListFound() {
         System.out.println("No vocable list found for the given ID.");
     }
@@ -351,5 +355,13 @@ public class VocabduelView {
     public void printFoundUsers(final List<User> users, final String searchStr) {
         System.out.println("Here's a list of all users found for your search string \"" + searchStr + "\" (" + users.size() + " hit(s)):");
         for (final User u : users) System.out.println("..." + u);
+    }
+
+    public void printLangFromCouldNotBeMapped() {
+        System.out.println("Language (from) could not be mapped correctly");
+    }
+
+    public void printLangToCouldNotBeMapped() {
+        System.out.println("Language (to) could not be mapped correctly");
     }
 }

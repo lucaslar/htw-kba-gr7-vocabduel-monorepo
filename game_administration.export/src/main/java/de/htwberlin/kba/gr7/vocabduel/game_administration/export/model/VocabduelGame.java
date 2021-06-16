@@ -24,9 +24,9 @@ public class VocabduelGame {
     private SupportedLanguage knownLanguage;
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<VocableList> vocableLists;
-    @OneToMany(mappedBy = "gameId", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocabduelRound> rounds;
 
     public VocabduelGame(){ }

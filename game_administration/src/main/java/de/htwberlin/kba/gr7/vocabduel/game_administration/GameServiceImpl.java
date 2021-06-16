@@ -10,14 +10,12 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -44,11 +42,12 @@ public class GameServiceImpl implements GameService {
 
         // persist new Game
         // TODO: kapseln, sonst funzen die Tests nicht mehr
-        VocabduelGame newGame = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
+        final VocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
+        // TODO: Persist properly!
         ENTITY_MANAGER.getTransaction().begin();
         ENTITY_MANAGER.persist(newGame);
         ENTITY_MANAGER.getTransaction().commit();
-        ENTITY_MANAGER.close();
+        // ENTITY_MANAGER.close(); // TODO: Needed?
         return newGame;
     }
 
@@ -79,7 +78,7 @@ public class GameServiceImpl implements GameService {
 
         VocabduelRound newRound;
         if (indexRoundEmpty != getFixNumberOfRoundsPerGame()) {
-            newRound = new VocabduelRound(game.getId(), indexRoundEmpty);
+            newRound = new VocabduelRound(indexRoundEmpty);
             // generate Question
             while (newRound.getQuestion() == null) {
                 Random random = new Random();
@@ -113,7 +112,6 @@ public class GameServiceImpl implements GameService {
         } else {
             return game.getRounds().get(indexRoundUnfinished);
         }
-        // TODO: wo / wie die neue Runde an das Spiel anbinden?
     }
 
     @Override
@@ -122,8 +120,18 @@ public class GameServiceImpl implements GameService {
     }
 
     private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage) throws InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidUserException {
-        if (vocableLists == null) {
-            throw new InvalidGameSetupException("No vocable lists provided!");
+        if (vocableLists == null) throw new InvalidGameSetupException("No vocable lists provided!");
+        if (playerA == null) throw new InvalidGameSetupException("No user object given! (initiator)");
+        if (playerB == null) throw new InvalidGameSetupException("No user object given! (opponent)");
+        if (knownLanguage == null) throw new InvalidGameSetupException("No known language given!");
+        if (learntLanguage == null) throw new InvalidGameSetupException("No learnt language given!");
+
+        if (vocableLists.stream().anyMatch(Objects::isNull)) {
+            throw new InvalidGameSetupException("At least one vocable list is null!");
+        }
+
+        if (playerA.getId().equals(playerB.getId())) {
+            throw new InvalidGameSetupException("You cannot play against yourself.");
         }
 
         if (learntLanguage == knownLanguage) {
@@ -144,13 +152,41 @@ public class GameServiceImpl implements GameService {
         }
 
         if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == knownLanguage)) {
-            throw new InvalidGameSetupException("Known language (" + knownLanguage.toString() + ") is ont supported (or not set)");
+            throw new InvalidGameSetupException("Known language (" + knownLanguage.toString() + ") is not supported (or not set)");
         }
 
         if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == learntLanguage)) {
-            throw new InvalidGameSetupException("Learnt language (" + learntLanguage.toString() + ") is ont supported (or not set)");
+            throw new InvalidGameSetupException("Learnt language (" + learntLanguage.toString() + ") is not supported (or not set)");
         }
 
         // TODO: Check if all lists are of same language set (remove lang from / lang to? / requires db changes in order to support bi-directionality vocable list ( => unit) <> language set)
+    }
+
+    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final SupportedLanguage knownLanguage, final SupportedLanguage learntLanguage, final List<VocableList> vocableLists) {
+        final VocabduelGame game = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
+
+        final List<Vocable> flatVocables = vocableLists.stream().flatMap(vl -> vl.getVocables().stream()).collect(Collectors.toList());
+        Collections.shuffle(flatVocables);
+        final List<Vocable> questionedVocabs = flatVocables.stream().limit(getFixNumberOfRoundsPerGame()).collect(Collectors.toList());
+        final List<VocabduelRound> rounds = new ArrayList<>();
+
+        int i = 1;
+        for (final Vocable vocable : questionedVocabs) {
+            final VocabduelRound round = new VocabduelRound(i++);
+            final UntranslatedVocable untranslated = new UntranslatedVocable();
+            untranslated.setVocable(vocable.getVocable());
+
+            Collections.shuffle(flatVocables);
+            final List<TranslationGroup> answers = flatVocables.stream().limit(3).map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size()))).collect(Collectors.toList());
+            answers.add(vocable.getTranslations().get((int) (Math.random() * vocable.getTranslations().size())));
+            Collections.shuffle(answers);
+
+            round.setQuestion(vocable);
+            round.setAnswers(answers);
+            rounds.add(round);
+        }
+
+        game.setRounds(rounds);
+        return game;
     }
 }

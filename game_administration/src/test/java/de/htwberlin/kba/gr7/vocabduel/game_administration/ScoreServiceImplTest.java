@@ -28,7 +28,7 @@ public class ScoreServiceImplTest {
     }
 
     private static FinishedVocabduelRound mockedFinishedRound() {
-        final FinishedVocabduelRound finishedVocabduelRound = new FinishedVocabduelRound(11L);
+        final FinishedVocabduelRound finishedVocabduelRound = new FinishedVocabduelRound();
         finishedVocabduelRound.setResultPlayerA(Result.WIN);
         finishedVocabduelRound.setResultPlayerA(Result.LOSS);
         return finishedVocabduelRound;
@@ -153,7 +153,7 @@ public class ScoreServiceImplTest {
         final VocabduelGame game = new VocabduelGame();
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);
-        game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(),  new VocabduelRound(game.getId())).collect(Collectors.toList()));
+        game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(),  new VocabduelRound()).collect(Collectors.toList()));
         scoreAdministration.finishGame(playerA, game);
     }
 

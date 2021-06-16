@@ -12,22 +12,19 @@ import java.util.List;
 @DiscriminatorColumn(name = "round_finished", discriminatorType = DiscriminatorType.INTEGER)
 public class VocabduelRound implements Serializable {
     @Id
-    @ManyToOne(targetEntity = VocabduelGame.class)
-    private Long gameId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    // TODO: Makes sense? game should be derived
+    private Long id;
     @Id
     private int roundNr;
     @OneToOne
     private UntranslatedVocable question;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<TranslationGroup> answers;
 
-    public VocabduelRound(Long gameId){ this.gameId = gameId; }
+    public VocabduelRound() {}
 
-    public VocabduelRound(Long gameId, int roundNr){ this.gameId = gameId; this.roundNr = roundNr; }
-
-    public Long getGameId() {
-        return gameId;
-    }
+    public VocabduelRound(int roundNr){ this.roundNr = roundNr; }
 
     public int getRoundNr() {
         return roundNr;

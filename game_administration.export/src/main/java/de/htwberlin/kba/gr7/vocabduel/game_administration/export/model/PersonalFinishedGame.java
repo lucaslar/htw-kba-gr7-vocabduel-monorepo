@@ -21,7 +21,7 @@ public class PersonalFinishedGame implements Serializable {
     private int opponentPoints;
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableList> vocableLists;
-    @OneToMany(mappedBy = "gameId", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<FinishedVocabduelRound> rounds;
     private Date finishedTimestamp;
 

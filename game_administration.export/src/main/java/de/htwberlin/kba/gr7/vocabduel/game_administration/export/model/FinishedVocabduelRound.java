@@ -13,7 +13,9 @@ public class FinishedVocabduelRound extends VocabduelRound {
     @Enumerated(EnumType.STRING)
     private Result resultPlayerB;
 
-    public FinishedVocabduelRound(Long gameId){ super(gameId); }
+//    public FinishedVocabduelRound(Long gameId) {
+//        super(gameId);
+//    }
 
     public Result getResultPlayerA() {
         return resultPlayerA;

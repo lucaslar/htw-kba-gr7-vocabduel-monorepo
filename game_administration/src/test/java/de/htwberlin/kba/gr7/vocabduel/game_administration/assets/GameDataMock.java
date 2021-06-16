@@ -30,7 +30,7 @@ public class GameDataMock {
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
         for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
-            VocabduelRound newRound = new VocabduelRound(newGame.getId(), i);
+            VocabduelRound newRound = new VocabduelRound(i);
             newRound.setAnswers(Arrays.asList(
                     new TranslationGroup(Collections.singletonList("wrongAnswer1")),
                     new TranslationGroup(Collections.singletonList("rightAnswer")),

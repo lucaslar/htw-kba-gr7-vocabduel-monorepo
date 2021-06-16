@@ -1,5 +1,9 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidGameSetupException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.KnownLangEqualsLearntLangException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NotEnoughVocabularyException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -11,6 +15,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Controller;
 
@@ -31,6 +36,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final AuthService AUTH_SERVICE;
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
+    private final GameService GAME_SERVICE;
 
     private final Pattern PARAM_PATTERN = Pattern.compile("--[a-z]+\\s((?!--).)+");
 
@@ -45,13 +51,15 @@ public class VocabduelControllerImpl implements VocabduelController {
             final CliSessionStorage storage,
             final AuthService authService,
             final UserService userService,
-            final VocabularyService vocabularyService
+            final VocabularyService vocabularyService,
+            final GameService gameService
     ) {
         VIEW = view;
         STORAGE = storage;
         AUTH_SERVICE = authService;
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
+        GAME_SERVICE = gameService;
     }
 
     @Override
@@ -105,9 +113,10 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "vocab find", "Get a vocable list by ID", "v find", this::onFindVocabListCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "vocab ls user", "Get all vocable lists imported by a given user (determined by optional params)", "v ls u", this::onGetVocabListsByUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
-        actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "uf", this::onFindUserCalled));
+        actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "u find", this::onFindUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
+        actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
     }
 
     private void initializeFunctionsMap() {
@@ -433,7 +442,41 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onUserSearchCalled(final HashMap<String, String> args) {
         final String searchStr = args.get("str");
         final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
-        if (users == null ||users.size() == 0) VIEW.printNoUsersFound();
+        if (users == null || users.size() == 0) VIEW.printNoUsersFound();
         else VIEW.printFoundUsers(users, searchStr);
+    }
+
+    private void onGameStarted(final HashMap<String, String> args) {
+        User opponent = null;
+
+        try {
+            opponent = USER_SERVICE.getUserDataById(Long.parseLong(args.get("opponent")));
+        } catch (NumberFormatException e) {
+            VIEW.printInvalidIdFormat(args.get("opponent"));
+        }
+
+        if (opponent != null) {
+            try {
+                final List<Long> uniqueVocabIds = new ArrayList<>(new HashSet<>(
+                        Arrays.stream(args.get("vocablelists").split("\\s"))
+                                .map(Long::parseLong)
+                                .collect(Collectors.toList())
+                ));
+
+                final List<VocableList> vocableLists = uniqueVocabIds
+                        .stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
+
+                final SupportedLanguage from = VOCABULARY_SERVICE.getSupportedLanguageByReference(args.get("langfrom"));
+                final SupportedLanguage to = VOCABULARY_SERVICE.getSupportedLanguageByReference(args.get("langto"));
+
+                if (from == null) VIEW.printLangFromCouldNotBeMapped();
+                else if (to == null) VIEW.printLangToCouldNotBeMapped();
+                else GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists, from, to);
+            } catch (NumberFormatException e) {
+                VIEW.printInvalidIdPartFormat(args.get("vocablelists"));
+            } catch (KnownLangEqualsLearntLangException | NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException e) {
+                e.printStackTrace();
+            }
+        } else VIEW.printCouldNotDetermineUser();
     }
 }
