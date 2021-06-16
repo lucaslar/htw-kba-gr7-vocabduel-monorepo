@@ -408,7 +408,14 @@ public class VocabduelView {
                     .append(round.getAnswers().get(i - asciiA).getSynonyms());
         }
 
-        qAndA.append("\n\n To answer, run \"").append(answerCmd).append(" --id ").append(round.getId()).append(" --answer <a, b, c or d>\"");
+        qAndA.
+                append("\n\n To answer, run \"")
+                .append(answerCmd)
+                .append(" --id ")
+                .append(round.getGame().getId())
+                .append(" --round ")
+                .append(round.getRoundNr())
+                .append(" --answer <'a', 'b', 'c' or 'd'>\"");
         System.out.println(qAndA);
     }
 }

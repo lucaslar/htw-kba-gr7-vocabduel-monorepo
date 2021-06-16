@@ -121,7 +121,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
-        actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the current question of a current game", "g a", this::onGameRoundAnswered, "id", "answer"));
+        actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id","round", "answer"));
         actionsList.add(new VocabduelCliAction(true, GLS_KEY, "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
