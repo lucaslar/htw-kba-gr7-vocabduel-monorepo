@@ -27,7 +27,7 @@ public class VocabduelGame {
     private SupportedLanguage learntLanguage;
     @ManyToMany(cascade = CascadeType.MERGE)
     private List<VocableList> vocableLists;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
     private List<VocabduelRound> rounds;
 
     public VocabduelGame(){ }

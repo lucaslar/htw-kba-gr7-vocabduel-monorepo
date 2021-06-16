@@ -12,10 +12,10 @@ import java.util.List;
 @DiscriminatorColumn(name = "round_finished", discriminatorType = DiscriminatorType.INTEGER)
 public class VocabduelRound implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    // TODO: Makes sense? game should be derived
-    private Long id;
-//    @Id
+    @ManyToOne(targetEntity = VocabduelGame.class)
+    @JoinColumn
+    private VocabduelGame game;
+    @Id
     private int roundNr;
     @OneToOne
     private UntranslatedVocable question;
@@ -25,10 +25,6 @@ public class VocabduelRound implements Serializable {
     public VocabduelRound() {}
 
     public VocabduelRound(int roundNr){ this.roundNr = roundNr; }
-
-    public Long getId() {
-        return id;
-    }
 
     public int getRoundNr() {
         return roundNr;
@@ -52,5 +48,13 @@ public class VocabduelRound implements Serializable {
 
     public void setAnswers(List<TranslationGroup> answers) {
         this.answers = answers;
+    }
+
+    public VocabduelGame getGame() {
+        return game;
+    }
+
+    public void setGame(VocabduelGame game) {
+        this.game = game;
     }
 }

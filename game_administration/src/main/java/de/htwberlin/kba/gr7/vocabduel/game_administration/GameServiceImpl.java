@@ -214,6 +214,7 @@ public class GameServiceImpl implements GameService {
             answers.add(vocable.getTranslations().get((int) (Math.random() * vocable.getTranslations().size())));
             Collections.shuffle(answers);
 
+            round.setGame(game);
             round.setQuestion(vocable);
             round.setAnswers(answers);
             rounds.add(round);
