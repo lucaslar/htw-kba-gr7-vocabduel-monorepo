@@ -47,7 +47,7 @@ public interface GameService {
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.
      *
      * @param user User the pending/challenged matches of are to be returned.
-     * @return List of all unfinished games the given <code>user</code> has been challenged to.
+     * @return List of all unfinished games the given <code>user</code> has been challenged to or has started.
      */
     List<VocabduelGame> getPersonalChallengedGames(User user);
 

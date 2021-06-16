@@ -14,6 +14,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,23 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<VocabduelGame> getPersonalChallengedGames(User user) {
-        return null;
+        List<VocabduelGame> games = null;
+        if (user != null) {
+            ENTITY_MANAGER.getTransaction().begin();
+            try {
+                final String query = "select g from VocabduelGame g where g.playerB = :user or g.playerA = :user";
+                games = (List<VocabduelGame>) ENTITY_MANAGER
+                        .createQuery(query)
+                        .setParameter("user", user)
+                        .getResultList();
+
+                // TODO: Exclude finished games (might require db changes)
+
+            } catch (NoResultException ignored) {
+            }
+            ENTITY_MANAGER.getTransaction().commit();
+        }
+        return games;
     }
 
     @Override

@@ -122,6 +122,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
         actionsList.add(new VocabduelCliAction(true, GR_KEY, "See the next question of a current game", "g r", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the current question of a current game", "g a", this::onGameRoundAnswered, "id", "answer"));
+        actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -494,5 +495,10 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onGameRoundStarted(final HashMap<String, String> args) {
         System.out.println("to be implemented...");
+    }
+
+    private void onGameListCalled() {
+        final List<VocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
+        VIEW.printGames(games, STORAGE.getLoggedInUser());
     }
 }

@@ -370,4 +370,22 @@ public class VocabduelView {
         System.out.println("Game against " + game.getPlayerB().getUsername() + " has been started successfully. [Game ID: " + game.getId() + "]");
         System.out.println("In order to start a round/see your first question, run: " + seeRoundCmd + " --id " + game.getId());
     }
+
+    public void printGames(final List<VocabduelGame> games, final User self) {
+        if (games == null || games.isEmpty()) System.out.println("No games yet.");
+        else {
+            System.out.println("Here's a list of your current games:");
+            games.forEach(g -> {
+                System.out.print("[Game with ID " + g.getId() + "] ");
+                final boolean isSelfInitiator = self.getId().equals(g.getPlayerA().getId());
+                if (isSelfInitiator) {
+                    System.out.println("...You challenged \"" + g.getPlayerB().getUsername() + "\" (ID: " + g.getPlayerB().getId() + ")! ");
+                } else {
+                    System.out.println("...\"" + g.getPlayerA().getUsername() + "\" (ID: " + g.getPlayerA().getId() + ") has challenged you! ");
+                }
+
+                // TODO: Add information concerning rounds => might require db changes
+            });
+        }
+    }
 }
