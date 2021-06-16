@@ -3,7 +3,6 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -72,7 +71,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public VocabduelRound startRound(User player, long gameId) {
+    public VocabduelRound startRound(User player, long gameId) throws NoAccessException {
 //        // Checks first
 //        boolean isTrue = false;
 //        int indexRoundEmpty = getFixNumberOfRoundsPerGame();
@@ -144,11 +143,12 @@ public class GameServiceImpl implements GameService {
             }
             ENTITY_MANAGER.getTransaction().commit();
         }
-        return round;
+        if (round == null) throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
+        else return round;
     }
 
     @Override
-    public CorrectAnswerResult answerQuestion(User player, VocabduelRound round, TranslationGroup answer) {
+    public CorrectAnswerResult answerQuestion(User player, long roundId, int answerNr) throws QuestionAlreadyAnsweredException, NoAccessException {
         return null;
     }
 

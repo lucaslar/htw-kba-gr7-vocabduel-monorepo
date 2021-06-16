@@ -1,7 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UserIsNotPlayerException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -55,7 +55,7 @@ public interface ScoreService {
      * @param game Game the final score of is to be determined and stored.
      * @return Finished game including result and meta-data from the given player's point of view.
      * @throws UnfinishedGameException  The game does still have unfinished rounds, i.e. cannot be finished.
-     * @throws UserIsNotPlayerException The triggering user/user the result is to be personalized for is not a player of the game instance.
+     * @throws NoAccessException The triggering user/user the result is to be personalized for is not a player of the game instance.
      */
-    PersonalFinishedGame finishGame(User user, VocabduelGame game) throws UnfinishedGameException, UserIsNotPlayerException;
+    PersonalFinishedGame finishGame(User user, VocabduelGame game) throws UnfinishedGameException, NoAccessException;
 }

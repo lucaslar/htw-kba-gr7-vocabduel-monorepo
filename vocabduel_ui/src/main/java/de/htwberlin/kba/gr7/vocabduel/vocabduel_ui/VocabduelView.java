@@ -390,11 +390,7 @@ public class VocabduelView {
         }
     }
 
-    public void printRoundIsNull(final String lsCmd) {
-        System.out.println("No round found. Are you sure you stated a running game that you still have open questions in? => Run \"" + lsCmd + "\" to find out.");
-    }
-
-    public void printQuestionAndAnswers(final VocabduelRound round) {
+    public void printQuestionAndAnswers(final VocabduelRound round,final String answerCmd) {
         final StringBuilder qAndA = new StringBuilder("Round " + round.getRoundNr() + ") " + round.getQuestion().getVocable().getSynonyms());
         final List<String> hints = round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo();
         if (hints != null && !hints.isEmpty()) {
@@ -412,6 +408,7 @@ public class VocabduelView {
                     .append(round.getAnswers().get(i - asciiA).getSynonyms());
         }
 
+        qAndA.append("\n\n To answer, run \"").append(answerCmd).append(" --id ").append(round.getId()).append(" --answer <a, b, c or d>\"");
         System.out.println(qAndA);
     }
 }

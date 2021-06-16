@@ -1,6 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.QuestionAlreadyAnsweredException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -23,9 +25,9 @@ public class GameServiceImplAnswerQuestionTest {
     }
 
     @Test()
-    public void shouldGetLossWithIncorrectAnswer(){
+    public void shouldGetLossWithIncorrectAnswer() throws QuestionAlreadyAnsweredException, NoAccessException {
         CorrectAnswerResult result = gameAdministration.answerQuestion(
-                mock.mockSampleUser(), mock.mockVocabduelRound(), mock.mockVocabduelRound().getAnswers().get(2));
+                mock.mockSampleUser(),mock.mockVocabduelRound().getId(), 2);
         Assert.assertNotNull(result);
         Assert.assertEquals(Result.LOSS, result.getResult());
         Assert.assertNotNull(result.getCorrectAnswer());
@@ -33,9 +35,9 @@ public class GameServiceImplAnswerQuestionTest {
     }
 
     @Test()
-    public void shouldGetWinWithCorrectAnswer(){
+    public void shouldGetWinWithCorrectAnswer() throws QuestionAlreadyAnsweredException, NoAccessException {
         CorrectAnswerResult result = gameAdministration.answerQuestion(
-                mock.mockSampleUser(), mock.mockVocabduelRound(), mock.mockVocabduelRound().getAnswers().get(1));
+                mock.mockSampleUser(), mock.mockVocabduelRound().getId(), 1);
         Assert.assertNotNull(result);
         Assert.assertEquals(Result.WIN, result.getResult());
         Assert.assertNull(result.getCorrectAnswer());

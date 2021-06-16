@@ -7,7 +7,6 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
@@ -59,7 +58,7 @@ public interface GameService {
      * @return Current <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what
      */
-    VocabduelRound startRound(User player, long gameId);
+    VocabduelRound startRound(User player, long gameId) throws NoAccessException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
@@ -71,10 +70,12 @@ public interface GameService {
      * Afterwards only the check whether the user was wrong of right will be stored.
      * The information, which answer the user chose, will be lost.
      *
-     * @param player Player who has answered the question.
-     * @param round  Round the answer has been submitted for.
-     * @param answer Answer submitted by the given <code>player</code>.
+     * @param player    Player who has answered the question.
+     * @param roundId   Id of the round the answer is to be been submitted for.
+     * @param answerNr  Nr of the answer submitted by the given <code>player</code>.
      * @return Result for the given <code>round</code> from the perspective of the given <code>player</code> incl. the correct answer in case of having submitted a wrong one.
+     * @throws QuestionAlreadyAnsweredException The question has already been answered by the current user.
+     * @throws NoAccessException The given user is no participant of the given round or it could not be found at all.
      */
-    CorrectAnswerResult answerQuestion(User player, VocabduelRound round, TranslationGroup answer);
+    CorrectAnswerResult answerQuestion(User player, long roundId, int answerNr) throws QuestionAlreadyAnsweredException, NoAccessException;
 }

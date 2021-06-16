@@ -1,9 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidGameSetupException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.KnownLangEqualsLearntLangException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NotEnoughVocabularyException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
@@ -497,11 +495,13 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onGameRoundStarted(final HashMap<String, String> args) {
         try {
-            final VocabduelRound round = GAME_SERVICE.startRound(STORAGE.getLoggedInUser(), Long.parseLong(args.get("id")));
-            if (round == null) VIEW.printRoundIsNull(GLS_KEY);
-            else VIEW.printQuestionAndAnswers(round);
+            final long id = Long.parseLong(args.get("id"));
+            final VocabduelRound round = GAME_SERVICE.startRound(STORAGE.getLoggedInUser(), id);
+            VIEW.printQuestionAndAnswers(round, GA_KEY);
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get("id"));
+        } catch (NoAccessException e) {
+            e.printStackTrace();
         }
     }
 

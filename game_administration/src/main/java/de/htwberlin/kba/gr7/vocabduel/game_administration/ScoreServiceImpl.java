@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UserIsNotPlayerException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
@@ -43,7 +43,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public PersonalFinishedGame finishGame(User player, VocabduelGame game) throws UnfinishedGameException, UserIsNotPlayerException {
+    public PersonalFinishedGame finishGame(User player, VocabduelGame game) throws UnfinishedGameException, NoAccessException {
         return null;
     }
 }
