@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -387,5 +388,30 @@ public class VocabduelView {
                 // TODO: Add information concerning rounds => might require db changes
             });
         }
+    }
+
+    public void printRoundIsNull(final String lsCmd) {
+        System.out.println("No round found. Are you sure you stated a running game that you still have open questions in? => Run \"" + lsCmd + "\" to find out.");
+    }
+
+    public void printQuestionAndAnswers(final VocabduelRound round) {
+        final StringBuilder qAndA = new StringBuilder("Round " + round.getRoundNr() + ") " + round.getQuestion().getVocable().getSynonyms());
+        final List<String> hints = round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo();
+        if (hints != null && !hints.isEmpty()) {
+            qAndA
+                    .append(" (Hint/additional information: ")
+                    .append(round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo());
+        }
+
+        final int asciiA = 97;
+        for (int i = asciiA; i < asciiA + round.getAnswers().size(); i++) {
+            qAndA
+                    .append("\n...")
+                    .append((char) i)
+                    .append(") ")
+                    .append(round.getAnswers().get(i - asciiA).getSynonyms());
+        }
+
+        System.out.println(qAndA);
     }
 }

@@ -57,9 +57,8 @@ public class GameServiceImpl implements GameService {
         if (user != null) {
             ENTITY_MANAGER.getTransaction().begin();
             try {
-                final String query = "select g from VocabduelGame g where g.playerB = :user or g.playerA = :user";
                 games = (List<VocabduelGame>) ENTITY_MANAGER
-                        .createQuery(query)
+                        .createQuery("select g from VocabduelGame g where g.playerB = :user or g.playerA = :user")
                         .setParameter("user", user)
                         .getResultList();
 
@@ -73,61 +72,79 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public VocabduelRound startRound(User player, VocabduelGame game) throws RoundAlreadyFinishedException {
-        // Checks first
-        boolean isTrue = false;
-        int indexRoundEmpty = getFixNumberOfRoundsPerGame();
-        int indexRoundUnfinished = getFixNumberOfRoundsPerGame();
-        for (VocabduelRound round : game.getRounds()) {
-            if (round != null && round.getClass().isAssignableFrom(FinishedVocabduelRound.class)) {
-                isTrue = true;
-            } else if (round == null) {
-                indexRoundEmpty = game.getRounds().indexOf(null);
-                break;
-            } else if (!round.getClass().isAssignableFrom(FinishedVocabduelRound.class)) {
-                indexRoundUnfinished = game.getRounds().indexOf(round);
-            }
-        }
-        if (isTrue) {
-            throw new RoundAlreadyFinishedException();
-        }
+    public VocabduelRound startRound(User player, long gameId) {
+//        // Checks first
+//        boolean isTrue = false;
+//        int indexRoundEmpty = getFixNumberOfRoundsPerGame();
+//        int indexRoundUnfinished = getFixNumberOfRoundsPerGame();
+//        for (VocabduelRound round : game.getRounds()) {
+//            if (round != null && round.getClass().isAssignableFrom(FinishedVocabduelRound.class)) {
+//                isTrue = true;
+//            } else if (round == null) {
+//                indexRoundEmpty = game.getRounds().indexOf(null);
+//                break;
+//            } else if (!round.getClass().isAssignableFrom(FinishedVocabduelRound.class)) {
+//                indexRoundUnfinished = game.getRounds().indexOf(round);
+//            }
+//        }
+//        if (isTrue) {
+//            throw new RoundAlreadyFinishedException();
+//        }
+//
+//        VocabduelRound newRound;
+//        if (indexRoundEmpty != getFixNumberOfRoundsPerGame()) {
+//            newRound = new VocabduelRound(indexRoundEmpty);
+//            // generate Question
+//            while (newRound.getQuestion() == null) {
+//                Random random = new Random();
+//                int randomList = random.nextInt(game.getVocableLists().size());
+//                int randomQuest = random.nextInt(game.getVocableLists().get(randomList).getVocables().size());
+//                newRound.setQuestion(game.getVocableLists().get(randomList).getVocables().get(randomQuest));
+//                newRound.setAnswers(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations());
+//                for (int i = 0; i < game.getRounds().size(); i++) {
+//                    if (newRound.getQuestion().equals(game.getRounds().get(i).getQuestion())) {
+//                        newRound.setQuestion(null);
+//                        newRound.setAnswers(null);
+//                    }
+//                }
+//            }
+//            // generate answer possibilities
+//            while (newRound.getAnswers().size() < 4) { // TODO Anzahl möglicher Antworten in Interface hinterlegen
+//                Random random = new Random();
+//                int randomList = random.nextInt(game.getVocableLists().size());
+//                int randomQuest = random.nextInt(game.getVocableLists().get(randomList).getVocables().size());
+//                int randomTrans = random.nextInt(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations().size());
+//                newRound.getAnswers().add(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations().get(randomTrans));
+//            }
+//            // persist new round
+//            // TODO: kapseln, sonst funzen die Tests nicht mehr
+//            ENTITY_MANAGER.getTransaction().begin();
+//            ENTITY_MANAGER.persist(newRound);
+//            ENTITY_MANAGER.getTransaction().commit();
+//            ENTITY_MANAGER.close();
+//            game.getRounds().set(indexRoundEmpty, newRound);
+//            return newRound;
+//        } else {
+//            return game.getRounds().get(indexRoundUnfinished);
+//        }
 
-        VocabduelRound newRound;
-        if (indexRoundEmpty != getFixNumberOfRoundsPerGame()) {
-            newRound = new VocabduelRound(indexRoundEmpty);
-            // generate Question
-            while (newRound.getQuestion() == null) {
-                Random random = new Random();
-                int randomList = random.nextInt(game.getVocableLists().size());
-                int randomQuest = random.nextInt(game.getVocableLists().get(randomList).getVocables().size());
-                newRound.setQuestion(game.getVocableLists().get(randomList).getVocables().get(randomQuest));
-                newRound.setAnswers(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations());
-                for (int i = 0; i < game.getRounds().size(); i++) {
-                    if (newRound.getQuestion().equals(game.getRounds().get(i).getQuestion())) {
-                        newRound.setQuestion(null);
-                        newRound.setAnswers(null);
-                    }
-                }
-            }
-            // generate answer possibilities
-            while (newRound.getAnswers().size() < 4) { // TODO Anzahl möglicher Antworten in Interface hinterlegen
-                Random random = new Random();
-                int randomList = random.nextInt(game.getVocableLists().size());
-                int randomQuest = random.nextInt(game.getVocableLists().get(randomList).getVocables().size());
-                int randomTrans = random.nextInt(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations().size());
-                newRound.getAnswers().add(game.getVocableLists().get(randomList).getVocables().get(randomQuest).getTranslations().get(randomTrans));
-            }
-            // persist new round
-            // TODO: kapseln, sonst funzen die Tests nicht mehr
+        // TODO: Remove above?
+
+        VocabduelRound round = null;
+        if (player != null) {
             ENTITY_MANAGER.getTransaction().begin();
-            ENTITY_MANAGER.persist(newRound);
+            try {
+                round = (VocabduelRound) ENTITY_MANAGER
+                        .createQuery("select r from VocabduelGame g inner join g.rounds r where g.id = :gameId and ((g.playerA = :user and r.resultPlayerA is null) or (g.playerB = :user and r.resultPlayerB is null))")
+                        .setParameter("user", player)
+                        .setParameter("gameId", gameId)
+                        .setMaxResults(1)
+                        .getSingleResult();
+            } catch (NoResultException ignored) {
+            }
             ENTITY_MANAGER.getTransaction().commit();
-            ENTITY_MANAGER.close();
-            game.getRounds().set(indexRoundEmpty, newRound);
-            return newRound;
-        } else {
-            return game.getRounds().get(indexRoundUnfinished);
         }
+        return round;
     }
 
     @Override

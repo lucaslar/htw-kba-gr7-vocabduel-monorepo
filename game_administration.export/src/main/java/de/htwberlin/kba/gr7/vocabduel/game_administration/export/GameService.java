@@ -55,12 +55,11 @@ public interface GameService {
      * Starts the next round of a given game as a given player, i.e. returns the respective next round object.
      *
      * @param player Player the next round is to be returned for.
-     * @param game   Game the next round of is to be returned for the given <code>user</code>.
-     * @return New <code>{@link VocabduelRound}</code> of a given game for a given user.
+     * @param gameId Id of the game the next round of is to be returned for the given <code>user</code>.
+     * @return Current <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what
-     * @throws RoundAlreadyFinishedException the game has no round left to start
      */
-    VocabduelRound startRound(User player, VocabduelGame game) throws RoundAlreadyFinishedException;
+    VocabduelRound startRound(User player, long gameId);
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given

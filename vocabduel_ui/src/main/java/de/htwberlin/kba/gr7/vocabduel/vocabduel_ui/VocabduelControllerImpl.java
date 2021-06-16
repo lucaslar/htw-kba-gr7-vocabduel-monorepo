@@ -5,6 +5,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.Inva
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.KnownLangEqualsLearntLangException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NotEnoughVocabularyException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -47,7 +48,8 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final String LO_KEY = "logout";
     private final String LO_SHORT = "lo";
     private final String GA_KEY = "game answer";
-    private final String GR_KEY = "game round";
+    private final String GQ_KEY = "game question";
+    private final String GLS_KEY = "game ls";
 
     public VocabduelControllerImpl(
             final VocabduelView view,
@@ -120,9 +122,9 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
-        actionsList.add(new VocabduelCliAction(true, GR_KEY, "See the next question of a current game", "g r", this::onGameRoundStarted, "id"));
+        actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the current question of a current game", "g a", this::onGameRoundAnswered, "id", "answer"));
-        actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
+        actionsList.add(new VocabduelCliAction(true, GLS_KEY, "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -479,7 +481,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 else if (to == null) VIEW.printLangToCouldNotBeMapped();
                 else {
                     final VocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists, from, to);
-                    VIEW.printSuccessfullyStaredGame(game, GR_KEY);
+                    VIEW.printSuccessfullyStaredGame(game, GQ_KEY);
                 }
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get("vocablelists"));
@@ -494,7 +496,13 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onGameRoundStarted(final HashMap<String, String> args) {
-        System.out.println("to be implemented...");
+        try {
+            final VocabduelRound round = GAME_SERVICE.startRound(STORAGE.getLoggedInUser(), Long.parseLong(args.get("id")));
+            if (round == null) VIEW.printRoundIsNull(GLS_KEY);
+            else VIEW.printQuestionAndAnswers(round);
+        } catch (NumberFormatException e) {
+            VIEW.printInvalidIdFormat(args.get("id"));
+        }
     }
 
     private void onGameListCalled() {
