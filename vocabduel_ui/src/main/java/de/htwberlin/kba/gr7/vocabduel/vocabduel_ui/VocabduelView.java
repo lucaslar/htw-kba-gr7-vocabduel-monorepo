@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -363,5 +364,10 @@ public class VocabduelView {
 
     public void printLangToCouldNotBeMapped() {
         System.out.println("Language (to) could not be mapped correctly");
+    }
+
+    public void printSuccessfullyStaredGame(final VocabduelGame game, final String seeRoundCmd) {
+        System.out.println("Game against " + game.getPlayerB().getUsername() + " has been started successfully. [Game ID: " + game.getId() + "]");
+        System.out.println("In order to start a round/see your first question, run: " + seeRoundCmd + " --id " + game.getId());
     }
 }
