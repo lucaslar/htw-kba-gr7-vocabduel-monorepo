@@ -210,7 +210,18 @@ public class GameServiceImpl implements GameService {
             untranslated.setVocable(vocable.getVocable());
 
             Collections.shuffle(flatVocables);
-            final List<TranslationGroup> answers = flatVocables.stream().limit(3).map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size()))).collect(Collectors.toList());
+            final List<TranslationGroup> answers = flatVocables
+                    .stream()
+                    // Avoid that synonym stored to another vocable is questioned
+                    // E.g. Buenos Dias & Buenas Tares = Guten Tag
+                    // => question "Buenos Dias" would be misleading with those two answer options
+                    .filter(v -> v.getTranslations()
+                            .stream().noneMatch(t -> t.getSynonyms()
+                                    .stream().anyMatch(s -> vocable.getTranslations()
+                                            .stream().anyMatch(vt->vt.getSynonyms()
+                                                    .stream().anyMatch(vs -> vs.equals(s))))))
+                    .limit(3)
+                    .map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size()))).collect(Collectors.toList());
             answers.add(vocable.getTranslations().get((int) (Math.random() * vocable.getTranslations().size())));
             Collections.shuffle(answers);
 
