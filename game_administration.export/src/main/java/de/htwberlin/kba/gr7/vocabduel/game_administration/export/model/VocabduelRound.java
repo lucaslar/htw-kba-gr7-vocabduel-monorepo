@@ -26,6 +26,10 @@ public class VocabduelRound implements Serializable {
 
     public VocabduelRound(int roundNr){ this.roundNr = roundNr; }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getRoundNr() {
         return roundNr;
     }
