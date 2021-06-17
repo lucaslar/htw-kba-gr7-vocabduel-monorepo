@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -458,5 +459,43 @@ public class VocabduelView {
 
     public void printGameNotFinishedByOpponent() {
         System.out.println("Your opponent has not answered all questions yet. Only then, the game will be marked as closed. Come back and check your score stats in order to see if you won!");
+    }
+
+    public void printOwnScores(final List<PersonalFinishedGame> hist) {
+        final StringBuilder str = new StringBuilder("Here's a list of your scores:");
+        hist.stream().sorted(Comparator.comparing(PersonalFinishedGame::getFinishedTimestamp))
+                .forEach(h -> str
+                        .append("\n...")
+                        .append(h.getFinishedTimestamp())
+                        .append(" => ")
+                        .append(h.getGameResult())
+                        .append(" (Your points: ")
+                        .append(h.getOwnPoints())
+                        .append(" - opponent's")
+                        .append(h.getOpponentPoints())
+                        .append(") against ")
+                        .append(h.getOpponent().toString()));
+        System.out.println(str);
+    }
+
+    public void printUserScores(final List<PersonalFinishedGame> hist, final User user) {
+        final StringBuilder str = new StringBuilder("Here's a list of scores for " + user.toString() + ":");
+        hist.stream().sorted(Comparator.comparing(PersonalFinishedGame::getFinishedTimestamp))
+                .forEach(h -> str
+                        .append("\n...")
+                        .append(h.getFinishedTimestamp())
+                        .append(" => ")
+                        .append(h.getGameResult())
+                        .append(" (points: ")
+                        .append(h.getOwnPoints())
+                        .append(" - opponent's: ")
+                        .append(h.getOpponentPoints())
+                        .append(") against ")
+                        .append(h.getOpponent().toString()));
+        System.out.println(str);
+    }
+
+    public void printNoFinishedGamesYet() {
+        System.out.println("The given user does not seem to have finished any game yet!");
     }
 }

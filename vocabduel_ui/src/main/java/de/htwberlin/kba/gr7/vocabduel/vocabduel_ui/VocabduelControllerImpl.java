@@ -112,8 +112,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "user update", "Update the currently logged in user's data", "u u", this::onUpdateCalled));
         actionsList.add(new VocabduelCliAction(true, "user update pwd", "Update the currently logged in user's password", "u u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
         actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
-        actionsList.add(new VocabduelCliAction(false, "supported ls", "See a list of all supported languages", "s ls", this::onVocabSupportedCalled));
-        actionsList.add(new VocabduelCliAction(false, "supported ls codes", "See a list of all supported languages (codes only)", "s ls c", this::onVocabSupportedCodesCalled));
+        actionsList.add(new VocabduelCliAction(false, "lang ls", "See a list of all supported languages", "lang ls", this::onVocabSupportedCalled));
+        actionsList.add(new VocabduelCliAction(false, "lang ls codes", "See a list of all supported languages (codes only)", "lang ls c", this::onVocabSupportedCodesCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab find", "Get a vocable list by ID", "v find", this::onFindVocabListCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "vocab ls user", "Get all vocable lists imported by a given user (determined by optional params)", "v ls u", this::onGetVocabListsByUserCalled));
@@ -125,7 +125,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
         actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
-        actionsList.add(new VocabduelCliAction(true, "score hist", "See a list of all current running games", "g ls", this::onGameListCalled));
+        actionsList.add(new VocabduelCliAction(true, "score ls", "See a list of all your scores, i.e. the results of finished games", "s ls", this::onScoreHistCalled));
+        actionsList.add(new VocabduelCliAction(true, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -545,5 +546,29 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onGameListCalled() {
         final List<VocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
         VIEW.printGames(games, STORAGE.getLoggedInUser());
+    }
+
+    private void onScoreHistCalled() {
+        try {
+            final List<PersonalFinishedGame> hist = SCORE_SERVICE.getPersonalFinishedGames(STORAGE.getLoggedInUser());
+            if (hist != null && !hist.isEmpty()) VIEW.printOwnScores(hist);
+            else VIEW.printNoFinishedGamesYet();
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onScoreUserCalled(final HashMap<String, String> args) {
+        final User user = findUser(args);
+        if (user != null) {
+            final List<PersonalFinishedGame> hist;
+            try {
+                hist = SCORE_SERVICE.getPersonalFinishedGames(user);
+                if (hist != null && !hist.isEmpty()) VIEW.printUserScores(hist, user);
+                else VIEW.printNoFinishedGamesYet();
+            } catch (InvalidUserException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

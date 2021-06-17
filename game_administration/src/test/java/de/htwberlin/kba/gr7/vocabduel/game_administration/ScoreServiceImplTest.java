@@ -3,6 +3,8 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,10 +42,11 @@ public class ScoreServiceImplTest {
     private User playerD; // 0 - 0
 
     private ScoreServiceImpl scoreAdministration;
+    private UserService userService;
 
     @Before
     public void setup() {
-        scoreAdministration = new ScoreServiceImpl();
+        scoreAdministration = new ScoreServiceImpl(userService);
 
         playerA = new User(4711L);
         playerB = new User(42L);
@@ -60,14 +63,14 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldNotReturnPersonalFinishedGamesForUserWithoutGames() {
+    public void shouldNotReturnPersonalFinishedGamesForUserWithoutGames() throws InvalidUserException {
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(playerD);
         Assert.assertNotNull(games);
         Assert.assertTrue(games.isEmpty());
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyLost() {
+    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyLost() throws InvalidUserException {
         final User player = playerA;
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
         sharedPersonalFinishedGameLogic(games, player);
@@ -79,7 +82,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyWon() {
+    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyWon() throws InvalidUserException {
         final User player = playerC;
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
         sharedPersonalFinishedGameLogic(games, player);
@@ -91,7 +94,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfWonAndLost() {
+    public void shouldReturnCorrectPersonalFinishedGamesIfWonAndLost() throws InvalidUserException {
         final User player = playerB;
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
         sharedPersonalFinishedGameLogic(games, player);
