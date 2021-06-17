@@ -35,12 +35,21 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthServiceImpl(final UserService userService) {
         USER_SERVICE = userService;
-
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
+        TOKEN_KEY = initializeTokenkey();
+         }
 
+    public AuthServiceImpl(final UserService userService, final EntityManager entityManager){
+        USER_SERVICE = userService;
+        ENTITY_MANAGER = entityManager;
+        TOKEN_KEY = initializeTokenkey();
+    }
+
+    private SecretKeySpec initializeTokenkey(){
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
-        TOKEN_KEY = new SecretKeySpec(Base64.getDecoder().decode(encoded), SignatureAlgorithm.HS256.getJcaName());
+        return new SecretKeySpec(Base64.getDecoder().decode(encoded), SignatureAlgorithm.HS256.getJcaName());
+
     }
 
     @Override

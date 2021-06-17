@@ -33,6 +33,12 @@ public class GameServiceImpl implements GameService {
         VOCABULARY_SERVICE = vocabularyService;
     }
 
+    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager){
+        ENTITY_MANAGER = entityManager;
+        USER_SERVICE = userService;
+        VOCABULARY_SERVICE = vocabularyService;
+    }
+
     @Override
     public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
             throws InvalidUserException, InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException {

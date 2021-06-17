@@ -26,6 +26,11 @@ public class ScoreServiceImpl implements ScoreService {
         USER_SERVICE = userService;
     }
 
+    public ScoreServiceImpl(final UserService userService, final EntityManager entityManager) {
+        ENTITY_MANAGER = entityManager;
+        USER_SERVICE = userService;
+    }
+
     @Override
     public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException {
         if (user == null || USER_SERVICE.getUserDataById(user.getId()) == null) {

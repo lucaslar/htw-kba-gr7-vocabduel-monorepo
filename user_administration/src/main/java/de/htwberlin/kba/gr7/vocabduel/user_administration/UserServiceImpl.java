@@ -20,6 +20,8 @@ public class UserServiceImpl implements UserService {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
     }
 
+    public UserServiceImpl(final EntityManager entityManager){ ENTITY_MANAGER = entityManager; }
+
     @Override
     public List<User> findUsersByUsername(final String searchString) {
         List<User> users = null;

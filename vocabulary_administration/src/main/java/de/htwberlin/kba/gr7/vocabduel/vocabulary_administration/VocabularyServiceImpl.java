@@ -35,6 +35,11 @@ public class VocabularyServiceImpl implements VocabularyService {
         ENTITY_MANAGER = emf.createEntityManager();
     }
 
+    VocabularyServiceImpl(EntityManager entityManager){
+        initializeLangMapping();
+        ENTITY_MANAGER = entityManager;
+    }
+
     @Override
     public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException {
         final List<String> lines = Arrays.stream(gnuContent.split("\n")).collect(Collectors.toList());
