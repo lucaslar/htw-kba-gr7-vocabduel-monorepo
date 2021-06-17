@@ -520,7 +520,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     if (roundNr < GameService.NR_OF_ROUNDS) onGameRoundStarted(args);
                     else {
                         PersonalFinishedGame finishedGame = SCORE_SERVICE.finishGame(STORAGE.getLoggedInUser(), gameId);
-                        // TODO: Display
+                        VIEW.printFinishedGame(finishedGame);
                     }
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get("round"));

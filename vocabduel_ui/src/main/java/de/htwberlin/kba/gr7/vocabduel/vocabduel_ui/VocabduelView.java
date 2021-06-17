@@ -371,7 +371,7 @@ public class VocabduelView {
     }
 
     public void printSuccessfullyStaredGame(final VocabduelGame game, final String seeRoundCmd) {
-        System.out.println("Game against " + game.getPlayerB().getUsername() + " has been started successfully. [Game ID: " + game.getId() + "]");
+        System.out.println("Game against \"" + game.getPlayerB().getUsername() + "\" has been started successfully. [Game ID: " + game.getId() + "]");
         System.out.println("In order to start a round/see your first question, run: " + seeRoundCmd + " --id " + game.getId());
     }
 
@@ -472,7 +472,7 @@ public class VocabduelView {
                         .append(h.getGameResult())
                         .append(" (Your points: ")
                         .append(h.getOwnPoints())
-                        .append(" - opponent's")
+                        .append(" - opponent's: ")
                         .append(h.getOpponentPoints())
                         .append(") against ")
                         .append(h.getOpponent().toString()));
@@ -487,7 +487,7 @@ public class VocabduelView {
                         .append(h.getFinishedTimestamp())
                         .append(" => ")
                         .append(h.getGameResult())
-                        .append(" (points: ")
+                        .append(" (Points: ")
                         .append(h.getOwnPoints())
                         .append(" - opponent's: ")
                         .append(h.getOpponentPoints())
@@ -502,5 +502,12 @@ public class VocabduelView {
 
     public void printRecord(final ScoreRecord recordOfUser) {
         System.out.println(recordOfUser.toString());
+    }
+
+    public void printFinishedGame(final PersonalFinishedGame finishedGame) {
+        System.out.println(
+                "Game finished: " + finishedGame.getGameResult().toString()
+                        + " (Your points: " + (finishedGame.getOwnPoints()) + (" - opponent's: ") + (finishedGame.getOpponentPoints() + ")")
+        );
     }
 }
