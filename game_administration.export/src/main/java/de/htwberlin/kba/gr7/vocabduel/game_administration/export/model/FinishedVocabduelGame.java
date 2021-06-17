@@ -25,10 +25,6 @@ public class FinishedVocabduelGame extends VocabduelGame {
         );
     }
 
-    public int getPointsA() {
-        return totalPointsA;
-    }
-
     public int getTotalPointsA() {
         return totalPointsA;
     }

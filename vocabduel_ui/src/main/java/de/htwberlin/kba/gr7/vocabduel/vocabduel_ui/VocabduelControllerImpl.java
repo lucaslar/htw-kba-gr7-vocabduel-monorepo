@@ -3,10 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -128,6 +125,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
         actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
+        actionsList.add(new VocabduelCliAction(true, "score hist", "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -518,7 +516,8 @@ public class VocabduelControllerImpl implements VocabduelController {
 
                     if (roundNr < GameService.NR_OF_ROUNDS) onGameRoundStarted(args);
                     else {
-                        SCORE_SERVICE.finishGame(STORAGE.getLoggedInUser(), gameId);
+                        PersonalFinishedGame finishedGame = SCORE_SERVICE.finishGame(STORAGE.getLoggedInUser(), gameId);
+                        // TODO: Display
                     }
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get("round"));

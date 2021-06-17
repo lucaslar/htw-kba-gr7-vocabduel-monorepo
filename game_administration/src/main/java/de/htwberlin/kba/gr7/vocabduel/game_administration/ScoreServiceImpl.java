@@ -66,7 +66,32 @@ public class ScoreServiceImpl implements ScoreService {
             ENTITY_MANAGER.merge(finishedGame);
             ENTITY_MANAGER.getTransaction().commit();
 
-            return null;
+            return personifyFinishedGame(player, finishedGame);
         }
+    }
+
+    private PersonalFinishedGame personifyFinishedGame (final User user, final FinishedVocabduelGame finishedVocabduelGame) {
+        final PersonalFinishedGame personified = new PersonalFinishedGame();
+        personified.setFinishedTimestamp(finishedVocabduelGame.getFinishedTimestamp());
+
+        if (finishedVocabduelGame.getPlayerA().getId().equals(user.getId())) {
+            personified.setOwnPoints(finishedVocabduelGame.getTotalPointsA());
+            personified.setOpponentPoints(finishedVocabduelGame.getTotalPointsB());
+            personified.setOpponent(finishedVocabduelGame.getPlayerB());
+        } else {
+            personified.setOwnPoints(finishedVocabduelGame.getTotalPointsB());
+            personified.setOpponentPoints(finishedVocabduelGame.getTotalPointsA());
+            personified.setOpponent(finishedVocabduelGame.getPlayerA());
+        }
+        GameResult result = gameResultByPoints(personified.getOwnPoints(),personified.getOpponentPoints());
+        personified.setGameResult(result);
+
+        return personified;
+    }
+
+    private GameResult gameResultByPoints (final int own, final int opponent) {
+        if (own == opponent) return GameResult.DRAW;
+        else if (own < opponent) return GameResult.LOSS;
+        else return GameResult.WIN;
     }
 }
