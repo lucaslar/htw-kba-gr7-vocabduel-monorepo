@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
@@ -39,6 +40,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
     private final GameService GAME_SERVICE;
+    private final ScoreService SCORE_SERVICE;
 
     private final Pattern PARAM_PATTERN = Pattern.compile("--[a-z]+\\s((?!--).)+");
 
@@ -49,7 +51,6 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final String LO_SHORT = "lo";
     private final String GA_KEY = "game answer";
     private final String GQ_KEY = "game question";
-    private final String GLS_KEY = "game ls";
 
     public VocabduelControllerImpl(
             final VocabduelView view,
@@ -57,7 +58,8 @@ public class VocabduelControllerImpl implements VocabduelController {
             final AuthService authService,
             final UserService userService,
             final VocabularyService vocabularyService,
-            final GameService gameService
+            final GameService gameService,
+            final ScoreService scoreService
     ) {
         VIEW = view;
         STORAGE = storage;
@@ -65,6 +67,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
         GAME_SERVICE = gameService;
+        SCORE_SERVICE = scoreService;
     }
 
     @Override
@@ -124,7 +127,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
-        actionsList.add(new VocabduelCliAction(true, GLS_KEY, "See a list of all current running games", "g ls", this::onGameListCalled));
+        actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -514,11 +517,15 @@ public class VocabduelControllerImpl implements VocabduelController {
                     else VIEW.printRoundResultLoss(result.getCorrectAnswer());
 
                     if (roundNr < GameService.NR_OF_ROUNDS) onGameRoundStarted(args);
-                    // TODO else finish game
+                    else {
+                        SCORE_SERVICE.finishGame(STORAGE.getLoggedInUser(), gameId);
+                    }
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get("round"));
                 } catch (InvalidAnswerNrException | NoAccessException e) {
                     e.printStackTrace();
+                } catch (UnfinishedGameException e) {
+                    VIEW.printGameNotFinishedByOpponent();
                 }
             }
         }

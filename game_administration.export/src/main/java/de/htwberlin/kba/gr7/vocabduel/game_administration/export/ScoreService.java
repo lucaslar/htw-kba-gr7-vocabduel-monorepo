@@ -52,10 +52,10 @@ public interface ScoreService {
      * All objects with scores have to be found here.
      *
      * @param user User the finished game incl. result is to be personalized for.
-     * @param game Game the final score of is to be determined and stored.
+     * @param gameId Id of the game the final score of is to be determined and stored.
      * @return Finished game including result and meta-data from the given player's point of view.
      * @throws UnfinishedGameException  The game does still have unfinished rounds, i.e. cannot be finished.
-     * @throws NoAccessException The triggering user/user the result is to be personalized for is not a player of the game instance.
+     * @throws NoAccessException        The triggering user/user the result is to be personalized for is not a player of the game instance.
      */
-    PersonalFinishedGame finishGame(User user, VocabduelGame game) throws UnfinishedGameException, NoAccessException;
+    PersonalFinishedGame finishGame(User user, long gameId) throws UnfinishedGameException, NoAccessException;
 }

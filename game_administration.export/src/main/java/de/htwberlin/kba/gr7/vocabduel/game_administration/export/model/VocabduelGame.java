@@ -30,11 +30,21 @@ public class VocabduelGame {
     private List<VocableList> vocableLists;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
     private List<VocabduelRound> rounds;
-    private Date finishedTimestamp;
 
-    public VocabduelGame(){ }
+    public VocabduelGame() {
+    }
 
-    public VocabduelGame(User playerA, User playerB, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage, List<VocableList> vocableLists){
+    public VocabduelGame(User playerA, User playerB, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage, List<VocableList> vocableLists) {
+        this.playerA = playerA;
+        this.playerB = playerB;
+        this.knownLanguage = knownLanguage;
+        this.learntLanguage = learntLanguage;
+        this.vocableLists = vocableLists;
+        this.rounds = Arrays.asList(new VocabduelRound[GameService.NR_OF_ROUNDS]);
+    }
+
+    public VocabduelGame(long id, User playerA, User playerB, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage, List<VocableList> vocableLists) {
+        this.id = id;
         this.playerA = playerA;
         this.playerB = playerB;
         this.knownLanguage = knownLanguage;
@@ -97,13 +107,5 @@ public class VocabduelGame {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Date getFinishedTimestamp() {
-        return finishedTimestamp;
-    }
-
-    public void setFinishedTimestamp(Date finishedTimestamp) {
-        this.finishedTimestamp = finishedTimestamp;
     }
 }

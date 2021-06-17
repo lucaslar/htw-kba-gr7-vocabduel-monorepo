@@ -455,4 +455,8 @@ public class VocabduelView {
     public void printNoValidAnswer() {
         System.out.println("No valid answer! Must be 'a', 'b', 'c' or 'd'");
     }
+
+    public void printGameNotFinishedByOpponent() {
+        System.out.println("Your opponent has not answered all questions yet. Only then, the game will be marked as closed. Come back and check your score stats in order to see if you won!");
+    }
 }

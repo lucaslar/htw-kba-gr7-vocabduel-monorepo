@@ -11,6 +11,20 @@ public class FinishedVocabduelGame extends VocabduelGame {
     private int totalPointsB;
     private Date finishedTimestamp;
 
+    public FinishedVocabduelGame() {
+    }
+
+    public FinishedVocabduelGame(final VocabduelGame game) {
+        super(
+                game.getId(),
+                game.getPlayerA(),
+                game.getPlayerB(),
+                game.getKnownLanguage(),
+                game.getLearntLanguage(),
+                game.getVocableLists()
+        );
+    }
+
     public int getPointsA() {
         return totalPointsA;
     }

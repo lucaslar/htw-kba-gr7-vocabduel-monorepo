@@ -145,7 +145,7 @@ public class ScoreServiceImplTest {
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
-        scoreAdministration.finishGame(playerC, game);
+        scoreAdministration.finishGame(playerC, game.getId());
     }
 
     @Test(expected = NoAccessException.class)
@@ -154,7 +154,7 @@ public class ScoreServiceImplTest {
         game.setPlayerA(playerA);
         game.setPlayerA(playerB);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(),  new VocabduelRound()).collect(Collectors.toList()));
-        scoreAdministration.finishGame(playerA, game);
+        scoreAdministration.finishGame(playerA, game.getId());
     }
 
     @Test
@@ -164,7 +164,7 @@ public class ScoreServiceImplTest {
         game.setPlayerA(playerB);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
 
-        final PersonalFinishedGame finishedGame = scoreAdministration.finishGame(playerA, game);
+        final PersonalFinishedGame finishedGame = scoreAdministration.finishGame(playerA, game.getId());
         Assert.assertNotNull(finishedGame);
         Assert.assertEquals(GameResult.WIN, finishedGame.getGameResult());
         Assert.assertEquals(3, finishedGame.getOwnPoints());
