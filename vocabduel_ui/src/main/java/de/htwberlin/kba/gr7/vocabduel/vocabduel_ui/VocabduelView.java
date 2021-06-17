@@ -164,7 +164,7 @@ public class VocabduelView {
     }
 
     public void printConfigurableThroughParam(final String param, final List<String[]> options) {
-        System.out.println("\nNot seeing all information you would like to see? This action is configurable though the param \"" + param + "\"");
+        System.out.println("\nNot seeing all information you would like to see? This action is configurable through the param \"" + param + "\"");
         int i = 0;
         for (String[] o : options) {
             System.out.print("  --" + param + " " + o[0]);
@@ -390,22 +390,23 @@ public class VocabduelView {
         }
     }
 
-    public void printQuestionAndAnswers(final VocabduelRound round,final String answerCmd) {
+    public void printQuestionAndAnswers(final VocabduelRound round, final String answerCmd) {
         final StringBuilder qAndA = new StringBuilder("Round " + round.getRoundNr() + ") " + round.getQuestion().getVocable().getSynonyms());
         final List<String> hints = round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo();
-        if (hints != null && !hints.isEmpty()) {
-            qAndA
-                    .append(" (Hint/additional information: ")
-                    .append(round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo());
-        }
+        if (hints != null && !hints.isEmpty()) qAndA.append(" (Hint/additional information: ").append(hints);
 
         final int asciiA = 97;
         for (int i = asciiA; i < asciiA + round.getAnswers().size(); i++) {
+            final TranslationGroup translationGroup = round.getAnswers().get(i - asciiA);
+            final List<String> answerHints = translationGroup.getExemplarySentencesOrAdditionalInfo();
             qAndA
                     .append("\n...")
                     .append((char) i)
                     .append(") ")
-                    .append(round.getAnswers().get(i - asciiA).getSynonyms());
+                    .append(translationGroup.getSynonyms());
+            if (answerHints != null && !answerHints.isEmpty()) {
+                qAndA.append(" (Hint/additional information: ").append(answerHints);
+            }
         }
 
         qAndA.
@@ -417,5 +418,16 @@ public class VocabduelView {
                 .append(round.getRoundNr())
                 .append(" --answer <'a', 'b', 'c' or 'd'>\"");
         System.out.println(qAndA);
+    }
+
+    public void printRoundResultWin() {
+        System.out.println("That's true! Well done.");
+    }
+
+    public void printRoundResultLoss(final TranslationGroup correctAnswer) {
+        final StringBuilder builder = new StringBuilder("That's wrong! The right answer would've been: " + correctAnswer.getSynonyms());
+        final List<String> hints = correctAnswer.getExemplarySentencesOrAdditionalInfo();
+        if (hints != null && !hints.isEmpty()) builder.append(" (Hint/additional information: ").append(hints);
+        System.out.println(builder);
     }
 }

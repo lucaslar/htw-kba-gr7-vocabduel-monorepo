@@ -2,6 +2,8 @@ package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
@@ -121,7 +123,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
-        actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id","round", "answer"));
+        actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
         actionsList.add(new VocabduelCliAction(true, GLS_KEY, "See a list of all current running games", "g ls", this::onGameListCalled));
     }
 
@@ -490,7 +492,36 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onGameRoundAnswered(final HashMap<String, String> args) {
-        System.out.println("to be implemented...");
+        final String[] options = new String[]{"a", "b", "c", "d"};
+        Long gameId = null;
+
+        if (Arrays.stream(options).noneMatch(v -> v.equals(args.get("answer")))) {
+            System.out.println("No valid answer! Must be 'a', 'b', 'c' or 'd'");
+        } else {
+            try {
+                gameId = Long.parseLong(args.get("id"));
+            } catch (NumberFormatException e) {
+                VIEW.printInvalidIdFormat(args.get("id"));
+            }
+
+            if (gameId != null) {
+                try {
+                    final int roundNr = Integer.parseInt(args.get("round"));
+                    final int answer = ((int) args.get("answer").charAt(0)) - 97;
+                    final CorrectAnswerResult result = GAME_SERVICE.answerQuestion(STORAGE.getLoggedInUser(), gameId, roundNr, answer);
+                    assert (result != null);
+                    if (result.getResult() == Result.WIN) VIEW.printRoundResultWin();
+                    else VIEW.printRoundResultLoss(result.getCorrectAnswer());
+
+                    if (roundNr < GameService.NR_OF_ROUNDS) onGameRoundStarted(args);
+                    // else finish game
+                } catch (NumberFormatException e) {
+                    VIEW.printInvalidIdFormat(args.get("round"));
+                } catch (InvalidAnswerNrException | NoAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void onGameRoundStarted(final HashMap<String, String> args) {

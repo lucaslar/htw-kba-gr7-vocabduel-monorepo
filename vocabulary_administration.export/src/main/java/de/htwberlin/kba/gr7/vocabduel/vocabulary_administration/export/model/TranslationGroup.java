@@ -27,6 +27,10 @@ public class TranslationGroup {
         this.exemplarySentencesOrAdditionalInfo = exemplarySentencesOrAdditionalInfo;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public List<String> getSynonyms() {
         return synonyms;
     }

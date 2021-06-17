@@ -2,9 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -143,12 +141,43 @@ public class GameServiceImpl implements GameService {
             }
             ENTITY_MANAGER.getTransaction().commit();
         }
-        if (round == null) throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
+        if (round == null)
+            throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
         else return round;
     }
 
     @Override
-    public CorrectAnswerResult answerQuestion(User player, long roundId, int answerNr) throws QuestionAlreadyAnsweredException, NoAccessException {
+    public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidAnswerNrException, NoAccessException {
+        if (answerNr < 0 || answerNr > 3) {
+            throw new InvalidAnswerNrException("Invalid answer nr. Must be 0-3 (a = 0, b = 1, ...)");
+        } else if (player != null) {
+            final VocabduelRound round = startRound(player, gameId);
+
+            if (round == null) {
+                throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a round you have access to and not answered before?");
+            } else if (round.getRoundNr() != roundNr) {
+                throw new NoAccessException("Invalid round. Your next round is round " + round.getRoundNr());
+            } else {
+                final TranslationGroup selection = round.getAnswers().get(answerNr);
+                final Optional<Vocable> questionedVocab = round.getGame().getVocableLists()
+                        .stream()
+                        .flatMap(vl -> vl.getVocables().stream())
+                        .filter(v -> v.getId().equals(round.getQuestion().getId()))
+                        .findFirst();
+
+                assert (questionedVocab.isPresent());
+                final Optional<TranslationGroup> correctAnswer = questionedVocab.get().getTranslations()
+                        .stream()
+                        .filter(t -> round.getAnswers().stream().anyMatch(a -> a.getId().equals(t.getId())))
+                        .findFirst();
+                assert (correctAnswer.isPresent());
+
+                final boolean isCorrect = correctAnswer.get().getId().equals(selection.getId());
+                return isCorrect
+                        ? new CorrectAnswerResult(Result.WIN)
+                        : new CorrectAnswerResult(Result.LOSS, correctAnswer.get());
+            }
+        }
         return null;
     }
 
@@ -168,7 +197,7 @@ public class GameServiceImpl implements GameService {
         }
 
         if (learntLanguage == knownLanguage) {
-            throw new KnownLangEqualsLearntLangException("Known and learnt language must be different, but where 2x " + learntLanguage.toString());
+            throw new KnownLangEqualsLearntLangException("Known and learnt language must be different, but where 2x " + learntLanguage);
         }
 
         final int nrOfVocabs = vocableLists.stream().map(l -> l.getVocables().size()).reduce(0, Integer::sum);
@@ -185,17 +214,17 @@ public class GameServiceImpl implements GameService {
         }
 
         if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == knownLanguage)) {
-            throw new InvalidGameSetupException("Known language (" + knownLanguage.toString() + ") is not supported (or not set)");
+            throw new InvalidGameSetupException("Known language (" + knownLanguage + ") is not supported (or not set)");
         }
 
         if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == learntLanguage)) {
-            throw new InvalidGameSetupException("Learnt language (" + learntLanguage.toString() + ") is not supported (or not set)");
+            throw new InvalidGameSetupException("Learnt language (" + learntLanguage + ") is not supported (or not set)");
         }
 
         // TODO: Check if all lists are of same language set (remove lang from / lang to? / requires db changes in order to support bi-directionality vocable list ( => unit) <> language set)
     }
 
-    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final SupportedLanguage knownLanguage, final SupportedLanguage learntLanguage, final List<VocableList> vocableLists) {
+    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final SupportedLanguage knownLanguage, final SupportedLanguage learntLanguage, final List<VocableList> vocableLists) throws NotEnoughVocabularyException {
         final VocabduelGame game = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
 
         final List<Vocable> flatVocables = vocableLists.stream().flatMap(vl -> vl.getVocables().stream()).collect(Collectors.toList());

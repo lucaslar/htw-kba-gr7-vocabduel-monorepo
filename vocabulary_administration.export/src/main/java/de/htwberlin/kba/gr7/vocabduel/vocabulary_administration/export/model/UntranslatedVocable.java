@@ -3,7 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "vocable")
+@Table(name = "Vocable")
 public class UntranslatedVocable {
     @Id
     @GeneratedValue

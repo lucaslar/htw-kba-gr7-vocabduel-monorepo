@@ -2,18 +2,20 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.TranslationGroup;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
 public class CorrectAnswerResult implements Serializable {
-    @Id
-    @Enumerated(EnumType.STRING)
     private Result result;
-    @Id
-    @OneToOne
-    @JoinColumn(name = "frn_translationgroup_id")
     private TranslationGroup correctAnswer;
+
+    public CorrectAnswerResult(Result result) {
+        this.result = result;
+    }
+
+    public CorrectAnswerResult(Result result, TranslationGroup correctAnswer) {
+        this.result = result;
+        this.correctAnswer = correctAnswer;
+    }
 
     public Result getResult() {
         return result;

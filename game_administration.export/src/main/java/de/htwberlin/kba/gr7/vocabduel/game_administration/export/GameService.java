@@ -71,11 +71,12 @@ public interface GameService {
      * The information, which answer the user chose, will be lost.
      *
      * @param player    Player who has answered the question.
-     * @param roundId   Id of the round the answer is to be been submitted for.
+     * @param gameId    Id of the game the answer is to be submitted for.
+     * @param roundNr   Nr of the round the answer is to be submitted for.
      * @param answerNr  Nr of the answer submitted by the given <code>player</code>.
      * @return Result for the given <code>round</code> from the perspective of the given <code>player</code> incl. the correct answer in case of having submitted a wrong one.
-     * @throws QuestionAlreadyAnsweredException The question has already been answered by the current user.
+     * @throws InvalidAnswerNrException The question has already been answered by the current user.
      * @throws NoAccessException The given user is no participant of the given round or it could not be found at all.
      */
-    CorrectAnswerResult answerQuestion(User player, long roundId, int answerNr) throws QuestionAlreadyAnsweredException, NoAccessException;
+    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidAnswerNrException, NoAccessException;
 }
