@@ -22,10 +22,10 @@ public class GameDataMock {
         SupportedLanguage knownLanguage = SupportedLanguage.DE;
         SupportedLanguage learntLanguage = SupportedLanguage.EN;
 
-        newGame = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableList);
+        newGame = new VocabduelGame(1L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
 
         // only important for check if unfinished games > 1 in order to check game uniqueness:
-        newGame2 = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableList);
+        newGame2 = new VocabduelGame(2L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
@@ -151,7 +151,7 @@ public class GameDataMock {
     } // empty List<VocableList>
 
     private List<Vocable> addVocables(List<Vocable> input, String title){
-        for (int i = 1; i <= (GameService.NR_OF_ROUNDS / 2); i++){
+        for (int i = 1; i <= ((GameService.NR_OF_ROUNDS / 2)+1); i++){
             Vocable tempVoc = new Vocable(
                     new TranslationGroup(Collections.singletonList(title + "unknownWord" + i)),
                     Collections.singletonList(new TranslationGroup(Collections.singletonList(title + "translation" + i)))
