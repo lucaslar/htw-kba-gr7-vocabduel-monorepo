@@ -128,7 +128,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "score ls", "See a list of all your scores, i.e. the results of finished games", "s ls", this::onScoreHistCalled));
         actionsList.add(new VocabduelCliAction(true, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
         actionsList.add(new VocabduelCliAction(true, "score record", "See your own record", "s r", this::onScoreRecordCalled));
-        actionsList.add(new VocabduelCliAction(true, "score record user", "See the record of another user (determined by optional parans)", "s r u", this::onScoreRecordUserCalled));
+        actionsList.add(new VocabduelCliAction(false, "score record user", "See the record of another user (determined by optional parans)", "s r u", this::onScoreRecordUserCalled));
     }
 
     private void initializeFunctionsMap() {
