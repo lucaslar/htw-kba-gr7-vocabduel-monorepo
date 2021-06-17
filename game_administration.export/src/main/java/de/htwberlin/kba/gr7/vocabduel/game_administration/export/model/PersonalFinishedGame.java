@@ -1,28 +1,15 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-@Entity
 public class PersonalFinishedGame implements Serializable {
-    @Id
-    @OneToOne(targetEntity = VocabduelGame.class)
-    private Long id;
-    @OneToOne
     private User opponent;
-    @Enumerated(EnumType.STRING)
     private GameResult gameResult;
     private int ownPoints;
     private int opponentPoints;
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private List<VocableList> vocableLists;
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private List<FinishedVocabduelRound> rounds;
     private Date finishedTimestamp;
 
     public User getOpponent() {
@@ -55,22 +42,6 @@ public class PersonalFinishedGame implements Serializable {
 
     public void setOpponentPoints(int opponentPoints) {
         this.opponentPoints = opponentPoints;
-    }
-
-    public List<VocableList> getVocableLists() {
-        return vocableLists;
-    }
-
-    public void setVocableLists(List<VocableList> vocableLists) {
-        this.vocableLists = vocableLists;
-    }
-
-    public List<FinishedVocabduelRound> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<FinishedVocabduelRound> rounds) {
-        this.rounds = rounds;
     }
 
     public Date getFinishedTimestamp() {

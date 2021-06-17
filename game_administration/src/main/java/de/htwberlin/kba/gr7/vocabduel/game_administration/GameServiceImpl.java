@@ -171,11 +171,18 @@ public class GameServiceImpl implements GameService {
                         .filter(t -> round.getAnswers().stream().anyMatch(a -> a.getId().equals(t.getId())))
                         .findFirst();
                 assert (correctAnswer.isPresent());
+                final Result result = correctAnswer.get().getId().equals(selection.getId()) ? Result.WIN : Result.LOSS;
+                final CorrectAnswerResult correctAnswerResult = new CorrectAnswerResult(result);
 
-                final boolean isCorrect = correctAnswer.get().getId().equals(selection.getId());
-                return isCorrect
-                        ? new CorrectAnswerResult(Result.WIN)
-                        : new CorrectAnswerResult(Result.LOSS, correctAnswer.get());
+                if (round.getGame().getPlayerA().getId().equals(player.getId())) round.setResultPlayerA(result);
+                else round.setResultPlayerB(result);
+
+                ENTITY_MANAGER.getTransaction().begin();
+                ENTITY_MANAGER.merge(round);
+                ENTITY_MANAGER.getTransaction().commit();
+
+                if (result == Result.LOSS) correctAnswerResult.setCorrectAnswer(correctAnswer.get());
+                return correctAnswerResult;
             }
         }
         return null;

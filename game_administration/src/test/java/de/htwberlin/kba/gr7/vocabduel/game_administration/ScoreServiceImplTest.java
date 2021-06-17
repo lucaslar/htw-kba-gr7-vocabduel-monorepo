@@ -27,8 +27,8 @@ public class ScoreServiceImplTest {
         return finishedGame;
     }
 
-    private static FinishedVocabduelRound mockedFinishedRound() {
-        final FinishedVocabduelRound finishedVocabduelRound = new FinishedVocabduelRound();
+    private static VocabduelRound mockedFinishedRound() {
+        final VocabduelRound finishedVocabduelRound = new VocabduelRound();
         finishedVocabduelRound.setResultPlayerA(Result.WIN);
         finishedVocabduelRound.setResultPlayerA(Result.LOSS);
         return finishedVocabduelRound;

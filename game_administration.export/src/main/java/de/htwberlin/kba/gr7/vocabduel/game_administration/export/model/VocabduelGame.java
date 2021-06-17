@@ -8,6 +8,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -29,6 +30,7 @@ public class VocabduelGame {
     private List<VocableList> vocableLists;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
     private List<VocabduelRound> rounds;
+    private Date finishedTimestamp;
 
     public VocabduelGame(){ }
 
@@ -91,5 +93,17 @@ public class VocabduelGame {
 
     public void setRounds(List<VocabduelRound> rounds) {
         this.rounds = rounds;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getFinishedTimestamp() {
+        return finishedTimestamp;
+    }
+
+    public void setFinishedTimestamp(Date finishedTimestamp) {
+        this.finishedTimestamp = finishedTimestamp;
     }
 }
