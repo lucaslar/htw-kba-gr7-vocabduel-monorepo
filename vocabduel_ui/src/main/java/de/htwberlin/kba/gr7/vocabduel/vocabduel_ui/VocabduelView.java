@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -375,18 +376,38 @@ public class VocabduelView {
     public void printGames(final List<VocabduelGame> games, final User self) {
         if (games == null || games.isEmpty()) System.out.println("No games yet.");
         else {
-            System.out.println("Here's a list of your current games:");
+            StringBuilder str = new StringBuilder("Here's a list of your current games:\n");
             games.forEach(g -> {
-                System.out.print("[Game with ID " + g.getId() + "] ");
+                str.append("... [Game with ID ").append(g.getId()).append("] ");
                 final boolean isSelfInitiator = self.getId().equals(g.getPlayerA().getId());
+                final long countA = g.getRounds().stream().filter(r -> r.getResultPlayerA() != null).count();
+                final long countB = g.getRounds().stream().filter(r -> r.getResultPlayerB() != null).count();
                 if (isSelfInitiator) {
-                    System.out.println("...You challenged \"" + g.getPlayerB().getUsername() + "\" (ID: " + g.getPlayerB().getId() + ")! ");
+                    str
+                            .append("You challenged \"")
+                            .append(g.getPlayerB().getUsername())
+                            .append("\" (ID: ")
+                            .append(g.getPlayerB().getId())
+                            .append(")! ");
                 } else {
-                    System.out.println("...\"" + g.getPlayerA().getUsername() + "\" (ID: " + g.getPlayerA().getId() + ") has challenged you! ");
+                    str
+                            .append("\"")
+                            .append(g.getPlayerA().getUsername())
+                            .append("\" (ID: ")
+                            .append(g.getPlayerA().getId())
+                            .append(") has challenged you! ");
                 }
-
-                // TODO: Add information concerning rounds => might require db changes
+                str
+                        .append("[You finished: ")
+                        .append(isSelfInitiator ? countA : countB)
+                        .append("/").append(GameService.NR_OF_ROUNDS)
+                        .append(" rounds, opponent: ")
+                        .append(isSelfInitiator ? countB : countA)
+                        .append("/")
+                        .append(GameService.NR_OF_ROUNDS)
+                        .append("]\n");
             });
+            System.out.println(str);
         }
     }
 
@@ -410,7 +431,7 @@ public class VocabduelView {
         }
 
         qAndA.
-                append("\n\n To answer, run \"")
+                append("\n\nTo answer, run \"")
                 .append(answerCmd)
                 .append(" --id ")
                 .append(round.getGame().getId())
@@ -429,5 +450,9 @@ public class VocabduelView {
         final List<String> hints = correctAnswer.getExemplarySentencesOrAdditionalInfo();
         if (hints != null && !hints.isEmpty()) builder.append(" (Hint/additional information: ").append(hints);
         System.out.println(builder);
+    }
+
+    public void printNoValidAnswer() {
+        System.out.println("No valid answer! Must be 'a', 'b', 'c' or 'd'");
     }
 }

@@ -496,7 +496,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         Long gameId = null;
 
         if (Arrays.stream(options).noneMatch(v -> v.equals(args.get("answer")))) {
-            System.out.println("No valid answer! Must be 'a', 'b', 'c' or 'd'");
+            VIEW.printNoValidAnswer();
         } else {
             try {
                 gameId = Long.parseLong(args.get("id"));
@@ -514,7 +514,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     else VIEW.printRoundResultLoss(result.getCorrectAnswer());
 
                     if (roundNr < GameService.NR_OF_ROUNDS) onGameRoundStarted(args);
-                    // else finish game
+                    // TODO else finish game
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get("round"));
                 } catch (InvalidAnswerNrException | NoAccessException e) {

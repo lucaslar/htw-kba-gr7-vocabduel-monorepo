@@ -150,6 +150,8 @@ public class GameServiceImpl implements GameService {
     public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidAnswerNrException, NoAccessException {
         if (answerNr < 0 || answerNr > 3) {
             throw new InvalidAnswerNrException("Invalid answer nr. Must be 0-3 (a = 0, b = 1, ...)");
+        } else if (roundNr < 1 || roundNr > getFixNumberOfRoundsPerGame()) {
+            throw new InvalidAnswerNrException("Invalid round nr. Must be 1-" + getFixNumberOfRoundsPerGame());
         } else if (player != null) {
             final VocabduelRound round = startRound(player, gameId);
 
