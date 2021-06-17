@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -497,5 +498,9 @@ public class VocabduelView {
 
     public void printNoFinishedGamesYet() {
         System.out.println("The given user does not seem to have finished any game yet!");
+    }
+
+    public void printRecord(final ScoreRecord recordOfUser) {
+        System.out.println(recordOfUser.toString());
     }
 }

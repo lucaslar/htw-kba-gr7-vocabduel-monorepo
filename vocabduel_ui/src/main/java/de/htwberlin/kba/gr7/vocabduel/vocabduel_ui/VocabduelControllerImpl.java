@@ -106,8 +106,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "login", "Sign in to your existing account", "li", this::onLoginCalled, "email", "pwd"));
         actionsList.add(new VocabduelCliAction(false, "login jwt", "Sign in with to your existing account using JWT tokens", "lt", this::onLoginJwtCalled, "token", "refresh"));
         actionsList.add(new VocabduelCliAction(true, LO_KEY, "Log out from the application", LO_SHORT, this::onLogoutCalled));
-        actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "vi", this::onVocableImportCalled, "file"));
-        actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "vis", this::onVocableSampleCalled));
+        actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "v i", this::onVocableImportCalled, "file"));
+        actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "v i s", this::onVocableSampleCalled));
         actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
         actionsList.add(new VocabduelCliAction(true, "user update", "Update the currently logged in user's data", "u u", this::onUpdateCalled));
         actionsList.add(new VocabduelCliAction(true, "user update pwd", "Update the currently logged in user's password", "u u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
@@ -127,6 +127,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
         actionsList.add(new VocabduelCliAction(true, "score ls", "See a list of all your scores, i.e. the results of finished games", "s ls", this::onScoreHistCalled));
         actionsList.add(new VocabduelCliAction(true, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
+        actionsList.add(new VocabduelCliAction(true, "score record", "See your own record", "s r", this::onScoreRecordCalled));
+        actionsList.add(new VocabduelCliAction(true, "score record user", "See the record of another user (determined by optional parans)", "s r u", this::onScoreRecordUserCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -566,6 +568,25 @@ public class VocabduelControllerImpl implements VocabduelController {
                 hist = SCORE_SERVICE.getPersonalFinishedGames(user);
                 if (hist != null && !hist.isEmpty()) VIEW.printUserScores(hist, user);
                 else VIEW.printNoFinishedGamesYet();
+            } catch (InvalidUserException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void onScoreRecordCalled() {
+        try {
+            VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(STORAGE.getLoggedInUser()));
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onScoreRecordUserCalled(final HashMap<String, String> args) {
+        final User user = findUser(args);
+        if (user != null) {
+            try {
+                VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(user));
             } catch (InvalidUserException e) {
                 e.printStackTrace();
             }

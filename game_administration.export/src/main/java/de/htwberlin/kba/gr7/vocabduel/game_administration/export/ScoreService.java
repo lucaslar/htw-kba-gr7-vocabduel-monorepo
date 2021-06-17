@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
@@ -29,22 +30,11 @@ public interface ScoreService {
     List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException;
 
     /**
-     * Counts and returns the won games of a given player.
-     *
-     * @param user User the wins of are to be counted.
-     * @return Total number of the given player's wins.
+     * @param user User the record of is to be counted.
+     * @return Score record for the given player.
      * @throws InvalidUserException The user could not be found.
      */
-    int getTotalWinsOfUser(User user) throws InvalidUserException;
-
-    /**
-     * Counts and returns the lost games of a given player.
-     *
-     * @param user User the losses of are to be counted.
-     * @return Total number of the given player's losses.
-     * @throws InvalidUserException The user could not be found.
-     */
-    int getTotalLossesOfUser(User user) throws InvalidUserException;
+    ScoreRecord getRecordOfUser(User user) throws InvalidUserException;
 
     /**
      * Finishes a game, i.e. determines its final score and stores it. Afterwards, the finished game including its

@@ -49,13 +49,15 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public int getTotalWinsOfUser(User user) {
-        return 0;
-    }
-
-    @Override
-    public int getTotalLossesOfUser(User user) {
-        return 0;
+    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException {
+        final List<PersonalFinishedGame> finishedGames = getPersonalFinishedGames(user);
+        if (finishedGames == null || finishedGames.isEmpty()) return new ScoreRecord(user);
+        else {
+            final long wins = finishedGames.stream().filter(g -> g.getGameResult() == GameResult.WIN).count();
+            final long losses = finishedGames.stream().filter(g -> g.getGameResult() == GameResult.LOSS).count();
+            final long draws = finishedGames.size() - wins - losses;
+            return new ScoreRecord(user, wins, losses, draws);
+        }
     }
 
     @Override
