@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
     private String generateToken(final String email, final Date expiration) {
         final Instant now = Instant.now();
         return Jwts.builder()
-                .claim("email", email)
+                .claim("email", email) // TODO use id instead => not mutable
                 .setIssuedAt(Date.from(now))
                 .setExpiration(expiration)
                 .signWith(TOKEN_KEY)
