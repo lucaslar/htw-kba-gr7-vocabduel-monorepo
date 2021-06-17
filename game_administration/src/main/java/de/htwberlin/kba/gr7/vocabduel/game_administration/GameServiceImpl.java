@@ -239,6 +239,7 @@ public class GameServiceImpl implements GameService {
             untranslated.setVocable(vocable.getVocable());
 
             Collections.shuffle(flatVocables);
+            // false answers:
             final List<TranslationGroup> answers = flatVocables
                     .stream()
                     // Avoid that synonym stored to another vocable is questioned
@@ -247,10 +248,17 @@ public class GameServiceImpl implements GameService {
                     .filter(v -> v.getTranslations()
                             .stream().noneMatch(t -> t.getSynonyms()
                                     .stream().anyMatch(s -> vocable.getTranslations()
-                                            .stream().anyMatch(vt->vt.getSynonyms()
+                                            .stream().anyMatch(vt -> vt.getSynonyms()
                                                     .stream().anyMatch(vs -> vs.equals(s))))))
                     .limit(3)
-                    .map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size()))).collect(Collectors.toList());
+                    .map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size())))
+                    .collect(Collectors.toList());
+
+            if (answers.size() != 3) {
+                throw new NotEnoughVocabularyException("Not enough unique vocabulary to add false options for " + vocable.getVocable().getSynonyms() + ".");
+            }
+
+            // correct answer:
             answers.add(vocable.getTranslations().get((int) (Math.random() * vocable.getTranslations().size())));
             Collections.shuffle(answers);
 
