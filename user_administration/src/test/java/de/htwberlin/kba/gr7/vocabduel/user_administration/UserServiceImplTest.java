@@ -6,11 +6,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import javax.naming.InvalidNameException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +26,12 @@ import java.util.stream.Stream;
 public class UserServiceImplTest {
 
     private UserServiceImpl userAdministration;
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
+    private Query queryMock;
 
     private final Long EXISTING_USER_ID = 4711L;
     private final String EXISTING_EMAIL1 = "user1@vocabduel.de";
@@ -30,7 +43,7 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-        userAdministration = new UserServiceImpl();
+        userAdministration = new UserServiceImpl(entityManager);
         user1 = new User(42L);
         user2 = new User(123L);
         user3 = new User(456L);
@@ -48,11 +61,18 @@ public class UserServiceImplTest {
 
         usersList = Stream.of(user1, user2, user3, user4).collect(Collectors.toList());
         // Mock existing users (private field => Whitebox#setInternalState)
-        Whitebox.setInternalState(userAdministration, "users", usersList);
+    //    Whitebox.setInternalState(userAdministration, "users", usersList);
+
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+        Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.getSingleResult()).thenReturn(null);
     }
 
     @Test
     public void shouldFindThreeUsersContainingUsernameStr() {
+        Mockito.when(queryMock.getResultList()).thenReturn(usersList.stream().filter(t ->
+                t.getUsername().contains(EXISTING_USERNAME_PART)).collect(Collectors.toList()));
         final List<User> results = userAdministration.findUsersByUsername(EXISTING_USERNAME_PART);
         Assert.assertNotNull(results);
         Assert.assertEquals(results.size(), 3); // => users 1, 2 & 3
@@ -70,6 +90,8 @@ public class UserServiceImplTest {
     @Test
     public void shouldFindThreeUsersContainingUsernameStrIgnoringCase() {
         final String upperCaseStr = EXISTING_USERNAME_PART.toUpperCase();
+        Mockito.when(queryMock.getResultList()).thenReturn(usersList.stream().filter(t ->
+                t.getUsername().toLowerCase().contains(EXISTING_USERNAME_PART)).collect(Collectors.toList()));
         final List<User> results = userAdministration.findUsersByUsername(upperCaseStr);
         Assert.assertNotNull(results);
         Assert.assertEquals(results.size(), 3); // => users 1, 2 & 3
@@ -118,6 +140,7 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetUserDataById() {
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user2);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user2.toString());
@@ -125,6 +148,7 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetUserDataByEmail() {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(user1);
         final User foundUser = userAdministration.getUserDataByEmail(EXISTING_EMAIL1);
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user1.toString());
@@ -132,6 +156,7 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetUserDataByUsername() {
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user4);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user4.toString());
@@ -140,18 +165,29 @@ public class UserServiceImplTest {
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowExceptionOnUpdatingIfMailAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setEmail(user2.getEmail());
+        user3.setFirstName("John");
+        user3.setLastName("Doe");
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.eq(user3.getId()))).thenReturn(user3);
+        Mockito.when(queryMock.getSingleResult()).thenReturn(user2);
         userAdministration.updateUser(user3);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
         user3.setEmail("invalidmail");
+        user3.setFirstName("Max");
+        user3.setLastName("Mustermann");
         userAdministration.updateUser(user3);
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
     public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(queryMock.getSingleResult()).thenReturn(user3, user2);
         user3.setUsername(user1.getUsername());
+        user3.setFirstName("Max");
+        user3.setLastName("Mustermann");
         userAdministration.updateUser(user3);
     }
 
@@ -160,7 +196,8 @@ public class UserServiceImplTest {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
-        user3.setEmail("Mustermann");
+        user3.setLastName("Mustermann");
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
         final int statusCode = userAdministration.updateUser(user3);
         Assert.assertEquals(0, statusCode);
 
