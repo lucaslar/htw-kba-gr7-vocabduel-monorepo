@@ -25,7 +25,7 @@ public class GameDataMock {
         newGame = new VocabduelGame(1L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
 
         // only important for check if unfinished games > 1 in order to check game uniqueness:
-        newGame2 = new VocabduelGame(2L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
+        newGame2 = new VocabduelGame(2L, playerB, playerA, knownLanguage, learntLanguage, vocableList);
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
@@ -149,6 +149,17 @@ public class GameDataMock {
     public List<VocableList> mockEmptyVocableLists() {
         return new ArrayList<>();
     } // empty List<VocableList>
+
+    public List<VocabduelGame> mockUnfinishedGameList(){
+        List<VocabduelGame> myList = new ArrayList<>();
+        myList.add(newGame);
+        myList.add(newGame2);
+        return myList;
+    }
+
+    public List<VocabduelGame> mockEmptyUnfinishedGameList(){
+        return new ArrayList<>();
+    }
 
     private List<Vocable> addVocables(List<Vocable> input, String title){
         for (int i = 1; i <= ((GameService.NR_OF_ROUNDS / 2)+1); i++){
