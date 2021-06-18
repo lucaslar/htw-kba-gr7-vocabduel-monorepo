@@ -7,9 +7,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
@@ -40,10 +45,21 @@ public class VocabularyServiceImplTest {
     private VocableList existingVocableList1;
     private VocableList existingVocableList2;
     private User author;
+    private List<LanguageSet> languages;
+
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
+    private Query queryMock;
 
     @Before
     public void setup() {
-        vocabularyLib = new VocabularyServiceImpl();
+        vocabularyLib = new VocabularyServiceImpl(entityManager);
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+        Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
         author = new User(42L);
 
         final String[][] weekdaysEsEn = {
@@ -93,9 +109,9 @@ public class VocabularyServiceImplTest {
         emptyLanguagesSet.setKnownLanguage(SupportedLanguage.AR);
         emptyLanguagesSet.setLearntLanguage(SupportedLanguage.JA);
 
-        final List<LanguageSet> languages = Stream.of(existingLanguageSet, emptyLanguagesSet).collect(Collectors.toList());
+        languages = Stream.of(existingLanguageSet, emptyLanguagesSet).collect(Collectors.toList());
         // Mock existing languages (private field => Whitebox#setInternalState)
-        Whitebox.setInternalState(vocabularyLib, "allLanguageSets", languages);
+        //Whitebox.setInternalState(vocabularyLib, "allLanguageSets", languages);
     }
 
     @Test(expected = DuplicateVocablesInSetException.class)
@@ -184,6 +200,7 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldFindVocableListByExistingId() {
+        Mockito.when(entityManager.find(Mockito.eq(VocableList.class), Mockito.eq(existingVocableList2.getId()))).thenReturn(existingVocableList2);
         final VocableList foundList = vocabularyLib.getVocableListById(existingVocableList2.getId());
         Assert.assertNotNull(foundList);
         Assert.assertEquals(foundList.toString(), existingVocableList2.toString());
@@ -196,6 +213,7 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldFindVocableListsOfUser() {
+        Mockito.when(queryMock.getResultList()).thenReturn(existingVocableUnit.getVocableLists());
         final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(author);
         Assert.assertNotNull(foundLists);
         Assert.assertEquals(2, foundLists.size());
@@ -211,6 +229,7 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldReturnAllLanguageSets() {
+        Mockito.when(queryMock.getResultList()).thenReturn(languages);
         final List<LanguageSet> languageSets = vocabularyLib.getAllLanguageSets();
         Assert.assertNotNull(languageSets);
         Assert.assertEquals(2, languageSets.size());
