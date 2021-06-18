@@ -372,12 +372,14 @@ public class VocabduelControllerImpl implements VocabduelController {
         final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets();
         VIEW.printLanguageSets(languageSets, args == null ? null : args.get("level"));
 
-        List<String[]> options = new ArrayList<>();
-        options.add(new String[]{"lang", "Only list the language sets"});
-        options.add(new String[]{"unit", "See previous command + vocable units of each language set"});
-        options.add(new String[]{"list", "See previous command + vocable lists of each unit"});
-        options.add(new String[]{"vocab", "See previous command + vocables of each list"});
-        VIEW.printConfigurableThroughParam("level", options);
+        if (languageSets != null && !languageSets.isEmpty()) {
+            List<String[]> options = new ArrayList<>();
+            options.add(new String[]{"lang", "Only list the language sets"});
+            options.add(new String[]{"unit", "See previous command + vocable units of each language set"});
+            options.add(new String[]{"list", "See previous command + vocable lists of each unit"});
+            options.add(new String[]{"vocab", "See previous command + vocables of each list"});
+            VIEW.printConfigurableThroughParam("level", options);
+        }
     }
 
     private void onFindVocabListCalled(final HashMap<String, String> args) {

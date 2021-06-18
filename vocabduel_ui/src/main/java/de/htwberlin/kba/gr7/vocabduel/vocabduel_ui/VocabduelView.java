@@ -177,71 +177,73 @@ public class VocabduelView {
     }
 
     public void printLanguageSets(final List<LanguageSet> languageSets, String level) {
-        int depth = 1;
-        if (level != null && level.equals("unit")) depth = 2;
-        else if (level != null && level.equals("list")) depth = 3;
-        else if (level != null && level.equals("vocab")) depth = 4;
+        if (languageSets != null && !languageSets.isEmpty()) {
+            int depth = 1;
+            if (level != null && level.equals("unit")) depth = 2;
+            else if (level != null && level.equals("list")) depth = 3;
+            else if (level != null && level.equals("vocab")) depth = 4;
 
-        final List<LanguageSet> sortedLs = languageSets
-                .stream()
-                .sorted(Comparator.comparing(ls -> ls.getLearntLanguage() + " " + ls.getKnownLanguage()))
-                .collect(Collectors.toList());
+            final List<LanguageSet> sortedLs = languageSets
+                    .stream()
+                    .sorted(Comparator.comparing(ls -> ls.getLearntLanguage() + " " + ls.getKnownLanguage()))
+                    .collect(Collectors.toList());
 
-        final StringBuilder toBePrinted = new StringBuilder();
+            final StringBuilder toBePrinted = new StringBuilder();
 
-        for (int i = 0; i < sortedLs.size(); i++) {
-            toBePrinted
-                    .append("|-- ")
-                    .append(String.format("%-3s", sortedLs.get(i).getLearntLanguage()))
-                    .append(" => ")
-                    .append(String.format("%-3s", sortedLs.get(i).getKnownLanguage()))
-                    .append("(")
-                    .append(sortedLs.get(i).getVocableUnits().size())
-                    .append(" vocable units)\n");
+            for (int i = 0; i < sortedLs.size(); i++) {
+                toBePrinted
+                        .append("|-- ")
+                        .append(String.format("%-3s", sortedLs.get(i).getLearntLanguage()))
+                        .append(" => ")
+                        .append(String.format("%-3s", sortedLs.get(i).getKnownLanguage()))
+                        .append("(")
+                        .append(sortedLs.get(i).getVocableUnits().size())
+                        .append(" vocable units)\n");
 
-            if (depth > 1) {
-                final List<VocableUnit> sortedVu = languageSets.get(i).getVocableUnits()
-                        .stream().sorted(Comparator.comparing(VocableUnit::getTitle))
-                        .collect(Collectors.toList());
-                for (int j = 0; j < sortedVu.size(); j++) {
-                    if (i == sortedLs.size() - 1) toBePrinted.append("    |-- ");
-                    else toBePrinted.append("|   |-- ");
-                    toBePrinted
-                            .append(sortedVu.get(j).getTitle())
-                            .append(" (")
-                            .append(sortedVu.get(j).getVocableLists().size())
-                            .append(" vocable lists)\n");
+                if (depth > 1) {
+                    final List<VocableUnit> sortedVu = languageSets.get(i).getVocableUnits()
+                            .stream().sorted(Comparator.comparing(VocableUnit::getTitle))
+                            .collect(Collectors.toList());
+                    for (int j = 0; j < sortedVu.size(); j++) {
+                        if (i == sortedLs.size() - 1) toBePrinted.append("    |-- ");
+                        else toBePrinted.append("|   |-- ");
+                        toBePrinted
+                                .append(sortedVu.get(j).getTitle())
+                                .append(" (")
+                                .append(sortedVu.get(j).getVocableLists().size())
+                                .append(" vocable lists)\n");
 
-                    if (depth > 2) {
-                        final List<VocableList> sortedVl = sortedVu.get(j).getVocableLists()
-                                .stream().sorted(Comparator.comparing(VocableList::getTitle))
-                                .collect(Collectors.toList());
-                        for (int k = 0; k < sortedVl.size(); k++) {
-                            if (i == sortedLs.size() - 1) toBePrinted.append("    ");
-                            else toBePrinted.append("|   ");
-                            if (j == sortedVu.size() - 1) toBePrinted.append("    ");
-                            else toBePrinted.append("|   ");
-                            toBePrinted.append("|-- ");
+                        if (depth > 2) {
+                            final List<VocableList> sortedVl = sortedVu.get(j).getVocableLists()
+                                    .stream().sorted(Comparator.comparing(VocableList::getTitle))
+                                    .collect(Collectors.toList());
+                            for (int k = 0; k < sortedVl.size(); k++) {
+                                if (i == sortedLs.size() - 1) toBePrinted.append("    ");
+                                else toBePrinted.append("|   ");
+                                if (j == sortedVu.size() - 1) toBePrinted.append("    ");
+                                else toBePrinted.append("|   ");
+                                toBePrinted.append("|-- ");
 
-                            toBePrinted.append(createVocableListTitleString(sortedVl.get(k)));
+                                toBePrinted.append(createVocableListTitleString(sortedVl.get(k)));
 
-                            if (depth > 3) {
-                                StringBuilder prefix = new StringBuilder();
-                                if (i == sortedLs.size() - 1) prefix.append("    ");
-                                else prefix.append("|   ");
-                                if (j == sortedVu.size() - 1) prefix.append("    ");
-                                else prefix.append("|   ");
-                                if (k == sortedVl.size() - 1) prefix.append("    ");
-                                else prefix.append("|   ");
-                                toBePrinted.append(createVocableListString(prefix.toString(), sortedVl.get(k)));
+                                if (depth > 3) {
+                                    StringBuilder prefix = new StringBuilder();
+                                    if (i == sortedLs.size() - 1) prefix.append("    ");
+                                    else prefix.append("|   ");
+                                    if (j == sortedVu.size() - 1) prefix.append("    ");
+                                    else prefix.append("|   ");
+                                    if (k == sortedVl.size() - 1) prefix.append("    ");
+                                    else prefix.append("|   ");
+                                    toBePrinted.append(createVocableListString(prefix.toString(), sortedVl.get(k)));
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        System.out.println(toBePrinted);
+            System.out.println(toBePrinted);
+        } else System.out.println("No language sets yet. Be the first one to import a GNU file!");
     }
 
     public void printVocableList(final VocableList vocableList) {
