@@ -5,6 +5,8 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.Assert;
@@ -14,14 +16,21 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.omg.CORBA.ORBPackage.InvalidName;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,6 +38,12 @@ public class AuthServiceImplTest {
 
     @Mock
     private UserServiceImpl userAdministration;
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
+    private Query queryMock;
     private AuthServiceImpl auth;
     private User existingUser;
     private User newUser;
@@ -44,10 +59,11 @@ public class AuthServiceImplTest {
 
     private final String STRONG_PWD = "PR€T7Y_5TR0NG_P@S$W0RD";
     private final String UNKNOWN_MAIL = "unknown@mail.de";
+    private final long UNKNOWN_ID = 1234567L;
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(new UserServiceImpl());
+        auth = new AuthServiceImpl(userAdministration, entityManager);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
@@ -60,21 +76,26 @@ public class AuthServiceImplTest {
         existingUser.setLastName("User");
 
         final String newUserName = "newuser";
-        newUser = new User(null);
+        newUser = new User(21L);
         newUser.setEmail("newuser@user.de");
         newUser.setUsername(newUserName);
         newUser.setFirstName("New");
         newUser.setLastName("User");
 
-        validRefreshToken = generateRefreshToken(false, existingUser.getEmail());
-        expiredRefreshToken = generateRefreshToken(true, existingUser.getEmail());
-        refreshTokenOfUnknownUser = generateRefreshToken(false, UNKNOWN_MAIL);
-        validAuthToken = generateAuthToken(false, existingUser.getEmail());
-        expiredAuthToken = generateAuthToken(true, existingUser.getEmail());
-        authTokenOfUnknownUser = generateAuthToken(false, UNKNOWN_MAIL);
+        validRefreshToken = generateRefreshToken(false, existingUser.getId());
+        expiredRefreshToken = generateRefreshToken(true, existingUser.getId());
+        refreshTokenOfUnknownUser = generateRefreshToken(false, UNKNOWN_ID);
+        validAuthToken = generateAuthToken(false, existingUser.getId());
+        expiredAuthToken = generateAuthToken(true, existingUser.getId());
+        authTokenOfUnknownUser = generateAuthToken(false, UNKNOWN_ID);
 
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+        Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
         Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
+        Mockito.when(userAdministration.getUserDataById(existingUser.getId())).thenReturn(existingUser);
         Mockito.when(userAdministration.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null);
+        Mockito.when(userAdministration.getUserDataById(UNKNOWN_ID)).thenReturn(null);
         Mockito.when(userAdministration.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
         Mockito.when(userAdministration.getUserDataByUsername(newUserName)).thenReturn(newUser);
     }
@@ -102,15 +123,20 @@ public class AuthServiceImplTest {
     // The following test could be implemented for each potentially null/empty trimmed field
     // using a parameterized test. However, this would lead to an unnecessarily large number of tests.
 
-    @Test(expected = IncompleteUserDataException.class)
+    @Test(expected = InvalidNameException.class)
     public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
         final User user = new User(null);
-        auth.registerUser("username","invalidmail", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username","invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test
     public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(
+                new LoginData(new User(21L, newUser.getUsername(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName()),
+                              auth.hashPassword(STRONG_PWD)));
+        Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new User());
         final User registeredUser = userAdministration.getUserDataByUsername(newUser.getUsername());
 
         Assert.assertNotNull(registeredUser);
@@ -125,8 +151,8 @@ public class AuthServiceImplTest {
                     .build()
                     .parseClaimsJws(loggedInUser.getAuthTokens().getToken())
                     .getBody()
-                    .get("email");
-            Assert.assertEquals(emailClaim, newUser.getEmail());
+                    .get("id");
+            Assert.assertEquals(Long.valueOf(emailClaim.toString()), newUser.getId());
         });
 
     }
@@ -143,7 +169,9 @@ public class AuthServiceImplTest {
 
     @Test
     public void shouldLoginUser() {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingUser);
         final User expected = userAdministration.getUserDataByEmail(existingUser.getEmail());
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(STRONG_PWD)));
         final LoggedInUser loggedInUser = auth.loginUser(existingUser.getEmail(), STRONG_PWD);
         Assert.assertNotNull(loggedInUser);
         Assert.assertNotNull(loggedInUser.getAuthTokens());
@@ -158,8 +186,8 @@ public class AuthServiceImplTest {
                     .build()
                     .parseClaimsJws(loggedInUser.getAuthTokens().getToken())
                     .getBody()
-                    .get("email");
-            Assert.assertEquals(emailClaim, existingUser.getEmail());
+                    .get("id");
+            Assert.assertEquals(Long.valueOf(emailClaim.toString()), existingUser.getId());
         });
     }
 
@@ -201,7 +229,9 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldRefreshTokens() {
+    public void shouldRefreshTokens() { // TODO: wenn alle Tests laufen, schlägt dieser fehl
+        StoredRefreshToken stored = new StoredRefreshToken(new User(), generateRefreshToken(false, existingUser.getId()));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(stored);
         final AuthTokens newTokens = auth.refreshAuthTokens(validRefreshToken);
         Assert.assertNotNull(newTokens);
         Assert.assertNotEquals(newTokens.getRefreshToken(), validRefreshToken);
@@ -211,21 +241,30 @@ public class AuthServiceImplTest {
 
     @Test(expected = InvalidFirstPwdException.class)
     public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+        final String falsePwd = "123thisWasNotMyPrevPwd";
+        final String dbPwd = "PR€T7Y_5TR0NG_P@S$W0RD_2";
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(dbPwd)));
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        auth.updateUserPassword(existingUser, "123thisWasNotMyPrevPwd", newPwd, newPwd);
+        auth.updateUserPassword(existingUser, falsePwd, newPwd, newPwd);
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
     public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+        final String currentPwd = "123thisWasNotMyPrevPwd";
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
-        auth.updateUserPassword(existingUser, "123thisWasNotMyPrevPwd", newPwd, newPwd2);
+        LoginData data = new LoginData();
+        data.setPasswordHash(auth.hashPassword(currentPwd));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(data);
+        auth.updateUserPassword(existingUser, currentPwd, newPwd, newPwd2);
     }
 
     @Test
     public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
-        final int statusCode = auth.updateUserPassword(existingUser, "pr€V10U5PwD", newPwd, newPwd);
+        final String currentPwd = "pr€V10U5PwD";
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(currentPwd)));
+        final int statusCode = auth.updateUserPassword(existingUser, currentPwd, newPwd, newPwd);
         Assert.assertEquals(0, statusCode);
     }
 
@@ -236,6 +275,7 @@ public class AuthServiceImplTest {
 
     @Test
     public void shouldNotHaveAccessRightsIfAuthTokenIsOfUnknownUser() {
+        // TODO: bei hasAccessRights DB Abfrage getUserByEmail ??
         Assert.assertFalse(auth.hasAccessRights(authTokenOfUnknownUser));
     }
 
@@ -251,23 +291,23 @@ public class AuthServiceImplTest {
 
     // TODO: in the future, use component's secret / move token generation
 
-    private String generateToken(boolean isExpired, String email, Date expiration) {
+    private String generateToken(boolean isExpired, long id, Date expiration) {
         final Instant now = Instant.now();
         return Jwts.builder()
-                .claim("email", email)
+                .claim("id", id)
                 .setIssuedAt(Date.from(now.minus(isExpired ? 100 : 0, ChronoUnit.DAYS)))
-                .setExpiration(expiration)
+                .setExpiration(isExpired ? Date.from(now) : expiration)
                 .signWith(secretKey)
                 .compact();
     }
 
-    private String generateRefreshToken(boolean isExpired, String email) {
+    private String generateRefreshToken(boolean isExpired, long id) {
         final Date expiration = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
-        return generateToken(isExpired, email, expiration);
+        return generateToken(isExpired, id, expiration);
     }
 
-    private String generateAuthToken(boolean isExpired, String email) {
+    private String generateAuthToken(boolean isExpired, long id) {
         final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.MINUTES));
-        return generateToken(isExpired, email, expiration);
+        return generateToken(isExpired, id, expiration);
     }
 }
