@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.EntityTransactionMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
@@ -37,6 +36,8 @@ public class GameServiceImplStartGameTest {
     @Mock
     private EntityManager entityManager;
     @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
     private VocabularyService vocabularyService;
 
     @Before
@@ -54,7 +55,7 @@ public class GameServiceImplStartGameTest {
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         Mockito.when(vocabularyService.getAllSupportedLanguages()).thenReturn(langList);
-        Mockito.when(entityManager.getTransaction()).thenReturn(new EntityTransactionMock());
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
     }
 
     @Test()

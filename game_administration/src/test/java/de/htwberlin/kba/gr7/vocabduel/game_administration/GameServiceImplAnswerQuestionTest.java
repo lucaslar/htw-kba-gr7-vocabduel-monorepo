@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.EntityTransactionMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidAnswerNrException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
@@ -17,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,6 +30,8 @@ public class GameServiceImplAnswerQuestionTest {
     @Mock
     private EntityManager entityManager;
     @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
     private Query queryMock;
     private GameDataMock mock;
 
@@ -38,7 +40,7 @@ public class GameServiceImplAnswerQuestionTest {
         gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
 
-        Mockito.when(entityManager.getTransaction()).thenReturn(new EntityTransactionMock());
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
         Mockito.when(queryMock.setMaxResults(Mockito.anyInt())).thenReturn(queryMock);

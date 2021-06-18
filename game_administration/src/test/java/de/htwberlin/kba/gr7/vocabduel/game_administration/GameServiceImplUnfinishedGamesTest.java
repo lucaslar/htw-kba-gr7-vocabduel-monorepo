@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.EntityTransactionMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -15,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,13 +31,15 @@ public class GameServiceImplUnfinishedGamesTest {
     @Mock
     private EntityManager entityManager;
     @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
     private Query queryMock;
 
     @Before
     public void setup() {
         gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
-        Mockito.when(entityManager.getTransaction()).thenReturn(new EntityTransactionMock());
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
 

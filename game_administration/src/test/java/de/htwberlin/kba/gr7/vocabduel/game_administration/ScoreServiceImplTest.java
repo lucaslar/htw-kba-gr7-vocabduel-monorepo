@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.EntityTransactionMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -16,10 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.persistence.Cache;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +52,8 @@ public class ScoreServiceImplTest {
     @Mock
     private EntityManager entityManager;
     @Mock
+    private EntityTransaction entityTransaction;
+    @Mock
     private Query queryMock;
     @Mock
     private EntityManagerFactory emf;
@@ -78,7 +76,7 @@ public class ScoreServiceImplTest {
 
         Mockito.when(entityManager.getEntityManagerFactory()).thenReturn(emf);
         Mockito.when(emf.getCache()).thenReturn(cache);
-        Mockito.when(entityManager.getTransaction()).thenReturn(new EntityTransactionMock());
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
     }
