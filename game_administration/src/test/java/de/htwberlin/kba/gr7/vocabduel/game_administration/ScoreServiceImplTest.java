@@ -16,7 +16,9 @@ import org.mockito.Mockito;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.persistence.Cache;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,10 @@ public class ScoreServiceImplTest {
     private EntityManager entityManager;
     @Mock
     private Query queryMock;
+    @Mock
+    private EntityManagerFactory emf;
+    @Mock
+    private Cache cache;
 
     @Before
     public void setup() {
@@ -70,6 +76,8 @@ public class ScoreServiceImplTest {
         final FinishedVocabduelGame game3 = mockFinishedGame(playerB, 0, playerC, 3);
         finishedGames = Stream.of(game1, game2, game3).collect(Collectors.toList());
 
+        Mockito.when(entityManager.getEntityManagerFactory()).thenReturn(emf);
+        Mockito.when(emf.getCache()).thenReturn(cache);
         Mockito.when(entityManager.getTransaction()).thenReturn(new EntityTransactionMock());
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
