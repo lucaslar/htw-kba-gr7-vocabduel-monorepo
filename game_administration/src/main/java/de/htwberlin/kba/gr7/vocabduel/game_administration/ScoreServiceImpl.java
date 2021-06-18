@@ -71,6 +71,7 @@ public class ScoreServiceImpl implements ScoreService {
     public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException {
         VocabduelGame game = null;
         if (player != null) {
+            ENTITY_MANAGER.clear(); // Important, since otherwise the cached game would be taken, i.e. the game found when the other user called this function (if called in one session)
             ENTITY_MANAGER.getTransaction().begin();
             try {
                 game = (VocabduelGame) ENTITY_MANAGER
@@ -78,7 +79,7 @@ public class ScoreServiceImpl implements ScoreService {
                         .setParameter("user", player)
                         .setParameter("gameId", gameId)
                         .getSingleResult();
-
+                ENTITY_MANAGER.getEntityManagerFactory().getCache().evictAll();
             } catch (NoResultException ignored) {
             }
             ENTITY_MANAGER.getTransaction().commit();

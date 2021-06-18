@@ -129,7 +129,7 @@ public class GameServiceImpl implements GameService {
                 else round.setResultPlayerB(result);
 
                 ENTITY_MANAGER.getTransaction().begin();
-                ENTITY_MANAGER.merge(round); // TODO state is stored, but object (Java) is not updated (only for second player)
+                ENTITY_MANAGER.merge(round);
                 ENTITY_MANAGER.getTransaction().commit();
 
                 if (result == Result.LOSS) correctAnswerResult.setCorrectAnswer(correctAnswer.get());
