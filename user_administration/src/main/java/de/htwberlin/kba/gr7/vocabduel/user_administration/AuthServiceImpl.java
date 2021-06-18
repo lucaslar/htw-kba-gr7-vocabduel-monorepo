@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
         if (token != null) {
             try {
                 final Claims claims = parseToken(token);
-                return USER_SERVICE.getUserDataByEmail(claims.get("email", String.class));
+                return USER_SERVICE.getUserDataById(claims.get("id", Long.class));
             } catch (JwtException ignored) {
             }
         }
@@ -191,18 +191,18 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateRefreshToken(final User user) {
         final Date expiration = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
-        return generateToken(user.getEmail(), expiration);
+        return generateToken(user.getId(), expiration);
     }
 
     private String generateAuthToken(final User user) {
         final Date expiration = Date.from(Instant.now().plus(5, ChronoUnit.MINUTES));
-        return generateToken(user.getEmail(), expiration);
+        return generateToken(user.getId(), expiration);
     }
 
-    private String generateToken(final String email, final Date expiration) {
+    private String generateToken(final long id, final Date expiration) {
         final Instant now = Instant.now();
         return Jwts.builder()
-                .claim("email", email) // TODO use id instead => not mutable
+                .claim("id", id)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(expiration)
                 .signWith(TOKEN_KEY)
