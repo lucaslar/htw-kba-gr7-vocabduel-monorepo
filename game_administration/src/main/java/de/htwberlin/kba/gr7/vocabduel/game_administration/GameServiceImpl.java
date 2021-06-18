@@ -63,12 +63,9 @@ public class GameServiceImpl implements GameService {
             ENTITY_MANAGER.getTransaction().begin();
             try {
                 games = (List<VocabduelGame>) ENTITY_MANAGER
-                        .createQuery("select g from VocabduelGame g where g.playerB = :user or g.playerA = :user")
+                        .createQuery("select g from VocabduelGame g where game_finished=1 and (playerB = :user or playerA = :user)")
                         .setParameter("user", user)
                         .getResultList();
-
-                // TODO: Exclude finished games (might require db changes)
-
             } catch (NoResultException ignored) {
             }
             ENTITY_MANAGER.getTransaction().commit();
