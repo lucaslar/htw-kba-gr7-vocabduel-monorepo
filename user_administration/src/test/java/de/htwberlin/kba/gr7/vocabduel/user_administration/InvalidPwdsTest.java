@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import javax.naming.InvalidNameException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.util.Arrays;
 
 @RunWith(Parameterized.class)
@@ -36,7 +40,14 @@ public class InvalidPwdsTest {
 
     @Mock
     private UserServiceImpl userAdministration;
+    @Mock
     private AuthServiceImpl auth;
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private Query queryMock;
+    @Mock
+    private EntityTransaction entityTransaction;
     private User existingUser;
     private final String PWD;
 
@@ -47,8 +58,8 @@ public class InvalidPwdsTest {
     }
 
     @Before
-    public void setup() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
-        auth = new AuthServiceImpl(new UserServiceImpl());
+    public void setup() {
+        auth = new AuthServiceImpl(userAdministration, entityManager);
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");
@@ -57,10 +68,15 @@ public class InvalidPwdsTest {
         existingUser.setLastName("User");
 
         // In the future, this method will be called in `updateUserPassword` => mock it in tests
-        Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
+ //       Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
+
+        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+        Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(PREVIOUS_PWD)));
 
         // Don't mock updateUserPassword function
-        Mockito.when(auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD)).thenCallRealMethod();
+        // automated done, if not said "when(functioncall).then(mock)"
     }
 
     @Test(expected = PwTooWeakException.class)
