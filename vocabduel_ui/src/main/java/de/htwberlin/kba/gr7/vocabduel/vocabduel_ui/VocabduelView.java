@@ -506,8 +506,10 @@ public class VocabduelView {
 
     public void printFinishedGame(final PersonalFinishedGame finishedGame) {
         System.out.println(
-                "Game finished: " + finishedGame.getGameResult().toString()
-                        + " (Your points: " + (finishedGame.getOwnPoints()) + (" - opponent's: ") + (finishedGame.getOpponentPoints() + ")")
+                "Game finished: " + finishedGame.getGameResult().toString() +
+                        " (Your points: " + (finishedGame.getOwnPoints()) +
+                        (" - Opponent \"" + finishedGame.getOpponent().getUsername() + "\": ") +
+                        (finishedGame.getOpponentPoints() + ")")
         );
     }
 }
