@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -28,6 +29,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private final EntityManager ENTITY_MANAGER;
 
+    @Autowired
     VocabularyServiceImpl() {
         initializeLangMapping();
 

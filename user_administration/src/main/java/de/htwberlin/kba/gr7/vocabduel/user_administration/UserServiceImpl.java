@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.naming.InvalidNameException;
@@ -16,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
     private final EntityManager ENTITY_MANAGER;
 
+    @Autowired
     public UserServiceImpl() {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
     }

@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -21,6 +22,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final EntityManager ENTITY_MANAGER;
     private final UserService USER_SERVICE;
 
+    @Autowired
     public ScoreServiceImpl(final UserService userService) {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
         USER_SERVICE = userService;
