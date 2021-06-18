@@ -31,11 +31,12 @@ public class GameDataMock {
         List<VocabduelRound> tempRoundList = newGame.getRounds();
         for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
             VocabduelRound newRound = new VocabduelRound(i);
+            newRound.setGame(newGame);
             newRound.setAnswers(Arrays.asList(
-                    new TranslationGroup(Collections.singletonList("wrongAnswer1")),
-                    new TranslationGroup(Collections.singletonList("rightAnswer")),
-                    new TranslationGroup(Collections.singletonList("wrongAnswer2")),
-                    new TranslationGroup(Collections.singletonList("wrongAnswer3"))
+                    new TranslationGroup((long) (i + 10), Collections.singletonList("wrongAnswer1")),
+                    new TranslationGroup((long) i, Collections.singletonList("translation" + i)),
+                    new TranslationGroup((long) (i + 11), Collections.singletonList("wrongAnswer2")),
+                    new TranslationGroup((long) (i + 12), Collections.singletonList("wrongAnswer3"))
             ));
             newRound.setQuestion(new UntranslatedVocable((long) i, new TranslationGroup(Collections.singletonList("vocableInQuestion"+i))));
             if (tempRoundList == null) {
@@ -55,8 +56,9 @@ public class GameDataMock {
         List<Vocable> tempVocableList = myVocList.getVocables();
         for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
             Vocable myVoc = new Vocable(
-                    new TranslationGroup(Collections.singletonList("unknownWord" + i)),
-                    Collections.singletonList(new TranslationGroup(Collections.singletonList("translation" + i))));
+                    (long) i,
+                    new TranslationGroup((long) i, Collections.singletonList("unknownWord" + i)),
+                    Collections.singletonList(new TranslationGroup((long) i, Collections.singletonList("translation" + i))));
             if (tempVocableList == null){
                 tempVocableList = new ArrayList<>();
             }

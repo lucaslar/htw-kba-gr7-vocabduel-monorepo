@@ -19,6 +19,11 @@ public class Vocable extends UntranslatedVocable {
         this.translations = translations;
     }
 
+    public Vocable(Long id, TranslationGroup vocable, List<TranslationGroup> translations){
+        super(id, vocable);
+        this.translations = translations;
+    }
+
     public List<TranslationGroup> getTranslations() {
         return translations;
     }

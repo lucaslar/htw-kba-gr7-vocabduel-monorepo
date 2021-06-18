@@ -20,6 +20,11 @@ public class TranslationGroup {
 
     public TranslationGroup(){ }
 
+    public TranslationGroup(Long id, List<String> synonyms){
+        this.id = id;
+        this.synonyms = synonyms;
+    }
+
     public TranslationGroup(List<String> synonyms){ this.synonyms = synonyms; }
 
     public TranslationGroup(List<String> synonyms, List<String> exemplarySentencesOrAdditionalInfo){
