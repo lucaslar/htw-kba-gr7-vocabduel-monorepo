@@ -40,6 +40,7 @@ public class ScoreServiceImpl implements ScoreService {
         }
 
         List<FinishedVocabduelGame> games = null;
+        ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
         try {
             games = (List<FinishedVocabduelGame>) ENTITY_MANAGER
@@ -71,7 +72,7 @@ public class ScoreServiceImpl implements ScoreService {
     public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException {
         RunningVocabduelGame game = null;
         if (player != null) {
-            ENTITY_MANAGER.clear(); // Important, since otherwise the cached game would be taken, i.e. the game found when the other user called this function (if called in one session)
+            ENTITY_MANAGER.clear();
             ENTITY_MANAGER.getTransaction().begin();
             try {
                 game = (RunningVocabduelGame) ENTITY_MANAGER

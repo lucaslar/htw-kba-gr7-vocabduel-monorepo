@@ -1,6 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +14,8 @@ public class VocableList {
     @GeneratedValue
     private Long id;
     @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User author;
     private String title;
     private Date timestamp;

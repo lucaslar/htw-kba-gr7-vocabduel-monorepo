@@ -285,19 +285,22 @@ public class VocabduelView {
     }
 
     private String createVocableListTitleString(final VocableList vocableList) {
-        return "[ID: " +
+        final String titleBase = "[ID: " +
                 vocableList.getId() +
                 "] " +
                 vocableList.getTitle() +
                 " (" +
-                vocableList.getVocables().size() +
+                vocableList.getVocables().size();
+        return titleBase + (vocableList.getAuthor() != null ?
                 " vocables, added by user " +
-                vocableList.getAuthor().getFirstName() + // TODO: handle deleted user
-                " " +
-                vocableList.getAuthor().getLastName() +
-                " (" +
-                vocableList.getAuthor().getUsername() +
-                ") on " +
+                        vocableList.getAuthor().getFirstName() +
+                        " " +
+                        vocableList.getAuthor().getLastName() +
+                        " (" +
+                        vocableList.getAuthor().getUsername()
+
+                : " vocables added by a deleted user")
+                + ") on " +
                 vocableList.getTimestamp().toString() +
                 ")\n";
     }
@@ -477,7 +480,7 @@ public class VocabduelView {
                         .append(isOwn ? " (Your points: " : " (Points: ")
                         .append(h.getOwnPoints())
                         .append(" - opponent's: ")
-                        .append(h.getOpponentPoints()) // TODO handle deleted user
+                        .append(h.getOpponentPoints())
                         .append(")\n    - Finished at: ")
                         .append(h.getFinishedTimestamp())
                         .append("\n    - Language: ")
@@ -485,7 +488,7 @@ public class VocabduelView {
                         .append(" => ")
                         .append(h.getKnownLanguage())
                         .append("\n    - Opponent: ")
-                        .append(h.getOpponent().toString()));
+                        .append(h.getOpponent() != null ? h.getOpponent().toString() : "[deleted]"));
         return str.toString();
     }
 
@@ -512,5 +515,16 @@ public class VocabduelView {
 
     public void printYouWillBeMissed(final String firstname) {
         System.out.println("User account has been deleted successfully. You will be missed, " + firstname + "!");
+    }
+
+    public void printConfirmUserDeletion(final String firstname, final String confirm) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("!!                   !!");
+        System.out.println("!!     Attention!    !!");
+        System.out.println("!!                   !!");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(firstname + ", we would really miss you and want to make sure you know what you are doing.");
+        System.out.println("If you really want to delete you account, re-run this command with: " + confirm);
+        System.out.println("Note: If you have imported any lists, we would love to keep your input. However, you can remove them manually before deleting your account if you don't want to share them.\n      All running games will be quit.");
     }
 }

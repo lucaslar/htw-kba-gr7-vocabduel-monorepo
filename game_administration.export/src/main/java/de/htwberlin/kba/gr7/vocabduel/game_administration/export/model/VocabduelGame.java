@@ -2,14 +2,20 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class VocabduelGame {
-    @OneToOne(targetEntity = User.class, orphanRemoval = true)
+    @OneToOne(targetEntity = User.class)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User playerA;
-    @OneToOne(targetEntity = User.class, orphanRemoval = true)
+    @OneToOne(targetEntity = User.class)
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User playerB;
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;

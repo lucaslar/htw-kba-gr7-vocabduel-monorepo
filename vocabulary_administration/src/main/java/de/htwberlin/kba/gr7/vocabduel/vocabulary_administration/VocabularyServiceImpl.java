@@ -83,6 +83,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (!author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
         }
+        ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
         final VocableUnit unit = (VocableUnit) ENTITY_MANAGER
                 .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")

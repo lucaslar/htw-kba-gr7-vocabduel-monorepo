@@ -590,9 +590,13 @@ public class VocabduelControllerImpl implements VocabduelController {
         }
     }
 
-    private void onUserDeleteCalled() {
+    private void onUserDeleteCalled(final HashMap<String, String> args) {
         final String firstname = STORAGE.getLoggedInUser().getFirstName();
-        USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
-        VIEW.printYouWillBeMissed(firstname);
+        final String confirmFlag = "--confirm true";
+        if (args.get("confirm") != null && args.get("confirm").equals("true")) {
+            USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
+            STORAGE.setLoggedInUser(null);
+            VIEW.printYouWillBeMissed(firstname);
+        } else VIEW.printConfirmUserDeletion(firstname, confirmFlag);
     }
 }
