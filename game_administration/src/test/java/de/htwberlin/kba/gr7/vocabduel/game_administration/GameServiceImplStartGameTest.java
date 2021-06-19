@@ -7,7 +7,9 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,11 +20,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameServiceImplStartGameTest {
@@ -51,16 +55,25 @@ public class GameServiceImplStartGameTest {
         List<SupportedLanguage> langList = new ArrayList<>();
         langList.add(mock.mockKnownLanguage());
         langList.add(mock.mockLearntLanguage());
+        List<LanguageSet> langset = new ArrayList<>();
+        VocableUnit unit = new VocableUnit("new Title");
+        unit.setVocableLists(mock.mockVocableLists());
+        LanguageSet mySet = new LanguageSet(mock.mockLearntLanguage(), mock.mockKnownLanguage());
+        mySet.setVocableUnits(Stream.of(unit).collect(Collectors.toList()));
+        langset.add(mySet);
 
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         Mockito.when(vocabularyService.getAllSupportedLanguages()).thenReturn(langList);
+        Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+  //      Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
+    //    Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
     }
 
     @Test()
     public void shouldGetStartedGameAsInput() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
-
+      //  Mockito.when(queryMock.getResultList()).thenReturn(Stream.of(languageSet).collect(Collectors.toList()));
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
