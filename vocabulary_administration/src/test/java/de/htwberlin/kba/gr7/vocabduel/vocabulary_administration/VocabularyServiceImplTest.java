@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -116,24 +117,28 @@ public class VocabularyServiceImplTest {
 
     @Test(expected = DuplicateVocablesInSetException.class)
     public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_duplicate_vocabulary.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = DataAlreadyExistsException.class)
     public void shouldNotImportGnuListWithExistingTitleInUnit() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingLanguageSet);
         final String pathname = "./src/test/assets/gnu_title_already_exists.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = IncompleteVocableListException.class)
     public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_incomplete_list.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = InvalidVocableListException.class)
     public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_invalid_format.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
@@ -148,12 +153,16 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format.txt";
         final int initialListsLength = existingVocableUnit.getVocableLists().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
         Assert.assertEquals(0, statusCode);
 
         final String expectedTitle = "GNU Unit title";
+        existingVocableList1.setTitle(expectedTitle);
+        languages.get(0).getVocableUnits().get(0).getVocableLists().add(existingVocableList1);
+        Mockito.when(queryMock.getResultList()).thenReturn(languages);
         final List<VocableList> refreshedLists = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits().get(0).getVocableLists();
         Assert.assertEquals(initialListsLength + 1, refreshedLists.size());
         final String infoMsg = "Please make sure, your gnu file's vocabulary list title is \"" + expectedTitle + "\"";
@@ -162,12 +171,15 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingLanguageSet);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_unit.txt";
         final int initialUnitsLength = existingLanguageSet.getVocableUnits().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
         Assert.assertEquals(0, statusCode);
 
         final String expectedUnitTitle = "GNU Unit title";
+        existingVocableUnit.setTitle(expectedUnitTitle);
+        Mockito.when(queryMock.getResultList()).thenReturn(languages);
         final List<VocableUnit> refreshedUnits = vocabularyLib.getAllLanguageSets().get(0).getVocableUnits();
         Assert.assertEquals(initialUnitsLength + 1, refreshedUnits.size());
         final String infoMsg = "Please make sure, your gnu file's unit title is \"" + expectedUnitTitle + "\"";
@@ -177,11 +189,13 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_language_set.txt";
         final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
         final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
         Assert.assertEquals(0, statusCode);
 
+        Mockito.when(queryMock.getResultList()).thenReturn(Stream.of(existingLanguageSet).collect(Collectors.toList()));
         final List<LanguageSet> refreshedLanguageSets = vocabularyLib.getAllLanguageSets();
         Assert.assertEquals(initialLanguageSetLength + 1, refreshedLanguageSets.size());
         // See previous test for checking if insertion of units works
@@ -194,6 +208,7 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
         Assert.assertEquals(0, statusCode);
     }
