@@ -1,11 +1,6 @@
-# Presentation
-
-- Angular Rest?
-
 # Tests
 
 - GnuFiles for Test still are to implement?
-- AuthServiceImplTest: hasAccessRights only checks token. db-check on mail address / id needed?
 
 # Vocab
 
@@ -13,6 +8,7 @@
 - check which columns are nullable in DB?
 
 # Before handing in
+- make sure there are no TODOs (comments)
 - set logging to false for each .xml
 - re-create class diagram?
 - re-create pdf

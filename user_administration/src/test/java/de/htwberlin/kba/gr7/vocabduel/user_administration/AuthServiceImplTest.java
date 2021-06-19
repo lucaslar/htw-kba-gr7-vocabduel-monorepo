@@ -276,12 +276,6 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldNotHaveAccessRightsIfAuthTokenIsOfUnknownUser() {
-        // TODO: bei hasAccessRights DB Abfrage getUserByEmail ??
-        Assert.assertFalse(auth.hasAccessRights(authTokenOfUnknownUser));
-    }
-
-    @Test
     public void shouldNotHaveAccessRightsIfAuthTokenExpired() {
         Assert.assertFalse(auth.hasAccessRights(expiredAuthToken));
     }
