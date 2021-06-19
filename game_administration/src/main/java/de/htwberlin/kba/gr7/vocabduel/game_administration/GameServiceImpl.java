@@ -64,7 +64,7 @@ public class GameServiceImpl implements GameService {
             ENTITY_MANAGER.getTransaction().begin();
             try {
                 games = (List<VocabduelGame>) ENTITY_MANAGER
-                        .createQuery("select g from VocabduelGame g where game_finished=1 and (playerB = :user or playerA = :user)")
+                        .createQuery("select g from VocabduelGame g where game_finished is not 1 and (playerB = :user or playerA = :user)")
                         .setParameter("user", user)
                         .getResultList();
             } catch (NoResultException ignored) {
@@ -91,9 +91,9 @@ public class GameServiceImpl implements GameService {
             }
             ENTITY_MANAGER.getTransaction().commit();
         }
-        if (round == null)
+        if (round == null) {
             throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
-        else return round;
+        }   else return round;
     }
 
     @Override
