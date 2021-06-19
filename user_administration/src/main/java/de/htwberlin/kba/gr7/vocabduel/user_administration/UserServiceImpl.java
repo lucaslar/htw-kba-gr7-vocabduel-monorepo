@@ -44,10 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserDataById(Long id) {
-        ENTITY_MANAGER.getTransaction().begin();
-        final User user = ENTITY_MANAGER.find(User.class, id);
-        ENTITY_MANAGER.getTransaction().commit();
-        return user;
+        return ENTITY_MANAGER.find(User.class, id);
     }
 
     @Override
