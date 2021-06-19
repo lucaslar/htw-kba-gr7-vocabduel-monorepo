@@ -227,6 +227,11 @@ public class AuthServiceImplTest {
 
     @Test
     public void shouldRefreshTokens() { // TODO: wenn alle Tests laufen, schlägt dieser fehl
+        try{
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         StoredRefreshToken stored = new StoredRefreshToken(new User(), generateRefreshToken(false, existingUser.getId()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(stored);
         final AuthTokens newTokens = auth.refreshAuthTokens(validRefreshToken);

@@ -6,7 +6,6 @@
 
 - GnuFiles for Test still are to implement?
 - Score Record Draws
-- AuthServiceImplTest: shouldRefreshTokens() fails, when all tests are run together
 - AuthServiceImplTest: hasAccessRights only checks token. db-check on mail adress / id needed?
 
 # Vocab
