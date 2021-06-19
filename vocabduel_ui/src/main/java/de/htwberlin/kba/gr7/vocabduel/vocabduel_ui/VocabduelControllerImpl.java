@@ -83,17 +83,17 @@ public class VocabduelControllerImpl implements VocabduelController {
             e.printStackTrace();
         }
 
-        try {
-            while (isRunning) {
+        while (isRunning) {
+            try {
                 final String input = VIEW.scanInput().trim();
                 final String actionName = input.split("--")[0].trim();
                 final String[] userInputArgs = input.contains("--")
                         ? input.substring(input.indexOf("--")).split("\\s+")
                         : null;
                 handleUserInput(actionName, userInputArgs);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
