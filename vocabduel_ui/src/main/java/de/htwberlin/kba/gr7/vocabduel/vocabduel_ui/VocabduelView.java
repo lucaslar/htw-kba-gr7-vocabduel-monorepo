@@ -167,7 +167,7 @@ public class VocabduelView {
     }
 
     public void printConfigurableThroughParam(final String param, final List<String[]> options) {
-        System.out.println("\nNot seeing all information you would like to see? This action is configurable through the param \"" + param + "\"");
+        System.out.println("Not seeing all information you would like to see? This action is configurable through the param \"" + param + "\"");
         int i = 0;
         for (String[] o : options) {
             System.out.print("  --" + param + " " + o[0]);
@@ -243,7 +243,7 @@ public class VocabduelView {
             }
 
             System.out.println(toBePrinted);
-        } else System.out.println("No language sets yet. Be the first one to import a GNU file!");
+        } else System.out.println("No language sets/vocables yet. Change that by importing a GNU file!");
     }
 
     public void printVocableList(final VocableList vocableList) {
@@ -298,7 +298,7 @@ public class VocabduelView {
                 vocableList.getAuthor().getFirstName() +
                 " " +
                 vocableList.getAuthor().getLastName() +
-                " (@" +
+                " (" +
                 vocableList.getAuthor().getUsername() +
                 ") on " +
                 vocableList.getTimestamp().toString() +
@@ -505,5 +505,9 @@ public class VocabduelView {
                         (" - Opponent \"" + finishedGame.getOpponent().getUsername() + "\": ") +
                         (finishedGame.getOpponentPoints() + ")")
         );
+    }
+
+    public void printForceDeletion(final String forceCmd) {
+        System.out.println("This list seems to be referenced by at least one running game. If you are sure about this, run `" + forceCmd + "` in order to delete it and the running game(s).");
     }
 }

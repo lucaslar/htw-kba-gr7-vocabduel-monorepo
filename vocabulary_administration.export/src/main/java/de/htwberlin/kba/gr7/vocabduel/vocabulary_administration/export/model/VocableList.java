@@ -15,7 +15,7 @@ public class VocableList {
     private User author;
     private String title;
     private Date timestamp;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Vocable> vocables;
 
     public VocableList() {}

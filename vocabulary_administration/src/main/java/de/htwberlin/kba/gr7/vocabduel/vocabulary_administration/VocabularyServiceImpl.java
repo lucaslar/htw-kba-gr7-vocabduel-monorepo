@@ -7,10 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +34,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         ENTITY_MANAGER = emf.createEntityManager();
     }
 
-    VocabularyServiceImpl(EntityManager entityManager){
+    VocabularyServiceImpl(EntityManager entityManager) {
         initializeLangMapping();
         ENTITY_MANAGER = entityManager;
     }
@@ -81,15 +78,34 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException {
+    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, PersistenceException {
         final User author = vocables.getAuthor();
         if (!author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
         }
         ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.remove(vocables);
-        // TODO: fix / currently not working due to cascades!
-        ENTITY_MANAGER.getTransaction().commit();
+        final VocableUnit unit = (VocableUnit) ENTITY_MANAGER
+                .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
+                .setParameter("list", vocables)
+                .getSingleResult();
+        unit.setVocableLists(unit.getVocableLists().stream().filter(l -> !l.getId().equals(vocables.getId())).collect(Collectors.toList()));
+        try {
+            final VocableList list = ENTITY_MANAGER.find(VocableList.class, vocables.getId());
+            ENTITY_MANAGER.remove(list);
+            if (unit.getVocableLists().isEmpty()) {
+                final LanguageSet languageSet = (LanguageSet) ENTITY_MANAGER
+                        .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
+                        .setParameter("unit", unit)
+                        .getSingleResult();
+                languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
+                ENTITY_MANAGER.remove(unit);
+                if (languageSet.getVocableUnits().isEmpty()) ENTITY_MANAGER.remove(languageSet);
+            }
+            ENTITY_MANAGER.getTransaction().commit();
+        } catch (PersistenceException e) {
+            ENTITY_MANAGER.getTransaction().rollback();
+            throw e;
+        }
         return 0;
     }
 
