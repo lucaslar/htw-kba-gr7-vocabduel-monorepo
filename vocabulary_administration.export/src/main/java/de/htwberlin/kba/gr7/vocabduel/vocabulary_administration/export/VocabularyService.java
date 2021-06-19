@@ -69,12 +69,4 @@ public interface VocabularyService {
      * @return List containing all references to the given supported language.
      */
     List<String> getSupportedLanguageReferences(SupportedLanguage language);
-
-    /**
-     * @param reference Reference the supported language is to be determined by.
-     * @return Determined supported language.
-     *
-     * TODO: Delete if languages are to be removed from start game
-     */
-    SupportedLanguage getSupportedLanguageByReference(String reference);
 }

@@ -157,11 +157,6 @@ public class VocabularyServiceImpl implements VocabularyService {
         return Arrays.stream(reverseLanguageMapping.get(language)).collect(Collectors.toList());
     }
 
-    @Override
-    public SupportedLanguage getSupportedLanguageByReference(final String reference) {
-        return languageMapping.get(reference.toLowerCase());
-    }
-
     private void initializeLangMapping() {
         reverseLanguageMapping = new HashMap<>();
         reverseLanguageMapping.put(AR, new String[]{"ar", "arabic", "arabisch", "العربية"});
@@ -256,7 +251,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     private SupportedLanguage mapLanguageReference(final String reference) throws UnknownLanguagesException {
-        final SupportedLanguage lang = getSupportedLanguageByReference(reference.toLowerCase());
+        final SupportedLanguage lang = languageMapping.get(reference.toLowerCase());
         if (lang == null) throw new UnknownLanguagesException("Unknown or wrongly referred language: " + reference);
         else return lang;
     }
