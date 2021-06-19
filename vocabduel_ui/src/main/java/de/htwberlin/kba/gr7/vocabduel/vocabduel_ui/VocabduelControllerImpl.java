@@ -74,15 +74,6 @@ public class VocabduelControllerImpl implements VocabduelController {
         initializeFunctionsList();
         initializeFunctionsMap();
 
-
-        // TODO: RM
-        try {
-            handleUserInput("login", new String[]{"--pwd", "123arnoLD", "--email", "arnie1947@mail.at"});
-        } catch (Exception e) {
-            System.err.println("Initial login error");
-            e.printStackTrace();
-        }
-
         while (isRunning) {
             try {
                 final String input = VIEW.scanInput().trim();
