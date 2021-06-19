@@ -44,6 +44,8 @@ public class ScoreServiceImplTest {
     private User playerB;  // 1 win against A, 1 loss against C
     private User playerC; // 2 wins, 1 against A, 1 against B
     private User playerD; // 0 - 0
+    private User playerE; // 2 Draw against F
+    private User playerF; // 2 Draw against E
     private List<FinishedVocabduelGame> finishedGames;
 
     private ScoreServiceImpl scoreAdministration;
@@ -68,17 +70,27 @@ public class ScoreServiceImplTest {
         playerB = new User(42L);
         playerC = new User(2020L);
         playerD = new User(2021L);
+        playerE = new User(900L);
+        playerF = new User(901L);
 
         final FinishedVocabduelGame game1 = mockFinishedGame(playerA, 0, playerB, 3);
         final FinishedVocabduelGame game2 = mockFinishedGame(playerA, 1, playerC, 2);
         final FinishedVocabduelGame game3 = mockFinishedGame(playerB, 0, playerC, 3);
-        finishedGames = Stream.of(game1, game2, game3).collect(Collectors.toList());
+        final FinishedVocabduelGame game4 = mockFinishedGame(playerE, 2, playerF, 2);
+        final FinishedVocabduelGame game5 = mockFinishedGame(playerF, 1, playerE, 1);
+        finishedGames = Stream.of(game1, game2, game3, game4, game5).collect(Collectors.toList());
 
         Mockito.when(entityManager.getEntityManagerFactory()).thenReturn(emf);
         Mockito.when(emf.getCache()).thenReturn(cache);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldThrowExceptionIfUserInvalid() throws InvalidUserException{
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(null);
+        scoreAdministration.getPersonalFinishedGames(playerA);
     }
 
     @Test
@@ -123,6 +135,22 @@ public class ScoreServiceImplTest {
     }
 
     @Test
+    public void shouldReturnCorrectPersonalFinishedGamesIfDraw() throws InvalidUserException {
+        final User player = playerE;
+        Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(t ->
+                t.getPlayerB().getId().equals(player.getId()) ||
+                        t.getPlayerA().getId().equals(player.getId())).collect(Collectors.toList()));
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(player);
+        final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
+        sharedPersonalFinishedGameLogic(games, player);
+
+        games.forEach(g -> {
+            Assert.assertTrue(g.getOwnPoints() == g.getOpponentPoints());
+            Assert.assertEquals(GameResult.DRAW, g.getGameResult());
+        });
+    }
+
+    @Test
     public void shouldReturnCorrectPersonalFinishedGamesIfWonAndLost() throws InvalidUserException {
         final User player = playerB;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(t ->
@@ -162,32 +190,27 @@ public class ScoreServiceImplTest {
         Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerB, 1, 1, 0))
                 .matches(scoreAdministration.getRecordOfUser(playerB)));
     }
-    // TODO: Score Record Draws
-//
-//    @Test
-//    public void shouldReturnNrOfWinsIfOnlyWon() {
-//        Assert.assertEquals(2, scoreAdministration.getTotalWinsOfUser(playerC));
-//    }
-//
-//    @Test
-//    public void shouldReturnZeroLossesForUserWithNoFinishedGames() {
-//        Assert.assertEquals(0, scoreAdministration.getTotalLossesOfUser(playerD));
-//    }
-//
-//    @Test
-//    public void shouldReturnZeroLossesForUserIfOnlyWon() {
-//        Assert.assertEquals(0, scoreAdministration.getTotalLossesOfUser(playerC));
-//    }
-//
-//    @Test
-//    public void shouldReturnNrOfLossesIfWonAndLost() {
-//        Assert.assertEquals(1, scoreAdministration.getTotalLossesOfUser(playerB));
-//    }
-//
-//    @Test
-//    public void shouldReturnNrOfLossesIfOnlyLost() {
-//        Assert.assertEquals(2, scoreAdministration.getTotalLossesOfUser(playerA));
-//    }
+
+    @Test
+    public void shouldReturnScoreRecordsForUserIfOnlyWon() throws InvalidUserException{
+        Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(t ->
+                t.getPlayerB().getId().equals(playerC.getId()) ||
+                        t.getPlayerA().getId().equals(playerC.getId())).collect(Collectors.toList()));
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerC);
+        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 2, 0, 0))
+                .matches(scoreAdministration.getRecordOfUser(playerC)));
+    }
+
+    @Test
+    public void shouldReturnScoreRecordsForUserIfDraw() throws InvalidUserException{
+        Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(t ->
+                t.getPlayerB().getId().equals(playerE.getId()) ||
+                        t.getPlayerA().getId().equals(playerE.getId())).collect(Collectors.toList()));
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerE);
+        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 0, 0, 1))
+                .matches(scoreAdministration.getRecordOfUser(playerC)));
+    }
+
 
     @Test(expected = NoAccessException.class)
     public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, NoAccessException {

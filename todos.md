@@ -5,7 +5,6 @@
 # Tests
 
 - GnuFiles for Test still are to implement?
-- Score Record Draws
 - AuthServiceImplTest: hasAccessRights only checks token. db-check on mail address / id needed?
 
 # Vocab
