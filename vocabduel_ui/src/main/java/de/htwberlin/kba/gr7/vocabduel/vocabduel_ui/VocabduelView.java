@@ -507,7 +507,7 @@ public class VocabduelView {
         );
     }
 
-    public void printForceDeletion(final String forceCmd) {
-        System.out.println("This list seems to be referenced by at least one running game. If you are sure about this, run `" + forceCmd + "` in order to delete it and the running game(s).");
+    public void printVocableListInRunningGame() {
+        System.out.println("This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.");
     }
 }

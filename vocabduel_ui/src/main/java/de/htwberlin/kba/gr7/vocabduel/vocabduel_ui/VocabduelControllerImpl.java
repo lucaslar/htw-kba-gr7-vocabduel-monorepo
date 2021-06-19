@@ -48,7 +48,6 @@ public class VocabduelControllerImpl implements VocabduelController {
     private final String LO_SHORT = "lo";
     private final String GA_KEY = "game answer";
     private final String GQ_KEY = "game question";
-    private final String V_RM_FORCE_KEY = "vocab rm force";
 
     public VocabduelControllerImpl(
             final VocabduelView view,
@@ -121,7 +120,6 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
         actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "u find", this::onFindUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
-        actionsList.add(new VocabduelCliAction(true, V_RM_FORCE_KEY, "Force the deletion of a vocab list by id, i.e. also delete all running games referencing this list (you have to be the list's author)", "v rm force", this::onDeleteVocabListForceCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
         actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game (Vocable lists can be separated by spaces)", "g s", this::onGameStarted, "opponent", "vocablelists"));
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
@@ -453,12 +451,8 @@ public class VocabduelControllerImpl implements VocabduelController {
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
         } catch (PersistenceException e) {
-            VIEW.printForceDeletion(V_RM_FORCE_KEY);
+            VIEW.printVocableListInRunningGame();
         }
-    }
-
-    private void onDeleteVocabListForceCalled(final HashMap<String, String> args) {
-        System.out.println("Implement me"); // TODO: Implement
     }
 
     private void onUserSearchCalled(final HashMap<String, String> args) {
