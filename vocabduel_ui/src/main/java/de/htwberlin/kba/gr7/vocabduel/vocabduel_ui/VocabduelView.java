@@ -364,14 +364,6 @@ public class VocabduelView {
         for (final User u : users) System.out.println("..." + u);
     }
 
-    public void printLangFromCouldNotBeMapped() {
-        System.out.println("Language (from) could not be mapped correctly");
-    }
-
-    public void printLangToCouldNotBeMapped() {
-        System.out.println("Language (to) could not be mapped correctly");
-    }
-
     public void printSuccessfullyStaredGame(final VocabduelGame game, final String seeRoundCmd) {
         System.out.println("Game against \"" + game.getPlayerB().getUsername() + "\" has been started successfully. [Game ID: " + game.getId() + "]");
         System.out.println("In order to start a round/see your first question, run: " + seeRoundCmd + " --id " + game.getId());

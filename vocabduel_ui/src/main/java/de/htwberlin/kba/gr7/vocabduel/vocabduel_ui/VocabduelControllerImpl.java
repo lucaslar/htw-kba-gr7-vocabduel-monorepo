@@ -121,7 +121,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "u find", this::onFindUserCalled));
         actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
         actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
-        actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game", "g s", this::onGameStarted, "opponent", "vocablelists", "langfrom", "langto"));
+        actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game (Vocable lists can be separated by spaces)", "g s", this::onGameStarted, "opponent", "vocablelists"));
         actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
         actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
@@ -480,18 +480,11 @@ public class VocabduelControllerImpl implements VocabduelController {
                 final List<VocableList> vocableLists = uniqueVocabIds
                         .stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
 
-                final SupportedLanguage from = VOCABULARY_SERVICE.getSupportedLanguageByReference(args.get("langfrom"));
-                final SupportedLanguage to = VOCABULARY_SERVICE.getSupportedLanguageByReference(args.get("langto"));
-
-                if (from == null) VIEW.printLangFromCouldNotBeMapped();
-                else if (to == null) VIEW.printLangToCouldNotBeMapped();
-                else {
-                    final VocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists, from, to);
-                    VIEW.printSuccessfullyStaredGame(game, GQ_KEY);
-                }
+                final VocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists);
+                VIEW.printSuccessfullyStaredGame(game, GQ_KEY);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get("vocablelists"));
-            } catch (KnownLangEqualsLearntLangException | NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException e) {
+            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException e) {
                 e.printStackTrace();
             }
         } else VIEW.printCouldNotDetermineUser();

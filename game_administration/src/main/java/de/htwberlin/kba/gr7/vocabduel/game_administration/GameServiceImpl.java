@@ -35,20 +35,21 @@ public class GameServiceImpl implements GameService {
         VOCABULARY_SERVICE = vocabularyService;
     }
 
-    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager){
+    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager) {
         ENTITY_MANAGER = entityManager;
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
     }
 
     @Override
-    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
-            throws InvalidUserException, InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException {
-        verifyGameSetup(playerA, playerB, vocableLists, knownLanguage, learntLanguage);
+    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException {
+        verifyGameSetup(playerA, playerB, vocableLists);
 
         // persist new Game
         // TODO: kapseln, sonst funzen die Tests nicht mehr
-        final VocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
+        final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
+        final VocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
         ENTITY_MANAGER.getTransaction().begin();
         ENTITY_MANAGER.persist(newGame);
         ENTITY_MANAGER.getTransaction().commit();
@@ -139,12 +140,10 @@ public class GameServiceImpl implements GameService {
         return null;
     }
 
-    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage) throws InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidUserException {
+    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException {
         if (vocableLists == null) throw new InvalidGameSetupException("No vocable lists provided!");
         if (playerA == null) throw new InvalidGameSetupException("No user object given! (initiator)");
         if (playerB == null) throw new InvalidGameSetupException("No user object given! (opponent)");
-        if (knownLanguage == null) throw new InvalidGameSetupException("No known language given!");
-        if (learntLanguage == null) throw new InvalidGameSetupException("No learnt language given!");
 
         if (vocableLists.stream().anyMatch(Objects::isNull)) {
             throw new InvalidGameSetupException("At least one vocable list is null!");
@@ -152,10 +151,6 @@ public class GameServiceImpl implements GameService {
 
         if (playerA.getId().equals(playerB.getId())) {
             throw new InvalidGameSetupException("You cannot play against yourself.");
-        }
-
-        if (learntLanguage == knownLanguage) {
-            throw new KnownLangEqualsLearntLangException("Known and learnt language must be different, but where 2x " + learntLanguage);
         }
 
         final int nrOfVocabs = vocableLists.stream().map(l -> l.getVocables().size()).reduce(0, Integer::sum);
@@ -170,20 +165,23 @@ public class GameServiceImpl implements GameService {
         if (USER_SERVICE.getUserDataById(playerB.getId()) == null) {
             throw new InvalidUserException("Player B (opponent) is not a known user!");
         }
-
-        if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == knownLanguage)) {
-            throw new InvalidGameSetupException("Known language (" + knownLanguage + ") is not supported (or not set)");
-        }
-
-        if (VOCABULARY_SERVICE.getAllSupportedLanguages().stream().noneMatch(lang -> lang == learntLanguage)) {
-            throw new InvalidGameSetupException("Learnt language (" + learntLanguage + ") is not supported (or not set)");
-        }
-
-        // TODO: Check if all lists are of same language set (remove lang from / lang to? / requires db changes in order to support bi-directionality vocable list ( => unit) <> language set)
     }
 
-    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final SupportedLanguage knownLanguage, final SupportedLanguage learntLanguage, final List<VocableList> vocableLists) throws NotEnoughVocabularyException {
-        final VocabduelGame game = new VocabduelGame(playerA, playerB, knownLanguage, learntLanguage, vocableLists);
+    private LanguageSet determineLanguageSetOfVocableLists(final List<VocableList> vocableLists) throws InvalidGameSetupException {
+        final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets()
+                .stream()
+                .filter(ls -> ls.getVocableUnits().stream().anyMatch(vu -> vu.getVocableLists().stream().anyMatch(vl -> vocableLists.stream().anyMatch(gvl -> gvl.getId().equals(vl.getId())))))
+                .collect(Collectors.toList());
+
+        if (languageSets.size() != 1) {
+            throw new InvalidGameSetupException("All vocabulary lists must be of the same language set! Found: " + languageSets.stream().map(ls -> ls.getLearntLanguage() + " => " + ls.getKnownLanguage()).collect(Collectors.joining(", ")));
+        }
+
+        return languageSets.get(0);
+    }
+
+    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final List<VocableList> vocableLists, final LanguageSet languageSet) throws NotEnoughVocabularyException, InvalidGameSetupException {
+        final VocabduelGame game = new VocabduelGame(playerA, playerB, languageSet.getLearntLanguage(), languageSet.getKnownLanguage(), vocableLists);
 
         final List<Vocable> flatVocables = vocableLists.stream().flatMap(vl -> vl.getVocables().stream()).collect(Collectors.toList());
         Collections.shuffle(flatVocables);

@@ -59,14 +59,12 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldGetStartedGameAsInput() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+    public void shouldGetStartedGameAsInput() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableLists()
         );
         Assert.assertNotNull(newGameRes);
 
@@ -80,41 +78,35 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldNewGameWithFixedRoundList() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNewGameWithFixedRoundList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableLists()
         );
         Assert.assertNotNull(newGameRes);
         Assert.assertEquals(newGameRes.getRounds().size(), GameServiceImpl.getFixNumberOfRoundsPerGame());
     }
 
     @Test()
-    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockMultipleVocableListsWithEnoughVocabulary(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockMultipleVocableListsWithEnoughVocabulary()
         );
         Assert.assertNotNull(newGameRes);
         Assert.assertEquals(newGameRes.getRounds().size(), GameServiceImpl.getFixNumberOfRoundsPerGame());
     }
 
     @Test()
-    public void shouldStartGameWithUniqueRounds() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithUniqueRounds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableLists()
         );
         Assert.assertNotNull(newGameRes);
         List<VocabduelRound> uniques = newGameRes.getRounds().stream().distinct().collect(Collectors.toList());
@@ -122,13 +114,11 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test
-    public void shouldStartGameWithUniqueQuestions() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithUniqueQuestions() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableLists()
         );
         Assert.assertNotNull(newGameRes);
         newGameRes.getRounds().stream().map(r -> r.getQuestion().getVocable())
@@ -137,14 +127,12 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldStartGameWithCorrectRoundIds() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         // setup for this method
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableLists()
         );
         Assert.assertNotNull(newGameRes);
         newGameRes.getRounds().sort(compareById);
@@ -160,68 +148,47 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidGameSetupException.class)
-    public void shouldNotStartGameInSinglePlayerMode() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameInSinglePlayerMode() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockSampleUser(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
-        );
-    }
-
-    @Test(expected = KnownLangEqualsLearntLangException.class)
-    public void shouldNotStartGameWithSameLanguageToLearnAsToLearnFrom() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
-        newGameRes = gameAdministration.startGame(
-                mock.mockSampleUser(),
-                mock.mockOpponent(),
-                mock.mockVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockKnownLanguage()
+                mock.mockVocableLists()
         );
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutVocabulary() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableListsWithEmptyVocabulary(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableListsWithEmptyVocabulary()
         );
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabulary() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutEnoughVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockVocableListsWithoutEnoughVocabulary(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockVocableListsWithoutEnoughVocabulary()
         );
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockMultipleVocableListsWithoutEnoughVocabulary(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockMultipleVocableListsWithoutEnoughVocabulary()
         );
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithEmptyVocableLists() throws KnownLangEqualsLearntLangException, NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithEmptyVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
-                mock.mockEmptyVocableLists(),
-                mock.mockKnownLanguage(),
-                mock.mockLearntLanguage()
+                mock.mockEmptyVocableLists()
         );
     }
 

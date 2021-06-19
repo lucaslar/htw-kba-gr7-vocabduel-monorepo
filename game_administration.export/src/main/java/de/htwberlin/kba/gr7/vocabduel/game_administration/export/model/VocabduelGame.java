@@ -23,9 +23,9 @@ public class VocabduelGame {
     @OneToOne(targetEntity = User.class)
     private User playerB;
     @Enumerated(EnumType.STRING)
-    private SupportedLanguage knownLanguage;
-    @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
+    @Enumerated(EnumType.STRING)
+    private SupportedLanguage knownLanguage;
     @ManyToMany(cascade = CascadeType.MERGE)
     private List<VocableList> vocableLists;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
@@ -34,11 +34,11 @@ public class VocabduelGame {
     public VocabduelGame() {
     }
 
-    public VocabduelGame(User playerA, User playerB, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage, List<VocableList> vocableLists) {
+    public VocabduelGame(User playerA, User playerB, SupportedLanguage learntLanguage, SupportedLanguage knownLanguage, List<VocableList> vocableLists) {
         this.playerA = playerA;
         this.playerB = playerB;
-        this.knownLanguage = knownLanguage;
         this.learntLanguage = learntLanguage;
+        this.knownLanguage = knownLanguage;
         this.vocableLists = vocableLists;
         this.rounds = Arrays.asList(new VocabduelRound[GameService.NR_OF_ROUNDS]);
     }

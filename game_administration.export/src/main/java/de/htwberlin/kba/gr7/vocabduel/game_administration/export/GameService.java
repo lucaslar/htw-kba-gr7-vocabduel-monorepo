@@ -31,16 +31,13 @@ public interface GameService {
      * @param playerA        Player initiating the game.
      * @param playerB        Opponent to be invited to play with <code>playerA</code>.
      * @param vocableLists   List of vocable lists to be used in the game. The questions will be randomly picked from these lists.
-     * @param knownLanguage  Known language, i.e. the language the answers are displayed in.
-     * @param learntLanguage Learnt language, i.e. the language in which the questions are to be asked in.
      * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
      * @throws InvalidUserException                 One of the given users could not be found.
      * @throws InvalidGameSetupException            The setup of the game is not valid for a reason described in the given error message.
-     * @throws KnownLangEqualsLearntLangException   KnownLanguage and LearntLanguage do equal
      * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
      */
-    VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists, SupportedLanguage knownLanguage, SupportedLanguage learntLanguage)
-            throws InvalidUserException, InvalidGameSetupException, KnownLangEqualsLearntLangException, NotEnoughVocabularyException;
+    VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.

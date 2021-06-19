@@ -19,7 +19,7 @@ public class LanguageSet implements Serializable {
     public LanguageSet() {
     }
 
-    public LanguageSet( final SupportedLanguage learntLanguage, final SupportedLanguage knownLanguage) {
+    public LanguageSet(final SupportedLanguage learntLanguage, final SupportedLanguage knownLanguage) {
         this.knownLanguage = knownLanguage;
         this.learntLanguage = learntLanguage;
     }
