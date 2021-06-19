@@ -191,7 +191,7 @@ public class ScoreServiceImplTest {
 
     @Test(expected = NoAccessException.class)
     public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, NoAccessException {
-        final VocabduelGame game = new VocabduelGame(11L, playerA, playerB, null, null, null);
+        final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(null);
         scoreAdministration.finishGame(playerC, game.getId());
@@ -199,7 +199,7 @@ public class ScoreServiceImplTest {
 
     @Test(expected = UnfinishedGameException.class)
     public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException, NoAccessException {
-        final VocabduelGame game = new VocabduelGame(11L, playerA, playerB, null, null, null);
+        final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(),  new VocabduelRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(game);
         scoreAdministration.finishGame(playerA, game.getId());
@@ -207,7 +207,7 @@ public class ScoreServiceImplTest {
 
     @Test
     public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException, NoAccessException {
-        final VocabduelGame game = new VocabduelGame(11L, playerA, playerB, null, null, null);
+        final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(game);
         final PersonalFinishedGame finishedGame = scoreAdministration.finishGame(playerA, game.getId());

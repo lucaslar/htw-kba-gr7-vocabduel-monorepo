@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 public class GameServiceImplStartGameTest {
 
     private GameServiceImpl gameAdministration;
-    private VocabduelGame newGame;
-    private VocabduelGame newGameRes;
+    private RunningVocabduelGame newGame;
+    private RunningVocabduelGame newGameRes;
     private GameDataMock mock;
     @Mock
     private UserService userService; // to be mocked

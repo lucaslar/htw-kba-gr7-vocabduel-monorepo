@@ -12,9 +12,9 @@ import java.util.List;
 @DiscriminatorColumn(name = "round_finished", discriminatorType = DiscriminatorType.INTEGER)
 public class VocabduelRound implements Serializable {
     @Id
-    @ManyToOne(targetEntity = VocabduelGame.class)
+    @ManyToOne(targetEntity = RunningVocabduelGame.class)
     @JoinColumn
-    private VocabduelGame game;
+    private RunningVocabduelGame game;
     @Id
     private int roundNr;
     @OneToOne
@@ -54,11 +54,11 @@ public class VocabduelRound implements Serializable {
         this.answers = answers;
     }
 
-    public VocabduelGame getGame() {
+    public RunningVocabduelGame getGame() {
         return game;
     }
 
-    public void setGame(VocabduelGame game) {
+    public void setGame(RunningVocabduelGame game) {
         this.game = game;
     }
 

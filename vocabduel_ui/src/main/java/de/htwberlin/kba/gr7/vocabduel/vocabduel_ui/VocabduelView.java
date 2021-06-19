@@ -1,10 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -109,7 +106,7 @@ public class VocabduelView {
                 .filter(gk -> Arrays.asList(argKeys).contains(gk))
                 .collect(Collectors.toList());
 
-        System.out.println("This function accepts the following optional params: " + Arrays.stream(argKeys).collect(Collectors.toList()));
+        System.out.println("This command accepts the following optional params: " + Arrays.stream(argKeys).collect(Collectors.toList()));
         System.out.println("Calling it with param(s): " + validGiven + " (unknown params are ignored in this list)");
     }
 
@@ -364,12 +361,12 @@ public class VocabduelView {
         for (final User u : users) System.out.println("..." + u);
     }
 
-    public void printSuccessfullyStaredGame(final VocabduelGame game, final String seeRoundCmd) {
+    public void printSuccessfullyStaredGame(final RunningVocabduelGame game, final String seeRoundCmd) {
         System.out.println("Game against \"" + game.getPlayerB().getUsername() + "\" has been started successfully. [Game ID: " + game.getId() + "]");
         System.out.println("In order to start a round/see your first question, run: " + seeRoundCmd + " --id " + game.getId());
     }
 
-    public void printGames(final List<VocabduelGame> games, final User self) {
+    public void printGames(final List<RunningVocabduelGame> games, final User self) {
         if (games == null || games.isEmpty()) System.out.println("No games yet.");
         else {
             StringBuilder str = new StringBuilder("Here's a list of your current games:\n");

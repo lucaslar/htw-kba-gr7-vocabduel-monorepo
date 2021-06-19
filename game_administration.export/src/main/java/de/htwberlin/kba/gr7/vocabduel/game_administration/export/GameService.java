@@ -2,11 +2,10 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
@@ -31,12 +30,12 @@ public interface GameService {
      * @param playerA        Player initiating the game.
      * @param playerB        Opponent to be invited to play with <code>playerA</code>.
      * @param vocableLists   List of vocable lists to be used in the game. The questions will be randomly picked from these lists.
-     * @return New <code>{@link VocabduelGame}</code> instance based on the given params.
+     * @return New <code>{@link RunningVocabduelGame}</code> instance based on the given params.
      * @throws InvalidUserException                 One of the given users could not be found.
      * @throws InvalidGameSetupException            The setup of the game is not valid for a reason described in the given error message.
      * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game
      */
-    VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
+    RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
             throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException;
 
     /**
@@ -45,7 +44,7 @@ public interface GameService {
      * @param user User the pending/challenged matches of are to be returned.
      * @return List of all unfinished games the given <code>user</code> has been challenged to or has started.
      */
-    List<VocabduelGame> getPersonalChallengedGames(User user);
+    List<RunningVocabduelGame> getPersonalChallengedGames(User user);
 
     /**
      * Starts the next round of a given game as a given player, i.e. returns the respective next round object.

@@ -482,7 +482,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 final List<VocableList> vocableLists = uniqueVocabIds
                         .stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
 
-                final VocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists);
+                final RunningVocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists);
                 VIEW.printSuccessfullyStaredGame(game, GQ_KEY);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get("vocablelists"));
@@ -543,7 +543,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onGameListCalled() {
-        final List<VocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
+        final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
         VIEW.printGames(games, STORAGE.getLoggedInUser());
     }
 

@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -48,7 +49,7 @@ public class GameServiceImplUnfinishedGamesTest {
     @Test()
     public void shouldGetEmptyUnfinishedGamesList() {
         Mockito.when(queryMock.getResultList()).thenReturn(mock.mockEmptyUnfinishedGameList());
-        final List<VocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(new User(4711L));
+        final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(new User(4711L));
         Assert.assertNotNull(unfinishedGames);
         Assert.assertTrue(unfinishedGames.isEmpty());
     }
@@ -56,7 +57,7 @@ public class GameServiceImplUnfinishedGamesTest {
     @Test()
     public void shouldGetUnfinishedGamesListWithEveryGameOnce() {
         Mockito.when(queryMock.getResultList()).thenReturn(mock.mockUnfinishedGameList());
-        final List<VocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(mock.mockSampleUser());
+        final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(mock.mockSampleUser());
         Assert.assertNotNull(unfinishedGames);
         Assert.assertTrue(unfinishedGames.size() > 1);
         List<VocabduelGame> uniques = unfinishedGames.stream().distinct().collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class GameServiceImplUnfinishedGamesTest {
     public void shouldGetUnfinishedGamesTheUserIsPlayerOf() {
         Mockito.when(queryMock.getResultList()).thenReturn(mock.mockUnfinishedGameList());
         final User user = mock.mockSampleUser();
-        final List<VocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(user);
+        final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(user);
         Assert.assertNotNull(unfinishedGames);
         unfinishedGames.forEach(g -> Assert.assertTrue(g.getPlayerA().equals(user) || g.getPlayerB().equals(user)));
     }

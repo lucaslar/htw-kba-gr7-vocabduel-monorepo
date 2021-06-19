@@ -42,14 +42,14 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public VocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
+    public RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
             throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         // persist new Game
         // TODO: kapseln, sonst funzen die Tests nicht mehr
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
-        final VocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
+        final RunningVocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
         ENTITY_MANAGER.getTransaction().begin();
         ENTITY_MANAGER.persist(newGame);
         ENTITY_MANAGER.getTransaction().commit();
@@ -58,13 +58,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<VocabduelGame> getPersonalChallengedGames(User user) {
-        List<VocabduelGame> games = null;
+    public List<RunningVocabduelGame> getPersonalChallengedGames(User user) {
+        List<RunningVocabduelGame> games = null;
         if (user != null) {
             ENTITY_MANAGER.getTransaction().begin();
             try {
-                games = (List<VocabduelGame>) ENTITY_MANAGER
-                        .createQuery("select g from VocabduelGame g where game_finished is not 1 and (playerB = :user or playerA = :user)")
+                games = (List<RunningVocabduelGame>) ENTITY_MANAGER
+                        .createQuery("select g from RunningVocabduelGame g where (playerB = :user or playerA = :user)")
                         .setParameter("user", user)
                         .getResultList();
             } catch (NoResultException ignored) {
@@ -82,7 +82,7 @@ public class GameServiceImpl implements GameService {
             ENTITY_MANAGER.getTransaction().begin();
             try {
                 round = (VocabduelRound) ENTITY_MANAGER
-                        .createQuery("select r from VocabduelGame g inner join g.rounds r where g.id = :gameId and ((g.playerA = :user and r.resultPlayerA is null) or (g.playerB = :user and r.resultPlayerB is null))")
+                        .createQuery("select r from RunningVocabduelGame g inner join g.rounds r where g.id = :gameId and ((g.playerA = :user and r.resultPlayerA is null) or (g.playerB = :user and r.resultPlayerB is null))")
                         .setParameter("user", player)
                         .setParameter("gameId", gameId)
                         .setMaxResults(1)
@@ -180,8 +180,8 @@ public class GameServiceImpl implements GameService {
         return languageSets.get(0);
     }
 
-    private VocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final List<VocableList> vocableLists, final LanguageSet languageSet) throws NotEnoughVocabularyException, InvalidGameSetupException {
-        final VocabduelGame game = new VocabduelGame(playerA, playerB, languageSet.getLearntLanguage(), languageSet.getKnownLanguage(), vocableLists);
+    private RunningVocabduelGame createVocaduelGameWithRounds(final User playerA, final User playerB, final List<VocableList> vocableLists, final LanguageSet languageSet) throws NotEnoughVocabularyException, InvalidGameSetupException {
+        final RunningVocabduelGame game = new RunningVocabduelGame(playerA, playerB, languageSet.getLearntLanguage(), languageSet.getKnownLanguage(), vocableLists);
 
         final List<Vocable> flatVocables = vocableLists.stream().flatMap(vl -> vl.getVocables().stream()).collect(Collectors.toList());
         Collections.shuffle(flatVocables);

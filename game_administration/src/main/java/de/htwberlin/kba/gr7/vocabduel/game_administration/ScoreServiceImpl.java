@@ -69,17 +69,16 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException {
-        VocabduelGame game = null;
+        RunningVocabduelGame game = null;
         if (player != null) {
             ENTITY_MANAGER.clear(); // Important, since otherwise the cached game would be taken, i.e. the game found when the other user called this function (if called in one session)
             ENTITY_MANAGER.getTransaction().begin();
             try {
-                game = (VocabduelGame) ENTITY_MANAGER
-                        .createQuery("select g from VocabduelGame g where g.id = :gameId and (g.playerA = :user or g.playerB = :user)")
+                game = (RunningVocabduelGame) ENTITY_MANAGER
+                        .createQuery("select g from RunningVocabduelGame g where g.id = :gameId and (g.playerA = :user or g.playerB = :user)")
                         .setParameter("user", player)
                         .setParameter("gameId", gameId)
                         .getSingleResult();
-                ENTITY_MANAGER.getEntityManagerFactory().getCache().evictAll();
             } catch (NoResultException ignored) {
             }
             ENTITY_MANAGER.getTransaction().commit();
@@ -89,15 +88,14 @@ public class ScoreServiceImpl implements ScoreService {
         } else if (game.getRounds().stream().anyMatch(r -> r.getResultPlayerA() == null || r.getResultPlayerB() == null)) {
             throw new UnfinishedGameException("The game has not been finished yet.");
         } else {
+            ENTITY_MANAGER.getTransaction().begin();
             final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
             finishedGame.setFinishedTimestamp(new Date());
             finishedGame.setTotalPointsA((int) game.getRounds().stream().filter(r -> r.getResultPlayerA() == Result.WIN).count());
             finishedGame.setTotalPointsB((int) game.getRounds().stream().filter(r -> r.getResultPlayerB() == Result.WIN).count());
-
-            ENTITY_MANAGER.getTransaction().begin();
-            ENTITY_MANAGER.merge(finishedGame);
+            ENTITY_MANAGER.persist(finishedGame);
+            ENTITY_MANAGER.remove(game);
             ENTITY_MANAGER.getTransaction().commit();
-
             return personifyFinishedGame(player, finishedGame);
         }
     }

@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.assets;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -12,8 +13,8 @@ import java.util.*;
 public class GameDataMock {
     private final User playerA;
     private final User playerB;
-    private final VocabduelGame newGame;
-    private final VocabduelGame newGame2;
+    private final RunningVocabduelGame newGame;
+    private final RunningVocabduelGame newGame2;
 
     public GameDataMock(){
         playerA = new User(11L);
@@ -22,10 +23,10 @@ public class GameDataMock {
         SupportedLanguage knownLanguage = SupportedLanguage.DE;
         SupportedLanguage learntLanguage = SupportedLanguage.EN;
 
-        newGame = new VocabduelGame(1L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
+        newGame = new RunningVocabduelGame(1L, playerA, playerB, knownLanguage, learntLanguage, vocableList);
 
         // only important for check if unfinished games > 1 in order to check game uniqueness:
-        newGame2 = new VocabduelGame(2L, playerB, playerA, knownLanguage, learntLanguage, vocableList);
+        newGame2 = new RunningVocabduelGame(2L, playerB, playerA, knownLanguage, learntLanguage, vocableList);
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
@@ -68,11 +69,11 @@ public class GameDataMock {
         newGame.setVocableLists(Collections.singletonList(myVocList));
     }
 
-    public VocabduelGame mockVocabduelGame(){
+    public RunningVocabduelGame mockVocabduelGame(){
         return newGame;
     }
 
-    public VocabduelGame mockVocabduelGame2(){
+    public RunningVocabduelGame mockVocabduelGame2(){
         return newGame2;
     }
 

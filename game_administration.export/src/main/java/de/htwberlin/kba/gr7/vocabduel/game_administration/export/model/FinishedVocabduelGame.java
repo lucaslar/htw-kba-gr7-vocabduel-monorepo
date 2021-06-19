@@ -1,12 +1,13 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-@DiscriminatorValue("1")
 public class FinishedVocabduelGame extends VocabduelGame {
+    @Id
+    private Long id;
     private int totalPointsA;
     private int totalPointsB;
     private Date finishedTimestamp;
@@ -14,15 +15,12 @@ public class FinishedVocabduelGame extends VocabduelGame {
     public FinishedVocabduelGame() {
     }
 
-    public FinishedVocabduelGame(final VocabduelGame game) {
-        super(
-                game.getId(),
-                game.getPlayerA(),
-                game.getPlayerB(),
-                game.getKnownLanguage(),
-                game.getLearntLanguage(),
-                game.getVocableLists()
-        );
+    public FinishedVocabduelGame(final RunningVocabduelGame game) {
+        id = game.getId();
+        setLearntLanguage(game.getLearntLanguage());
+        setKnownLanguage(game.getKnownLanguage());
+        setPlayerA(game.getPlayerA());
+        setPlayerB(game.getPlayerB());
     }
 
     public int getTotalPointsA() {
