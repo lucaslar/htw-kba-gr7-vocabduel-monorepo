@@ -240,7 +240,7 @@ public class VocabduelView {
             }
 
             System.out.println(toBePrinted);
-        } else System.out.println("No language sets/vocables yet. Change that by importing a GNU file!");
+        } else System.out.println("No language sets/vocables yet. Be the one to change that by importing a GNU file!");
     }
 
     public void printVocableList(final VocableList vocableList) {
