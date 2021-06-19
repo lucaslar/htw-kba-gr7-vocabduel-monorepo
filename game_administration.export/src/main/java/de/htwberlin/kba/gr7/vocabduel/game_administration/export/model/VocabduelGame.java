@@ -7,9 +7,9 @@ import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class VocabduelGame {
-    @OneToOne(targetEntity = User.class)
+    @OneToOne(targetEntity = User.class, orphanRemoval = true)
     private User playerA;
-    @OneToOne(targetEntity = User.class)
+    @OneToOne(targetEntity = User.class, orphanRemoval = true)
     private User playerB;
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;

@@ -509,4 +509,8 @@ public class VocabduelView {
     public void printVocableListInRunningGame() {
         System.out.println("This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.");
     }
+
+    public void printYouWillBeMissed(final String firstname) {
+        System.out.println("User account has been deleted successfully. You will be missed, " + firstname + "!");
+    }
 }

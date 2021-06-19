@@ -3,6 +3,8 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,9 @@ public class UserServiceImpl implements UserService {
         ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
     }
 
-    public UserServiceImpl(final EntityManager entityManager){ ENTITY_MANAGER = entityManager; }
+    public UserServiceImpl(final EntityManager entityManager) {
+        ENTITY_MANAGER = entityManager;
+    }
 
     @Override
     public List<User> findUsersByUsername(final String searchString) {
@@ -85,7 +89,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUser(final User user) throws InvalidUserException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
-        if (user == null || getUserDataById(user.getId()) == null) throw new InvalidUserException("Invalid/not found user");
+        if (user == null || getUserDataById(user.getId()) == null)
+            throw new InvalidUserException("Invalid/not found user");
 
         Validation.completeDataValidation(user);
         Validation.nameValidation(user.getFirstName());
@@ -100,8 +105,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteUser(User user) {
-        // TODO implement
+    public int deleteUser(final User user) {
+        ENTITY_MANAGER.getTransaction().begin();
+
+        try {
+            final List<LoginData> loginData = ENTITY_MANAGER
+                    .createQuery("select l from LoginData l where user_id = :user")
+                    .setParameter("user", user.getId())
+                    .getResultList();
+            if (loginData != null && !loginData.isEmpty()) loginData.forEach(ENTITY_MANAGER::remove);
+        } catch (NoResultException ignored) {
+        }
+
+        try {
+            final List<StoredRefreshToken> tokens = ENTITY_MANAGER
+                    .createQuery("select s from StoredRefreshToken s where user_id = :user")
+                    .setParameter("user", user.getId())
+                    .getResultList();
+            if (tokens != null && !tokens.isEmpty()) tokens.forEach(ENTITY_MANAGER::remove);
+        } catch (NoResultException ignored) {
+        }
+
+        ENTITY_MANAGER.getTransaction().commit();
         return 0;
     }
 }
