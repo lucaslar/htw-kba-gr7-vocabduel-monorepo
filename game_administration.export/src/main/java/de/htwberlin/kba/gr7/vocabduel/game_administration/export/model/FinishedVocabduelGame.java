@@ -23,6 +23,10 @@ public class FinishedVocabduelGame extends VocabduelGame {
         setPlayerB(game.getPlayerB());
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getTotalPointsA() {
         return totalPointsA;
     }

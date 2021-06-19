@@ -292,7 +292,7 @@ public class VocabduelView {
                 " (" +
                 vocableList.getVocables().size() +
                 " vocables, added by user " +
-                vocableList.getAuthor().getFirstName() +
+                vocableList.getAuthor().getFirstName() + // TODO: handle deleted user
                 " " +
                 vocableList.getAuthor().getLastName() +
                 " (" +
@@ -367,11 +367,11 @@ public class VocabduelView {
     }
 
     public void printGames(final List<RunningVocabduelGame> games, final User self) {
-        if (games == null || games.isEmpty()) System.out.println("No games yet.");
+        if (games == null || games.isEmpty()) System.out.println("No running games.");
         else {
-            StringBuilder str = new StringBuilder("Here's a list of your current games:\n");
+            StringBuilder str = new StringBuilder("Here's a list of your current games:");
             games.forEach(g -> {
-                str.append("... [Game with ID ").append(g.getId()).append("] ");
+                str.append("\n... [Game with ID ").append(g.getId()).append("]\n    - ");
                 final boolean isSelfInitiator = self.getId().equals(g.getPlayerA().getId());
                 final long countA = g.getRounds().stream().filter(r -> r.getResultPlayerA() != null).count();
                 final long countB = g.getRounds().stream().filter(r -> r.getResultPlayerB() != null).count();
@@ -381,24 +381,29 @@ public class VocabduelView {
                             .append(g.getPlayerB().getUsername())
                             .append("\" (ID: ")
                             .append(g.getPlayerB().getId())
-                            .append(")! ");
+                            .append(")");
                 } else {
                     str
                             .append("\"")
                             .append(g.getPlayerA().getUsername())
                             .append("\" (ID: ")
                             .append(g.getPlayerA().getId())
-                            .append(") has challenged you! ");
+                            .append(") has challenged you");
                 }
                 str
-                        .append("[You finished: ")
+                        .append("\n    - You finished: ")
                         .append(isSelfInitiator ? countA : countB)
                         .append("/").append(GameService.NR_OF_ROUNDS)
                         .append(" rounds, opponent: ")
                         .append(isSelfInitiator ? countB : countA)
                         .append("/")
                         .append(GameService.NR_OF_ROUNDS)
-                        .append("]\n");
+                        .append("\n    - Language: ")
+                        .append(g.getLearntLanguage())
+                        .append(" => ")
+                        .append(g.getKnownLanguage())
+                        .append("\n    - Used vocabulary lists: ")
+                        .append(g.getVocableLists().stream().map(l -> "\"" + l.getTitle() + "\" (ID: " + l.getId() + ")").collect(Collectors.joining(", ")));
             });
             System.out.println(str);
         }
@@ -454,37 +459,34 @@ public class VocabduelView {
     }
 
     public void printOwnScores(final List<PersonalFinishedGame> hist) {
-        final StringBuilder str = new StringBuilder("Here's a list of your scores:");
-        hist.stream().sorted(Comparator.comparing(PersonalFinishedGame::getFinishedTimestamp))
-                .forEach(h -> str
-                        .append("\n...")
-                        .append(h.getFinishedTimestamp())
-                        .append(" => ")
-                        .append(h.getGameResult())
-                        .append(" (Your points: ")
-                        .append(h.getOwnPoints())
-                        .append(" - opponent's: ")
-                        .append(h.getOpponentPoints())
-                        .append(") against ")
-                        .append(h.getOpponent().toString()));
-        System.out.println(str);
+        System.out.println("Here's a list of your scores:" + scoreList(hist, true));
     }
 
     public void printUserScores(final List<PersonalFinishedGame> hist, final User user) {
-        final StringBuilder str = new StringBuilder("Here's a list of scores for " + user.toString() + ":");
+        System.out.println("Here's a list of scores for " + user.toString() + ":" + scoreList(hist, false));
+    }
+
+    private String scoreList(final List<PersonalFinishedGame> hist, final boolean isOwn) {
+        final StringBuilder str = new StringBuilder();
         hist.stream().sorted(Comparator.comparing(PersonalFinishedGame::getFinishedTimestamp))
                 .forEach(h -> str
-                        .append("\n...")
-                        .append(h.getFinishedTimestamp())
-                        .append(" => ")
+                        .append("\n... [Game with ID ")
+                        .append(h.getId())
+                        .append("]\n    - Result: ")
                         .append(h.getGameResult())
-                        .append(" (Points: ")
+                        .append(isOwn ? " (Your points: " : " (Points: ")
                         .append(h.getOwnPoints())
                         .append(" - opponent's: ")
-                        .append(h.getOpponentPoints())
-                        .append(") against ")
+                        .append(h.getOpponentPoints()) // TODO handle deleted user
+                        .append(")\n    - Finished at: ")
+                        .append(h.getFinishedTimestamp())
+                        .append("\n    - Language: ")
+                        .append(h.getLearntLanguage())
+                        .append(" => ")
+                        .append(h.getKnownLanguage())
+                        .append("\n    - Opponent: ")
                         .append(h.getOpponent().toString()));
-        System.out.println(str);
+        return str.toString();
     }
 
     public void printNoFinishedGamesYet() {

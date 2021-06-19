@@ -103,6 +103,9 @@ public class ScoreServiceImpl implements ScoreService {
     private PersonalFinishedGame personifyFinishedGame(final User user, final FinishedVocabduelGame finishedVocabduelGame) {
         final PersonalFinishedGame personified = new PersonalFinishedGame();
         personified.setFinishedTimestamp(finishedVocabduelGame.getFinishedTimestamp());
+        personified.setId(finishedVocabduelGame.getId());
+        personified.setLearntLanguage(finishedVocabduelGame.getLearntLanguage());
+        personified.setKnownLanguage(finishedVocabduelGame.getKnownLanguage());
 
         if (finishedVocabduelGame.getPlayerA().getId().equals(user.getId())) {
             personified.setOwnPoints(finishedVocabduelGame.getTotalPointsA());
