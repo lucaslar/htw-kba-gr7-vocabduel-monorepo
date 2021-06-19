@@ -19,9 +19,6 @@ public class RunningVocabduelGame extends VocabduelGame {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "game")
     private List<VocabduelRound> rounds;
 
-    public RunningVocabduelGame() {
-    }
-
     public RunningVocabduelGame(User playerA, User playerB, SupportedLanguage learntLanguage, SupportedLanguage knownLanguage, List<VocableList> vocableLists) {
         setPlayerA(playerA);
         setPlayerB(playerB);

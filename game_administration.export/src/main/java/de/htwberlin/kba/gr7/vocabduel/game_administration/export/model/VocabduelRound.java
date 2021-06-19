@@ -34,10 +34,6 @@ public class VocabduelRound implements Serializable {
         return roundNr;
     }
 
-    public void setRoundNr(int roundNr) {
-        this.roundNr = roundNr;
-    }
-
     public UntranslatedVocable getQuestion() {
         return question;
     }

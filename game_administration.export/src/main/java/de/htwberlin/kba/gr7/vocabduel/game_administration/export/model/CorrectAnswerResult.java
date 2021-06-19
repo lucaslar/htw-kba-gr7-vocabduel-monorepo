@@ -12,17 +12,8 @@ public class CorrectAnswerResult implements Serializable {
         this.result = result;
     }
 
-    public CorrectAnswerResult(Result result, TranslationGroup correctAnswer) {
-        this.result = result;
-        this.correctAnswer = correctAnswer;
-    }
-
     public Result getResult() {
         return result;
-    }
-
-    public void setResult(Result result) {
-        this.result = result;
     }
 
     public TranslationGroup getCorrectAnswer() {
