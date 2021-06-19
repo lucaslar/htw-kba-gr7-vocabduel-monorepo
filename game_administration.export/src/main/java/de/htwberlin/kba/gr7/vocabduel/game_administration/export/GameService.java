@@ -52,7 +52,7 @@ public interface GameService {
      * @param player Player the next round is to be returned for.
      * @param gameId Id of the game the next round of is to be returned for the given <code>user</code>.
      * @return Current <code>{@link VocabduelRound}</code> of a given game for a given user.
-     * including the 1 correct and the other wrong answer possibilities without knowing which is what
+     * including the 1 correct and the other wrong answer possibilities without knowing which is what.
      */
     VocabduelRound startRound(User player, long gameId) throws NoAccessException;
 
@@ -75,4 +75,11 @@ public interface GameService {
      * @throws NoAccessException The given user is no participant of the given round or it could not be found at all.
      */
     CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidAnswerNrException, NoAccessException;
+
+    /**
+     * Removes all running games with at least one removed user and all finished games with two removed users.
+     *
+     * @return 0 in case of success
+     */
+    int removeWidowGames();
 }

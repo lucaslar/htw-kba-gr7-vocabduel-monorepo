@@ -93,7 +93,7 @@ public class GameServiceImpl implements GameService {
         }
         if (round == null) {
             throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
-        }   else return round;
+        } else return round;
     }
 
     @Override
@@ -138,6 +138,30 @@ public class GameServiceImpl implements GameService {
             }
         }
         return null;
+    }
+
+    @Override
+    public int removeWidowGames() {
+        ENTITY_MANAGER.getTransaction().begin();
+        try {
+            final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
+                    .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
+                    .setMaxResults(1)
+                    .getResultList();
+            runningGames.forEach(ENTITY_MANAGER::remove);
+        } catch (NoResultException ignored) {
+        }
+        try {
+            final List<FinishedVocabduelGame> finishedGames = (List<FinishedVocabduelGame>) ENTITY_MANAGER
+                    .createQuery("select f from FinishedVocabduelGame f where (playerA_id not in (select id from User) and playerB_id not in (select id from User))")
+                    .setMaxResults(1)
+                    .getResultList();
+            finishedGames.forEach(ENTITY_MANAGER::remove);
+        } catch (NoResultException ignored) {
+        }
+        ENTITY_MANAGER.getTransaction().commit();
+
+        return 0;
     }
 
     private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException {

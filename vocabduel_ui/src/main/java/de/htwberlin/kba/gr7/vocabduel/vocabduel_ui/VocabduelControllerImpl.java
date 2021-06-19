@@ -595,6 +595,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         final String confirmFlag = "--confirm true";
         if (args.get("confirm") != null && args.get("confirm").equals("true")) {
             USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
+            GAME_SERVICE.removeWidowGames();
             STORAGE.setLoggedInUser(null);
             VIEW.printYouWillBeMissed(firstname);
         } else VIEW.printConfirmUserDeletion(firstname, confirmFlag);
