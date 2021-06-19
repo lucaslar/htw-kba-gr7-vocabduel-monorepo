@@ -15,7 +15,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabduel_ui.model.VocabduelCliAction;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Controller;
 
@@ -112,7 +111,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, "user update", "Update the currently logged in user's data", "u u", this::onUpdateCalled));
         actionsList.add(new VocabduelCliAction(true, "user update pwd", "Update the currently logged in user's password", "u u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
         actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
-        actionsList.add(new VocabduelCliAction(false, "lang ls", "See a list of all supported languages", "lang ls", this::onVocabSupportedCalled));
+        actionsList.add(new VocabduelCliAction(false, "lang ls", "See a list of all supported languages", this::onVocabSupportedCalled));
         actionsList.add(new VocabduelCliAction(false, "lang ls codes", "See a list of all supported languages (codes only)", "lang ls c", this::onVocabSupportedCodesCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
         actionsList.add(new VocabduelCliAction(false, "vocab find", "Get a vocable list by ID", "v find", this::onFindVocabListCalled, "id"));
