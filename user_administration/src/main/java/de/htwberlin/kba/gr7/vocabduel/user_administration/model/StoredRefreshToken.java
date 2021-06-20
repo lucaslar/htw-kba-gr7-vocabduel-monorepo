@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Entity
 public class StoredRefreshToken implements Serializable {
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User user;
 
     @Id

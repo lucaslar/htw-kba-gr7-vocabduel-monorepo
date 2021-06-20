@@ -17,8 +17,10 @@ public abstract class VocabduelGame {
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User playerB;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SupportedLanguage knownLanguage;
 

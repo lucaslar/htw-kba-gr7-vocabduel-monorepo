@@ -17,7 +17,9 @@ public class VocableList {
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User author;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private Date timestamp;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Vocable> vocables;

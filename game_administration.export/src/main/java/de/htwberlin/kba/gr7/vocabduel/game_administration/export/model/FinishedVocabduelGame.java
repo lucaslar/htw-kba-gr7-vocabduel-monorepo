@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
@@ -8,8 +9,11 @@ import java.util.Date;
 public class FinishedVocabduelGame extends VocabduelGame {
     @Id
     private Long id;
+    @Column(nullable = false)
     private int totalPointsA;
+    @Column(nullable = false)
     private int totalPointsB;
+    @Column(nullable = false)
     private Date finishedTimestamp;
 
     public FinishedVocabduelGame() {

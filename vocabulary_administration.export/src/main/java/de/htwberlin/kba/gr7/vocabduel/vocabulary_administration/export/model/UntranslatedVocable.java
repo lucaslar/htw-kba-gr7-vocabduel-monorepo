@@ -8,7 +8,7 @@ public class UntranslatedVocable {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "TranslationGroup_id")
     private TranslationGroup vocable;
 

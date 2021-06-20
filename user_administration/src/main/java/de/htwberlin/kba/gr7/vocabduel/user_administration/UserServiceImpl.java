@@ -104,20 +104,20 @@ public class UserServiceImpl implements UserService {
         ENTITY_MANAGER.getTransaction().begin();
 
         try {
-            final List<LoginData> loginData = ENTITY_MANAGER
-                    .createQuery("select l from LoginData l where user_id = :user")
-                    .setParameter("user", user.getId())
-                    .getResultList();
-            if (loginData != null && !loginData.isEmpty()) loginData.forEach(ENTITY_MANAGER::remove);
-        } catch (NoResultException ignored) {
-        }
-
-        try {
             final List<StoredRefreshToken> tokens = ENTITY_MANAGER
                     .createQuery("select s from StoredRefreshToken s where user_id = :user")
                     .setParameter("user", user.getId())
                     .getResultList();
             if (tokens != null && !tokens.isEmpty()) tokens.forEach(ENTITY_MANAGER::remove);
+        } catch (NoResultException ignored) {
+        }
+
+        try {
+            final List<LoginData> loginData = ENTITY_MANAGER
+                    .createQuery("select l from LoginData l where user_id = :user")
+                    .setParameter("user", user.getId())
+                    .getResultList();
+            if (loginData != null && !loginData.isEmpty()) loginData.forEach(ENTITY_MANAGER::remove);
         } catch (NoResultException ignored) {
         }
 

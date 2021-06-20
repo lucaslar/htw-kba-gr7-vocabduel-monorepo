@@ -8,6 +8,7 @@ public class VocableUnit {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(nullable = false)
     private String title;
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableList> vocableLists;

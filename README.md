@@ -107,26 +107,26 @@ Due to incompatibility issues with shared `.uml` files, the file `class-diagram.
 are the steps to reproduce the class diagram:
 
 0. **Prerequisites** - If you already have a file `class-diagram.uml`, continue with **1)**, otherwise generate it:
-    - In IntelliJ, left click on the repository root directory
-    - New &rarr; Diagram &rarr; Java Class Diagram
-    - In the following dialog:
-        - Make sure you save the file in the repository root
-        - Name it `class-diagram.uml`
+   - In IntelliJ, left click on the repository root directory
+   - New &rarr; Diagram &rarr; Java Class Diagram
+   - In the following dialog:
+      - Make sure you save the file in the repository root
+      - Name it `class-diagram.uml`
 1. **Import the data** - Drag and drop each Java class etc. to be displayed into the diagram (make sure you do not drop
    packages)
 1. **Show the data** - In the top bar, select:
-    - _Fields_
-    - _Methods_
-    - _Visibility_ &rarr; _All_
-    - _Show dependencies_
+   - _Fields_
+   - _Methods_
+   - _Visibility_ &rarr; _All_
+   - _Show dependencies_
 1. **Auto-format the data** - In the top bar, select:
-    - _Fit Content_
-    - _Apply Current Layout (F5)_
+   - _Fit Content_
+   - _Apply Current Layout (F5)_
 1. **Export** - Export the data as `svg`:
-    - Make sure, no diagram element is selected
-    - In the top bar, select: _Export to Image File..._
-    - In the following dialog:
-        - Make sure you save the file in the repository root
-        - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the
-          file format dropdown)
-        - Accept the dialog informing about replacing the current file
+   - Make sure, no diagram element is selected
+   - In the top bar, select: _Export to Image File..._
+   - In the following dialog:
+      - Make sure you save the file in the repository root
+      - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the
+        file format dropdown)
+      - Accept the dialog informing about replacing the current file
