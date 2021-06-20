@@ -129,6 +129,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public int removeWidowGames() {
+        ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
         try {
             final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
