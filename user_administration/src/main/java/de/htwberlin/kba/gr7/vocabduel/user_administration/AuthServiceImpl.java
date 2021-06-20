@@ -112,7 +112,6 @@ public class AuthServiceImpl implements AuthService {
                     ENTITY_MANAGER.getTransaction().commit();
                     return insertNewUserTokens(user);
                 }
-                ENTITY_MANAGER.getTransaction().commit();
             }
         } catch (NoResultException ignored) {
         }
