@@ -140,11 +140,15 @@ public class VocabularyServiceImplTest {
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
-    // TODO: test further exceptions...
+    @Test(expected = InvalidVocableListException.class)
+    public void shouldNotImportGnuListWithInvalidVocable() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        final String pathname = "./src/test/assets/gnu_invalid_translation.txt";
+        vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
+    }
 
-    @Test(expected = UnknownLanguagesException.class)
-    public void shouldNotImportGnuListWithUnknownLanguages() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
-        final String pathname = "./src/test/assets/gnu_unknown_langs.txt";
+    @Test(expected = InvalidVocableListException.class)
+    public void shouldNotImportGnuListWithInvalidTranslation() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        final String pathname = "./src/test/assets/gnu_invalid_vocable.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
@@ -199,8 +203,15 @@ public class VocabularyServiceImplTest {
     }
 
     @Test(expected = DifferentAuthorException.class)
-    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException {
+    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException, PersistenceException {
         vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, PersistenceException {
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
+        Mockito.doThrow(new PersistenceException()).when(entityManager).remove(Mockito.any());
+        vocabularyLib.deleteVocableList(existingVocableList1, author);
     }
 
     @Test
@@ -245,10 +256,10 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldReturnEmptyListForUserWhoIsNoAuthor() {
+    public void shouldReturnNullIfUserHasNotImportedAnyList() {
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(new User(4711L));
-        Assert.assertNotNull(foundLists);
-        Assert.assertEquals(0, foundLists.size());
+        Assert.assertNull(foundLists);
     }
 
     @Test
@@ -260,6 +271,13 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
+    public void shouldReturnNullIfNoLanguageSetsYet() {
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
+        final List<LanguageSet> languageSets = vocabularyLib.getAllLanguageSets();
+        Assert.assertNull(languageSets);
+    }
+
+    @Test
     public void shouldSupportAtLeastFiveLanguages() {
         // at least two are required for the game to make sense. 5 can be seen as some sort of goal for the application to be built
         final List<SupportedLanguage> supportedLanguages = vocabularyLib.getAllSupportedLanguages();
@@ -267,14 +285,23 @@ public class VocabularyServiceImplTest {
         Assert.assertTrue(supportedLanguages.size() >= 5);
     }
 
-    // TODO test "references"
-
     @Test
     public void shouldOnlyListUniqueLanguagesAsSupported() {
         final List<SupportedLanguage> supportedLanguages = vocabularyLib.getAllSupportedLanguages();
         Assert.assertNotNull(supportedLanguages);
         List<SupportedLanguage> uniques = supportedLanguages.stream().distinct().collect(Collectors.toList());
         Assert.assertEquals(uniques.size(), supportedLanguages.size());
+    }
+
+    @Test
+    public void shouldHaveAtLeastThreeReferencesForEachSupportedLanguage() {
+        vocabularyLib.getAllSupportedLanguages().forEach(
+                sl -> {
+                    final List<String> references = vocabularyLib.getSupportedLanguageReferences(sl);
+                    Assert.assertNotNull(references);
+                    Assert.assertTrue(references.size() >= 3);
+                }
+        );
     }
 
     private String fromFile(final String pathname) throws FileNotFoundException {
