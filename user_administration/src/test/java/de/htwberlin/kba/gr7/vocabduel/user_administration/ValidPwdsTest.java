@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
@@ -48,9 +48,9 @@ public class ValidPwdsTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private UserServiceImpl userAdministration;
+    private UserService userService;
     @Mock
-    private AuthServiceImpl auth;
+    private AuthService auth;
     @Mock
     private EntityManager entityManager;
     @Mock
@@ -69,7 +69,7 @@ public class ValidPwdsTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userAdministration, entityManager);
+        auth = new AuthServiceImpl(userService, entityManager);
 
         existingUser = new User(42L,
                 "existinguser",

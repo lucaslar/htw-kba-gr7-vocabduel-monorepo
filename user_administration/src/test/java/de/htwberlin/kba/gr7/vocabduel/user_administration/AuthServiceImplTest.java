@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class AuthServiceImplTest {
 
     @Mock
-    private UserServiceImpl userAdministration;
+    private UserService userService;
     @Mock
     private EntityManager entityManager;
     @Mock
@@ -61,7 +61,7 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userAdministration, entityManager);
+        auth = new AuthServiceImpl(userService, entityManager);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
@@ -90,12 +90,12 @@ public class AuthServiceImplTest {
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
-        Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
-        Mockito.when(userAdministration.getUserDataById(existingUser.getId())).thenReturn(existingUser);
-        Mockito.when(userAdministration.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null);
-        Mockito.when(userAdministration.getUserDataById(UNKNOWN_ID)).thenReturn(null);
-        Mockito.when(userAdministration.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
-        Mockito.when(userAdministration.getUserDataByUsername(newUserName)).thenReturn(newUser);
+        Mockito.when(userService.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
+        Mockito.when(userService.getUserDataById(existingUser.getId())).thenReturn(existingUser);
+        Mockito.when(userService.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null); // TODO marked as unnecessary stubbing
+        Mockito.when(userService.getUserDataById(UNKNOWN_ID)).thenReturn(null);
+        Mockito.when(userService.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
+        Mockito.when(userService.getUserDataByUsername(newUserName)).thenReturn(newUser);
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
@@ -115,7 +115,7 @@ public class AuthServiceImplTest {
 
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
-        auth.registerUser("username","invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username", "invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     // The following test could be implemented for each potentially null/empty trimmed field
@@ -124,7 +124,7 @@ public class AuthServiceImplTest {
     @Test(expected = InvalidNameException.class)
     public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
         final User user = new User(null);
-        auth.registerUser("username","invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+        auth.registerUser("username", "invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test
@@ -134,8 +134,8 @@ public class AuthServiceImplTest {
                         BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
         Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new User());
-        final User registeredUser = userAdministration.getUserDataByUsername(newUser.getUsername());
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new User()); // TODO marked as unnecessary stubbing
+        final User registeredUser = userService.getUserDataByUsername(newUser.getUsername());
 
         Assert.assertNotNull(registeredUser);
         Assert.assertNotNull(loggedInUser);
@@ -228,7 +228,7 @@ public class AuthServiceImplTest {
 
     @Test
     public void shouldRefreshTokens() { // TODO: wenn alle Tests laufen, schlägt dieser fehl
-        try{
+        try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -42,9 +42,9 @@ public class InvalidPwdsTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private UserServiceImpl userAdministration;
+    private UserService userService;
     @Mock
-    private AuthServiceImpl auth;
+    private AuthService auth;
     @Mock
     private EntityManager entityManager;
     @Mock
@@ -62,7 +62,7 @@ public class InvalidPwdsTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userAdministration, entityManager);
+        auth = new AuthServiceImpl(userService, entityManager);
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");

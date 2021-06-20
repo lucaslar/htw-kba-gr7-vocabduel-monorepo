@@ -16,11 +16,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -64,6 +63,7 @@ public class GameServiceImplStartGameTest {
 
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
+        // TODO why is this marked as unnecessary code?
         Mockito.when(vocabularyService.getAllSupportedLanguages()).thenReturn(langList);
         Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);

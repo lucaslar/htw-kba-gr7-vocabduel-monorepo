@@ -9,8 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -131,6 +130,7 @@ public class VocabularyServiceImplTest {
 
     @Test(expected = IncompleteVocableListException.class)
     public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        // TODO: why is this detected as unnecessary code?
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_incomplete_list.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
