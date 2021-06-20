@@ -163,7 +163,7 @@ public class AuthServiceImpl implements AuthService {
         return validateToken(token);
     }
 
-    public String hashPassword(final String pwd) {
+    private String hashPassword(final String pwd) {
         return BCrypt.withDefaults().hashToString(12, pwd.toCharArray());
     }
 

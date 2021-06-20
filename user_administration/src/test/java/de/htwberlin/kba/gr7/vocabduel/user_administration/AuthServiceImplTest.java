@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -130,7 +131,7 @@ public class AuthServiceImplTest {
     public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(
                 new LoginData(new User(21L, newUser.getUsername(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName()),
-                              auth.hashPassword(STRONG_PWD)));
+                        BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
         Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
         Mockito.when(queryMock.getSingleResult()).thenReturn(new User());
@@ -167,8 +168,8 @@ public class AuthServiceImplTest {
     @Test
     public void shouldLoginUser() {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingUser);
-        final User expected = userAdministration.getUserDataByEmail(existingUser.getEmail());
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(STRONG_PWD)));
+        final User expected = userService.getUserDataByEmail(existingUser.getEmail());
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
         final LoggedInUser loggedInUser = auth.loginUser(existingUser.getEmail(), STRONG_PWD);
         Assert.assertNotNull(loggedInUser);
         Assert.assertNotNull(loggedInUser.getAuthTokens());
@@ -245,7 +246,7 @@ public class AuthServiceImplTest {
     public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
         final String falsePwd = "123thisWasNotMyPrevPwd";
         final String dbPwd = "PR€T7Y_5TR0NG_P@S$W0RD_2";
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(dbPwd)));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, dbPwd.toCharArray())));
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         auth.updateUserPassword(existingUser, falsePwd, newPwd, newPwd);
     }
@@ -256,7 +257,7 @@ public class AuthServiceImplTest {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
         LoginData data = new LoginData();
-        data.setPasswordHash(auth.hashPassword(currentPwd));
+        data.setPasswordHash(BCrypt.withDefaults().hashToString(12, currentPwd.toCharArray()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(data);
         auth.updateUserPassword(existingUser, currentPwd, newPwd, newPwd2);
     }
@@ -265,7 +266,7 @@ public class AuthServiceImplTest {
     public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String currentPwd = "pr€V10U5PwD";
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(currentPwd)));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, currentPwd.toCharArray())));
         final int statusCode = auth.updateUserPassword(existingUser, currentPwd, newPwd, newPwd);
         Assert.assertEquals(0, statusCode);
     }

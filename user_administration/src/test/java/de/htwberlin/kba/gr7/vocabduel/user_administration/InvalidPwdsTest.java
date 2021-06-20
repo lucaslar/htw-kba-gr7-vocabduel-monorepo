@@ -1,5 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
@@ -73,7 +76,7 @@ public class InvalidPwdsTest {
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, auth.hashPassword(PREVIOUS_PWD)));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, PREVIOUS_PWD.toCharArray())));
 
         // Don't mock updateUserPassword function
         // automated done, if not said "when(functioncall).then(mock)"
