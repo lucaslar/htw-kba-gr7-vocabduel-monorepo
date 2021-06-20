@@ -138,6 +138,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     public List<LanguageSet> getAllLanguageSets() {
         List<LanguageSet> languageSets = null;
         try {
+            ENTITY_MANAGER.clear();
             ENTITY_MANAGER.getTransaction().begin();
             languageSets = (List<LanguageSet>) ENTITY_MANAGER
                     .createQuery("from LanguageSet")
