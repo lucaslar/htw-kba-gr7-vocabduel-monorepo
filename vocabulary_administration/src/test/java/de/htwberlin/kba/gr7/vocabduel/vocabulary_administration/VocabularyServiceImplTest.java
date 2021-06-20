@@ -152,6 +152,12 @@ public class VocabularyServiceImplTest {
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
+    @Test(expected = UnknownLanguagesException.class)
+    public void shouldNotImportGnuListWithUnknownLanguage() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        final String pathname = "./src/test/assets/gnu_unknown_langs.txt";
+        vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
+    }
+
     @Test
     public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
