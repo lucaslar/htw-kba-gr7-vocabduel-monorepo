@@ -227,6 +227,15 @@ public class UserServiceImplTest {
         Assert.assertNull(userAdministration.getUserDataById(deletedUserId));
     }
 
+    @Test
+    public void shouldDeleteUserIfNoStoredAuthTokenFound() {
+        final Long deletedUserId = user1.getId();
+        Mockito.when(queryMock.getResultList()).thenThrow(new NoResultException());
+        final int statusCode = userAdministration.deleteUser(user1);
+        Assert.assertEquals(0, statusCode);
+        Assert.assertNull(userAdministration.getUserDataById(deletedUserId));
+    }
+
     private Long definitelyUnusedId() {
         // Definitely not defined id (sum of ids, fallback = -1):
         return usersList.stream().map(User::getId).reduce(Long::sum).orElse(-1L);
