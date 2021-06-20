@@ -99,7 +99,7 @@ public class VocabularyServiceImplTest {
         existingVocableList2.setVocables(mockVocablesEsEn(fruitsEsEn));
 
         existingVocableUnit = new VocableUnit(123L);
-        existingVocableUnit.setTitle("Español => Inglés - Vocabduel I");
+        existingVocableUnit.setTitle("ES => EN - Vocabduel I");
         existingVocableUnit.setVocableLists(Stream.of(existingVocableList1, existingVocableList2).collect(Collectors.toList()));
 
         emptyVocableUnit = new VocableUnit(456L);
