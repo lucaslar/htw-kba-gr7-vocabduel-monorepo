@@ -173,6 +173,17 @@ public class UserServiceImplTest {
         userAdministration.updateUser(user3);
     }
 
+    @Test(expected = InvalidUserException.class)
+    public void shouldThrowExceptionOnUpdatingIfUserToUpdateIsNull() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        userAdministration.updateUser(null);
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldThrowExceptionOnUpdatingIfUserToUpdateCannotBeFound() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.eq(user3.getId()))).thenReturn(null);
+        userAdministration.updateUser(user3);
+    }
+
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
