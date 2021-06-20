@@ -74,7 +74,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     @Override
     public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, PersistenceException {
         final User author = vocables.getAuthor();
-        if (!author.getId().equals(triggeringUser.getId())) {
+        if (author != null && !author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
         }
         ENTITY_MANAGER.clear();
