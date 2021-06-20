@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -45,6 +46,8 @@ public class VocabularyServiceImplTest {
     private List<LanguageSet> languages;
 
     @Mock
+    private EntityManagerFactory emf;
+    @Mock
     private EntityManager entityManager;
     @Mock
     private EntityTransaction entityTransaction;
@@ -53,10 +56,15 @@ public class VocabularyServiceImplTest {
 
     @Before
     public void setup() {
-        vocabularyLib = new VocabularyServiceImpl(entityManager);
+
+        try (MockedStatic<Persistence> per = Mockito.mockStatic(Persistence.class)) {
+            per.when(() -> Persistence.createEntityManagerFactory(Mockito.anyString())).thenReturn(emf);
+            Mockito.when(emf.createEntityManager()).thenReturn(entityManager);
+            vocabularyLib = new VocabularyServiceImpl();
+        }
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         author = new User(42L);
 
         final String[][] weekdaysEsEn = {

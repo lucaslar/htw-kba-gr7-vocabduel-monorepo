@@ -4,7 +4,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -26,17 +25,11 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private final EntityManager ENTITY_MANAGER;
 
-    @Autowired
     VocabularyServiceImpl() {
         initializeLangMapping();
 
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_vocabulary");
         ENTITY_MANAGER = emf.createEntityManager();
-    }
-
-    VocabularyServiceImpl(EntityManager entityManager) {
-        initializeLangMapping();
-        ENTITY_MANAGER = entityManager;
     }
 
     @Override
@@ -260,7 +253,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     private VocableUnit getOrCreateLanguageUnit(final String unitName, final SupportedLanguage from, final SupportedLanguage to) {
         final LanguageSet ls = getOrCreateLangaugeSet(from, to);
-        VocableUnit unit = null;
+        VocableUnit unit;
         Optional<VocableUnit> foundUnit = null;
         if (ls.getVocableUnits() == null) {
             ls.setVocableUnits(new ArrayList<>());
@@ -279,7 +272,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     private LanguageSet getOrCreateLangaugeSet(final SupportedLanguage from, final SupportedLanguage to) {
-        LanguageSet languageSet = null;
+        LanguageSet languageSet;
         ENTITY_MANAGER.getTransaction().begin();
         try {
             final String query = "from LanguageSet as l where l.learntLanguage like :learntLanguage and l.knownLanguage like :knownLanguage";
