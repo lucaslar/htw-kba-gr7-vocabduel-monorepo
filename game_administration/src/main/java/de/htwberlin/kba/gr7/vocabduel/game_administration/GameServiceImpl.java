@@ -47,7 +47,6 @@ public class GameServiceImpl implements GameService {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         // persist new Game
-        // TODO: kapseln, sonst funzen die Tests nicht mehr
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
         final RunningVocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
         ENTITY_MANAGER.getTransaction().begin();

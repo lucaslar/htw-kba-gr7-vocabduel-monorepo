@@ -89,7 +89,7 @@ public class AuthServiceImplTest {
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(userService.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
         Mockito.when(userService.getUserDataById(existingUser.getId())).thenReturn(existingUser);
         Mockito.when(userService.getUserDataById(UNKNOWN_ID)).thenReturn(null);
@@ -225,7 +225,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldRefreshTokens() { // TODO: wenn alle Tests laufen, schlägt dieser fehl
+    public void shouldRefreshTokens() {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

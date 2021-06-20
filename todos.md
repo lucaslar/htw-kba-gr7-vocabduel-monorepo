@@ -1,7 +1,5 @@
 # Tests
 
-- GnuFiles for Test still are to implement?
-
 # Vocab
 
 - don't use merge / persist where not necessary?
