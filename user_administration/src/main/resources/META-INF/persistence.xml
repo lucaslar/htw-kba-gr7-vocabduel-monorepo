@@ -20,7 +20,6 @@
             <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="javax.persistence.jdbc.password"
                       value="Test#-#44"/>
-            <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.dialect"
                       value="org.hibernate.dialect.MySQLDialect"/>

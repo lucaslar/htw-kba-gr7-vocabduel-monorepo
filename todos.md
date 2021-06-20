@@ -6,6 +6,5 @@
 - check which columns are nullable in DB?
 
 # Before handing in
-- set logging to false for each .xml
 - re-create class diagram?
 - re-create pdf
