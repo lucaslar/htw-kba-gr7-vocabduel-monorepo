@@ -134,7 +134,6 @@ public class GameServiceImpl implements GameService {
         try {
             final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
                     .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
-                    .setMaxResults(1)
                     .getResultList();
             runningGames.forEach(ENTITY_MANAGER::remove);
         } catch (NoResultException ignored) {
@@ -142,7 +141,6 @@ public class GameServiceImpl implements GameService {
         try {
             final List<FinishedVocabduelGame> finishedGames = (List<FinishedVocabduelGame>) ENTITY_MANAGER
                     .createQuery("select f from FinishedVocabduelGame f where (playerA_id not in (select id from User) and playerB_id not in (select id from User))")
-                    .setMaxResults(1)
                     .getResultList();
             finishedGames.forEach(ENTITY_MANAGER::remove);
         } catch (NoResultException ignored) {
