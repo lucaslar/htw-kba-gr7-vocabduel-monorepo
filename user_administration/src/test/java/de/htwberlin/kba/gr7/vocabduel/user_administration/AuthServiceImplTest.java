@@ -122,8 +122,37 @@ public class AuthServiceImplTest {
 
     @Test(expected = InvalidNameException.class)
     public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
-        final User user = new User(null);
         auth.registerUser("username", "invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser(null, "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser("username", null, "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser("username", "mail@mail.de", null, "Schwarzenegger", STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser("username", "mail@mail.de", "Arnold", null, STRONG_PWD, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", null, STRONG_PWD);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotRegisterUserWithIncompleteDataConfirmPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+        auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, null);
     }
 
     @Test
@@ -150,7 +179,6 @@ public class AuthServiceImplTest {
                     .get("id");
             Assert.assertEquals(Long.valueOf(emailClaim.toString()), newUser.getId());
         });
-
     }
 
     @Test

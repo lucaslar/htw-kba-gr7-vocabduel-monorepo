@@ -209,6 +209,46 @@ public class UserServiceImplTest {
         userAdministration.updateUser(user3);
     }
 
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotUpdateUserWithNullValueEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        user3.setEmail(null);
+        user3.setUsername(definitelyUnusedUsername());
+        user3.setFirstName("Max");
+        user3.setLastName("Mustermann");
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        userAdministration.updateUser(user3);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotUpdateUserWithNullValueUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        user3.setEmail(UNKNOWN_MAIL);
+        user3.setUsername(null);
+        user3.setFirstName("Max");
+        user3.setLastName("Mustermann");
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        userAdministration.updateUser(user3);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotUpdateUserWithNullValueFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        user3.setEmail(UNKNOWN_MAIL);
+        user3.setUsername(definitelyUnusedUsername());
+        user3.setFirstName(null);
+        user3.setLastName("Mustermann");
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        userAdministration.updateUser(user3);
+    }
+
+    @Test(expected = IncompleteUserDataException.class)
+    public void shouldNotUpdateUserWithNullValueLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+        user3.setEmail(UNKNOWN_MAIL);
+        user3.setUsername(definitelyUnusedUsername());
+        user3.setFirstName("max");
+        user3.setLastName(null);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        userAdministration.updateUser(user3);
+    }
+
     @Test
     public void shouldUpdateUserData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
         user3.setEmail(UNKNOWN_MAIL);
@@ -223,8 +263,6 @@ public class UserServiceImplTest {
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user3.toString());
     }
-
-    // TODO also test InvalidUserException (same for auth service's update pwd) and InvalidNameException
 
     @Test
     public void shouldDeleteUser() {
