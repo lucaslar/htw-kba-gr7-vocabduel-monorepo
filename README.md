@@ -19,9 +19,9 @@ This application requires a MySQL database running on port `3306` (default port)
 
 #### First option: Manual setup
 
-Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/.
-We recommend installing the MySQL Installer, where you can decide which type of server you want to install
-and add a new user to the server. We are currently using the default root user with password `Test#-#44`.
+Using a MySQL Server as database, you have to install MySQL from https://dev.mysql.com/downloads/. We recommend
+installing the MySQL Installer, where you can decide which type of server you want to install and add a new user to the
+server. We are currently using the default root user with password `Test#-#44`.
 
 #### Second option: Docker
 
@@ -44,6 +44,12 @@ In order to start the command line interface for this application, please run th
 configuration/src/main/java/de/htwberlin/kba/gr7/vocabduel/configuration/ConfigurationSpringImpl.java
 ```
 
+## Tests
+
+All implemented services are tested using JUnit Tests. You can either execute them by running `mvn test` or using your
+IDE's tools. The line coverage of all `<Sercice>Impl`-classes is 100% (20.06.2021) and each possibly
+thrown exception is tested.
+
 ## Diagrams
 
 The following two images are scalable vector graphics (`.svg` files) which means you can scale them easily if they are
@@ -56,17 +62,21 @@ shown in the UML diagram, try to open the respective file itself (same directory
 
 A diagram visualizing which components are interacting in which way can be seen here (`./components_diagram.svg`):
 
-_**Note:** At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because in
-the future, it could either directly communicate with the modules (as microservices) or communicate through an
+_**Note:** At the moment, the webfrontend component is only conceptual. However, it is displayed in the diagram because
+in the future, it could either directly communicate with the modules (as microservices) or communicate through an
 interconnected backend._
 
 ![](./components_diagram.svg)
 
 ### UML
 
-_**Note:**_ From our point of view, components should only provide what is actually needed. Some information, however, should not leave the component. Examples include:
+_**Note:**_ From our point of view, components should only provide what is actually needed. Some information, however,
+should not leave the component. Examples include:
+
 - Exported class `User` &rarr; no password property
-- Exported class `VocabduelRound` &rarr; no `correctAnswer` property since the data will be visible in the client/accessible through an API and, if the correct answer is included, the game could easily be manipulated when checking the network console
+- Exported class `VocabduelRound` &rarr; no `correctAnswer` property since the data will be visible in the
+  client/accessible through an API and, if the correct answer is included, the game could easily be manipulated when
+  checking the network console
 
 #### Model only
 
@@ -107,26 +117,26 @@ Due to incompatibility issues with shared `.uml` files, the file `class-diagram.
 are the steps to reproduce the class diagram:
 
 0. **Prerequisites** - If you already have a file `class-diagram.uml`, continue with **1)**, otherwise generate it:
-   - In IntelliJ, left click on the repository root directory
-   - New &rarr; Diagram &rarr; Java Class Diagram
-   - In the following dialog:
-      - Make sure you save the file in the repository root
-      - Name it `class-diagram.uml`
+    - In IntelliJ, left click on the repository root directory
+    - New &rarr; Diagram &rarr; Java Class Diagram
+    - In the following dialog:
+        - Make sure you save the file in the repository root
+        - Name it `class-diagram.uml`
 1. **Import the data** - Drag and drop each Java class etc. to be displayed into the diagram (make sure you do not drop
    packages)
 1. **Show the data** - In the top bar, select:
-   - _Fields_
-   - _Methods_
-   - _Visibility_ &rarr; _All_
-   - _Show dependencies_
+    - _Fields_
+    - _Methods_
+    - _Visibility_ &rarr; _All_
+    - _Show dependencies_
 1. **Auto-format the data** - In the top bar, select:
-   - _Fit Content_
-   - _Apply Current Layout (F5)_
+    - _Fit Content_
+    - _Apply Current Layout (F5)_
 1. **Export** - Export the data as `svg`:
-   - Make sure, no diagram element is selected
-   - In the top bar, select: _Export to Image File..._
-   - In the following dialog:
-      - Make sure you save the file in the repository root
-      - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the
-        file format dropdown)
-      - Accept the dialog informing about replacing the current file
+    - Make sure, no diagram element is selected
+    - In the top bar, select: _Export to Image File..._
+    - In the following dialog:
+        - Make sure you save the file in the repository root
+        - Name it `class-diagram.svg` (`complete-class-diagram.svg` for all Java files) (or simply select `svg` in the
+          file format dropdown)
+        - Accept the dialog informing about replacing the current file
