@@ -115,7 +115,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
         actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
         actionsList.add(new VocabduelCliAction(true, "score ls", "See a list of all your scores, i.e. the results of finished games", "s ls", this::onScoreHistCalled));
-        actionsList.add(new VocabduelCliAction(true, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
+        actionsList.add(new VocabduelCliAction(false, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
         actionsList.add(new VocabduelCliAction(true, "score record", "See your own record", "s r", this::onScoreRecordCalled));
         actionsList.add(new VocabduelCliAction(false, "score record user", "See the record of a given user (determined by optional params)", "s r u", this::onScoreRecordUserCalled));
         actionsList.add(new VocabduelCliAction(true, "user rm", "Delete the current user account", "u rm", this::onUserDeleteCalled));
