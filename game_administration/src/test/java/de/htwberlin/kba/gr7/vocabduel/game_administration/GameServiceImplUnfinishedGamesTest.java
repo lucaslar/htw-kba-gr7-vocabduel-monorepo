@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,11 +52,10 @@ public class GameServiceImplUnfinishedGamesTest {
     }
 
     @Test()
-    public void shouldGetEmptyUnfinishedGamesList() {
-        Mockito.when(queryMock.getResultList()).thenReturn(mock.mockEmptyUnfinishedGameList());
+    public void shouldGetNullIfNoUnfinishedGames() {
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(new User(4711L));
-        Assert.assertNotNull(unfinishedGames);
-        Assert.assertTrue(unfinishedGames.isEmpty());
+        Assert.assertNull(unfinishedGames);
     }
 
     @Test()
