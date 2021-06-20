@@ -211,7 +211,7 @@ public class ScoreServiceImplTest {
                 g.getPlayerB().getId().equals(playerE.getId()) ||
                         g.getPlayerA().getId().equals(playerE.getId())).collect(Collectors.toList()));
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerE);
-        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 0, 0, 1))
+        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 0, 0, 2))
                 .matches(scoreAdministration.getRecordOfUser(playerC)));
     }
 
