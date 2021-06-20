@@ -53,7 +53,9 @@ public class GameServiceImplRemoveWidowGamesTest {
     @Test
     public void shouldRemoveWidowGamesWhenFinishedAndRunningGameToRemove(){
         final RunningVocabduelGame runningGame = new RunningVocabduelGame();
-        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(1L);
+        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
+                new RunningVocabduelGame(1L, null, null, null, null, null)
+        );
         Mockito.when(queryMock.getResultList()).thenReturn(Stream.of(runningGame).collect(Collectors.toList()),
                 Stream.of(finishedGame).collect(Collectors.toList()));
         final int statusCode = gameService.removeWidowGames();
@@ -62,7 +64,9 @@ public class GameServiceImplRemoveWidowGamesTest {
 
     @Test
     public void shouldRemoveWidowGamesWhenFinishedGameToRemove(){
-        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(1L);
+        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
+                new RunningVocabduelGame(1L, null, null, null, null, null)
+        );
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class).thenReturn(
                 Stream.of(finishedGame).collect(Collectors.toList()));
         final int statusCode = gameService.removeWidowGames();

@@ -73,11 +73,11 @@ public class ScoreServiceImplTest {
         // 2 Draw against E
         User playerF = new User(901L);
 
-        final FinishedVocabduelGame game1 = mockFinishedGame(1L, playerA, 0, playerB, 3);
-        final FinishedVocabduelGame game2 = mockFinishedGame(2L, playerA, 1, playerC, 2);
-        final FinishedVocabduelGame game3 = mockFinishedGame(3L, playerB, 0, playerC, 3);
-        final FinishedVocabduelGame game4 = mockFinishedGame(4L, playerE, 2, playerF, 2);
-        final FinishedVocabduelGame game5 = mockFinishedGame(5L, playerF, 1, playerE, 1);
+        final FinishedVocabduelGame game1 = mockFinishedGame(playerA, 0, playerB, 3);
+        final FinishedVocabduelGame game2 = mockFinishedGame(playerA, 1, playerC, 2);
+        final FinishedVocabduelGame game3 = mockFinishedGame(playerB, 0, playerC, 3);
+        final FinishedVocabduelGame game4 = mockFinishedGame(playerE, 2, playerF, 2);
+        final FinishedVocabduelGame game5 = mockFinishedGame(playerF, 1, playerE, 1);
         finishedGames = Stream.of(game1, game2, game3, game4, game5).collect(Collectors.toList());
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
