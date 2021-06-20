@@ -44,7 +44,6 @@ public class GameServiceImplRemoveWidowGamesTest {
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setMaxResults(Mockito.anyInt())).thenReturn(queryMock);
     }
 
     @Test
