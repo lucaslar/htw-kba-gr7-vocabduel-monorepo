@@ -252,14 +252,14 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     private VocableUnit getOrCreateLanguageUnit(final String unitName, final SupportedLanguage from, final SupportedLanguage to) {
-        final LanguageSet ls = getOrCreateLangaugeSet(from, to);
+        final LanguageSet ls = getOrCreateLanguageSet(from, to);
         VocableUnit unit;
-        Optional<VocableUnit> foundUnit = null;
+        Optional<VocableUnit> foundUnit = Optional.empty();
         if (ls.getVocableUnits() == null) {
             ls.setVocableUnits(new ArrayList<>());
         } else foundUnit = ls.getVocableUnits().stream().filter(u -> u.getTitle().equals(unitName)).findFirst();
 
-        if (foundUnit != null && foundUnit.isPresent()) unit = foundUnit.get();
+        if (foundUnit.isPresent()) unit = foundUnit.get();
         else {
             unit = new VocableUnit(unitName);
             ls.getVocableUnits().add(unit);
@@ -271,7 +271,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         return unit;
     }
 
-    private LanguageSet getOrCreateLangaugeSet(final SupportedLanguage from, final SupportedLanguage to) {
+    private LanguageSet getOrCreateLanguageSet(final SupportedLanguage from, final SupportedLanguage to) {
         LanguageSet languageSet;
         ENTITY_MANAGER.getTransaction().begin();
         try {
