@@ -70,16 +70,10 @@ public class InvalidPwdsTest {
         existingUser.setFirstName("Existing");
         existingUser.setLastName("User");
 
-        // In the future, this method will be called in `updateUserPassword` => mock it in tests
- //       Mockito.when(userAdministration.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
-
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
         Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, PREVIOUS_PWD.toCharArray())));
-
-        // Don't mock updateUserPassword function
-        // automated done, if not said "when(functioncall).then(mock)"
     }
 
     @Test(expected = PwTooWeakException.class)

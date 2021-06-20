@@ -92,7 +92,6 @@ public class AuthServiceImplTest {
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
         Mockito.when(userService.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
         Mockito.when(userService.getUserDataById(existingUser.getId())).thenReturn(existingUser);
-        Mockito.when(userService.getUserDataByEmail(UNKNOWN_MAIL)).thenReturn(null); // TODO marked as unnecessary stubbing
         Mockito.when(userService.getUserDataById(UNKNOWN_ID)).thenReturn(null);
         Mockito.when(userService.getUserDataByUsername(existingUser.getUsername())).thenReturn(existingUser);
         Mockito.when(userService.getUserDataByUsername(newUserName)).thenReturn(newUser);
@@ -134,7 +133,6 @@ public class AuthServiceImplTest {
                         BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
         Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
-        Mockito.when(queryMock.getSingleResult()).thenReturn(new User()); // TODO marked as unnecessary stubbing
         final User registeredUser = userService.getUserDataByUsername(newUser.getUsername());
 
         Assert.assertNotNull(registeredUser);

@@ -122,7 +122,6 @@ public class UserServiceImplTest {
     @Test
     public void shouldNotGetUserDataByIdIfUnknown() {
         final Long wrongId = definitelyUnusedId();
-        Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataById(wrongId));
     }
 
