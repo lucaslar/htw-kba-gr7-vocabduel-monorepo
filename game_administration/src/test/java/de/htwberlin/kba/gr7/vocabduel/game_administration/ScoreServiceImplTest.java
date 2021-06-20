@@ -149,7 +149,7 @@ public class ScoreServiceImplTest {
         sharedPersonalFinishedGameLogic(games, player);
 
         games.forEach(g -> {
-            Assert.assertTrue(g.getOwnPoints() == g.getOpponentPoints());
+            Assert.assertEquals(g.getOwnPoints(), g.getOpponentPoints());
             Assert.assertEquals(GameResult.DRAW, g.getGameResult());
         });
     }
