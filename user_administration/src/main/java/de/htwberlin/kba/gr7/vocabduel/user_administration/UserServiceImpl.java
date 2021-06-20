@@ -89,8 +89,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUser(final User user) throws InvalidUserException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
-        if (user == null || getUserDataById(user.getId()) == null)
+        if (user == null || getUserDataById(user.getId()) == null) {
             throw new InvalidUserException("Invalid/not found user");
+        }
 
         Validation.completeDataValidation(user);
         Validation.nameValidation(user.getFirstName());

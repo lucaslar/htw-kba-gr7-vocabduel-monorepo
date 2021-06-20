@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -121,17 +122,20 @@ public class UserServiceImplTest {
     @Test
     public void shouldNotGetUserDataByIdIfUnknown() {
         final Long wrongId = definitelyUnusedId();
+        Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataById(wrongId));
     }
 
     @Test
     public void shouldNotGetUserDataByEmailIfUnknown() {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataByEmail(UNKNOWN_MAIL));
     }
 
     @Test
     public void shouldNotGetUserDataByUsernameIfUnknown() {
         final String wrongUsername = definitelyUnusedUsername();
+        Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataByUsername(wrongUsername));
     }
 
