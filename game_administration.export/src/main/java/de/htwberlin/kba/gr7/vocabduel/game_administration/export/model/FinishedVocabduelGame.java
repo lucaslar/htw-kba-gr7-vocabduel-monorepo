@@ -12,7 +12,8 @@ public class FinishedVocabduelGame extends VocabduelGame {
     private int totalPointsB;
     private Date finishedTimestamp;
 
-    public FinishedVocabduelGame() {
+    public FinishedVocabduelGame(Long id) {
+        this.id = id;
     }
 
     public FinishedVocabduelGame(final RunningVocabduelGame game) {

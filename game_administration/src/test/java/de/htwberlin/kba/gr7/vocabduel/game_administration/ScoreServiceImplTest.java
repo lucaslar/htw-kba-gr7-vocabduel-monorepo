@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 @RunWith(MockitoJUnitRunner.class)
 public class ScoreServiceImplTest {
 
-    private static FinishedVocabduelGame mockFinishedGame(User playerA, int pointsA, User playerB, int pointsB) {
-        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame();
+    private static FinishedVocabduelGame mockFinishedGame(Long id, User playerA, int pointsA, User playerB, int pointsB) {
+        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(id);
         finishedGame.setPlayerA(playerA);
         finishedGame.setPlayerB(playerB);
         finishedGame.setTotalPointsA(pointsA);
@@ -45,7 +45,6 @@ public class ScoreServiceImplTest {
     private User playerC; // 2 wins, 1 against A, 1 against B
     private User playerD; // 0 - 0
     private User playerE; // 2 Draw against F
-    private User playerF; // 2 Draw against E
     private List<FinishedVocabduelGame> finishedGames;
 
     private ScoreServiceImpl scoreAdministration;
@@ -57,10 +56,6 @@ public class ScoreServiceImplTest {
     private EntityTransaction entityTransaction;
     @Mock
     private Query queryMock;
-    @Mock
-    private EntityManagerFactory emf;
-    @Mock
-    private Cache cache;
 
     @Before
     public void setup() {
@@ -71,20 +66,19 @@ public class ScoreServiceImplTest {
         playerC = new User(2020L);
         playerD = new User(2021L);
         playerE = new User(900L);
-        playerF = new User(901L);
+        // 2 Draw against E
+        User playerF = new User(901L);
 
-        final FinishedVocabduelGame game1 = mockFinishedGame(playerA, 0, playerB, 3);
-        final FinishedVocabduelGame game2 = mockFinishedGame(playerA, 1, playerC, 2);
-        final FinishedVocabduelGame game3 = mockFinishedGame(playerB, 0, playerC, 3);
-        final FinishedVocabduelGame game4 = mockFinishedGame(playerE, 2, playerF, 2);
-        final FinishedVocabduelGame game5 = mockFinishedGame(playerF, 1, playerE, 1);
+        final FinishedVocabduelGame game1 = mockFinishedGame(1L, playerA, 0, playerB, 3);
+        final FinishedVocabduelGame game2 = mockFinishedGame(2L, playerA, 1, playerC, 2);
+        final FinishedVocabduelGame game3 = mockFinishedGame(3L, playerB, 0, playerC, 3);
+        final FinishedVocabduelGame game4 = mockFinishedGame(4L, playerE, 2, playerF, 2);
+        final FinishedVocabduelGame game5 = mockFinishedGame(5L, playerF, 1, playerE, 1);
         finishedGames = Stream.of(game1, game2, game3, game4, game5).collect(Collectors.toList());
 
-        Mockito.when(entityManager.getEntityManagerFactory()).thenReturn(emf);
-        Mockito.when(emf.getCache()).thenReturn(cache);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
     }
 
     @Test(expected = InvalidUserException.class)
@@ -145,7 +139,7 @@ public class ScoreServiceImplTest {
         sharedPersonalFinishedGameLogic(games, player);
 
         games.forEach(g -> {
-            Assert.assertTrue(g.getOwnPoints() == g.getOpponentPoints());
+            Assert.assertEquals(g.getOwnPoints(), g.getOpponentPoints());
             Assert.assertEquals(GameResult.DRAW, g.getGameResult());
         });
     }
@@ -207,7 +201,7 @@ public class ScoreServiceImplTest {
                 t.getPlayerB().getId().equals(playerE.getId()) ||
                         t.getPlayerA().getId().equals(playerE.getId())).collect(Collectors.toList()));
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerE);
-        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 0, 0, 1))
+        Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerC, 0, 0, 2))
                 .matches(scoreAdministration.getRecordOfUser(playerC)));
     }
 
