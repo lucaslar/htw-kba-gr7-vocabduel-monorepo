@@ -66,7 +66,7 @@ public class UserServiceImplTest {
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.getSingleResult()).thenReturn(null);
     }
 
@@ -150,7 +150,7 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetUserDataById() {
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user2);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user2);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user2.toString());
@@ -166,7 +166,7 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldGetUserDataByUsername() {
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user4);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user4);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
         Assert.assertEquals(foundUser.toString(), user4.toString());
@@ -195,7 +195,7 @@ public class UserServiceImplTest {
 
     @Test(expected = InvalidOrRegisteredMailException.class)
     public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         user3.setEmail("invalidmail");
         user3.setFirstName("Max");
         user3.setLastName("Mustermann");
@@ -204,7 +204,7 @@ public class UserServiceImplTest {
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
     public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         Mockito.when(queryMock.getSingleResult()).thenReturn(user3, user2);
         user3.setUsername(user1.getUsername());
         user3.setFirstName("Max");
@@ -218,7 +218,7 @@ public class UserServiceImplTest {
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
         user3.setLastName("Mustermann");
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         userAdministration.updateUser(user3);
     }
 
@@ -228,7 +228,7 @@ public class UserServiceImplTest {
         user3.setUsername(null);
         user3.setFirstName("Max");
         user3.setLastName("Mustermann");
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         userAdministration.updateUser(user3);
     }
 
@@ -238,7 +238,7 @@ public class UserServiceImplTest {
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName(null);
         user3.setLastName("Mustermann");
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         userAdministration.updateUser(user3);
     }
 
@@ -248,7 +248,7 @@ public class UserServiceImplTest {
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("max");
         user3.setLastName(null);
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         userAdministration.updateUser(user3);
     }
 
@@ -258,7 +258,7 @@ public class UserServiceImplTest {
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
         user3.setLastName("Mustermann");
-        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.anyObject())).thenReturn(user3);
+        Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         final int statusCode = userAdministration.updateUser(user3);
         Assert.assertEquals(0, statusCode);
 
