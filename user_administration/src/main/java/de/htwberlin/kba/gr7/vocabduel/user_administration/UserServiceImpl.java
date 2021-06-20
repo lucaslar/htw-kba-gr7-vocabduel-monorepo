@@ -6,7 +6,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.naming.InvalidNameException;
@@ -19,13 +18,8 @@ public class UserServiceImpl implements UserService {
 
     private final EntityManager ENTITY_MANAGER;
 
-    @Autowired
     public UserServiceImpl() {
-        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
-    }
-
-    public UserServiceImpl(final EntityManager entityManager) {
-        ENTITY_MANAGER = entityManager;
+        ENTITY_MANAGER = EntityFactoryManagement.getManager();
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -41,7 +42,11 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-        userAdministration = new UserServiceImpl(entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            userAdministration = new UserServiceImpl();
+        }
+
         user1 = new User(42L);
         user2 = new User(123L);
         user3 = new User(456L);

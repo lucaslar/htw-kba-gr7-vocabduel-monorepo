@@ -11,7 +11,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -34,16 +33,9 @@ public class AuthServiceImpl implements AuthService {
 
     private final SecretKeySpec TOKEN_KEY;
 
-    @Autowired
     public AuthServiceImpl(final UserService userService) {
         USER_SERVICE = userService;
-        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
-        TOKEN_KEY = initializeTokenkey();
-    }
-
-    public AuthServiceImpl(final UserService userService, final EntityManager entityManager) {
-        USER_SERVICE = userService;
-        ENTITY_MANAGER = entityManager;
+        ENTITY_MANAGER = EntityFactoryManagement.getManager();
         TOKEN_KEY = initializeTokenkey();
     }
 

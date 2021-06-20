@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -61,7 +62,10 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userService, entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            auth = new AuthServiceImpl(userService);
+        }
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));

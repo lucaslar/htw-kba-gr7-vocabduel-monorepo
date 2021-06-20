@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -62,7 +63,10 @@ public class InvalidPwdsTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userService, entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            auth = new AuthServiceImpl(userService);
+        }
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");
