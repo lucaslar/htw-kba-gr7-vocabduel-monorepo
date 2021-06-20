@@ -24,12 +24,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Autowired
     public ScoreServiceImpl(final UserService userService) {
-        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
-        USER_SERVICE = userService;
-    }
-
-    public ScoreServiceImpl(final UserService userService, final EntityManager entityManager) {
-        ENTITY_MANAGER = entityManager;
+        ENTITY_MANAGER = EntityFactoryManagement.getManager();
         USER_SERVICE = userService;
     }
 

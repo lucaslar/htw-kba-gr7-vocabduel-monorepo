@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -37,12 +38,15 @@ public class GameServiceImplAnswerQuestionTest {
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            gameAdministration = new GameServiceImpl(userService, vocabularyService);
+        }
         mock = new GameDataMock();
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
+        Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.setMaxResults(Mockito.anyInt())).thenReturn(queryMock);
         Mockito.when(queryMock.getSingleResult()).thenReturn(mock.mockVocabduelRound());
     }

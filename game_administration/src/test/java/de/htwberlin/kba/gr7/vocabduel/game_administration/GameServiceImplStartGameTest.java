@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -42,7 +43,10 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            gameAdministration = new GameServiceImpl(userService, vocabularyService);
+        }
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
 

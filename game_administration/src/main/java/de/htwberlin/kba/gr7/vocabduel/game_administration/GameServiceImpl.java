@@ -30,13 +30,7 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService) {
-        ENTITY_MANAGER = EntityFactoryManagement.getEntityFactory().createEntityManager();
-        USER_SERVICE = userService;
-        VOCABULARY_SERVICE = vocabularyService;
-    }
-
-    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager) {
-        ENTITY_MANAGER = entityManager;
+        ENTITY_MANAGER = EntityFactoryManagement.getManager();
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
     }

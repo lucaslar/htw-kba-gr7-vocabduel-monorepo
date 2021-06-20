@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -63,7 +64,10 @@ public class ScoreServiceImplTest {
 
     @Before
     public void setup() {
-        scoreAdministration = new ScoreServiceImpl(userService, entityManager);
+        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
+            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
+            scoreAdministration = new ScoreServiceImpl(userService);
+        }
 
         playerA = new User(4711L);
         playerB = new User(42L);
