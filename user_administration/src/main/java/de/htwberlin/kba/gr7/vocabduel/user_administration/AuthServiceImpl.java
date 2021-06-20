@@ -43,7 +43,6 @@ public class AuthServiceImpl implements AuthService {
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
         return new SecretKeySpec(Base64.getDecoder().decode(encoded), SignatureAlgorithm.HS256.getJcaName());
-
     }
 
     @Override
@@ -113,6 +112,7 @@ public class AuthServiceImpl implements AuthService {
                     ENTITY_MANAGER.getTransaction().commit();
                     return insertNewUserTokens(user);
                 }
+                ENTITY_MANAGER.getTransaction().commit();
             }
         } catch (NoResultException ignored) {
         }
