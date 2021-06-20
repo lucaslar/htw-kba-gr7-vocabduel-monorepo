@@ -16,7 +16,6 @@
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList</class>
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet</class>
         <class>de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit</class>
-        <!-- TODO: Enum hinzufügen??-->
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

@@ -332,8 +332,6 @@ public class AuthServiceImplTest {
         Assert.assertTrue(auth.hasAccessRights(validAuthToken));
     }
 
-    // TODO: in the future, use component's secret / move token generation
-
     private String generateToken(boolean isExpired, long id, Date expiration) {
         final Instant now = Instant.now();
         return Jwts.builder()

@@ -3,29 +3,19 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.export.model;
 import java.io.Serializable;
 
 public class AuthTokens implements Serializable {
-    private String token;
-    private String refreshToken;
+    private final String TOKEN;
+    private final String REFRESH_TOKEN;
 
     public AuthTokens(final String refreshToken, final String token) {
-        this.token = token;
-        this.refreshToken = refreshToken;
+        this.TOKEN = token;
+        this.REFRESH_TOKEN = refreshToken;
     }
 
     public String getToken() {
-        return token;
+        return TOKEN;
     }
 
     public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    // TODO Keep setters?
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+        return REFRESH_TOKEN;
     }
 }

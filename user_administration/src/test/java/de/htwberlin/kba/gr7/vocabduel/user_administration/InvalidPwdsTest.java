@@ -54,7 +54,7 @@ public class InvalidPwdsTest {
     private User existingUser;
     private final String PWD;
 
-    private final String PREVIOUS_PWD = "ThisWasTheUser'sPreviousPwd"; // TODO: Mock => this pwd was indeed the user's previous pwd
+    private final String PREVIOUS_PWD = "ThisWasTheUser'sPreviousPwd";
 
     public InvalidPwdsTest(final String pwd) {
         this.PWD = pwd;

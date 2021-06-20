@@ -18,7 +18,6 @@
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame</class>
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame</class>
         <class>de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound</class>
-        <!-- TODO: Enum hinzufügen??-->
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
