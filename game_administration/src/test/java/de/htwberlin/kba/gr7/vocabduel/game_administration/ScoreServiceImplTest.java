@@ -84,8 +84,6 @@ public class ScoreServiceImplTest {
         final FinishedVocabduelGame game5 = mockFinishedGame(playerF, 1, playerE, 1);
         finishedGames = Stream.of(game1, game2, game3, game4, game5).collect(Collectors.toList());
 
-        Mockito.when(entityManager.getEntityManagerFactory()).thenReturn(emf);
-        Mockito.when(emf.getCache()).thenReturn(cache);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
