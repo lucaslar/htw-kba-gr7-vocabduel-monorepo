@@ -45,7 +45,6 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
-//        Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         // mock sample VocabduelGame
         gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
@@ -65,13 +64,10 @@ public class GameServiceImplStartGameTest {
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
-  //      Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
-    //    Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.anyObject())).thenReturn(queryMock);
     }
 
     @Test()
     public void shouldGetStartedGameAsInput() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
-      //  Mockito.when(queryMock.getResultList()).thenReturn(Stream.of(languageSet).collect(Collectors.toList()));
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
