@@ -8,7 +8,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.Inva
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -28,7 +27,6 @@ public class GameServiceImpl implements GameService {
         return GameService.NR_OF_ROUNDS;
     }
 
-    @Autowired
     public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService) {
         ENTITY_MANAGER = EntityFactoryManagement.getManager();
         USER_SERVICE = userService;
