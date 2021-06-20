@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,23 +47,18 @@ public class GameServiceImplStartRoundTest {
     }
 
     @Test()
-    public void shouldHaveData() throws NoAccessException {
-
+    public void shouldHaveRoundData() throws NoAccessException {
         newRoundRes = gameAdministration.startRound(
                 mock.mockSampleUser(), mock.mockVocabduelGame().getId()
         );
         Assert.assertNotNull(newRoundRes);
-
-        // check given Input
-//        Assert.assertEquals(mock.mockVocabduelGame().getId(), newRoundRes.getGameId());
         Assert.assertTrue(newRoundRes.getAnswers().size() >= 2);
         Assert.assertNotNull(newRoundRes.getQuestion());
     }
 
-//    @Test(expected = RoundAlreadyFinishedException.class)
-    public void shouldNotStartFinishedRound() throws NoAccessException {
-        newRoundRes = gameAdministration.startRound(
-                mock.mockSampleUser(), mock.mockVocabduelGame().getId()
-        );
+    @Test(expected = NoAccessException.class)
+    public void shouldThrowNoAccessExceptionIfNoRoundFound() throws NoAccessException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
+        gameAdministration.startRound(mock.mockSampleUser(), mock.mockVocabduelGame().getId());
     }
 }

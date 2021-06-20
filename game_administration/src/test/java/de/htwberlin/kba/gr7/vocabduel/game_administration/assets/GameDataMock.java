@@ -16,7 +16,7 @@ public class GameDataMock {
     private final RunningVocabduelGame newGame;
     private final RunningVocabduelGame newGame2;
 
-    public GameDataMock(){
+    public GameDataMock() {
         playerA = new User(11L);
         playerB = new User(12L);
         List<VocableList> vocableList = new ArrayList<>();
@@ -30,7 +30,7 @@ public class GameDataMock {
 
         // add 10 Rounds, with gameId, with roundId, with answers, with question
         List<VocabduelRound> tempRoundList = newGame.getRounds();
-        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
+        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++) {
             VocabduelRound newRound = new VocabduelRound(i);
             newRound.setGame(newGame);
             newRound.setAnswers(Arrays.asList(
@@ -39,7 +39,7 @@ public class GameDataMock {
                     new TranslationGroup((long) (i + 11), Collections.singletonList("wrongAnswer2")),
                     new TranslationGroup((long) (i + 12), Collections.singletonList("wrongAnswer3"))
             ));
-            newRound.setQuestion(new UntranslatedVocable((long) i, new TranslationGroup(Collections.singletonList("vocableInQuestion"+i))));
+            newRound.setQuestion(new UntranslatedVocable((long) i, new TranslationGroup(Collections.singletonList("vocableInQuestion" + i))));
             if (tempRoundList == null) {
                 tempRoundList = new ArrayList<>();
             }
@@ -55,12 +55,12 @@ public class GameDataMock {
 
         // set Vocables
         List<Vocable> tempVocableList = myVocList.getVocables();
-        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++){
+        for (int i = 1; i <= GameService.NR_OF_ROUNDS; i++) {
             Vocable myVoc = new Vocable(
                     (long) i,
                     new TranslationGroup((long) i, Collections.singletonList("unknownWord" + i)),
                     Collections.singletonList(new TranslationGroup((long) i, Collections.singletonList("translation" + i))));
-            if (tempVocableList == null){
+            if (tempVocableList == null) {
                 tempVocableList = new ArrayList<>();
             }
             tempVocableList.add(myVoc);
@@ -69,45 +69,41 @@ public class GameDataMock {
         newGame.setVocableLists(Collections.singletonList(myVocList));
     }
 
-    public RunningVocabduelGame mockVocabduelGame(){
+    public RunningVocabduelGame mockVocabduelGame() {
         return newGame;
     }
 
-    public RunningVocabduelGame mockVocabduelGame2(){
-        return newGame2;
-    }
-
-    public VocabduelRound mockVocabduelRound(){
+    public VocabduelRound mockVocabduelRound() {
         return this.newGame.getRounds().get(0);
     }
 
-    public User mockSampleUser(){
+    public User mockSampleUser() {
         return playerA;
     }
 
-    public User mockOpponent(){
+    public User mockOpponent() {
         return playerB;
     }
 
-    public List<VocableList> mockVocableLists(){
+    public List<VocableList> mockVocableLists() {
         return newGame.getVocableLists();
     } // normal VocableList with 10 Vocables
 
-    public SupportedLanguage mockKnownLanguage(){
+    public SupportedLanguage mockKnownLanguage() {
         return newGame.getKnownLanguage();
     }
 
-    public SupportedLanguage mockLearntLanguage(){
+    public SupportedLanguage mockLearntLanguage() {
         return newGame.getLearntLanguage();
     }
 
-    public List<VocableList> mockVocableListsWithEmptyVocabulary(){
+    public List<VocableList> mockVocableListsWithEmptyVocabulary() {
         List<VocableList> myList = newGame.getVocableLists();
         myList.get(0).getVocables().clear();
         return myList;
     } // normal VocableList with 0 Vocables
 
-    public List<VocableList> mockVocableListsWithoutEnoughVocabulary(){
+    public List<VocableList> mockVocableListsWithoutEnoughVocabulary() {
         List<VocableList> myList = newGame.getVocableLists();
         myList.get(0).getVocables().remove(myList.get(0).getVocables().size() - 1);
         return myList;
@@ -126,12 +122,12 @@ public class GameDataMock {
         myList.add(new VocableList(11L, mockSampleUser(), "myTitle2"));
         myList.get(myList.size() - 1).setVocables(
                 Collections.singletonList((
-                        new Vocable(
-                                new TranslationGroup(Collections.singletonList("unknownWord2")),
-                                Collections.singletonList(new TranslationGroup(Collections.singletonList("translation2")))
+                                new Vocable(
+                                        new TranslationGroup(Collections.singletonList("unknownWord2")),
+                                        Collections.singletonList(new TranslationGroup(Collections.singletonList("translation2")))
+                                )
                         )
-                )
-        ));
+                ));
         return myList;
     } // 2 VocableLists each with 1 Vocable
 
@@ -153,26 +149,24 @@ public class GameDataMock {
         return new ArrayList<>();
     } // empty List<VocableList>
 
-    public List<VocabduelGame> mockUnfinishedGameList(){
+    public List<VocabduelGame> mockUnfinishedGameList() {
         List<VocabduelGame> myList = new ArrayList<>();
         myList.add(newGame);
         myList.add(newGame2);
         return myList;
     }
 
-    public List<VocabduelGame> mockEmptyUnfinishedGameList(){
+    public List<VocabduelGame> mockEmptyUnfinishedGameList() {
         return new ArrayList<>();
     }
 
-    private List<Vocable> addVocables(List<Vocable> input, String title){
-        for (int i = 1; i <= ((GameService.NR_OF_ROUNDS / 2)+1); i++){
+    private List<Vocable> addVocables(List<Vocable> input, String title) {
+        for (int i = 1; i <= ((GameService.NR_OF_ROUNDS / 2) + 1); i++) {
             Vocable tempVoc = new Vocable(
                     new TranslationGroup(Collections.singletonList(title + "unknownWord" + i)),
                     Collections.singletonList(new TranslationGroup(Collections.singletonList(title + "translation" + i)))
             );
-            if (input == null){
-                input = new ArrayList<>();
-            }
+            if (input == null) input = new ArrayList<>();
             input.add(tempVoc);
         }
         return input;

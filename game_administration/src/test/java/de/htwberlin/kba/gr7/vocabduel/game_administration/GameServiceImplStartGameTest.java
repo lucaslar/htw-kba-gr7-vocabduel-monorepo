@@ -7,9 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +18,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,7 +82,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldNewGameWithFixedRoundList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNewGameWithFixedRoundList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -97,7 +94,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -109,7 +106,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldStartGameWithUniqueRounds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithUniqueRounds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -121,7 +118,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test
-    public void shouldStartGameWithUniqueQuestions() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithUniqueQuestions() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -134,7 +131,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         // setup for this method
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -155,7 +152,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidGameSetupException.class)
-    public void shouldNotStartGameInSinglePlayerMode() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameInSinglePlayerMode() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockSampleUser(),
@@ -164,7 +161,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -173,7 +170,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutEnoughVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -182,7 +179,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -191,11 +188,93 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithEmptyVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException  {
+    public void shouldNotStartGameWithEmptyVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
                 mock.mockEmptyVocableLists()
+        );
+    }
+
+    @Test(expected = InvalidGameSetupException.class)
+    public void shouldNotStartGameWithNullVocabList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+        gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                Arrays.stream(new VocableList[]{null}).collect(Collectors.toList())
+        );
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldNotStartGameIfPlayerOneIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(null);
+        gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                mock.mockVocableLists()
+        );
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldNotStartGameIfPlayerTwoIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+        Mockito.when(userService.getUserDataById(12L)).thenReturn(null);
+        gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                mock.mockVocableLists()
+        );
+    }
+
+    @Test(expected = InvalidGameSetupException.class)
+    public void shouldNotStartGameIfVocableListsAreOfDifferentLanguageSet() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+        final VocableList list1 = new VocableList(123L);
+        final VocableList list2 = new VocableList(456L);
+
+        list1.setVocables(mock.mockVocableLists().get(0).getVocables());
+        list2.setVocables(mock.mockVocableLists().get(0).getVocables());
+
+        final List<LanguageSet> langset = new ArrayList<>();
+        final VocableUnit unit = new VocableUnit("Unit 1");
+        final VocableUnit unit2 = new VocableUnit("Unidad 2");
+        unit.setVocableLists(Arrays.stream(new VocableList[]{list1}).collect(Collectors.toList()));
+        unit2.setVocableLists(Arrays.stream(new VocableList[]{list2}).collect(Collectors.toList()));
+        final LanguageSet langSet1 = new LanguageSet(mock.mockLearntLanguage(), mock.mockKnownLanguage());
+        final LanguageSet langSet2 = new LanguageSet(mock.mockKnownLanguage(), mock.mockLearntLanguage());
+        langSet1.setVocableUnits(Stream.of(unit).collect(Collectors.toList()));
+        langSet2.setVocableUnits(Stream.of(unit2).collect(Collectors.toList()));
+        langset.add(langSet1);
+        langset.add(langSet2);
+
+        Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
+        Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
+        Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
+
+        gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                Arrays.asList(list1, list2)
+        );
+    }
+
+    @Test(expected = NotEnoughVocabularyException.class)
+    public void shouldNotStartGameWithoutEnoughUniqueVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
+        final VocableList listWithoutEnoughUniques = new VocableList(42L);
+
+        final List<Vocable> vocablesSharingTranslation = Arrays
+                .stream("The quick brown fox jumps over the lazy dog".split(" "))
+                .map(t -> {
+                    final TranslationGroup vTg = new TranslationGroup(Collections.singletonList(t + " vocab"));
+                    final TranslationGroup tTg = new TranslationGroup(Collections.singletonList(t));
+                    return new Vocable(vTg, Arrays.asList(tTg, new TranslationGroup(Collections.singletonList("I'm everywhere"))));
+                })
+                .collect(Collectors.toList());
+
+        listWithoutEnoughUniques.setVocables(vocablesSharingTranslation);
+
+        gameAdministration.startGame(
+                mock.mockSampleUser(),
+                mock.mockOpponent(),
+                Collections.singletonList(listWithoutEnoughUniques)
         );
     }
 
