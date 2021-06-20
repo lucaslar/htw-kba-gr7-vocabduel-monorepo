@@ -58,8 +58,6 @@ public class UserServiceImplTest {
         user4.setEmail("user4@vocabduel.de");
 
         usersList = Stream.of(user1, user2, user3, user4).collect(Collectors.toList());
-        // Mock existing users (private field => Whitebox#setInternalState)
-    //    Whitebox.setInternalState(userAdministration, "users", usersList);
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);

@@ -70,8 +70,7 @@ public class ScoreServiceImplTest {
         playerC = new User(2020L);
         playerD = new User(2021L);
         playerE = new User(900L);
-        // 2 Draw against E
-        User playerF = new User(901L);
+        final User playerF = new User(901L);
 
         final FinishedVocabduelGame game1 = mockFinishedGame(playerA, 0, playerB, 3);
         final FinishedVocabduelGame game2 = mockFinishedGame(playerA, 1, playerC, 2);
@@ -105,7 +104,7 @@ public class ScoreServiceImplTest {
         final User player = playerA;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(player.getId()) ||
-                g.getPlayerA().getId().equals(player.getId())).collect(Collectors.toList()));
+                        g.getPlayerA().getId().equals(player.getId())).collect(Collectors.toList()));
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(player);
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(player);
         sharedPersonalFinishedGameLogic(games, player);

@@ -32,7 +32,7 @@ public class GameServiceImplStartGameTest {
     private RunningVocabduelGame newGameRes;
     private GameDataMock mock;
     @Mock
-    private UserService userService; // to be mocked
+    private UserService userService;
     @Mock
     private EntityManager entityManager;
     @Mock
@@ -42,7 +42,6 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
-        // mock sample VocabduelGame
         gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
@@ -72,7 +71,6 @@ public class GameServiceImplStartGameTest {
         );
         Assert.assertNotNull(newGameRes);
 
-        // check given Input
         Assert.assertEquals(newGameRes.getKnownLanguage(), mock.mockKnownLanguage());
         Assert.assertEquals(newGameRes.getLearntLanguage(), mock.mockLearntLanguage());
         Assert.assertEquals(newGameRes.getPlayerA(), mock.mockSampleUser());
@@ -132,7 +130,6 @@ public class GameServiceImplStartGameTest {
 
     @Test()
     public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException {
-        // setup for this method
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -144,7 +141,6 @@ public class GameServiceImplStartGameTest {
         VocabduelRound[] rounds = new VocabduelRound[newGameRes.getRounds().size()];
         newGameRes.getRounds().toArray(rounds);
 
-        //test round ids start from 1 to GameAdministration.NR_OF_ROUNDS
         for (int i = 1; i <= newGameRes.getRounds().size(); i++) {
             Assert.assertNotNull(newGameRes.getRounds().get(i - 1));
             Assert.assertEquals(i, newGameRes.getRounds().get(i - 1).getRoundNr());

@@ -117,9 +117,6 @@ public class AuthServiceImplTest {
         auth.registerUser("username", "invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
-    // The following test could be implemented for each potentially null/empty trimmed field
-    // using a parameterized test. However, this would lead to an unnecessarily large number of tests.
-
     @Test(expected = InvalidNameException.class)
     public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException {
         auth.registerUser("username", "invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
