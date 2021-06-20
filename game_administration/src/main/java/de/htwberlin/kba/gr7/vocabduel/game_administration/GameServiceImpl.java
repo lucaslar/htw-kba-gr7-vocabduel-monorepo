@@ -105,9 +105,7 @@ public class GameServiceImpl implements GameService {
         } else if (player != null) {
             final VocabduelRound round = startRound(player, gameId);
 
-            if (round == null) {
-                throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a round you have access to and not answered before?");
-            } else if (round.getRoundNr() != roundNr) {
+            if (round.getRoundNr() != roundNr) {
                 throw new NoAccessException("Invalid round. Your next round is round " + round.getRoundNr());
             } else {
                 final TranslationGroup selection = round.getAnswers().get(answerNr);
