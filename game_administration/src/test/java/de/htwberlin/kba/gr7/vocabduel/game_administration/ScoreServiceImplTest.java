@@ -92,11 +92,10 @@ public class ScoreServiceImplTest {
 
     @Test
     public void shouldNotReturnPersonalFinishedGamesForUserWithoutGames() throws InvalidUserException {
-        Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerD);
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(playerD);
-        Assert.assertNotNull(games);
-        Assert.assertTrue(games.isEmpty());
+        Assert.assertNull(games);
     }
 
     @Test
@@ -213,7 +212,7 @@ public class ScoreServiceImplTest {
     public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, NoAccessException {
         final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
-        Mockito.when(queryMock.getSingleResult()).thenReturn(null);
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         scoreAdministration.finishGame(playerC, game.getId());
     }
 
