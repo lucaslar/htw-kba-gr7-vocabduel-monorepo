@@ -63,8 +63,6 @@ public class GameServiceImplStartGameTest {
 
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
-        // TODO why is this marked as unnecessary code?
-        Mockito.when(vocabularyService.getAllSupportedLanguages()).thenReturn(langList);
         Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
   //      Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
