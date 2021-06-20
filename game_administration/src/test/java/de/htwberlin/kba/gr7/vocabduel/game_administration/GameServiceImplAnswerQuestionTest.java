@@ -36,7 +36,7 @@ public class GameServiceImplAnswerQuestionTest {
     private GameDataMock mock;
 
     @Before
-    public void setup(){
+    public void setup() {
         gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
 
@@ -56,6 +56,7 @@ public class GameServiceImplAnswerQuestionTest {
                 2);
         Assert.assertNotNull(result);
         Assert.assertEquals(Result.LOSS, result.getResult());
+        Assert.assertEquals(Result.LOSS, mock.mockVocabduelRound().getResultPlayerA());
         Assert.assertNotNull(result.getCorrectAnswer());
         Assert.assertEquals(result.getCorrectAnswer().getId(), mock.mockVocabduelRound().getAnswers().get(1).getId());
     }
@@ -69,6 +70,57 @@ public class GameServiceImplAnswerQuestionTest {
                 1);
         Assert.assertNotNull(result);
         Assert.assertEquals(Result.WIN, result.getResult());
+        Assert.assertEquals(Result.WIN, mock.mockVocabduelRound().getResultPlayerA());
         Assert.assertNull(result.getCorrectAnswer());
+    }
+
+    @Test(expected = InvalidAnswerNrException.class)
+    public void shouldThrowInvalidAnswerExceptionIfAnswerNrIsSmaller0() throws NoAccessException, InvalidAnswerNrException {
+        gameAdministration.answerQuestion(
+                mock.mockSampleUser(),
+                mock.mockVocabduelRound().getGame().getId(),
+                mock.mockVocabduelRound().getRoundNr(),
+                -4711
+        );
+    }
+
+    @Test(expected = InvalidAnswerNrException.class)
+    public void shouldThrowInvalidAnswerExceptionIfAnswerNrIsGreater3() throws NoAccessException, InvalidAnswerNrException {
+        gameAdministration.answerQuestion(
+                mock.mockSampleUser(),
+                mock.mockVocabduelRound().getGame().getId(),
+                mock.mockVocabduelRound().getRoundNr(),
+                4711
+        );
+    }
+
+    @Test(expected = InvalidAnswerNrException.class)
+    public void shouldThrowInvalidAnswerExceptionIfRoundNrIsSmaller1() throws NoAccessException, InvalidAnswerNrException {
+        gameAdministration.answerQuestion(
+                mock.mockSampleUser(),
+                mock.mockVocabduelRound().getGame().getId(),
+                0,
+                1
+        );
+    }
+
+    @Test(expected = InvalidAnswerNrException.class)
+    public void shouldThrowInvalidAnswerExceptionIfRoundNrIsGreater9() throws NoAccessException, InvalidAnswerNrException {
+        gameAdministration.answerQuestion(
+                mock.mockSampleUser(),
+                mock.mockVocabduelRound().getGame().getId(),
+                10,
+                1
+        );
+    }
+
+    @Test(expected = NoAccessException.class)
+    public void shouldThrowNoAccessExceptionIfRoundIsNotNext() throws NoAccessException, InvalidAnswerNrException {
+        gameAdministration.answerQuestion(
+                mock.mockSampleUser(),
+                mock.mockVocabduelRound().getGame().getId(),
+                8,
+                1
+        );
     }
 }
