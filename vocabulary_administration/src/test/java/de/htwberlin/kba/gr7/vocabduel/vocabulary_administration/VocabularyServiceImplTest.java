@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
@@ -114,7 +111,6 @@ public class VocabularyServiceImplTest {
 
     @Test(expected = DuplicateVocablesInSetException.class)
     public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
-        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_duplicate_vocabulary.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
@@ -134,7 +130,6 @@ public class VocabularyServiceImplTest {
 
     @Test(expected = InvalidVocableListException.class)
     public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
-        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_invalid_format.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }

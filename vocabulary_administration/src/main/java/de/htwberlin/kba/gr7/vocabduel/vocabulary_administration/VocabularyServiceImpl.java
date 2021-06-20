@@ -52,13 +52,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         lines.remove(0);
         final SupportedLanguage langFrom = mapLanguageReference(headline.get(1));
         final SupportedLanguage langTo = mapLanguageReference(headline.get(2));
-        final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
         final String listName = headline.get(0);
-
-        if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
-        else if (unit.getVocableLists().stream().anyMatch(vl -> vl.getTitle().equals(listName))) {
-            throw new DataAlreadyExistsException("List named \"" + listName + "\" does already exist!");
-        }
 
         final List<Vocable> vocables = parseGnuVocableData(lines);
         validateVocables(vocables);
@@ -68,6 +62,13 @@ public class VocabularyServiceImpl implements VocabularyService {
         list.setAuthor(triggeringUser);
         list.setVocables(parseGnuVocableData(lines));
         list.setTimestamp(new Date());
+
+        final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
+        if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
+        else if (unit.getVocableLists().stream().anyMatch(vl -> vl.getTitle().equals(listName))) {
+            throw new DataAlreadyExistsException("List named \"" + listName + "\" does already exist!");
+        }
+
         unit.getVocableLists().add(list);
 
         ENTITY_MANAGER.getTransaction().begin();
