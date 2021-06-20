@@ -15,6 +15,10 @@ public class VocableUnit {
     public VocableUnit() {
     }
 
+    public VocableUnit(final Long id) {
+        this.id = id;
+    }
+
     public VocableUnit(String title) {
         this.title = title;
     }

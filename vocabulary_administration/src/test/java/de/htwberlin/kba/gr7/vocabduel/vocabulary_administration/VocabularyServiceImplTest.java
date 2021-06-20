@@ -93,11 +93,11 @@ public class VocabularyServiceImplTest {
         existingVocableList2.setTimestamp(new Date());
         existingVocableList2.setVocables(mockVocablesEsEn(fruitsEsEn));
 
-        existingVocableUnit = new VocableUnit();
+        existingVocableUnit = new VocableUnit(123L);
         existingVocableUnit.setTitle("Español => Inglés - Vocabduel I");
         existingVocableUnit.setVocableLists(Stream.of(existingVocableList1, existingVocableList2).collect(Collectors.toList()));
 
-        emptyVocableUnit = new VocableUnit();
+        emptyVocableUnit = new VocableUnit(456L);
         emptyVocableUnit.setTitle("This unit is empty");
 
         existingLanguageSet = new LanguageSet();
@@ -110,8 +110,6 @@ public class VocabularyServiceImplTest {
         emptyLanguagesSet.setLearntLanguage(SupportedLanguage.JA);
 
         languages = Stream.of(existingLanguageSet, emptyLanguagesSet).collect(Collectors.toList());
-        // Mock existing languages (private field => Whitebox#setInternalState)
-        //Whitebox.setInternalState(vocabularyLib, "allLanguageSets", languages);
     }
 
     @Test(expected = DuplicateVocablesInSetException.class)
@@ -130,8 +128,6 @@ public class VocabularyServiceImplTest {
 
     @Test(expected = IncompleteVocableListException.class)
     public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
-        // TODO: why is this detected as unnecessary code?
-        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_incomplete_list.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
@@ -140,6 +136,12 @@ public class VocabularyServiceImplTest {
     public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_invalid_format.txt";
+        vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
+    }
+
+    @Test(expected = IncompleteVocableListException.class)
+    public void shouldNotImportGnuListWithInvalidHeadline() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+        final String pathname = "./src/test/assets/gnu_invalid_headline.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
@@ -208,8 +210,20 @@ public class VocabularyServiceImplTest {
 
     @Test
     public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException {
+        final int initialSize = existingVocableUnit.getVocableLists().size();
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
+        Assert.assertEquals(initialSize - 1, existingVocableUnit.getVocableLists().size());
+        Assert.assertEquals(0, statusCode);
+    }
+
+    @Test
+    public void shouldDeleteEmptyUnitList() throws DifferentAuthorException {
+        final int initialSize = existingLanguageSet.getVocableUnits().size();
+        existingVocableUnit.setVocableLists(existingVocableUnit.getVocableLists().stream().filter(l -> l == existingVocableList1).collect(Collectors.toList()));
+        Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit, existingLanguageSet);
+        final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
+        Assert.assertEquals(initialSize - 1, existingLanguageSet.getVocableUnits().size());
         Assert.assertEquals(0, statusCode);
     }
 
