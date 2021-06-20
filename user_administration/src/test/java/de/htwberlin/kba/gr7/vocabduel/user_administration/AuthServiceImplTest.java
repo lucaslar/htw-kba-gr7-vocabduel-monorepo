@@ -22,11 +22,11 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -131,7 +131,7 @@ public class AuthServiceImplTest {
         Mockito.when(queryMock.getSingleResult()).thenReturn(
                 new LoginData(new User(21L, newUser.getUsername(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName()),
                         BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
-        Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList<>());
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final LoggedInUser loggedInUser = auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
         final User registeredUser = userService.getUserDataByUsername(newUser.getUsername());
 
@@ -161,6 +161,12 @@ public class AuthServiceImplTest {
     @Test
     public void shouldNotLoginIfPwdIsWrong() {
         Assert.assertNull(auth.loginUser(existingUser.getEmail(), STRONG_PWD + "thisSuffixWillCauseTrouble!"));
+    }
+
+    @Test
+    public void shouldNotLoginIfNOTfOUND() {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
+        Assert.assertNull(auth.loginUser("does not matter anyway", STRONG_PWD + "thisSuffixWillCauseTrouble!"));
     }
 
     @Test
@@ -215,6 +221,12 @@ public class AuthServiceImplTest {
     }
 
     @Test
+    public void shouldNotRefreshTokensIfNotFound() {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
+        Assert.assertNull(auth.refreshAuthTokens(validRefreshToken));
+    }
+
+    @Test
     public void shouldNotRefreshTokensIfRefreshTokenExpired() {
         Assert.assertNull(auth.refreshAuthTokens(expiredRefreshToken));
     }
@@ -247,6 +259,17 @@ public class AuthServiceImplTest {
         Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, dbPwd.toCharArray())));
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         auth.updateUserPassword(existingUser, falsePwd, newPwd, newPwd);
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldThrowInvalidUserExceptionIfUserNotFound() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+        Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
+        auth.updateUserPassword(existingUser, "does", "not", "matter");
+    }
+
+    @Test(expected = InvalidUserException.class)
+    public void shouldThrowInvalidUserExceptionIfUserIsNull() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+        auth.updateUserPassword(existingUser, "does", "not", "matter");
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)

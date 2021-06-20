@@ -86,6 +86,13 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void shouldReturnNullIfNoUsersFound() {
+        Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
+        final List<User> results = userAdministration.findUsersByUsername(EXISTING_USERNAME_PART);
+        Assert.assertNull(results);
+    }
+
+    @Test
     public void shouldFindThreeUsersContainingUsernameStrIgnoringCase() {
         final String upperCaseStr = EXISTING_USERNAME_PART.toUpperCase();
         Mockito.when(queryMock.getResultList()).thenReturn(usersList.stream().filter(t ->
