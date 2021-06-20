@@ -74,6 +74,31 @@ public class GameServiceImplAnswerQuestionTest {
         Assert.assertNull(result.getCorrectAnswer());
     }
 
+    @Test()
+    public void shouldAnswerQuestionAsSecondPlayer() throws InvalidAnswerNrException, NoAccessException {
+        CorrectAnswerResult result = gameAdministration.answerQuestion(
+                mock.mockOpponent(),
+                mock.mockVocabduelRound().getGame().getId(),
+                mock.mockVocabduelRound().getRoundNr(),
+                1);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(Result.WIN, result.getResult());
+        Assert.assertEquals(Result.WIN, mock.mockVocabduelRound().getResultPlayerB());
+        Assert.assertNull(result.getCorrectAnswer());
+    }
+
+    @Test()
+    public void shouldNotAlterRoundDataIfPlayerIsNull() throws InvalidAnswerNrException, NoAccessException {
+        CorrectAnswerResult result = gameAdministration.answerQuestion(
+                null,
+                mock.mockVocabduelRound().getGame().getId(),
+                mock.mockVocabduelRound().getRoundNr(),
+                1);
+        Assert.assertNull(result);
+        Assert.assertNull(mock.mockVocabduelRound().getResultPlayerA());
+        Assert.assertNull(mock.mockVocabduelRound().getResultPlayerB());
+    }
+
     @Test(expected = InvalidAnswerNrException.class)
     public void shouldThrowInvalidAnswerExceptionIfAnswerNrIsSmaller0() throws NoAccessException, InvalidAnswerNrException {
         gameAdministration.answerQuestion(
