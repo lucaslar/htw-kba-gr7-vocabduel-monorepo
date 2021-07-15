@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-      <artifactId>game_administration.export</artifactId>
+      <artifactId>user_administration.export</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
