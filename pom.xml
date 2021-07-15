@@ -16,6 +16,8 @@
     <module>configuration</module>
     <module>configuration.rest</module>
     <module>user_administration.rest</module>
+    <module>vocabulary_administration.rest</module>
+    <module>game_administration.rest</module>
   </modules>
 
   <properties>

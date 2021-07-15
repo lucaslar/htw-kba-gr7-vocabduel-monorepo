@@ -1,1 +1,2 @@
+- "Eclipsify" .rest-modules
 - Injection of Entity Manager without @PersistenceContext / without constructor?

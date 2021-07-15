@@ -10,10 +10,10 @@
   </parent>
 
   <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-  <artifactId>user_administration.rest</artifactId>
+  <artifactId>vocabulary_administration.rest</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>user_administration.rest</name>
+  <name>vocabulary_administration.rest</name>
   <!-- local module, so no url -->
 
   <dependencies>
@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-      <artifactId>game_administration.export</artifactId>
+      <artifactId>vocabulary_administration.export</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>

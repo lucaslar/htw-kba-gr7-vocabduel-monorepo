@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-  <artifactId>user_administration.rest</artifactId>
+  <artifactId>game_administration.rest</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>user_administration.rest</name>
