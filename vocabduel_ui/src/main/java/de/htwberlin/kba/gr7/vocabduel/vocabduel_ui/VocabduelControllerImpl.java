@@ -29,6 +29,89 @@ import java.util.stream.Collectors;
 
 @Controller
 public class VocabduelControllerImpl implements VocabduelController {
+    private final String ACTION_KEY_HELP = "help";
+    private final String ACTION_KEY_HELP_SHORT = "h";
+    private final String ACTION_KEY_QUIT = "quit";
+    private final String ACTION_KEY_QUIT_SHORT = "q";
+    private final String ACTION_KEY_LOGIN = "login";
+    private final String ACTION_KEY_LOGIN_SHORT = "li";
+    private final String ACTION_KEY_LOGIN_JWT = "login jwt";
+    private final String ACTION_KEY_LOGIN_JWT_SHORT = "lt";
+    private final String ACTION_KEY_LOGOUT = "logout";
+    private final String ACTION_KEY_LOGOUT_SHORT = "lo";
+    private final String ACTION_KEY_VOCAB_IMPORT = "vocab import";
+    private final String ACTION_KEY_VOCAB_IMPORT_SHORT = "v i";
+    private final String ACTION_KEY_VOCAB_IMPORT_SAMPLES = "vocab import samples";
+    private final String ACTION_KEY_VOCAB_IMPORT_SAMPLES_SHORT = "v i s";
+    private final String ACTION_KEY_REGISTER = "register";
+    private final String ACTION_KEY_REGISTER_SHORT = "r";
+    private final String ACTION_KEY_USER_UPDATE = "user update";
+    private final String ACTION_KEY_USER_UPDATE_SHORT = "u u";
+    private final String ACTION_KEY_USER_UPDATE_PWD = "user update pwd";
+    private final String ACTION_KEY_USER_UPDATE_PWD_SHORT = "u u pwd";
+    private final String ACTION_KEY_WHOAMI = "whoami";
+    private final String ACTION_KEY_LANG_LS = "lang ls";
+    private final String ACTION_KEY_LANG_LS_CODES = "lang ls codes";
+    private final String ACTION_KEY_LANG_LS_CODES_SHORT = "lang ls c";
+    private final String ACTION_KEY_VOCAB_LS = "vocab ls";
+    private final String ACTION_KEY_VOCAB_LS_SHORT = "v ls";
+    private final String ACTION_KEY_VOCAB_FIND = "vocab find";
+    private final String ACTION_KEY_VOCAB_FIND_SHORT = "v find";
+    private final String ACTION_KEY_VOCAB_LS_USER = "vocab ls user";
+    private final String ACTION_KEY_VOCAB_LS_USER_SHORT = "v ls u";
+    private final String ACTION_KEY_VOCAB_LS_OWN = "vocab ls own";
+    private final String ACTION_KEY_VOCAB_LS_OWN_SHORT = "v ls o";
+    private final String ACTION_KEY_USER_FIND = "user find";
+    private final String ACTION_KEY_USER_FIND_SHORT = "u find";
+    private final String ACTION_KEY_VOCAB_RM = "vocab rm";
+    private final String ACTION_KEY_VOCAB_RM_SHORT = "v rm";
+    private final String ACTION_KEY_USER_SEARCH = "user search";
+    private final String ACTION_KEY_USER_SEARCH_SHORT = "u search";
+    private final String ACTION_KEY_GAME_START = "game start";
+    private final String ACTION_KEY_GAME_START_SHORT = "g s";
+    private final String ACTION_KEY_GAME_QUESTION = "game question";
+    private final String ACTION_KEY_GAME_QUESTION_SHORT = "g q";
+    private final String ACTION_KEY_GAME_ANSWER = "game answer";
+    private final String ACTION_KEY_GAME_ANSWER_SHORT = "g a";
+    private final String ACTION_KEY_GAME_LS = "game ls";
+    private final String ACTION_KEY_GAME_LS_SHORT = "g ls";
+    private final String ACTION_KEY_SCORE_LS = "score ls";
+    private final String ACTION_KEY_SCORE_LS_SHORT = "s ls";
+    private final String ACTION_KEY_SCORE_LS_USER = "score ls user";
+    private final String ACTION_KEY_SCORE_LS_USER_SHORT = "s ls u";
+    private final String ACTION_KEY_SCORE_RECORD = "score record";
+    private final String ACTION_KEY_SCORE_RECORD_SHORT = "s r";
+    private final String ACTION_KEY_SCORE_RECORD_USER = "score record user";
+    private final String ACTION_KEY_SCORE_RECORD_USER_SHORT = "s r u";
+    private final String ACTION_KEY_USER_RM = "user rm";
+    private final String ACTION_KEY_USER_RM_SHORT = "u rm";
+
+    private final String ACTION_ARG_EMAIL = "email";
+    private final String ACTION_ARG_PWD = "pwd";
+    private final String ACTION_ARG_TOKEN = "token";
+    private final String ACTION_ARG_REFRESH = "refresh";
+    private final String ACTION_ARG_FILE = "file";
+    private final String ACTION_ARG_USERNAME = "username";
+    private final String ACTION_ARG_FIRSTNAME = "firstname";
+    private final String ACTION_ARG_LASTNAME = "lastname";
+    private final String ACTION_ARG_CONFIRM = "confirm";
+    private final String ACTION_ARG_CURRENT_PWD = "currentpwd";
+    private final String ACTION_ARG_NEW_PWD = "newpwd";
+    private final String ACTION_ARG_ID = "id";
+    private final String ACTION_ARG_OPPONENT = "opponent";
+    private final String ACTION_ARG_VOCABLE_LISTS = "vocablelists";
+    private final String ACTION_ARG_STR = "str";
+    private final String ACTION_ARG_ROUND = "round";
+    private final String ACTION_ARG_ANSWER = "answer";
+    private final String ACTION_ARG_LEVEL = "level";
+    private final String ACTION_ARG_LANG = "lang";
+    private final String ACTION_ARG_UNIT = "unit";
+    private final String ACTION_ARG_LIST = "list";
+    private final String ACTION_ARG_VOCAB = "vocab";
+    private final String ACTION_ARG_A = "a";
+    private final String ACTION_ARG_B = "b";
+    private final String ACTION_ARG_C = "c";
+    private final String ACTION_ARG_D = "d";
 
     private final VocabduelView VIEW;
     private final CliSessionStorage STORAGE;
@@ -44,11 +127,6 @@ public class VocabduelControllerImpl implements VocabduelController {
     private HashMap<String, VocabduelCliAction> actions;
     private List<VocabduelCliAction> actionsList;
     private boolean isRunning = true;
-
-    private final String LO_KEY = "logout";
-    private final String LO_SHORT = "lo";
-    private final String GA_KEY = "game answer";
-    private final String GQ_KEY = "game question";
 
     public VocabduelControllerImpl(
             final VocabduelView view,
@@ -90,35 +168,35 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void initializeFunctionsList() {
         actionsList = new ArrayList<>();
-        actionsList.add(new VocabduelCliAction(false, "help", "Get a list of all possible actions", "h", this::onHelpCalled));
-        actionsList.add(new VocabduelCliAction(false, "quit", "Quit this application", "q", this::onQuitCalled));
-        actionsList.add(new VocabduelCliAction(false, "login", "Sign in to your existing account", "li", this::onLoginCalled, "email", "pwd"));
-        actionsList.add(new VocabduelCliAction(false, "login jwt", "Sign in with to your existing account using JWT tokens", "lt", this::onLoginJwtCalled, "token", "refresh"));
-        actionsList.add(new VocabduelCliAction(true, LO_KEY, "Log out from the application", LO_SHORT, this::onLogoutCalled));
-        actionsList.add(new VocabduelCliAction(true, "vocab import", "Import a GNU vocabulary list", "v i", this::onVocableImportCalled, "file"));
-        actionsList.add(new VocabduelCliAction(true, "vocab import samples", "Import default vocabulary lists", "v i s", this::onVocableSampleCalled));
-        actionsList.add(new VocabduelCliAction(false, "register", "Sign up as a new user", "r", this::onRegistrationCalled, "email", "username", "firstname", "lastname", "pwd", "confirm"));
-        actionsList.add(new VocabduelCliAction(true, "user update", "Update the currently logged in user's data", "u u", this::onUpdateCalled));
-        actionsList.add(new VocabduelCliAction(true, "user update pwd", "Update the currently logged in user's password", "u u pwd", this::onUpdatePwdCalled, "currentpwd", "newpwd", "confirm"));
-        actionsList.add(new VocabduelCliAction(true, "whoami", "See current user data", this::onWhoAmICalled));
-        actionsList.add(new VocabduelCliAction(false, "lang ls", "See a list of all supported languages", this::onVocabSupportedCalled));
-        actionsList.add(new VocabduelCliAction(false, "lang ls codes", "See a list of all supported languages (codes only)", "lang ls c", this::onVocabSupportedCodesCalled));
-        actionsList.add(new VocabduelCliAction(false, "vocab ls", "See a list of all language sets and their units/lists (based on optional params)", "v ls", this::onVocabListsCalled));
-        actionsList.add(new VocabduelCliAction(false, "vocab find", "Get a vocable list by ID", "v find", this::onFindVocabListCalled, "id"));
-        actionsList.add(new VocabduelCliAction(false, "vocab ls user", "Get all vocable lists imported by a given user (determined by optional params)", "v ls u", this::onGetVocabListsByUserCalled));
-        actionsList.add(new VocabduelCliAction(true, "vocab ls own", "Get all vocable lists imported by the currently logged in user", "v ls o", this::onGetOwnVocabListsCalled));
-        actionsList.add(new VocabduelCliAction(false, "user find", "Find a user (optional params for determination)", "u find", this::onFindUserCalled));
-        actionsList.add(new VocabduelCliAction(true, "vocab rm", "Delete a vocab list by id (you have to be the list's author)", "v rm", this::onDeleteVocabListCalled, "id"));
-        actionsList.add(new VocabduelCliAction(false, "user search", "Search for users with a given search string to be compared with user names (case insensitive)", "u search", this::onUserSearchCalled, "str"));
-        actionsList.add(new VocabduelCliAction(true, "game start", "Start a new game (Vocable lists can be separated by spaces)", "g s", this::onGameStarted, "opponent", "vocablelists"));
-        actionsList.add(new VocabduelCliAction(true, GQ_KEY, "See the next question of a current game", "g q", this::onGameRoundStarted, "id"));
-        actionsList.add(new VocabduelCliAction(true, GA_KEY, "Answer the question of a given round (by game id/round)", "g a", this::onGameRoundAnswered, "id", "round", "answer"));
-        actionsList.add(new VocabduelCliAction(true, "game ls", "See a list of all current running games", "g ls", this::onGameListCalled));
-        actionsList.add(new VocabduelCliAction(true, "score ls", "See a list of all your scores, i.e. the results of finished games", "s ls", this::onScoreHistCalled));
-        actionsList.add(new VocabduelCliAction(false, "score ls user", "See a list of all scores of another user (determined by optional params)", "s ls u", this::onScoreUserCalled));
-        actionsList.add(new VocabduelCliAction(true, "score record", "See your own record", "s r", this::onScoreRecordCalled));
-        actionsList.add(new VocabduelCliAction(false, "score record user", "See the record of a given user (determined by optional params)", "s r u", this::onScoreRecordUserCalled));
-        actionsList.add(new VocabduelCliAction(true, "user rm", "Delete the current user account", "u rm", this::onUserDeleteCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_HELP, "Get a list of all possible actions", ACTION_KEY_HELP_SHORT, this::onHelpCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_QUIT, "Quit this application", ACTION_KEY_QUIT_SHORT, this::onQuitCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_LOGIN, "Sign in to your existing account", ACTION_KEY_LOGIN_SHORT, this::onLoginCalled, ACTION_ARG_EMAIL, ACTION_ARG_PWD));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_LOGIN_JWT, "Sign in with to your existing account using JWT tokens", ACTION_KEY_LOGIN_JWT_SHORT, this::onLoginJwtCalled, ACTION_ARG_TOKEN, ACTION_ARG_REFRESH));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_LOGOUT, "Log out from the application", ACTION_KEY_LOGOUT_SHORT, this::onLogoutCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_VOCAB_IMPORT, "Import a GNU vocabulary list", ACTION_KEY_VOCAB_IMPORT_SHORT, this::onVocableImportCalled, ACTION_ARG_FILE));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_VOCAB_IMPORT_SAMPLES, "Import default vocabulary lists", ACTION_KEY_VOCAB_IMPORT_SAMPLES_SHORT, this::onVocableSampleCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_REGISTER, "Sign up as a new user", ACTION_KEY_REGISTER_SHORT, this::onRegistrationCalled, ACTION_ARG_EMAIL, ACTION_ARG_USERNAME, ACTION_ARG_FIRSTNAME, ACTION_ARG_LASTNAME, ACTION_ARG_PWD, ACTION_ARG_CONFIRM));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_USER_UPDATE, "Update the currently logged in user's data", ACTION_KEY_USER_UPDATE_SHORT, this::onUpdateCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_USER_UPDATE_PWD, "Update the currently logged in user's password", ACTION_KEY_USER_UPDATE_PWD_SHORT, this::onUpdatePwdCalled, ACTION_ARG_CURRENT_PWD, ACTION_ARG_NEW_PWD, ACTION_ARG_CONFIRM));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_WHOAMI, "See current user data", this::onWhoAmICalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_LANG_LS, "See a list of all supported languages", this::onVocabSupportedCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_LANG_LS_CODES, "See a list of all supported languages (codes only)", ACTION_KEY_LANG_LS_CODES_SHORT, this::onVocabSupportedCodesCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_VOCAB_LS, "See a list of all language sets and their units/lists (based on optional params)", ACTION_KEY_VOCAB_LS_SHORT, this::onVocabListsCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_VOCAB_FIND, "Get a vocable list by ID", ACTION_KEY_VOCAB_FIND_SHORT, this::onFindVocabListCalled, ACTION_ARG_ID));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_VOCAB_LS_USER, "Get all vocable lists imported by a given user (determined by optional params)", ACTION_KEY_VOCAB_LS_USER_SHORT, this::onGetVocabListsByUserCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_VOCAB_LS_OWN, "Get all vocable lists imported by the currently logged in user", ACTION_KEY_VOCAB_LS_OWN_SHORT, this::onGetOwnVocabListsCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_USER_FIND, "Find a user (optional params for determination)", ACTION_KEY_USER_FIND_SHORT, this::onFindUserCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_VOCAB_RM, "Delete a vocab list by id (you have to be the list's author)", ACTION_KEY_VOCAB_RM_SHORT, this::onDeleteVocabListCalled, ACTION_ARG_ID));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_USER_SEARCH, "Search for users with a given search string to be compared with user names (case insensitive)", ACTION_KEY_USER_SEARCH_SHORT, this::onUserSearchCalled, ACTION_ARG_STR));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_GAME_START, "Start a new game (Vocable lists can be separated by spaces)", ACTION_KEY_GAME_START_SHORT, this::onGameStarted, ACTION_ARG_OPPONENT, ACTION_ARG_VOCABLE_LISTS));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_GAME_QUESTION, "See the next question of a current game", ACTION_KEY_GAME_QUESTION_SHORT, this::onGameRoundStarted, ACTION_ARG_ID));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_GAME_ANSWER, "Answer the question of a given round (by game id/round)", ACTION_KEY_GAME_ANSWER_SHORT, this::onGameRoundAnswered, ACTION_ARG_ID, ACTION_ARG_ROUND, ACTION_ARG_ANSWER));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_GAME_LS, "See a list of all current running games", ACTION_KEY_GAME_LS_SHORT, this::onGameListCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_SCORE_LS, "See a list of all your scores, i.e. the results of finished games", ACTION_KEY_SCORE_LS_SHORT, this::onScoreHistCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_SCORE_LS_USER, "See a list of all scores of another user (determined by optional params)", ACTION_KEY_SCORE_LS_USER_SHORT, this::onScoreUserCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_SCORE_RECORD, "See your own record", ACTION_KEY_SCORE_RECORD_SHORT, this::onScoreRecordCalled));
+        actionsList.add(new VocabduelCliAction(false, ACTION_KEY_SCORE_RECORD_USER, "See the record of a given user (determined by optional params)", ACTION_KEY_SCORE_RECORD_USER_SHORT, this::onScoreRecordUserCalled));
+        actionsList.add(new VocabduelCliAction(true, ACTION_KEY_USER_RM, "Delete the current user account", ACTION_KEY_USER_RM_SHORT, this::onUserDeleteCalled));
     }
 
     private void initializeFunctionsMap() {
@@ -139,7 +217,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
             VIEW.printActionRequiresLogin();
-        } else if (action.isGuarded() && !actionName.equals(LO_KEY) && !actionName.equals(LO_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
+        } else if (action.isGuarded() && !actionName.equals(ACTION_KEY_LOGOUT) && !actionName.equals(ACTION_KEY_LOGOUT_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
             VIEW.printInvalidAuthToken();
             final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
             if (tokens != null) {
@@ -210,7 +288,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onLoginCalled(final HashMap<String, String> args) {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
-            final LoggedInUser user = AUTH_SERVICE.loginUser(args.get("email"), args.get("pwd"));
+            final LoggedInUser user = AUTH_SERVICE.loginUser(args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_PWD));
             if (user == null) VIEW.printInvalidLogin();
             else {
                 STORAGE.setLoggedInUser(user);
@@ -222,8 +300,8 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onLoginJwtCalled(final HashMap<String, String> args) {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
-            String token = args.get("token");
-            String refreshToken = args.get("refresh");
+            String token = args.get(ACTION_ARG_TOKEN);
+            String refreshToken = args.get(ACTION_ARG_REFRESH);
             final boolean isValidInitialToken = AUTH_SERVICE.hasAccessRights(token);
 
             if (!isValidInitialToken) {
@@ -260,7 +338,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onVocableImportCalled(final HashMap<String, String> args) {
         Scanner input = null;
         try {
-            input = new Scanner(new File(args.get("file")));
+            input = new Scanner(new File(args.get(ACTION_ARG_FILE)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -272,7 +350,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
             try {
                 final int result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
-                if (result == 0) VIEW.printGnuImportSuccessful(args.get("file"));
+                if (result == 0) VIEW.printGnuImportSuccessful(args.get(ACTION_ARG_FILE));
             } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException e) {
                 e.printStackTrace();
             }
@@ -283,7 +361,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         final String path = "./vocabduel_ui/assets/vocabulary/";
         for (String file : Objects.requireNonNull(new File(path).list())) {
             final HashMap<String, String> args = new HashMap<>();
-            args.put("file", path + file);
+            args.put(ACTION_ARG_FILE, path + file);
             onVocableImportCalled(args);
         }
     }
@@ -292,7 +370,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
             try {
-                final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get("username"), args.get("email"), args.get("firstname"), args.get("lastname"), args.get("pwd"), args.get("confirm"));
+                final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get(ACTION_ARG_USERNAME), args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_FIRSTNAME), args.get(ACTION_ARG_LASTNAME), args.get(ACTION_ARG_PWD), args.get(ACTION_ARG_CONFIRM));
                 STORAGE.setLoggedInUser(loggedInUser);
                 VIEW.printSuccessfulRegistration(loggedInUser);
             } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
@@ -302,7 +380,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onUpdateCalled(final HashMap<String, String> args) {
-        VIEW.printOptionalParamsInfo(args.keySet(), "username", "email", "firstname", "lastname");
+        VIEW.printOptionalParamsInfo(args.keySet(), ACTION_ARG_USERNAME, ACTION_ARG_EMAIL, ACTION_ARG_FIRSTNAME, ACTION_ARG_LASTNAME);
         final LoggedInUser user = STORAGE.getLoggedInUser();
 
         final String prevUsername = user.getUsername();
@@ -310,12 +388,12 @@ public class VocabduelControllerImpl implements VocabduelController {
         final String prevLastname = user.getLastName();
         final String prevEmail = user.getEmail();
 
-        if (args.get("username") != null) user.setUsername(args.get("username"));
-        if (args.get("email") != null) user.setEmail(args.get("email"));
-        if (args.get("firstname") != null) user.setFirstName(args.get("firstname"));
-        if (args.get("lastname") != null) user.setLastName(args.get("lastname"));
+        if (args.get(ACTION_ARG_USERNAME) != null) user.setUsername(args.get(ACTION_ARG_USERNAME));
+        if (args.get(ACTION_ARG_EMAIL) != null) user.setEmail(args.get(ACTION_ARG_EMAIL));
+        if (args.get(ACTION_ARG_FIRSTNAME) != null) user.setFirstName(args.get(ACTION_ARG_FIRSTNAME));
+        if (args.get(ACTION_ARG_LASTNAME) != null) user.setLastName(args.get(ACTION_ARG_LASTNAME));
 
-        if (args.get("username") != null || args.get("email") != null || args.get("firstname") != null || args.get("lastname") != null) {
+        if (args.get(ACTION_ARG_USERNAME) != null || args.get(ACTION_ARG_EMAIL) != null || args.get(ACTION_ARG_FIRSTNAME) != null || args.get(ACTION_ARG_LASTNAME) != null) {
             try {
                 USER_SERVICE.updateUser(LoggedInUser.asUser(user));
                 VIEW.printSuccessfulUserUpdate(user);
@@ -331,7 +409,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onUpdatePwdCalled(final HashMap<String, String> args) {
         try {
-            AUTH_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get("currentpwd"), args.get("newpwd"), args.get("confirm"));
+            AUTH_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get(ACTION_ARG_CURRENT_PWD), args.get(ACTION_ARG_NEW_PWD), args.get(ACTION_ARG_CONFIRM));
             VIEW.printSuccessfulPwdUpdate();
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException e) {
             e.printStackTrace();
@@ -361,26 +439,26 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onVocabListsCalled(final HashMap<String, String> args) {
         final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets();
-        VIEW.printLanguageSets(languageSets, args == null ? null : args.get("level"));
+        VIEW.printLanguageSets(languageSets, args == null ? null : args.get(ACTION_ARG_LEVEL));
 
         if (languageSets != null && !languageSets.isEmpty()) {
             List<String[]> options = new ArrayList<>();
-            options.add(new String[]{"lang", "Only list the language sets"});
-            options.add(new String[]{"unit", "See previous command + vocable units of each language set"});
-            options.add(new String[]{"list", "See previous command + vocable lists of each unit"});
-            options.add(new String[]{"vocab", "See previous command + vocables of each list"});
-            VIEW.printConfigurableThroughParam("level", options);
+            options.add(new String[]{ACTION_ARG_LANG, "Only list the language sets"});
+            options.add(new String[]{ACTION_ARG_UNIT, "See previous command + vocable units of each language set"});
+            options.add(new String[]{ACTION_ARG_LIST, "See previous command + vocable lists of each unit"});
+            options.add(new String[]{ACTION_ARG_VOCAB, "See previous command + vocables of each list"});
+            VIEW.printConfigurableThroughParam(ACTION_ARG_LEVEL, options);
         }
     }
 
     private void onFindVocabListCalled(final HashMap<String, String> args) {
         try {
-            final Long id = Long.parseLong(args.get("id"));
+            final Long id = Long.parseLong(args.get(ACTION_ARG_ID));
             final VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
             if (list != null) VIEW.printVocableList(list);
             else VIEW.printNoVocableListFound();
         } catch (NumberFormatException e) {
-            VIEW.printInvalidIdFormat(args.get("id"));
+            VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
         }
     }
 
@@ -405,22 +483,22 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private User findUser(final HashMap<String, String> args) {
-        VIEW.printOptionalParamsInfo(args.keySet(), "id", "username", "email");
+        VIEW.printOptionalParamsInfo(args.keySet(), ACTION_ARG_ID, ACTION_ARG_USERNAME, ACTION_ARG_EMAIL);
         User user = null;
-        if (args.get("id") != null) {
-            VIEW.printDeterminingUserBy("id");
+        if (args.get(ACTION_ARG_ID) != null) {
+            VIEW.printDeterminingUserBy(ACTION_ARG_ID);
             try {
-                final Long id = Long.parseLong(args.get("id"));
+                final Long id = Long.parseLong(args.get(ACTION_ARG_ID));
                 user = USER_SERVICE.getUserDataById(id);
             } catch (NumberFormatException e) {
-                VIEW.printInvalidIdFormat(args.get("id"));
+                VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
             }
-        } else if (args.get("username") != null) {
-            VIEW.printDeterminingUserBy("username");
-            user = USER_SERVICE.getUserDataByUsername(args.get("username"));
-        } else if (args.get("email") != null) {
-            VIEW.printDeterminingUserBy("email");
-            user = USER_SERVICE.getUserDataByEmail(args.get("email"));
+        } else if (args.get(ACTION_ARG_USERNAME) != null) {
+            VIEW.printDeterminingUserBy(ACTION_ARG_USERNAME);
+            user = USER_SERVICE.getUserDataByUsername(args.get(ACTION_ARG_USERNAME));
+        } else if (args.get(ACTION_ARG_EMAIL) != null) {
+            VIEW.printDeterminingUserBy(ACTION_ARG_EMAIL);
+            user = USER_SERVICE.getUserDataByEmail(args.get(ACTION_ARG_EMAIL));
         } else VIEW.printPleaseAddParamForUser();
 
         if (user == null) VIEW.printCouldNotDetermineUser();
@@ -430,7 +508,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onDeleteVocabListCalled(final HashMap<String, String> args) {
         try {
-            final long id = Long.parseLong(args.get("id"));
+            final long id = Long.parseLong(args.get(ACTION_ARG_ID));
             final VocableList vocableList = VOCABULARY_SERVICE.getVocableListById(id);
             if (vocableList == null) VIEW.printNoVocableListFound();
             else {
@@ -438,7 +516,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printSuccessfullyDeletedVocabList(id);
             }
         } catch (NumberFormatException e) {
-            VIEW.printInvalidIdFormat(args.get("id"));
+            VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
         } catch (PersistenceException e) {
@@ -447,7 +525,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onUserSearchCalled(final HashMap<String, String> args) {
-        final String searchStr = args.get("str");
+        final String searchStr = args.get(ACTION_ARG_STR);
         final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
         if (users == null || users.size() == 0) VIEW.printNoUsersFound();
         else VIEW.printFoundUsers(users, searchStr);
@@ -457,15 +535,15 @@ public class VocabduelControllerImpl implements VocabduelController {
         User opponent = null;
 
         try {
-            opponent = USER_SERVICE.getUserDataById(Long.parseLong(args.get("opponent")));
+            opponent = USER_SERVICE.getUserDataById(Long.parseLong(args.get(ACTION_ARG_OPPONENT)));
         } catch (NumberFormatException e) {
-            VIEW.printInvalidIdFormat(args.get("opponent"));
+            VIEW.printInvalidIdFormat(args.get(ACTION_ARG_OPPONENT));
         }
 
         if (opponent != null) {
             try {
                 final List<Long> uniqueVocabIds = new ArrayList<>(new HashSet<>(
-                        Arrays.stream(args.get("vocablelists").split("\\s"))
+                        Arrays.stream(args.get(ACTION_ARG_VOCABLE_LISTS).split("\\s"))
                                 .map(Long::parseLong)
                                 .collect(Collectors.toList())
                 ));
@@ -474,9 +552,9 @@ public class VocabduelControllerImpl implements VocabduelController {
                         .stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
 
                 final RunningVocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists);
-                VIEW.printSuccessfullyStaredGame(game, GQ_KEY);
+                VIEW.printSuccessfullyStaredGame(game, ACTION_KEY_GAME_QUESTION);
             } catch (NumberFormatException e) {
-                VIEW.printInvalidIdPartFormat(args.get("vocablelists"));
+                VIEW.printInvalidIdPartFormat(args.get(ACTION_ARG_VOCABLE_LISTS));
             } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException e) {
                 e.printStackTrace();
             }
@@ -484,22 +562,22 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onGameRoundAnswered(final HashMap<String, String> args) {
-        final String[] options = new String[]{"a", "b", "c", "d"};
+        final String[] options = new String[]{ACTION_ARG_A, ACTION_ARG_B, ACTION_ARG_C, ACTION_ARG_D};
         Long gameId = null;
 
-        if (Arrays.stream(options).noneMatch(v -> v.equals(args.get("answer")))) {
+        if (Arrays.stream(options).noneMatch(v -> v.equals(args.get(ACTION_ARG_ANSWER)))) {
             VIEW.printNoValidAnswer();
         } else {
             try {
-                gameId = Long.parseLong(args.get("id"));
+                gameId = Long.parseLong(args.get(ACTION_ARG_ID));
             } catch (NumberFormatException e) {
-                VIEW.printInvalidIdFormat(args.get("id"));
+                VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
             }
 
             if (gameId != null) {
                 try {
-                    final int roundNr = Integer.parseInt(args.get("round"));
-                    final int answer = ((int) args.get("answer").charAt(0)) - 97;
+                    final int roundNr = Integer.parseInt(args.get(ACTION_ARG_ROUND));
+                    final int answer = ((int) args.get(ACTION_ARG_ANSWER).charAt(0)) - 97;
                     final CorrectAnswerResult result = GAME_SERVICE.answerQuestion(STORAGE.getLoggedInUser(), gameId, roundNr, answer);
                     assert (result != null);
                     if (result.getResult() == Result.WIN) VIEW.printRoundResultWin();
@@ -511,7 +589,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                         VIEW.printFinishedGame(finishedGame);
                     }
                 } catch (NumberFormatException e) {
-                    VIEW.printInvalidIdFormat(args.get("round"));
+                    VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ROUND));
                 } catch (InvalidAnswerNrException | NoAccessException e) {
                     e.printStackTrace();
                 } catch (UnfinishedGameException e) {
@@ -523,11 +601,11 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onGameRoundStarted(final HashMap<String, String> args) {
         try {
-            final long id = Long.parseLong(args.get("id"));
+            final long id = Long.parseLong(args.get(ACTION_ARG_ID));
             final VocabduelRound round = GAME_SERVICE.startRound(STORAGE.getLoggedInUser(), id);
-            VIEW.printQuestionAndAnswers(round, GA_KEY);
+            VIEW.printQuestionAndAnswers(round, ACTION_KEY_GAME_ANSWER);
         } catch (NumberFormatException e) {
-            VIEW.printInvalidIdFormat(args.get("id"));
+            VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
         } catch (NoAccessException e) {
             e.printStackTrace();
         }
@@ -583,8 +661,8 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onUserDeleteCalled(final HashMap<String, String> args) {
         final String firstname = STORAGE.getLoggedInUser().getFirstName();
-        final String confirmFlag = "--confirm true";
-        if (args.get("confirm") != null && args.get("confirm").equals("true")) {
+        final String confirmFlag = "--" + ACTION_ARG_CONFIRM + " true";
+        if (args.get(ACTION_ARG_CONFIRM) != null && args.get(ACTION_ARG_CONFIRM).equals("true")) {
             USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
             GAME_SERVICE.removeWidowGames();
             STORAGE.setLoggedInUser(null);
