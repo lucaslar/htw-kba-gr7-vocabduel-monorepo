@@ -8,12 +8,10 @@ import java.util.List;
 
 public interface FinishedVocabduelGameDAO {
 
-    void insertFinishedVocabduelGame(RunningVocabduelGame game);
+    FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game);
 
     List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User player);
 
-    List<FinishedVocabduelGame> selectFinishedVocabduelGamesWhereUserDoesntExist();
-
-    boolean deleteFinishedVocabduelGamesByGames(List<FinishedVocabduelGame> games);
+    boolean deleteFinishedVocabduelGamesWhereUserDoesntExist();
 
 }

@@ -24,7 +24,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
      * @param game RunningVocabduelGame
      */
     @Override
-    public void insertFinishedVocabduelGame(RunningVocabduelGame game) {
+    public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) {
         ENTITY_MANAGER.getTransaction().begin();
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
         finishedGame.setFinishedTimestamp(new Date());
@@ -33,6 +33,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
         ENTITY_MANAGER.persist(finishedGame);
         ENTITY_MANAGER.remove(game);
         ENTITY_MANAGER.getTransaction().commit();
+        return finishedGame;
     }
 
     @Override
@@ -53,27 +54,20 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
     }
 
     @Override
-    public List<FinishedVocabduelGame> selectFinishedVocabduelGamesWhereUserDoesntExist() {
-        List<FinishedVocabduelGame> finishedGames = null;
+    public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() {
+        boolean res = false;
         ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
         try {
-            finishedGames = (List<FinishedVocabduelGame>) ENTITY_MANAGER
+            final List<FinishedVocabduelGame> finishedGames = (List<FinishedVocabduelGame>) ENTITY_MANAGER
                     .createQuery("select f from FinishedVocabduelGame f where (playerA_id not in (select id from User) and playerB_id not in (select id from User))")
                     .getResultList();
-        } catch (NoResultException ignored){
+            finishedGames.forEach(ENTITY_MANAGER::remove);
+            res = true;
+        } catch (NoResultException ignored) {
         }
         ENTITY_MANAGER.getTransaction().commit();
-        return finishedGames;
-    }
-
-    @Override
-    public boolean deleteFinishedVocabduelGamesByGames(List<FinishedVocabduelGame> games) {
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
-        games.forEach(ENTITY_MANAGER::remove);
-        ENTITY_MANAGER.getTransaction().commit();
-        return true;
+        return res;
     }
 
 }

@@ -11,10 +11,8 @@ public interface RunningVocabduelGameDAO {
 
     List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User player);
 
-    List<RunningVocabduelGame> selectRunningVocabduelGameWhereUserDoesntExist();
+    RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User user, Long gameId);
 
-    RunningVocabduelGame selectRunningVocabduelGameByGameAndUser(RunningVocabduelGame game, User user);
-
-    boolean deleteRunningVocabduelGameByGames(List<RunningVocabduelGame> games);
+    boolean deleteRunningVocabduelGameWhereUserDoesntExist();
 
 }

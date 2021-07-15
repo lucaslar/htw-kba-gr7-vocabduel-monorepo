@@ -1,5 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
@@ -10,21 +12,24 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {
     @PersistenceContext(unitName = "VocabduelJPA_PU")
-    private final EntityManager ENTITY_MANAGER;
+    //private final EntityManager ENTITY_MANAGER;
     private final UserService USER_SERVICE;
+
+    private final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO;
+    private final RunningVocabduelGameDAOImpl runningVocabduelGameDAO;
 
     public ScoreServiceImpl(final UserService userService, final EntityManager entityManager) {
         USER_SERVICE = userService;
-        ENTITY_MANAGER = entityManager;
+
+        finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+        runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
     }
 
     @Override
@@ -33,18 +38,8 @@ public class ScoreServiceImpl implements ScoreService {
             throw new InvalidUserException("User could not be found");
         }
 
-        List<FinishedVocabduelGame> games = null;
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            games = (List<FinishedVocabduelGame>) ENTITY_MANAGER
-                    .createQuery("select g from FinishedVocabduelGame g where (g.playerA = :user or g.playerB = :user)")
-                    .setParameter("user", user)
-                    .getResultList();
+        List<FinishedVocabduelGame> games = finishedVocabduelGameDAO.selectFinishedVocabduelGamesByUser(user);
 
-        } catch (NoResultException ignored) {
-        }
-        ENTITY_MANAGER.getTransaction().commit();
         return games != null
                 ? games.stream().map(g -> personifyFinishedGame(user, g)).collect(Collectors.toList())
                 : null;
@@ -66,31 +61,14 @@ public class ScoreServiceImpl implements ScoreService {
     public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException {
         RunningVocabduelGame game = null;
         if (player != null) {
-            ENTITY_MANAGER.clear();
-            ENTITY_MANAGER.getTransaction().begin();
-            try {
-                game = (RunningVocabduelGame) ENTITY_MANAGER
-                        .createQuery("select g from RunningVocabduelGame g where g.id = :gameId and (g.playerA = :user or g.playerB = :user)")
-                        .setParameter("user", player)
-                        .setParameter("gameId", gameId)
-                        .getSingleResult();
-            } catch (NoResultException ignored) {
-            }
-            ENTITY_MANAGER.getTransaction().commit();
+            game = runningVocabduelGameDAO.selectRunningVocabduelGameByGameIdAndUser(player, gameId);
         }
         if (game == null) {
             throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game you have access to? Check your games to find out.");
         } else if (game.getRounds().stream().anyMatch(r -> r.getResultPlayerA() == null || r.getResultPlayerB() == null)) {
             throw new UnfinishedGameException("The game has not been finished yet.");
         } else {
-            ENTITY_MANAGER.getTransaction().begin();
-            final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
-            finishedGame.setFinishedTimestamp(new Date());
-            finishedGame.setTotalPointsA((int) game.getRounds().stream().filter(r -> r.getResultPlayerA() == Result.WIN).count());
-            finishedGame.setTotalPointsB((int) game.getRounds().stream().filter(r -> r.getResultPlayerB() == Result.WIN).count());
-            ENTITY_MANAGER.persist(finishedGame);
-            ENTITY_MANAGER.remove(game);
-            ENTITY_MANAGER.getTransaction().commit();
+            final FinishedVocabduelGame finishedGame = finishedVocabduelGameDAO.insertFinishedVocabduelGame(game);
             return personifyFinishedGame(player, finishedGame);
         }
     }

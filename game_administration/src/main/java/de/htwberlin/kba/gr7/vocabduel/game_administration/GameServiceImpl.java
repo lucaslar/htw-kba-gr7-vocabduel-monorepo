@@ -1,5 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.VocabduelRoundDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -11,7 +14,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class GameServiceImpl implements GameService {
     @PersistenceContext(unitName = "VocabduelJPA_PU")
-    private final EntityManager ENTITY_MANAGER;
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
+
+    private final RunningVocabduelGameDAOImpl runningVocabduelGameDAO;
+    private final VocabduelRoundDAOImpl vocabduelRoundDAO;
+    private final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO;
 
     public static int getFixNumberOfRoundsPerGame() {
         return GameService.NR_OF_ROUNDS;
@@ -30,7 +35,10 @@ public class GameServiceImpl implements GameService {
     public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager) {
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
-        ENTITY_MANAGER = entityManager;
+
+        runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
+        finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
     }
 
     @Override
@@ -40,9 +48,7 @@ public class GameServiceImpl implements GameService {
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
         final RunningVocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(newGame);
-        ENTITY_MANAGER.getTransaction().commit();
+        runningVocabduelGameDAO.insertRunningVocabduelGame(newGame);
         return newGame;
     }
 
@@ -50,15 +56,7 @@ public class GameServiceImpl implements GameService {
     public List<RunningVocabduelGame> getPersonalChallengedGames(User user) {
         List<RunningVocabduelGame> games = null;
         if (user != null) {
-            ENTITY_MANAGER.getTransaction().begin();
-            try {
-                games = (List<RunningVocabduelGame>) ENTITY_MANAGER
-                        .createQuery("select g from RunningVocabduelGame g where (playerB = :user or playerA = :user)")
-                        .setParameter("user", user)
-                        .getResultList();
-            } catch (NoResultException ignored) {
-            }
-            ENTITY_MANAGER.getTransaction().commit();
+            games = runningVocabduelGameDAO.selectRunningVocabduelGamesByUser(user);
         }
         return games;
     }
@@ -68,17 +66,7 @@ public class GameServiceImpl implements GameService {
 
         VocabduelRound round = null;
         if (player != null) {
-            ENTITY_MANAGER.getTransaction().begin();
-            try {
-                round = (VocabduelRound) ENTITY_MANAGER
-                        .createQuery("select r from RunningVocabduelGame g inner join g.rounds r where g.id = :gameId and ((g.playerA = :user and r.resultPlayerA is null) or (g.playerB = :user and r.resultPlayerB is null))")
-                        .setParameter("user", player)
-                        .setParameter("gameId", gameId)
-                        .setMaxResults(1)
-                        .getSingleResult();
-            } catch (NoResultException ignored) {
-            }
-            ENTITY_MANAGER.getTransaction().commit();
+            round = vocabduelRoundDAO.selectVocabduelRoundByGameIdAndUser(player, gameId);
         }
         if (round == null) {
             throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
@@ -116,9 +104,7 @@ public class GameServiceImpl implements GameService {
                 if (round.getGame().getPlayerA().getId().equals(player.getId())) round.setResultPlayerA(result);
                 else round.setResultPlayerB(result);
 
-                ENTITY_MANAGER.getTransaction().begin();
-                ENTITY_MANAGER.merge(round);
-                ENTITY_MANAGER.getTransaction().commit();
+                vocabduelRoundDAO.updateVocabduelRound(round);
 
                 if (result == Result.LOSS) correctAnswerResult.setCorrectAnswer(correctAnswer.get());
                 return correctAnswerResult;
@@ -129,23 +115,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public int removeWidowGames() {
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
-                    .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
-                    .getResultList();
-            runningGames.forEach(ENTITY_MANAGER::remove);
-        } catch (NoResultException ignored) {
-        }
-        try {
-            final List<FinishedVocabduelGame> finishedGames = (List<FinishedVocabduelGame>) ENTITY_MANAGER
-                    .createQuery("select f from FinishedVocabduelGame f where (playerA_id not in (select id from User) and playerB_id not in (select id from User))")
-                    .getResultList();
-            finishedGames.forEach(ENTITY_MANAGER::remove);
-        } catch (NoResultException ignored) {
-        }
-        ENTITY_MANAGER.getTransaction().commit();
+        runningVocabduelGameDAO.deleteRunningVocabduelGameWhereUserDoesntExist();
+
+        finishedVocabduelGameDAO.deleteFinishedVocabduelGamesWhereUserDoesntExist();
 
         return 0;
     }

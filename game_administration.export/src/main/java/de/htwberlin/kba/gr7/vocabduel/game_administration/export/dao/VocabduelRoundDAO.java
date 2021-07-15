@@ -11,8 +11,6 @@ public interface VocabduelRoundDAO {
 
     boolean updateVocabduelRound(VocabduelRound round);
 
-    boolean deleteVocabduelRoundByGame(VocabduelGame game);
-
-    VocabduelRound selectVocabduelRoundByGameAndUser(RunningVocabduelGame game, User player);
+    VocabduelRound selectVocabduelRoundByGameIdAndUser(User player, Long gameId);
 
 }

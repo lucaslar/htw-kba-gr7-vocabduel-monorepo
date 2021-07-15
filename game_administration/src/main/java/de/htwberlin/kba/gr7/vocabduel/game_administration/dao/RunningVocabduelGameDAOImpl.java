@@ -46,22 +46,7 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
     }
 
     @Override
-    public List<RunningVocabduelGame> selectRunningVocabduelGameWhereUserDoesntExist() {
-        List<RunningVocabduelGame> runningGames = null;
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
-                    .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
-                    .getResultList();
-        }catch (NoResultException ignored){
-        }
-        ENTITY_MANAGER.getTransaction().commit();
-        return runningGames;
-    }
-
-    @Override
-    public RunningVocabduelGame selectRunningVocabduelGameByGameAndUser(RunningVocabduelGame game, User player) {
+    public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) {
         RunningVocabduelGame myGame = null;
         ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
@@ -69,7 +54,7 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             myGame = (RunningVocabduelGame) ENTITY_MANAGER
                     .createQuery("select g from RunningVocabduelGame g where g.id = :gameId and (g.playerA = :user or g.playerB = :user)")
                     .setParameter("user", player)
-                    .setParameter("gameId", game.getId())
+                    .setParameter("gameId", gameId)
                     .getSingleResult();
         } catch (NoResultException ignored) {
         }
@@ -77,15 +62,24 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
         return myGame;
     }
 
+    /**
+     * delete RunningVocabduelGame and VocabduelRounds, so that
+     *      delete method in VocabduelRoundsDAO is not needed
+     * @return boolean true if everything went right
+     *                 false if something bad happened
+     */
     @Override
-    public boolean deleteRunningVocabduelGameByGames(List<RunningVocabduelGame> runningGames) {
+    public boolean deleteRunningVocabduelGameWhereUserDoesntExist() {
         boolean res = false;
         ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
-        try{
+        try {
+            final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) ENTITY_MANAGER
+                    .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
+                    .getResultList();
             runningGames.forEach(ENTITY_MANAGER::remove);
             res = true;
-        } catch (NoResultException ignored){
+        } catch (NoResultException ignored) {
         }
         ENTITY_MANAGER.getTransaction().commit();
         return res;
