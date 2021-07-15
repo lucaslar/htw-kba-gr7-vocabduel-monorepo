@@ -9,11 +9,11 @@ import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class VocabduelGame {
-    @OneToOne(targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class)
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User playerA;
-    @OneToOne(targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class)
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User playerB;

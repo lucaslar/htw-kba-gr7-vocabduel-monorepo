@@ -13,7 +13,7 @@ public class VocableList {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne
+    @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User author;
