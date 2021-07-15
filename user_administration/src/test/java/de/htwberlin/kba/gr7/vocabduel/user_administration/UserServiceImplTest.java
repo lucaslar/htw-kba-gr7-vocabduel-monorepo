@@ -42,10 +42,7 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            userAdministration = new UserServiceImpl();
-        }
+        userAdministration = new UserServiceImpl(entityManager);
 
         user1 = new User(42L);
         user2 = new User(123L);

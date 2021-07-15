@@ -36,25 +36,21 @@ public class GameServiceImplRemoveWidowGamesTest {
     private Query queryMock;
 
     @Before
-    public void setup(){
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            gameService = new GameServiceImpl(userService, vocabularyService);
-        }
-
+    public void setup() {
+        gameService = new GameServiceImpl(userService, vocabularyService, entityManager);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenZeroGamesToRemove(){
+    public void shouldRemoveWidowGamesWhenZeroGamesToRemove() {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final int statusCode = gameService.removeWidowGames();
         Assert.assertEquals(0, statusCode);
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenFinishedAndRunningGameToRemove(){
+    public void shouldRemoveWidowGamesWhenFinishedAndRunningGameToRemove() {
         final RunningVocabduelGame runningGame = new RunningVocabduelGame();
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
                 new RunningVocabduelGame(1L, null, null, null, null, null)
@@ -66,7 +62,7 @@ public class GameServiceImplRemoveWidowGamesTest {
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenFinishedGameToRemove(){
+    public void shouldRemoveWidowGamesWhenFinishedGameToRemove() {
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
                 new RunningVocabduelGame(1L, null, null, null, null, null)
         );
@@ -77,7 +73,7 @@ public class GameServiceImplRemoveWidowGamesTest {
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenRunningGameToRemove(){
+    public void shouldRemoveWidowGamesWhenRunningGameToRemove() {
         final RunningVocabduelGame runningGame = new RunningVocabduelGame();
         Mockito.when(queryMock.getResultList()).thenReturn(
                 Stream.of(runningGame).collect(Collectors.toList())).thenThrow(NoResultException.class);

@@ -62,10 +62,7 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            auth = new AuthServiceImpl(userService);
-        }
+        auth = new AuthServiceImpl(userService, entityManager);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));

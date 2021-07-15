@@ -1,1 +1,1 @@
-_Nothing to do_
+- Injection of Entity Manager without @PersistenceContext / without constructor?

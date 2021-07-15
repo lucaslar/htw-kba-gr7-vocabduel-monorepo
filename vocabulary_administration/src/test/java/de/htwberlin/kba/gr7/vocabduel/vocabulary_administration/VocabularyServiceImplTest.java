@@ -56,12 +56,7 @@ public class VocabularyServiceImplTest {
 
     @Before
     public void setup() {
-
-        try (MockedStatic<Persistence> per = Mockito.mockStatic(Persistence.class)) {
-            per.when(() -> Persistence.createEntityManagerFactory(Mockito.anyString())).thenReturn(emf);
-            Mockito.when(emf.createEntityManager()).thenReturn(entityManager);
-            vocabularyLib = new VocabularyServiceImpl();
-        }
+        vocabularyLib = new VocabularyServiceImpl(entityManager);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);

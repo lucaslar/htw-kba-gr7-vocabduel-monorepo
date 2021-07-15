@@ -69,10 +69,7 @@ public class ValidPwdsTest {
 
     @Before
     public void setup() {
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            auth = new AuthServiceImpl(userService);
-        }
+        auth = new AuthServiceImpl(userService, entityManager);
 
         existingUser = new User(42L,
                 "existinguser",

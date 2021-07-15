@@ -23,13 +23,12 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final Pattern THREE_BRACKETS_PATTERN = Pattern.compile("\\{\\{\\{(.*?)}}}");
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
 
+    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final EntityManager ENTITY_MANAGER;
 
-    VocabularyServiceImpl() {
+    VocabularyServiceImpl(final EntityManager entityManager) {
         initializeLangMapping();
-
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("VocabduelJPA_PU_vocabulary");
-        ENTITY_MANAGER = emf.createEntityManager();
+        ENTITY_MANAGER = entityManager;
     }
 
     @Override

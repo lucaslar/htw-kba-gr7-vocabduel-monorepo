@@ -11,15 +11,17 @@ import org.springframework.stereotype.Service;
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final EntityManager ENTITY_MANAGER;
 
-    public UserServiceImpl() {
-        ENTITY_MANAGER = EntityFactoryManagement.getManager();
+    public UserServiceImpl(final EntityManager entityManager) {
+        ENTITY_MANAGER = entityManager;
     }
 
     @Override

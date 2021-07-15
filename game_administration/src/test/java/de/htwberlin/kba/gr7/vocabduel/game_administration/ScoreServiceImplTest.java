@@ -64,11 +64,7 @@ public class ScoreServiceImplTest {
 
     @Before
     public void setup() {
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            scoreAdministration = new ScoreServiceImpl(userService);
-        }
-
+        scoreAdministration = new ScoreServiceImpl(userService, entityManager);
         playerA = new User(4711L);
         playerB = new User(42L);
         playerC = new User(2020L);

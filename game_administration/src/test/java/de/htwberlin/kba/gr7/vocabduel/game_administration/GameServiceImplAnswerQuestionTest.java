@@ -38,10 +38,7 @@ public class GameServiceImplAnswerQuestionTest {
 
     @Before
     public void setup() {
-        try (MockedStatic<EntityFactoryManagement> emf = Mockito.mockStatic(EntityFactoryManagement.class)) {
-            emf.when(EntityFactoryManagement::getManager).thenReturn(entityManager);
-            gameAdministration = new GameServiceImpl(userService, vocabularyService);
-        }
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
         mock = new GameDataMock();
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);

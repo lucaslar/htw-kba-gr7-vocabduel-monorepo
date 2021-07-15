@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class GameServiceImpl implements GameService {
-
+    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final EntityManager ENTITY_MANAGER;
-
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
 
@@ -27,10 +27,10 @@ public class GameServiceImpl implements GameService {
         return GameService.NR_OF_ROUNDS;
     }
 
-    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService) {
-        ENTITY_MANAGER = EntityFactoryManagement.getManager();
+    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager) {
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
+        ENTITY_MANAGER = entityManager;
     }
 
     @Override

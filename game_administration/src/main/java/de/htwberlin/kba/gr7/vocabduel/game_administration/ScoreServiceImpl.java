@@ -11,19 +11,20 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {
-
+    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final EntityManager ENTITY_MANAGER;
     private final UserService USER_SERVICE;
 
-    public ScoreServiceImpl(final UserService userService) {
-        ENTITY_MANAGER = EntityFactoryManagement.getManager();
+    public ScoreServiceImpl(final UserService userService, final EntityManager entityManager) {
         USER_SERVICE = userService;
+        ENTITY_MANAGER = entityManager;
     }
 
     @Override

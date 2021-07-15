@@ -17,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,13 +30,14 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserService USER_SERVICE;
 
+    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final EntityManager ENTITY_MANAGER;
 
     private final SecretKeySpec TOKEN_KEY;
 
-    public AuthServiceImpl(final UserService userService) {
+    public AuthServiceImpl(final UserService userService, final EntityManager entityManager) {
         USER_SERVICE = userService;
-        ENTITY_MANAGER = EntityFactoryManagement.getManager();
+        ENTITY_MANAGER = entityManager;
         TOKEN_KEY = initializeTokenkey();
     }
 
