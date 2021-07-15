@@ -1,4 +1,4 @@
-package de.htwberlin.kba.gr7.vocabduel.game_administration.export.dao;
+package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
