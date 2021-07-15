@@ -7,7 +7,10 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import java.util.List;
 
 public interface FinishedVocabduelGameDAO {
-
+    /**
+     * insert FinishedVocabduelGame and remove RunningVocabduelGame
+     * @param game RunningVocabduelGame
+     */
     FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game);
 
     List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User player);

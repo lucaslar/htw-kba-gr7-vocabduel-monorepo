@@ -52,13 +52,6 @@ public class LoginDataDAOImpl implements LoginDataDAO{
         return loginData;
     }
 
-    /**
-     * delete LoginData cascades to User.
-     * so no delete user method in UserDAO is needed.
-     * @param userId Long
-     * @return boolean true if everything gone right
-     *                 false if something gone wrong
-     */
     @Override
     public boolean deleteLoginDataByUserId(Long userId) {
         boolean res = false;

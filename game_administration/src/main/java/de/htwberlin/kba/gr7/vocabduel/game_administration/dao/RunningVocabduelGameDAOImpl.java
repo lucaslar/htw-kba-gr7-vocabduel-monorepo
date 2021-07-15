@@ -15,18 +15,11 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
         ENTITY_MANAGER = entityManager;
     }
 
-    /**
-     * insert RunningVocabduelGame to database.
-     * Because whole Game with VocabduelRounds will be inserted, we don't need
-     *  a insert method in VocabduelRoundDAO
-     * @param game RunningVocabduelGame to be inserted
-     */
     @Override
     public void insertRunningVocabduelGame(RunningVocabduelGame game) {
         ENTITY_MANAGER.getTransaction().begin();
         ENTITY_MANAGER.persist(game);
         ENTITY_MANAGER.getTransaction().commit();
-
     }
 
     @Override
@@ -61,12 +54,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
         return myGame;
     }
 
-    /**
-     * delete RunningVocabduelGame and VocabduelRounds, so that
-     *      delete method in VocabduelRoundsDAO is not needed
-     * @return boolean true if everything went right
-     *                 false if something bad happened
-     */
     @Override
     public boolean deleteRunningVocabduelGameWhereUserDoesntExist() {
         boolean res = false;

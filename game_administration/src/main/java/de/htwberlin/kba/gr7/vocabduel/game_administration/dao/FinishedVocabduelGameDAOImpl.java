@@ -18,10 +18,6 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
         ENTITY_MANAGER = entityManager;
     }
 
-    /**
-     * insert FinishedVocabduelGame and remove RunningVocabduelGame
-     * @param game RunningVocabduelGame
-     */
     @Override
     public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) {
         ENTITY_MANAGER.getTransaction().begin();

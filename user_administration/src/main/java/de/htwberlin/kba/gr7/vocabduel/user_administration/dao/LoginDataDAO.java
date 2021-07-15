@@ -11,6 +11,13 @@ public interface LoginDataDAO {
 
     LoginData selectLoginDataByUser(User user);
 
+    /**
+     * delete LoginData cascades to User.
+     * so no delete user method in UserDAO is needed.
+     * @param userId Long
+     * @return boolean true if everything gone right
+     *                 false if something gone wrong
+     */
     boolean deleteLoginDataByUserId(Long userId);
 
 }
