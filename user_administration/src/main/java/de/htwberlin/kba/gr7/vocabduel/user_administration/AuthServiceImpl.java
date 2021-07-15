@@ -1,6 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -23,7 +25,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -31,13 +32,16 @@ public class AuthServiceImpl implements AuthService {
     private final UserService USER_SERVICE;
 
     @PersistenceContext(unitName = "VocabduelJPA_PU")
-    private final EntityManager ENTITY_MANAGER;
+    private final LoginDataDAOImpl loginDataDAO;
+    private final StoredRefreshTokenDAOImpl storedRefreshTokenDAO;
 
     private final SecretKeySpec TOKEN_KEY;
 
     public AuthServiceImpl(final UserService userService, final EntityManager entityManager) {
         USER_SERVICE = userService;
-        ENTITY_MANAGER = entityManager;
+
+        loginDataDAO = new LoginDataDAOImpl(entityManager);
+        storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
         TOKEN_KEY = initializeTokenkey();
     }
 
@@ -57,26 +61,14 @@ public class AuthServiceImpl implements AuthService {
 
         final User user = new User(username, email, firstname, lastname);
 
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(new LoginData(user, hashPassword(password)));
-        ENTITY_MANAGER.getTransaction().commit();
+        loginDataDAO.insertLoginData(new LoginData(user, hashPassword(password)));
 
         return loginUser(email, password);
     }
 
     @Override
     public LoggedInUser loginUser(String email, String password) {
-        ENTITY_MANAGER.getTransaction().begin();
-        LoginData loginData = null;
-        try {
-            loginData = (LoginData) ENTITY_MANAGER
-                    .createQuery("SELECT l FROM LoginData l INNER JOIN l.user u WHERE u.email LIKE :email")
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (NoResultException ignored) {
-        }
-
-        ENTITY_MANAGER.getTransaction().commit();
+        LoginData loginData = loginDataDAO.selectLoginDataByUserEmail(email);
 
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
             final LoggedInUser user = new LoggedInUser(loginData.getUser());
@@ -101,23 +93,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthTokens refreshAuthTokens(final String refreshToken) {
         try {
-            ENTITY_MANAGER.getTransaction().begin();
             final User user = fetchUser(refreshToken);
             if (user != null) {
-                final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
-                        .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
-                        .setParameter("user", user)
-                        .setParameter("token", refreshToken)
-                        .getSingleResult();
+                StoredRefreshToken foundToken = storedRefreshTokenDAO.selectStoredRefreshTokenByUserAndToken(user, refreshToken);
                 if (validateToken(foundToken.getRefreshToken())) {
-                    ENTITY_MANAGER.remove(foundToken);
-                    ENTITY_MANAGER.getTransaction().commit();
+                    storedRefreshTokenDAO.deleteStoredRefreshToken(foundToken);
                     return insertNewUserTokens(user);
                 }
             }
         } catch (NoResultException ignored) {
         }
-        ENTITY_MANAGER.getTransaction().commit();
         return null;
     }
 
@@ -125,16 +110,7 @@ public class AuthServiceImpl implements AuthService {
     public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
         if (user == null) throw new InvalidUserException("Invalid user");
 
-        LoginData loginData = null;
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            loginData = (LoginData) ENTITY_MANAGER
-                    .createQuery("SELECT l FROM LoginData l INNER JOIN l.user u WHERE u = :user")
-                    .setParameter("user", user)
-                    .getSingleResult();
-        } catch (NoResultException ignored) {
-        }
-        ENTITY_MANAGER.getTransaction().commit();
+        LoginData loginData = loginDataDAO.selectLoginDataByUser(user);
 
         if (loginData == null) throw new InvalidUserException("User could not be found");
         else if (!validatePassword(loginData.getPasswordHash(), currentPassword)) {
@@ -144,9 +120,7 @@ public class AuthServiceImpl implements AuthService {
         Validation.passwordValidation(password, confirmPassword);
 
         loginData.setPasswordHash(hashPassword(password));
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(loginData);
-        ENTITY_MANAGER.getTransaction().commit();
+        loginDataDAO.insertLoginData(loginData);
 
         return 0;
     }
@@ -167,18 +141,7 @@ public class AuthServiceImpl implements AuthService {
     private AuthTokens insertNewUserTokens(final User user) {
         final String refreshToken = generateRefreshToken(user);
         final String token = generateAuthToken(user);
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) ENTITY_MANAGER
-                    .createQuery("from StoredRefreshToken where user = :user")
-                    .setParameter("user", user)
-                    .getResultList();
-            if (storedRefreshTokens.size() > 4) storedRefreshTokens.forEach(ENTITY_MANAGER::remove);
-        } catch (NoResultException ignored) {
-        }
-
-        ENTITY_MANAGER.persist(new StoredRefreshToken(user, refreshToken));
-        ENTITY_MANAGER.getTransaction().commit();
+        storedRefreshTokenDAO.insertStoredRefreshTokenByUserAndToken(user, refreshToken);
         return new AuthTokens(refreshToken, token);
     }
 
