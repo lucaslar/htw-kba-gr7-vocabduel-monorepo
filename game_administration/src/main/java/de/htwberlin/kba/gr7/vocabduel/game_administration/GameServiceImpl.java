@@ -14,13 +14,11 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class GameServiceImpl implements GameService {
-    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
 

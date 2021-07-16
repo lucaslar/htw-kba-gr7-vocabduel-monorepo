@@ -26,7 +26,6 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final Pattern THREE_BRACKETS_PATTERN = Pattern.compile("\\{\\{\\{(.*?)}}}");
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
 
-    @PersistenceContext(unitName = "VocabduelJPA_PU")
     private final VocableUnitDAOImpl vocableUnitDAO;
     private final VocableListDAOImpl vocableListDAO;
     private final LanguageSetDAOImpl languageSetDAO;

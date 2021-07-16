@@ -11,21 +11,15 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    @PersistenceContext(unitName = "VocabduelJPA_PU")
-   // private final EntityManager ENTITY_MANAGER;
-
     private final UserDAOImpl userDAO;
     private final StoredRefreshTokenDAOImpl storedRefreshTokenDAO;
     private final LoginDataDAOImpl loginDataDAO;
 
     public UserServiceImpl(final EntityManager entityManager) {
-   //     ENTITY_MANAGER = entityManager;
         userDAO = new UserDAOImpl(entityManager);
         storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
         loginDataDAO = new LoginDataDAOImpl(entityManager);

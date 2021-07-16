@@ -12,14 +12,11 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {
-    @PersistenceContext(unitName = "VocabduelJPA_PU")
-    //private final EntityManager ENTITY_MANAGER;
     private final UserService USER_SERVICE;
 
     private final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO;
