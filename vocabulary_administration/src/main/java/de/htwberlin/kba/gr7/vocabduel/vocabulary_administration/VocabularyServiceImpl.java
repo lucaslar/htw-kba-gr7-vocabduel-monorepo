@@ -1,6 +1,9 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.LanguageSetDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.VocableListDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.VocableUnitDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
@@ -24,11 +27,15 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
 
     @PersistenceContext(unitName = "VocabduelJPA_PU")
-    private final EntityManager ENTITY_MANAGER;
+    private final VocableUnitDAOImpl vocableUnitDAO;
+    private final VocableListDAOImpl vocableListDAO;
+    private final LanguageSetDAOImpl languageSetDAO;
 
     VocabularyServiceImpl(final EntityManager entityManager) {
         initializeLangMapping();
-        ENTITY_MANAGER = entityManager;
+        vocableUnitDAO = new VocableUnitDAOImpl(entityManager);
+        vocableListDAO = new VocableListDAOImpl(entityManager);
+        languageSetDAO = new LanguageSetDAOImpl(entityManager);
     }
 
     @Override
@@ -63,9 +70,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         unit.getVocableLists().add(list);
 
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(unit);
-        ENTITY_MANAGER.getTransaction().commit();
+        vocableUnitDAO.insertVocableUnit(unit);
 
         return 0;
     }
@@ -76,68 +81,33 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
         }
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
-        final VocableUnit unit = (VocableUnit) ENTITY_MANAGER
-                .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
-                .setParameter("list", vocables)
-                .getSingleResult();
+        final VocableUnit unit = vocableUnitDAO.selectVocableUnitByVocableList(vocables);
         unit.setVocableLists(unit.getVocableLists().stream().filter(l -> !l.getId().equals(vocables.getId())).collect(Collectors.toList()));
-        try {
-            final VocableList list = ENTITY_MANAGER.find(VocableList.class, vocables.getId());
-            ENTITY_MANAGER.remove(list);
-            if (unit.getVocableLists().isEmpty()) {
-                final LanguageSet languageSet = (LanguageSet) ENTITY_MANAGER
-                        .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
-                        .setParameter("unit", unit)
-                        .getSingleResult();
-                languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
-                ENTITY_MANAGER.remove(unit);
-                if (languageSet.getVocableUnits().isEmpty()) ENTITY_MANAGER.remove(languageSet);
-            }
-            ENTITY_MANAGER.getTransaction().commit();
-        } catch (PersistenceException e) {
-            ENTITY_MANAGER.getTransaction().rollback();
-            throw e;
+
+        final VocableList list = vocableListDAO.selectVocableList(vocables);
+        vocableListDAO.deleteVocableList(list);
+        if (unit.getVocableLists().isEmpty()) {
+            final LanguageSet languageSet = languageSetDAO.selectLanguageSetByVocableUnit(unit);
+            languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
+            vocableUnitDAO.deleteVocableUnit(unit);
+            if (languageSet.getVocableUnits().isEmpty()) languageSetDAO.deleteLanguageSet(languageSet);
         }
         return 0;
     }
 
     @Override
     public VocableList getVocableListById(Long id) {
-        ENTITY_MANAGER.getTransaction().begin();
-        final VocableList vocableList = ENTITY_MANAGER.find(VocableList.class, id);
-        ENTITY_MANAGER.getTransaction().commit();
-        return vocableList;
+        return vocableListDAO.selectVocableListById(id);
     }
 
     @Override
     public List<VocableList> getVocableListsOfUser(User user) {
-        List<VocableList> vocableLists = null;
-        try {
-            ENTITY_MANAGER.getTransaction().begin();
-            vocableLists = (List<VocableList>) ENTITY_MANAGER
-                    .createQuery("select vl from VocableList vl inner join vl.author a where a.id = :id")
-                    .setParameter("id", user.getId())
-                    .getResultList();
-        } catch (NoResultException ignored) {
-        }
-        ENTITY_MANAGER.getTransaction().commit();
-        return vocableLists;
+        return vocableListDAO.selectVocableListsByUserId(user.getId());
     }
 
     @Override
     public List<LanguageSet> getAllLanguageSets() {
-        List<LanguageSet> languageSets = null;
-        try {
-            ENTITY_MANAGER.getTransaction().begin();
-            languageSets = (List<LanguageSet>) ENTITY_MANAGER
-                    .createQuery("from LanguageSet")
-                    .getResultList();
-        } catch (NoResultException ignored) {
-        }
-        ENTITY_MANAGER.getTransaction().commit();
-        return languageSets;
+        return languageSetDAO.selectLanguageSets();
     }
 
     @Override
@@ -261,31 +231,14 @@ public class VocabularyServiceImpl implements VocabularyService {
         else {
             unit = new VocableUnit(unitName);
             ls.getVocableUnits().add(unit);
-            ENTITY_MANAGER.getTransaction().begin();
-            ENTITY_MANAGER.persist(ls);
-            ENTITY_MANAGER.getTransaction().commit();
+            languageSetDAO.insertLanguageSet(ls);
         }
 
         return unit;
     }
 
     private LanguageSet getOrCreateLanguageSet(final SupportedLanguage from, final SupportedLanguage to) {
-        LanguageSet languageSet;
-        ENTITY_MANAGER.getTransaction().begin();
-        try {
-            final String query = "from LanguageSet as l where l.learntLanguage like :learntLanguage and l.knownLanguage like :knownLanguage";
-            languageSet = (LanguageSet) ENTITY_MANAGER
-                    .createQuery(query)
-                    .setParameter("learntLanguage", from)
-                    .setParameter("knownLanguage", to)
-                    .getSingleResult();
-        } catch (NoResultException ignored) {
-            languageSet = new LanguageSet(from, to);
-            ENTITY_MANAGER.persist(languageSet);
-        }
-
-        ENTITY_MANAGER.getTransaction().commit();
-        return languageSet;
+        return languageSetDAO.selectOrInsertLanguageSetBySupportedLanguages(from, to);
     }
 
     private void validateVocables(final List<Vocable> vocables) throws DuplicateVocablesInSetException {
