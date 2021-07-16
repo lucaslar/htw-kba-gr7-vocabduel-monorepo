@@ -17,6 +17,8 @@ public class ConfigurationRestEasyImpl extends Application {
     private final Set<Object> SINGLETONS = new HashSet<>();
 
     public ConfigurationRestEasyImpl() {
+        SINGLETONS.add(CONTEXT.getBean(LandingPageAdapter.class));
+
         SINGLETONS.add(CONTEXT.getBean(UserServiceRestAdapter.class));
         SINGLETONS.add(CONTEXT.getBean(AuthServiceRestAdapter.class));
         SINGLETONS.add(CONTEXT.getBean(VocabularyServiceRestAdapter.class));
