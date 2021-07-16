@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "1c7bab01-b019-4a4a-90f9-5b398a1bc7fe",
+		"name": "Vocabduel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UserAdministration",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Register",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Arnold\",\r\n    \"lastName\": \"Schwarzenegger\",\r\n    \"username\": \"arnie1947\",\r\n    \"email\": \"arnold@strongmail.at\",\r\n    \"password\": \"123arnoLD\",\r\n    \"confirm\": \"123arnoLD\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "VocabularyAdministration",
+			"item": []
+		},
+		{
+			"name": "GameAdministration",
+			"item": [
+				{
+					"name": "Game",
+					"item": []
+				},
+				{
+					"name": "Score",
+					"item": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8080/configuration_rest"
+		}
+	]
+}
