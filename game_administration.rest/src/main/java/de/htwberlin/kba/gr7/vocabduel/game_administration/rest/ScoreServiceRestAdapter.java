@@ -1,9 +1,9 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -11,13 +11,18 @@ import javax.ws.rs.Path;
 @Path("/score")
 public class ScoreServiceRestAdapter {
 
-    @Autowired
-    private ScoreService scoreService;
+    private final ScoreService SCORE_SERVICE;
+
+    @Inject
+    public ScoreServiceRestAdapter(ScoreService scoreService) {
+        SCORE_SERVICE = scoreService;
+    }
 
     @GET
     @Path("/hello")
     public String hello() {
-        System.out.println("There's something happening here..." + (scoreService == null));
+        System.out.println("There's something happening here...");
+        System.out.println("Score Service is" + (SCORE_SERVICE == null ? "n't" : "") + " initialized");
         return "Hello REST world!";
     }
 }
