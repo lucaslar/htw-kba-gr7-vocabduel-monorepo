@@ -1,11 +1,11 @@
-package de.htwberlin.kba.gr7.vocabduel.configuration;
+package de.htwberlin.kba.gr7.vocabduel.configuration_core;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class EntityFactoryManagement {
