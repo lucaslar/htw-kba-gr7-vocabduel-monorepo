@@ -10,24 +10,16 @@
   </parent>
 
   <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-  <artifactId>user_administration.rest</artifactId>
+  <artifactId>auth_interceptor.rest</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>user_administration.rest</name>
-  <!-- local module, so no url -->
+  <name>auth_interceptor.rest</name>
 
   <dependencies>
     <dependency>
       <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
       <artifactId>user_administration.export</artifactId>
       <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-      <artifactId>auth_interceptor.rest</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

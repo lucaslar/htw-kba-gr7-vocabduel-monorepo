@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -10,6 +11,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.Registratio
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.naming.InvalidNameException;
 import javax.ws.rs.*;
@@ -30,6 +32,7 @@ public class AuthServiceRestAdapter {
 
     @POST
     @Path("/register")
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response registerUser(final RegistrationData data) {
@@ -72,6 +75,7 @@ public class AuthServiceRestAdapter {
 
     @POST
     @Path("/login")
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response loginUser(final SignInData data) {
@@ -101,9 +105,10 @@ public class AuthServiceRestAdapter {
     }
 
     @GET
+    @PermitAll
     @Path("/current-user")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response currentUser(@HeaderParam("x-access-token") final String token) {
+    public Response currentUser(@HeaderParam(AuthInterceptor.AUTHORIZATION_HEADER) final String token) {
         final User user = AUTH_SERVICE.fetchUser(token);
         if (user == null) {
             return Response
@@ -115,6 +120,7 @@ public class AuthServiceRestAdapter {
     }
 
     @POST
+    @PermitAll
     @Path("/refresh-token")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response refreshAuthTokens(final String refreshToken) {
@@ -129,5 +135,12 @@ public class AuthServiceRestAdapter {
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
         if (tokens != null) return Response.status(Response.Status.OK).entity(tokens).build();
         else return Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).build();
+    }
+
+    // TODO Remove example for auth-guarded route
+    @GET
+    @Path("guarded")
+    public Response guardedTest() {
+        return Response.status(Response.Status.OK).build();
     }
 }

@@ -19,6 +19,7 @@
     <module>vocabulary_administration.rest</module>
     <module>game_administration.rest</module>
     <module>configuration_core</module>
+    <module>auth_interceptor.rest</module>
   </modules>
 
   <properties>

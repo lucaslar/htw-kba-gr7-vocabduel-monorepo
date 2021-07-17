@@ -22,6 +22,11 @@
             <artifactId>configuration_core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
+            <artifactId>auth_interceptor.rest</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>

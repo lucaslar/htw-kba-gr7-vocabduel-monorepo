@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.configuration.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.GameServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.ScoreServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.AuthServiceRestAdapter;
@@ -23,6 +24,7 @@ public class ConfigurationRestEasyImpl extends Application {
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         SINGLETONS.add(corsFilter);
 
+        SINGLETONS.add(CONTEXT.getBean(AuthInterceptor.class));
         SINGLETONS.add(CONTEXT.getBean(LandingPageAdapter.class));
 
         SINGLETONS.add(CONTEXT.getBean(UserServiceRestAdapter.class));
