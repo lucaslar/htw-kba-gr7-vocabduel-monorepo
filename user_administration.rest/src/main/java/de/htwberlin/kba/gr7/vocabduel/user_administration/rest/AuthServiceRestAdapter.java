@@ -118,6 +118,14 @@ public class AuthServiceRestAdapter {
     @Path("/refresh-token")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response refreshAuthTokens(final String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Refresh Token must not be null or empty!")
+                    .build();
+        }
+
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
         if (tokens != null) return Response.status(Response.Status.OK).entity(tokens).build();
         else return Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).build();
