@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.MissingData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.RegistrationData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import javax.naming.InvalidNameException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 
 @Controller
 @Path("/auth")
@@ -28,7 +30,7 @@ public class AuthServiceRestAdapter {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response registerUser(RegistrationData data) {
+    public Response registerUser(final RegistrationData data) {
         LoggedInUser user;
         try {
             user = AUTH_SERVICE.registerUser(
@@ -70,18 +72,29 @@ public class AuthServiceRestAdapter {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response loginUser(SignInData data) {
+    public Response loginUser(final SignInData data) {
+        if (data.getEmail() == null || data.getPassword() == null) {
+            final ArrayList<String> missing = new ArrayList<>();
+            if (data.getEmail() == null) missing.add("email");
+            if (data.getPassword() == null) missing.add("password");
+            final MissingData missingInfo = new MissingData();
+            missingInfo.setMessage("Missing login data");
+            missingInfo.setMissingParams(missing);
+            System.out.println("A user tried to log in with incomplete data");
+            return Response.status(Response.Status.BAD_REQUEST).entity(missingInfo).build();
+        }
+
         final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
         if (user != null) {
             System.out.println("A user logged in: " + user);
             return Response.status(Response.Status.OK).entity(user).build();
-        } else {
-            System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
-            return Response
-                    .status(Response.Status.UNAUTHORIZED)
-                    .entity("Invalid login, please try again.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
         }
+
+        System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
+        return Response
+                .status(Response.Status.UNAUTHORIZED)
+                .entity("Invalid login, please try again.")
+                .type(MediaType.TEXT_PLAIN_TYPE)
+                .build();
     }
 }
