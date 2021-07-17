@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.RegistrationData;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -21,14 +22,6 @@ public class AuthServiceRestAdapter {
     @Inject
     public AuthServiceRestAdapter(AuthService authService) {
         AUTH_SERVICE = authService;
-    }
-
-    @GET
-    @Path("/hello")
-    public String hello() {
-        System.out.println("There's something happening here...");
-        System.out.println("Auth Service is" + (AUTH_SERVICE == null ? "n't" : "") + " initialized");
-        return "Hello REST world!";
     }
 
     @POST
@@ -71,5 +64,24 @@ public class AuthServiceRestAdapter {
 
         System.out.println("Successfully registered user: " + user.toString());
         return Response.status(Response.Status.CREATED).entity(user).build();
+    }
+
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response loginUser(SignInData data) {
+        final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
+        if (user != null) {
+            System.out.println("A user logged in: " + user);
+            return Response.status(Response.Status.OK).entity(user).build();
+        } else {
+            System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
+            return Response
+                    .status(Response.Status.UNAUTHORIZED)
+                    .entity("Invalid login, please try again.")
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .build();
+        }
     }
 }
