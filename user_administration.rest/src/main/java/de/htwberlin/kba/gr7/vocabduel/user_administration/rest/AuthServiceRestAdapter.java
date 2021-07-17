@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.MissingData;
@@ -104,12 +105,21 @@ public class AuthServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam("x-access-token") final String token) {
         final User user = AUTH_SERVICE.fetchUser(token);
-        return user == null ?
-                Response
-                        .status(Response.Status.UNAUTHORIZED)
-                        .entity("Invalid login, please try again.")
-                        .type(MediaType.TEXT_PLAIN_TYPE)
-                        .build()
-                : Response.status(Response.Status.OK).entity(user).build();
+        if (user == null) {
+            return Response
+                    .status(Response.Status.UNAUTHORIZED)
+                    .entity("User could not be fetched. Is your token valid?")
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .build();
+        } else return Response.status(Response.Status.OK).entity(user).build();
+    }
+
+    @POST
+    @Path("/refresh-token")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response refreshAuthTokens(final String refreshToken) {
+        final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
+        if (tokens != null) return Response.status(Response.Status.OK).entity(tokens).build();
+        else return Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 }
