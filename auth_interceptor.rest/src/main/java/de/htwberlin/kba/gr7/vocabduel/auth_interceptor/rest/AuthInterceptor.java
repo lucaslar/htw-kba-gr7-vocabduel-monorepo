@@ -20,6 +20,7 @@ public class AuthInterceptor implements ContainerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "x-access-token";
 
     private final ServerResponse ACCESS_DENIED = new ServerResponse("This action requires a preceding login/valid " + AUTHORIZATION_HEADER + " header!", 401, new Headers<>());
+    private final ServerResponse ACCESS_DENIED_NO_TOKEN = new ServerResponse("This action requires a preceding login/valid " + AUTHORIZATION_HEADER + " header, but no such or an empty token was given!", 400, new Headers<>());
     private final AuthService AUTH_SERVICE;
 
     @Context
@@ -31,8 +32,10 @@ public class AuthInterceptor implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) {
-        if (!resourceInfo.getResourceMethod().isAnnotationPresent(PermitAll.class) && !AUTH_SERVICE.hasAccessRights(requestContext.getHeaderString(AUTHORIZATION_HEADER))) {
-            requestContext.abortWith(ACCESS_DENIED);
+        if (!resourceInfo.getResourceMethod().isAnnotationPresent(PermitAll.class)) {
+            final String token = requestContext.getHeaderString(AUTHORIZATION_HEADER);
+            if (token == null || token.isEmpty()) requestContext.abortWith(ACCESS_DENIED_NO_TOKEN);
+            else if (!AUTH_SERVICE.hasAccessRights(token)) requestContext.abortWith(ACCESS_DENIED);
         }
     }
 }
