@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.MissingData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.RegistrationData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
@@ -96,5 +97,19 @@ public class AuthServiceRestAdapter {
                 .entity("Invalid login, please try again.")
                 .type(MediaType.TEXT_PLAIN_TYPE)
                 .build();
+    }
+
+    @GET
+    @Path("/current-user")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response currentUser(@HeaderParam("x-access-token") final String token) {
+        final User user = AUTH_SERVICE.fetchUser(token);
+        return user == null ?
+                Response
+                        .status(Response.Status.UNAUTHORIZED)
+                        .entity("Invalid login, please try again.")
+                        .type(MediaType.TEXT_PLAIN_TYPE)
+                        .build()
+                : Response.status(Response.Status.OK).entity(user).build();
     }
 }
