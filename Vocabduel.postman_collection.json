@@ -37,6 +37,108 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"arnold@strongmail.at\",\r\n    \"password\": \"123arnoLD\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Incomplete",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"arnold@strongmail.at\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Current User (Replace token!)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "123",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/auth/current-user",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"current-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TEST Guarded Route",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "123",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/auth/guarded",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"guarded"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
