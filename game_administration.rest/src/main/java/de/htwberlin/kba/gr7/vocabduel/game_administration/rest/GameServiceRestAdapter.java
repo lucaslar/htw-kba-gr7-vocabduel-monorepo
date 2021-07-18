@@ -34,9 +34,9 @@ public class GameServiceRestAdapter {
     @Path("start-game")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response startGame(final User playerA, final User playerB, List<VocableList> vocableLists){
+    public Response startGame(final User playerA, final User playerB, List<VocableList> vocableLists) {
         RunningVocabduelGame game;
-        try{
+        try {
             game = GAME_SERVICE.startGame(playerA, playerB, vocableLists);
         } catch (NotEnoughVocabularyException | InvalidUserException | InvalidGameSetupException e) {
             e.printStackTrace();
@@ -47,34 +47,25 @@ public class GameServiceRestAdapter {
                     .build();
         }
         System.out.println("Successfully started new Game: " + game.toString());
-        return Response
-                .status(Response.Status.OK)
-                .entity(game)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
-
+        return Response.ok(game).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/get-started-games")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getPersonalChallengedGames(final User user){
+    public Response getPersonalChallengedGames(final User user) {
         List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(user);
-        return Response
-                .status(Response.Status.OK)
-                .entity(games)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Path("/start-round")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response startRound(final User user, final Long gameId){
+    public Response startRound(final User user, final Long gameId) {
         VocabduelRound round;
-        try{
+        try {
             round = GAME_SERVICE.startRound(user, gameId);
         } catch (NoAccessException e) {
             e.printStackTrace();
@@ -85,20 +76,16 @@ public class GameServiceRestAdapter {
                     .build();
         }
         System.out.println("Successfully started Round: " + round.toString());
-        return Response
-                .status(Response.Status.OK)
-                .entity(round)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(round).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Path("/answer-question")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response answerQuestion(final User user, final Long gameId, final int roundNr, final int answerNr){
+    public Response answerQuestion(final User user, final Long gameId, final int roundNr, final int answerNr) {
         CorrectAnswerResult answer;
-        try{
+        try {
             answer = GAME_SERVICE.answerQuestion(user, gameId, roundNr, answerNr);
         } catch (InvalidAnswerNrException | NoAccessException e) {
             e.printStackTrace();
@@ -109,26 +96,15 @@ public class GameServiceRestAdapter {
                     .build();
         }
         System.out.println("Successfully answered Question: " + answer.toString());
-        return Response
-                .status(Response.Status.OK)
-                .entity(answer)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(answer).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Path("/delete-widows")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteWidowGames(){
+    public Response deleteWidowGames() {
         GAME_SERVICE.removeWidowGames();
         System.out.println("Successfully removed widow games.");
-        return Response.status(javax.ws.rs.core.Response.Status.OK).build();
-    }
-
-    // TODO Remove example for auth-guarded route
-    @GET
-    @Path("/guarded")
-    public Response guardedTest () {
         return Response.status(javax.ws.rs.core.Response.Status.OK).build();
     }
 }

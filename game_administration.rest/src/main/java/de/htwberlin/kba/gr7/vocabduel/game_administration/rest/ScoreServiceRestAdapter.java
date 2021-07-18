@@ -29,9 +29,9 @@ public class ScoreServiceRestAdapter {
     @GET
     @Path("/get-finished-games")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getPersonalFinishedGames(final User user){
+    public Response getPersonalFinishedGames(final User user) {
         List<PersonalFinishedGame> games;
-        try{
+        try {
             games = SCORE_SERVICE.getPersonalFinishedGames(user);
         } catch (InvalidUserException e) {
             e.printStackTrace();
@@ -41,19 +41,15 @@ public class ScoreServiceRestAdapter {
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build();
         }
-        return Response
-                .status(Response.Status.OK)
-                .entity(games)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/get-record")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getRecordOfUser(final User user){
+    public Response getRecordOfUser(final User user) {
         ScoreRecord record;
-        try{
+        try {
             record = SCORE_SERVICE.getRecordOfUser(user);
         } catch (InvalidUserException e) {
             e.printStackTrace();
@@ -63,20 +59,16 @@ public class ScoreServiceRestAdapter {
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build();
         }
-        return Response
-                .status(Response.Status.OK)
-                .entity(record)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(record).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Path("/finish-game")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response finishGame(final User user, final long gameId){
+    public Response finishGame(final User user, final long gameId) {
         PersonalFinishedGame game;
-        try{
+        try {
             game = SCORE_SERVICE.finishGame(user, gameId);
         } catch (UnfinishedGameException | NoAccessException e) {
             e.printStackTrace();
@@ -87,18 +79,6 @@ public class ScoreServiceRestAdapter {
                     .build();
         }
         System.out.println("Successfully finished Game: " + game.toString());
-        return Response
-                .status(Response.Status.OK)
-                .entity(game)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(game).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-
-    // TODO Remove example for auth-guarded route
-    @GET
-    @Path("/guarded")
-    public Response guardedTest () {
-        return Response.status(javax.ws.rs.core.Response.Status.OK).build();
-    }
-
 }

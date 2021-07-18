@@ -34,7 +34,7 @@ public class UserServiceRestAdapter {
                     .entity("No User found. Please try another username.")
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build();
-        } else return Response.status(Response.Status.OK).entity(users).build();
+        } else return Response.ok(users).build();
     }
 
     @GET
@@ -55,7 +55,7 @@ public class UserServiceRestAdapter {
                 }
             }
         }
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.ok(user).build();
     }
 
     @POST
@@ -79,7 +79,7 @@ public class UserServiceRestAdapter {
         // TODO: Implement proper error handling
 
         System.out.println("Successfully updated user: " + data.toString());
-        return Response.status(Response.Status.OK).entity(data).build();
+        return Response.ok(data).build();
     }
 
     @POST
@@ -89,7 +89,7 @@ public class UserServiceRestAdapter {
     public Response deleteUser(final User user){
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
-        return Response.status(Response.Status.OK).build();
+        return Response.ok().build();
     }
 
     // TODO Remove example for auth-guarded route

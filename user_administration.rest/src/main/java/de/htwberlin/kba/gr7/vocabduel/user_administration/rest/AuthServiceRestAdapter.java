@@ -119,7 +119,7 @@ public class AuthServiceRestAdapter {
         }
 
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
-        if (tokens != null) return Response.status(Response.Status.OK).entity(tokens).build();
+        if (tokens != null) return Response.ok(tokens).build();
         else return Response
                 .status(Response.Status.BAD_REQUEST)
                 .entity("Could not refresh. Your given refresh-token does not seem to be valid")

@@ -29,8 +29,8 @@ public class VocabularyServiceRestAdapter {
     @Path("/import-list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response importGnuVocableList(final String gnuContent, final User user){
-        try{
+    public Response importGnuVocableList(final String gnuContent, final User user) {
+        try {
             VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
         } catch (IncompleteVocableListException | DataAlreadyExistsException |
                 InvalidVocableListException | UnknownLanguagesException |
@@ -54,8 +54,8 @@ public class VocabularyServiceRestAdapter {
     @Path("/delete-list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteVocableList(final VocableList vocableList, final User user){
-        try{
+    public Response deleteVocableList(final VocableList vocableList, final User user) {
+        try {
             VOCABULARY_SERVICE.deleteVocableList(vocableList, user);
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
@@ -66,78 +66,46 @@ public class VocabularyServiceRestAdapter {
                     .build();
         }
         System.out.println("Successfully deleted VocableList.");
-        return Response
-                .status(Response.Status.OK)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok().build();
     }
 
     @GET
     @Path("/get-list")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getVocableListById(final long id){
+    public Response getVocableListById(final long id) {
         VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
-        return Response
-                .status(Response.Status.OK)
-                .entity(list)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(list).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/get-lists")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getVocableListsByUser(final User user){
+    public Response getVocableListsByUser(final User user) {
         List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
-        return Response
-                .status(Response.Status.OK)
-                .entity(lists)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/get-lang-sets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getAllLanguageSets(){
+    public Response getAllLanguageSets() {
         List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
-        return Response
-                .status(Response.Status.OK)
-                .entity(sets)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/get-languages")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getAllSupportedLanguages(){
+    public Response getAllSupportedLanguages() {
         List<SupportedLanguage> languages = VOCABULARY_SERVICE.getAllSupportedLanguages();
-        return Response
-                .status(Response.Status.OK)
-                .entity(languages)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.ok(languages).type(MediaType.TEXT_PLAIN).build();
     }
 
     @GET
     @Path("/get-language-references")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getSupportedLanguageReferences(final SupportedLanguage lang){
+    public Response getSupportedLanguageReferences(final SupportedLanguage lang) {
         List<String> refs = VOCABULARY_SERVICE.getSupportedLanguageReferences(lang);
-        return Response
-                .status(Response.Status.OK)
-                .entity(refs)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
-
+        return Response.ok(refs).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
-
-    // TODO Remove example for auth-guarded route
-    @GET
-    @Path("/guarded")
-    public Response guardedTest () {
-        return Response.status(javax.ws.rs.core.Response.Status.OK).build();
-    }
-
 }
