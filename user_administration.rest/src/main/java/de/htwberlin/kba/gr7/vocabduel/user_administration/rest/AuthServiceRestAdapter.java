@@ -109,6 +109,14 @@ public class AuthServiceRestAdapter {
     @Path("/current-user")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam(AuthInterceptor.AUTHORIZATION_HEADER) final String token) {
+        if (token == null || token.isEmpty()) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity("Access Token must not be null or empty!")
+                    .build();
+        }
+
         final User user = AUTH_SERVICE.fetchUser(token);
         if (user == null) {
             return Response
@@ -122,6 +130,7 @@ public class AuthServiceRestAdapter {
     @POST
     @PermitAll
     @Path("/refresh-token")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response refreshAuthTokens(final String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
