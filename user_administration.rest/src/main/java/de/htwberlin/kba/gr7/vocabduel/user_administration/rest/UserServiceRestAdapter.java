@@ -91,11 +91,4 @@ public class UserServiceRestAdapter {
         System.out.println("Successfully deleted user: " + user.toString());
         return Response.ok().build();
     }
-
-    // TODO Remove example for auth-guarded route
-    @GET
-    @Path("/guarded")
-    public Response guardedTest () {
-        return Response.status(javax.ws.rs.core.Response.Status.OK).build();
-    }
 }
