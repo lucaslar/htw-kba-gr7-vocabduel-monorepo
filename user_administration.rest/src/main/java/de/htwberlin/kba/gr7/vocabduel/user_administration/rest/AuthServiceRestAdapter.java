@@ -103,7 +103,7 @@ public class AuthServiceRestAdapter {
 
         System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
         return Response
-                .status(Response.Status.UNAUTHORIZED)
+                .status(Response.Status.BAD_REQUEST)
                 .entity("Invalid login, please try again.")
                 .type(MediaType.TEXT_PLAIN_TYPE)
                 .build();
@@ -115,20 +115,12 @@ public class AuthServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
         if (token == null || token.isEmpty()) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .entity("Access Token must not be null or empty!")
-                    .build();
+            return AuthInterceptor.unauthorizedResponse("Access Token must not be null or empty!", false);
         }
 
         final User user = AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""));
         if (user == null) {
-            return Response
-                    .status(Response.Status.UNAUTHORIZED)
-                    .entity("User could not be fetched. Is your token valid?")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
+            return AuthInterceptor.unauthorizedResponse("User could not be fetched. Is your token valid?");
         } else return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -148,7 +140,7 @@ public class AuthServiceRestAdapter {
 
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
         if (tokens != null) return Response.status(Response.Status.OK).entity(tokens).build();
-        else return Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).build();
+        else return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 
     // TODO Remove example for auth-guarded route
