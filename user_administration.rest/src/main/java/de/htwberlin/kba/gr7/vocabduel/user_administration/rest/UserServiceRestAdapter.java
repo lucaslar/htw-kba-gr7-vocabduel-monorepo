@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -82,11 +83,13 @@ public class UserServiceRestAdapter {
         return Response.ok(data).build();
     }
 
-    @POST
-    @Path("/delete")
+    // TODO Integrate functions listed above
+
+    @DELETE
+    @Path("/delete-account")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteUser(final User user){
+    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId){
+        final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
         return Response.ok().build();
