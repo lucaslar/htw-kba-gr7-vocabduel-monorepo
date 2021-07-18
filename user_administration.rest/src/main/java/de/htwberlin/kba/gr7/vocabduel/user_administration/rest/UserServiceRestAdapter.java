@@ -92,6 +92,6 @@ public class UserServiceRestAdapter {
         final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 }

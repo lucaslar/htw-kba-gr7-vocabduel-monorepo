@@ -126,7 +126,7 @@ public class AuthServiceRestAdapter {
                 .type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 
-    @POST
+    @POST // TODO PUT
     @Path("/update-password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN})
@@ -151,6 +151,6 @@ public class AuthServiceRestAdapter {
                     .build();
         }
         System.out.println("The following user changed her/his password successfully: " + user);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 }
