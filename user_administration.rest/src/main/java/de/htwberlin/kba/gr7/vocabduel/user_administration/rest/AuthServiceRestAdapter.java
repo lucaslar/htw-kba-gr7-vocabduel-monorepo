@@ -147,22 +147,23 @@ public class AuthServiceRestAdapter {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN})
     public Response updatePassword(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final PasswordData data) {
+        final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         try {
-            final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
             AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
+            e.printStackTrace();
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
                     .entity(e.getMessage())
                     .build();
         } catch (InvalidUserException e) {
+            e.printStackTrace();
             return Response
                     .status(Response.Status.NOT_FOUND)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
                     .entity(e.getMessage())
                     .build();
         }
+        System.out.println("The following user changed her/his password successfully: " + user);
         return Response.ok().build();
     }
 
