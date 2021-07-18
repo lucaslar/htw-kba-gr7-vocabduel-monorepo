@@ -98,8 +98,8 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-access-token",
-										"value": "{{token}}",
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
 										"type": "text"
 									}
 								],
@@ -122,8 +122,8 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-access-token",
-										"value": "{{token}}",
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
 										"type": "text"
 									}
 								],
@@ -193,7 +193,7 @@
 		},
 		{
 			"key": "token",
-			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjAxMDA1LCJleHAiOjE2MjY2MDEzMDV9.4FoDRrktOZ7XM7sv5oh7zo2Mbe8v8A9eKtOQPimkrn8"
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjA4OTMzLCJleHAiOjE2MjY2MjY5MzN9.q562dkxU0jI3qyI8dsr7yVuqtjVwhGpg_SW5bLD3VOY"
 		}
 	]
 }
