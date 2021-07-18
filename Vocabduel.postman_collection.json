@@ -66,34 +66,29 @@
 							"response": []
 						},
 						{
-							"name": "Login Incomplete",
+							"name": "Refresh Token",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"arnold@strongmail.at\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
+									"raw": "<insert your token here (see login/register => authTokens => refreshToken)>"
 								},
 								"url": {
-									"raw": "{{url}}/auth/login",
+									"raw": "{{url}}/auth/refresh-token",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"auth",
-										"login"
+										"refresh-token"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Current User (Replace token!)",
+							"name": "Current User",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -117,9 +112,9 @@
 							"response": []
 						},
 						{
-							"name": "TEST Guarded Route",
+							"name": "Update Password",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Authorization",
@@ -127,14 +122,23 @@
 										"type": "text"
 									}
 								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"currentPassword\": \"123arnoLD\",\r\n    \"newPassword\": \"123arnoLD$\",\r\n    \"confirm\": \"123arnoLD$\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
-									"raw": "{{url}}/auth/guarded",
+									"raw": "{{url}}/auth/update-password",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"auth",
-										"guarded"
+										"update-password"
 									]
 								}
 							},
@@ -193,7 +197,7 @@
 		},
 		{
 			"key": "token",
-			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjA4OTMzLCJleHAiOjE2MjY2MjY5MzN9.q562dkxU0jI3qyI8dsr7yVuqtjVwhGpg_SW5bLD3VOY"
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjI4OTgxLCJleHAiOjE2ODk1MjgxODF9.DeLukplaKJzV7euu9oH75F9o26q3FEC3XFdkXw3HLSk"
 		}
 	]
 }
