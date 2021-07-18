@@ -112,7 +112,7 @@ public class AuthServiceRestAdapter {
     public Response refreshAuthTokens(final String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
             return Response
-                    .status(Response.Status.BAD_REQUEST)
+                    .status(Response.Status.FORBIDDEN)
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .entity("Refresh Token must not be null or empty!")
                     .build();
@@ -121,8 +121,8 @@ public class AuthServiceRestAdapter {
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
         if (tokens != null) return Response.ok(tokens).build();
         else return Response
-                .status(Response.Status.BAD_REQUEST)
-                .entity("Could not refresh. Your given refresh-token does not seem to be valid")
+                .status(Response.Status.FORBIDDEN)
+                .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
                 .type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 
