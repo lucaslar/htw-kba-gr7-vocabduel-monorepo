@@ -16,7 +16,7 @@ public class MissingData {
         final List<String> missingParams = data.missingProperties();
         if (missingParams == null) return null;
         final MissingData missingInfo = new MissingData(action, missingParams);
-        System.out.println("Request (Action: \"" + action + "\") has been blocked due to missing data");
+        System.out.println("Request (Action: \"" + action + "\") has been blocked due to missing data: " + missingParams);
         return Response.status(Response.Status.BAD_REQUEST).entity(missingInfo).build();
     }
 
