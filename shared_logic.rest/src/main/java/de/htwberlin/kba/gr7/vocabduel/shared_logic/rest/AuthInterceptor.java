@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.springframework.stereotype.Controller;
 
@@ -20,6 +21,7 @@ import javax.ws.rs.ext.Provider;
 public class AuthInterceptor implements ContainerRequestFilter {
     public static final String USER_HEADER = "user";
     private final Response ACCESS_DENIED = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header!");
+    private final Response ACCESS_DENIED_NO_USER = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header. Your token was valid but does not seem to belong to an existing user account!", false);
     private final Response ACCESS_DENIED_NO_TOKEN = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header, but no such or an empty token was given!", false);
     private final AuthService AUTH_SERVICE;
 
@@ -38,9 +40,11 @@ public class AuthInterceptor implements ContainerRequestFilter {
             else {
                 final String token = tokenStr.replaceFirst("Bearer ", "");
                 if (!AUTH_SERVICE.hasAccessRights(token)) requestContext.abortWith(ACCESS_DENIED);
-                else requestContext
-                        .getHeaders()
-                        .add(USER_HEADER, String.valueOf(AUTH_SERVICE.fetchUser(token).getId()));
+                else {
+                    final User user = AUTH_SERVICE.fetchUser(token);
+                    if (user == null) requestContext.abortWith(ACCESS_DENIED_NO_USER);
+                    else requestContext.getHeaders().add(USER_HEADER, String.valueOf(user.getId()));
+                }
             }
         }
     }
