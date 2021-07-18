@@ -99,7 +99,7 @@
 								"header": [
 									{
 										"key": "x-access-token",
-										"value": "123",
+										"value": "{{token}}",
 										"type": "text"
 									}
 								],
@@ -123,7 +123,7 @@
 								"header": [
 									{
 										"key": "x-access-token",
-										"value": "123",
+										"value": "{{token}}",
 										"type": "text"
 									}
 								],
@@ -190,6 +190,10 @@
 		{
 			"key": "url",
 			"value": "http://localhost:8080/configuration_rest"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjAxMDA1LCJleHAiOjE2MjY2MDEzMDV9.4FoDRrktOZ7XM7sv5oh7zo2Mbe8v8A9eKtOQPimkrn8"
 		}
 	]
 }
