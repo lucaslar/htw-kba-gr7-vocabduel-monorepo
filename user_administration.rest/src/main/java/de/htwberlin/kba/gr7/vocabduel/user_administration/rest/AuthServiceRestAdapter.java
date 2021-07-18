@@ -56,25 +56,11 @@ public class AuthServiceRestAdapter {
         } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
             return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build();
         }
-        // TODO: Implement proper error handling
-//        } catch (PasswordsDoNotMatchException e) {
-//            e.printStackTrace();
-//        } catch (PwTooWeakException e) {
-//            e.printStackTrace();
-//        } catch (InvalidOrRegisteredMailException e) {
-//            e.printStackTrace();
-//        } catch (AlreadyRegisteredUsernameException e) {
-//            e.printStackTrace();
-//        } catch (IncompleteUserDataException e) {
-//            e.printStackTrace();
-//        } catch (InvalidNameException e) {
-//            e.printStackTrace();
-//        }
 
         System.out.println("Successfully registered user: " + user.toString());
         return Response.status(Response.Status.CREATED).entity(user).build();
