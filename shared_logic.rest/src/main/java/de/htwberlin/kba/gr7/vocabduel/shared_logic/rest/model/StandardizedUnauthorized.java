@@ -1,4 +1,4 @@
-package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
+package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;

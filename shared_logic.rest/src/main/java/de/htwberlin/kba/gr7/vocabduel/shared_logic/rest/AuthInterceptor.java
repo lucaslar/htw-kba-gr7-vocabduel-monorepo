@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.springframework.stereotype.Controller;

@@ -6,3 +6,4 @@
 - send Mail to Kempa:
     - use DAO classes AND interfaces?
     - in which module should DAO be stored? interface and classes together?
+    - required args interceptor possible?  

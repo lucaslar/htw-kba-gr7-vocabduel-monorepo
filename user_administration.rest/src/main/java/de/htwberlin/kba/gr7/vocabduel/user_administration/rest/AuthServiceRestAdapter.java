@@ -1,14 +1,14 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
-import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.StandardizedUnauthorized;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.MissingData;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.MissingData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.PasswordData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.RegistrationData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
@@ -21,7 +21,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 @Controller
 @Path("/auth")
@@ -41,6 +40,9 @@ public class AuthServiceRestAdapter {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response registerUser(final RegistrationData data) {
+        final Response missingDataResponse = MissingData.createMissingDataResponse(data, "register");
+        if (missingDataResponse != null) return missingDataResponse;
+
         LoggedInUser user;
         try {
             user = AUTH_SERVICE.registerUser(
@@ -84,16 +86,8 @@ public class AuthServiceRestAdapter {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response loginUser(final SignInData data) {
-        if (data.getEmail() == null || data.getPassword() == null) {
-            final ArrayList<String> missing = new ArrayList<>();
-            if (data.getEmail() == null) missing.add("email");
-            if (data.getPassword() == null) missing.add("password");
-            final MissingData missingInfo = new MissingData();
-            missingInfo.setMessage("Missing login data");
-            missingInfo.setMissingParams(missing);
-            System.out.println("A user tried to log in with incomplete data");
-            return Response.status(Response.Status.BAD_REQUEST).entity(missingInfo).build();
-        }
+        final Response missingDataResponse = MissingData.createMissingDataResponse(data, "login");
+        if (missingDataResponse != null) return missingDataResponse;
 
         final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
         if (user != null) {
@@ -148,6 +142,9 @@ public class AuthServiceRestAdapter {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN})
     public Response updatePassword(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final PasswordData data) {
+        final Response missingDataResponse = MissingData.createMissingDataResponse(data, "update-password");
+        if (missingDataResponse != null) return missingDataResponse;
+
         final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         try {
             AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
