@@ -15,6 +15,8 @@ import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.naming.InvalidNameException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ import java.util.ArrayList;
 public class AuthServiceRestAdapter {
 
     private final AuthService AUTH_SERVICE;
+
+    @Context
+    private HttpHeaders headers;
 
     @Inject
     public AuthServiceRestAdapter(AuthService authService) {
@@ -108,7 +113,7 @@ public class AuthServiceRestAdapter {
     @PermitAll
     @Path("/current-user")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response currentUser(@HeaderParam(AuthInterceptor.AUTHORIZATION_HEADER) final String token) {
+    public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
         if (token == null || token.isEmpty()) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
@@ -117,7 +122,7 @@ public class AuthServiceRestAdapter {
                     .build();
         }
 
-        final User user = AUTH_SERVICE.fetchUser(token);
+        final User user = AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""));
         if (user == null) {
             return Response
                     .status(Response.Status.UNAUTHORIZED)
@@ -148,8 +153,9 @@ public class AuthServiceRestAdapter {
 
     // TODO Remove example for auth-guarded route
     @GET
-    @Path("guarded")
+    @Path("/guarded")
     public Response guardedTest() {
+        System.out.println(headers.getHeaderString(AuthInterceptor.USER_HEADER));
         return Response.status(Response.Status.OK).build();
     }
 }
