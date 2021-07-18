@@ -126,7 +126,7 @@ public class AuthServiceRestAdapter {
                 .type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 
-    @POST // TODO PUT
+    @PUT
     @Path("/update-password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN})

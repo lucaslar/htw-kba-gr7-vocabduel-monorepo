@@ -114,7 +114,7 @@
 						{
 							"name": "Update Password",
 							"request": {
-								"method": "POST",
+								"method": "PUT",
 								"header": [
 									{
 										"key": "Authorization",
@@ -148,7 +148,32 @@
 				},
 				{
 					"name": "User",
-					"item": []
+					"item": [
+						{
+							"name": "Current User Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user/delete-account",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"delete-account"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
