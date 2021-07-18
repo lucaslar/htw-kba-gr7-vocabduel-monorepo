@@ -10,7 +10,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -19,8 +18,8 @@ import javax.ws.rs.ext.Provider;
 @ServerInterceptor
 public class AuthInterceptor implements ContainerRequestFilter {
     public static final String USER_HEADER = "user";
-    private final Response ACCESS_DENIED = unauthorizedResponse("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header!");
-    private final Response ACCESS_DENIED_NO_TOKEN = unauthorizedResponse("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header, but no such or an empty token was given!", false);
+    private final Response ACCESS_DENIED = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header!");
+    private final Response ACCESS_DENIED_NO_TOKEN = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header, but no such or an empty token was given!", false);
     private final AuthService AUTH_SERVICE;
 
     @Context
@@ -28,20 +27,6 @@ public class AuthInterceptor implements ContainerRequestFilter {
 
     public AuthInterceptor(AuthService authService) {
         AUTH_SERVICE = authService;
-    }
-
-    public static Response unauthorizedResponse(final String message) {
-        return unauthorizedResponse(message, true);
-    }
-
-    public static Response unauthorizedResponse(final String message, final boolean isTokenGiven) {
-        final String additionalHeaderInformation = isTokenGiven ? "error=\"invalid_token\", \"error_description\"=\"The access token is invalid or expired\"" : "";
-        return Response
-                .status(Response.Status.UNAUTHORIZED)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .entity(message)
-                .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"example\"" + additionalHeaderInformation)
-                .build();
     }
 
     @Override

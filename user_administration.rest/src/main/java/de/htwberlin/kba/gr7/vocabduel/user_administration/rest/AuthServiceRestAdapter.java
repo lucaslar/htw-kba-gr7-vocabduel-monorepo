@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -114,12 +115,12 @@ public class AuthServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
         if (token == null || token.isEmpty()) {
-            return AuthInterceptor.unauthorizedResponse("Access Token must not be null or empty!", false);
+            return StandardizedUnauthorized.respond("Access Token must not be null or empty!", false);
         }
 
         final User user = AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""));
         if (user == null) {
-            return AuthInterceptor.unauthorizedResponse("User could not be fetched. Is your token valid?");
+            return StandardizedUnauthorized.respond("User could not be fetched. Is your token valid?");
         } else return Response.ok(user).build();
     }
 
