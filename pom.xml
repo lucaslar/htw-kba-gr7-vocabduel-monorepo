@@ -19,7 +19,7 @@
     <module>vocabulary_administration.rest</module>
     <module>game_administration.rest</module>
     <module>configuration_core</module>
-    <module>auth_interceptor.rest</module>
+    <module>shared_logic.rest</module>
   </modules>
 
   <properties>

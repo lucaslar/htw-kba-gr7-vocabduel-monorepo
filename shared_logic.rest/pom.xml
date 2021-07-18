@@ -10,10 +10,10 @@
   </parent>
 
   <groupId>de.htwberlin.kba.gr7.vocabduel</groupId>
-  <artifactId>auth_interceptor.rest</artifactId>
+  <artifactId>shared_logic.rest</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>auth_interceptor.rest</name>
+  <name>shared_logic.rest</name>
 
   <dependencies>
     <dependency>

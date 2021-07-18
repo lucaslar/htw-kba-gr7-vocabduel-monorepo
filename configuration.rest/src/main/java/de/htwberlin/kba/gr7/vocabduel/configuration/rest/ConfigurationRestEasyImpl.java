@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.configuration.rest;
 
-import de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest.AuthInterceptor;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.GameServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.ScoreServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.AuthServiceRestAdapter;

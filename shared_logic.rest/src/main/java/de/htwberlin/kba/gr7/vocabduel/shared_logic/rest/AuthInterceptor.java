@@ -1,4 +1,4 @@
-package de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest;
+package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;

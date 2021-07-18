@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
-import de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest.AuthInterceptor;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
