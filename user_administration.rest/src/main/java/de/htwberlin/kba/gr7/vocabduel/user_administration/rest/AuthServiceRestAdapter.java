@@ -90,18 +90,11 @@ public class AuthServiceRestAdapter {
     }
 
     @GET
-    @PermitAll
     @Path("/current-user")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
-        if (token == null || token.isEmpty()) {
-            return StandardizedUnauthorized.respond("Access Token must not be null or empty!", false);
-        }
-
-        final User user = AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""));
-        if (user == null) {
-            return StandardizedUnauthorized.respond("User could not be fetched. Is your token valid?");
-        } else return Response.ok(user).build();
+        // Since once this code is reached, the auth interceptor did not abort this method => fetch will not return null / we could also get the data by ID here.
+        return Response.ok(AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""))).build();
     }
 
     @POST
