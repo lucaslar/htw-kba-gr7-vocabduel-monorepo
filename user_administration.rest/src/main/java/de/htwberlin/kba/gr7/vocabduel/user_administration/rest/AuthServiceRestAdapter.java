@@ -166,11 +166,4 @@ public class AuthServiceRestAdapter {
         System.out.println("The following user changed her/his password successfully: " + user);
         return Response.ok().build();
     }
-
-    // TODO Remove example for auth-guarded route
-    @GET
-    @Path("/guarded")
-    public Response guardedTest() {
-        return Response.ok().build();
-    }
 }
