@@ -2,11 +2,13 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.auth_interceptor.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.MissingData;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.PasswordData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.RegistrationData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.model.SignInData;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,6 @@ import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.naming.InvalidNameException;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,14 +25,12 @@ import java.util.ArrayList;
 @Controller
 @Path("/auth")
 public class AuthServiceRestAdapter {
-
+    private final UserService USER_SERVICE;
     private final AuthService AUTH_SERVICE;
 
-    @Context
-    private HttpHeaders headers;
-
     @Inject
-    public AuthServiceRestAdapter(AuthService authService) {
+    public AuthServiceRestAdapter(final UserService userService, final AuthService authService) {
+        USER_SERVICE = userService;
         AUTH_SERVICE = authService;
     }
 
@@ -98,7 +97,7 @@ public class AuthServiceRestAdapter {
         final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
         if (user != null) {
             System.out.println("A user logged in: " + user);
-            return Response.status(Response.Status.OK).entity(user).build();
+            return Response.ok(user).build();
         }
 
         System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
@@ -121,7 +120,7 @@ public class AuthServiceRestAdapter {
         final User user = AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""));
         if (user == null) {
             return AuthInterceptor.unauthorizedResponse("User could not be fetched. Is your token valid?");
-        } else return Response.status(Response.Status.OK).entity(user).build();
+        } else return Response.ok(user).build();
     }
 
     @POST
@@ -143,11 +142,34 @@ public class AuthServiceRestAdapter {
         else return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
 
+    @POST
+    @Path("/update-password")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.TEXT_PLAIN})
+    public Response updatePassword(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final PasswordData data) {
+        try {
+            final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
+            AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
+        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (InvalidUserException e) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .entity(e.getMessage())
+                    .build();
+        }
+        return Response.ok().build();
+    }
+
     // TODO Remove example for auth-guarded route
     @GET
     @Path("/guarded")
     public Response guardedTest() {
-        System.out.println(headers.getHeaderString(AuthInterceptor.USER_HEADER));
-        return Response.status(Response.Status.OK).build();
+        return Response.ok().build();
     }
 }
