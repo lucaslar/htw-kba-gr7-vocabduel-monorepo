@@ -33,17 +33,7 @@ public class UserServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response findUsersByUsername(@PathParam("searchStr") final String searchStr) {
         final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
-        System.out.print("Incoming search: \"" + searchStr + "\"...");
-        if (users == null || users.isEmpty()) {
-            System.out.println("No reults");
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .entity("No User found. Please try another username.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
-        }
-
-        System.out.println(users.size() + " result(s)");
+        System.out.println("Incoming search for users with username: \"" + searchStr + "\" => " + users.size() + " result(s)");
         return Response.ok(users).build();
     }
 
