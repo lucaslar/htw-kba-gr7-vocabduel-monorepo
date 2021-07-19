@@ -30,42 +30,58 @@ public class VocabularyServiceRestAdapter {
         USER_SERVICE = userService;
     }
 
-    @POST
-    @Path("/delete-list")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @PermitAll
+    @Path("/list/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteVocableList(final VocableList vocableList, final User user) {
-        try {
-            VOCABULARY_SERVICE.deleteVocableList(vocableList, user);
-        } catch (DifferentAuthorException e) {
-            e.printStackTrace();
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
+    public Response getVocableListById(@PathParam("id") final long id) {
+        final VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
+        return list == null
+                ? Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").type(MediaType.TEXT_PLAIN).build()
+                : Response.ok(list).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @PermitAll
+    @Path("/lists-of-author/{id}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getVocableListsByUser(@PathParam("id") final long id) {
+        final User user = USER_SERVICE.getUserDataById(id);
+
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("No user found for the given ID.").type(MediaType.TEXT_PLAIN).build();
         }
-        System.out.println("Successfully deleted VocableList.");
-        return Response.ok().build();
-    }
 
-    @GET
-    @Path("/get-list")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getVocableListById(final long id) {
-        VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
-        return Response.ok(list).type(MediaType.APPLICATION_JSON).build();
-    }
-
-    @GET
-    @Path("/get-lists")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getVocableListsByUser(final User user) {
-        List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
+        final List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
         return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
     }
 
-    // TODO continue with functions above
+    @GET
+    @Path("/language-sets")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllLanguageSets() {
+        final List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
+        return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/language-references/{lang}")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSupportedLanguageReferences(@PathParam("lang") final SupportedLanguage lang) {
+        final List<String> refs = VOCABULARY_SERVICE.getSupportedLanguageReferences(lang);
+        return Response.ok(refs).build();
+    }
+
+    @GET
+    @Path("/supported-languages")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllSupportedLanguages() {
+        List<SupportedLanguage> languages = VOCABULARY_SERVICE.getAllSupportedLanguages();
+        return Response.ok(languages).build();
+    }
 
     @POST
     @Path("/import-gnu")
@@ -82,34 +98,27 @@ public class VocabularyServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
-        System.out.println("Successfully imported GnuVocableList.");
+        System.out.println("Successfully imported GNU Vocable list.");
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @GET
-    @Path("/language-sets")
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllLanguageSets() {
-        List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
-        return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
-    }
+    @DELETE
+    @Path("/delete-list/{listId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, @PathParam("listId") final Long listId) {
+        final VocableList list = VOCABULARY_SERVICE.getVocableListById(listId);
 
-    @GET
-    @Path("/language-references/{lang}")
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSupportedLanguageReferences(@PathParam("lang") final SupportedLanguage lang) {
-        List<String> refs = VOCABULARY_SERVICE.getSupportedLanguageReferences(lang);
-        return Response.ok(refs).build();
-    }
+        if (list == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").build();
+        }
 
-    @GET
-    @Path("/supported-languages")
-    @PermitAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllSupportedLanguages() {
-        List<SupportedLanguage> languages = VOCABULARY_SERVICE.getAllSupportedLanguages();
-        return Response.ok(languages).build();
+        try {
+            VOCABULARY_SERVICE.deleteVocableList(list, USER_SERVICE.getUserDataById(Long.parseLong(userId)));
+        } catch (DifferentAuthorException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+        }
+        System.out.println("Successfully deleted vocable list with ID " + list.getId());
+        return Response.noContent().build();
     }
 }
