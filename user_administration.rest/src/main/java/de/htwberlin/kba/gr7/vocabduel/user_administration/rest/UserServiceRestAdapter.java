@@ -6,12 +6,15 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.naming.InvalidNameException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Path("/user")
@@ -25,41 +28,63 @@ public class UserServiceRestAdapter {
     }
 
     @GET
-    @Path("/find")
+    @Path("/find/{searchStr}")
+    @PermitAll
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response findUsersByUsername(final String username){
-        final List<User> users = USER_SERVICE.findUsersByUsername(username);
+    public Response findUsersByUsername(@PathParam("searchStr") final String searchStr) {
+        final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
+        System.out.print("Incoming search: \"" + searchStr + "\"...");
         if (users == null || users.isEmpty()) {
+            System.out.println("No reults");
             return Response
-                    .status(Response.Status.BAD_REQUEST)
+                    .status(Response.Status.NOT_FOUND)
                     .entity("No User found. Please try another username.")
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build();
-        } else return Response.ok(users).build();
+        }
+
+        System.out.println(users.size() + " result(s)");
+        return Response.ok(users).build();
     }
 
     @GET
     @Path("/get")
+    @PermitAll
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getUserDataByData(final String data){
-        User user = USER_SERVICE.getUserDataByEmail(data);
-        if(user == null){
-            user = USER_SERVICE.getUserDataByUsername(data);
-            if(user == null){
-                user = USER_SERVICE.getUserDataById(Long.parseLong(data));
-                if (user == null){
-                    return Response
-                            .status(Response.Status.BAD_REQUEST)
-                            .entity("No User found.")
-                            .type(MediaType.TEXT_PLAIN_TYPE)
-                            .build();
-                }
+    public Response getUserDataByData(@QueryParam("id") final String id, @QueryParam("username") final String username, @QueryParam("email") final String email) {
+        final List<String> notNullParams = Arrays.stream(new String[]{id, username, email}).filter(p -> p != null && !p.isEmpty()).collect(Collectors.toList());
+        if (notNullParams.size() != 1) {
+            final String message = notNullParams.size() == 0
+                    ? "No identifiers provided! Please add one of [id, email, username] incl. value as query param."
+                    : ("Too many identifiers provided! Only one must be given but found were " + notNullParams.size());
+            System.out.println("Failed to get user data; reason: " + message);
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(message)
+                    .build();
+        }
+
+        User user;
+        if (email != null) user = USER_SERVICE.getUserDataByEmail(email);
+        else if (username != null) user = USER_SERVICE.getUserDataByUsername(username);
+        else {
+            try {
+                user = USER_SERVICE.getUserDataById(Long.parseLong(id));
+            } catch (NumberFormatException e) {
+                System.out.println("Failed to get user data due to given ID not being a number");
+                return Response.status(Response.Status.BAD_REQUEST).entity("Provided ID is not a number!").type(MediaType.TEXT_PLAIN).build();
             }
         }
+
+        if (user == null) {
+            System.out.println("No matching user found for the given params: id=" + id + " , email=" + email + " , username" + username);
+            return Response.status(Response.Status.NOT_FOUND).entity("No matching user found").type(MediaType.TEXT_PLAIN).build();
+        }
+
+        System.out.println("A user has been found successfully: " + user);
         return Response.ok(user).build();
     }
-
-    // TODO Integrate functions listed above
 
     @PUT
     @Path("/update-account")
