@@ -320,7 +320,45 @@
 		},
 		{
 			"name": "VocabularyAdministration",
-			"item": []
+			"item": [
+				{
+					"name": "Supported Languages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/supported-languages",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"supported-languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Language References (ES)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/language-references/ES",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"language-references",
+								"ES"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "GameAdministration",
