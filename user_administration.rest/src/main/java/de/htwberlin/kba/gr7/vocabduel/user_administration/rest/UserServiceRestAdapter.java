@@ -28,10 +28,20 @@ public class UserServiceRestAdapter {
     }
 
     @GET
-    @Path("/find/{searchStr}")
+    @Path("/find")
     @PermitAll
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response findUsersByUsername(@PathParam("searchStr") final String searchStr) {
+    public Response findUsersByUsername(@QueryParam("searchStr") final String searchStr) {
+        // Query param since the user could enter slashes in the client
+        if (searchStr == null ||searchStr.isEmpty()) {
+            System.out.println("Aborted search for user data due to null/empty string");
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity("Required query param \"searchStr\" must not be null/empty")
+                    .build();
+        }
+
         final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
         System.out.println("Incoming search for users with username: \"" + searchStr + "\" => " + users.size() + " result(s)");
         return Response.ok(users).build();
