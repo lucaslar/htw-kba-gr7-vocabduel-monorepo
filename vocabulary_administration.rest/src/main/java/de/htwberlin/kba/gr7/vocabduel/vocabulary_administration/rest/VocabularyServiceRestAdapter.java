@@ -8,6 +8,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Sup
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -94,18 +95,21 @@ public class VocabularyServiceRestAdapter {
     }
 
     @GET
-    @Path("/get-languages")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getAllSupportedLanguages() {
-        List<SupportedLanguage> languages = VOCABULARY_SERVICE.getAllSupportedLanguages();
-        return Response.ok(languages).type(MediaType.TEXT_PLAIN).build();
-    }
-
-    @GET
     @Path("/get-language-references")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getSupportedLanguageReferences(final SupportedLanguage lang) {
         List<String> refs = VOCABULARY_SERVICE.getSupportedLanguageReferences(lang);
         return Response.ok(refs).type(MediaType.TEXT_PLAIN_TYPE).build();
+    }
+
+    // TODO continue with functions above
+
+    @GET
+    @Path("/supported-languages")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllSupportedLanguages() {
+        List<SupportedLanguage> languages = VOCABULARY_SERVICE.getAllSupportedLanguages();
+        return Response.ok(languages).build();
     }
 }
