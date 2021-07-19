@@ -239,14 +239,19 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/user/find/aR",
+									"raw": "{{url}}/user/find?searchStr=aR",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"user",
-										"find",
-										"aR"
+										"find"
+									],
+									"query": [
+										{
+											"key": "searchStr",
+											"value": "aR"
+										}
 									]
 								}
 							},
