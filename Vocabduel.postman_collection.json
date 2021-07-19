@@ -150,7 +150,143 @@
 					"name": "User",
 					"item": [
 						{
-							"name": "Current User Copy",
+							"name": "User by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/user/get?id=2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"get"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User by Email",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user/get?email=arnold@strongmail.at",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"get"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "arnold@strongmail.at"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User by Username",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user/get?username=arnie1947",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"get"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "arnie1947"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Users (by Username)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/user/find/aR",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"find",
+										"aR"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": 2,\r\n    \"firstName\": \"Arnold\",\r\n    \"lastName\": \"Schwarzenegger\",\r\n    \"username\": \"arnie47\",\r\n    \"email\": \"arnold@strongmail.at\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/update-account",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"update-account"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
 							"request": {
 								"method": "DELETE",
 								"header": [
