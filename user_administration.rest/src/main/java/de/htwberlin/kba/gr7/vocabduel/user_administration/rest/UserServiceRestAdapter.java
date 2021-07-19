@@ -51,7 +51,7 @@ public class UserServiceRestAdapter {
     @Path("/get")
     @PermitAll
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getUserDataByData(@QueryParam("id") final String id, @QueryParam("username") final String username, @QueryParam("email") final String email) {
+    public Response getUserData(@QueryParam("id") final String id, @QueryParam("username") final String username, @QueryParam("email") final String email) {
         final List<String> notNullParams = Arrays.stream(new String[]{id, username, email}).filter(p -> p != null && !p.isEmpty()).collect(Collectors.toList());
         if (notNullParams.size() != 1) {
             final String message = notNullParams.size() == 0
@@ -96,7 +96,7 @@ public class UserServiceRestAdapter {
             return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("No user id given!").build();
         } else if (Long.parseLong(userId) != data.getId()) {
             System.out.println("User update failed due to no access (" + userId + " tried to access " + data.getId() + ")");
-            return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("You are not allowed alter to this user's data!").build();
+            return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("You are not allowed to alter this user's data!").build();
         }
 
         try {
