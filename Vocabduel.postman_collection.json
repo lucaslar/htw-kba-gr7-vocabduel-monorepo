@@ -322,6 +322,44 @@
 			"name": "VocabularyAdministration",
 			"item": [
 				{
+					"name": "Get List by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/list/107",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"list",
+								"107"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List of Author (by ID)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/lists-of-author/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"lists-of-author",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Supported Languages",
 					"request": {
 						"method": "GET",
@@ -353,6 +391,77 @@
 								"vocabulary",
 								"language-references",
 								"ES"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Language Sets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/language-sets",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"language-sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import Vocabulary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT}}}\r\n{Oi} : {Hi}\r\n{Bom dia} : {Guten Tag}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/vocabulary/import-gnu",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"import-gnu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vocabulary",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/vocabulary/delete-list/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"delete-list",
+								"4"
 							]
 						}
 					},
