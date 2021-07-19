@@ -506,7 +506,7 @@
 	"variable": [
 		{
 			"key": "url",
-			"value": "http://localhost:8080/configuration_rest"
+			"value": "http://localhost:8080/configuration_rest/api"
 		},
 		{
 			"key": "token",

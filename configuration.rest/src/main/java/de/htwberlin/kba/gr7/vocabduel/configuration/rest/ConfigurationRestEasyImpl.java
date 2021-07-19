@@ -10,10 +10,12 @@ import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
+@ApplicationPath("/api")
 public class ConfigurationRestEasyImpl extends Application {
     private final static ConfigurableApplicationContext CONTEXT = new AnnotationConfigApplicationContext("de.htwberlin.kba.gr7.vocabduel");
     private final Set<Object> SINGLETONS = new HashSet<>();
