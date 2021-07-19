@@ -59,36 +59,47 @@ public class UserServiceRestAdapter {
         return Response.ok(user).build();
     }
 
-    @POST
-    @Path("/update")
+    // TODO Integrate functions listed above
+
+    @PUT
+    @Path("/update-account")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response updateUser(final User data){
+    public Response updateUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final User data) {
+        if (data.getId() == null) {
+            System.out.println("User update failed due to missing ID");
+            return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("No user id given!").build();
+        } else if (Long.parseLong(userId) != data.getId()) {
+            System.out.println("User update failed due to no access (" + userId + " tried to access " + data.getId() + ")");
+            return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("You are not allowed alter to this user's data!").build();
+        }
+
         try {
             USER_SERVICE.updateUser(data);
-        } catch (InvalidOrRegisteredMailException |
-                AlreadyRegisteredUsernameException |
-                IncompleteUserDataException | InvalidNameException |
-                InvalidUserException e) {
+        } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
             return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
-        // TODO: Implement proper error handling
 
-        System.out.println("Successfully updated user: " + data.toString());
+        System.out.println("Successfully updated user data: " + data);
         return Response.ok(data).build();
     }
-
-    // TODO Integrate functions listed above
 
     @DELETE
     @Path("/delete-account")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId){
+    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId) {
         final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
