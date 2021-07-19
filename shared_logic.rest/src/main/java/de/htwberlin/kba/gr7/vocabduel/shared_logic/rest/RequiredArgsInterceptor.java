@@ -25,6 +25,8 @@ public class RequiredArgsInterceptor implements ContainerRequestFilter {
 //            System.out.println(NoNullableProperty.class.isAssignableFrom(parameter.getType()));
 //        });
 
+        // TODO Keep or remove
+
         Arrays.stream(resourceInfo.getResourceMethod().getParameters())
                 .filter(p -> NoNullableProperty.class.isAssignableFrom(p.getType()))
                 .forEach(p -> System.out.println(resourceInfo.getResourceMethod()));
