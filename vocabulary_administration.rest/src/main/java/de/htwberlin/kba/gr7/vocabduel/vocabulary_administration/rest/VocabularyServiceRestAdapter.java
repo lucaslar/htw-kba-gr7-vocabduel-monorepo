@@ -1,5 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
@@ -20,36 +22,13 @@ import java.util.List;
 public class VocabularyServiceRestAdapter {
 
     private final VocabularyService VOCABULARY_SERVICE;
+    private final UserService USER_SERVICE;
 
     @Inject
-    public VocabularyServiceRestAdapter(VocabularyService vocabularyService) {
+    public VocabularyServiceRestAdapter(final VocabularyService vocabularyService, final UserService userService) {
         VOCABULARY_SERVICE = vocabularyService;
+        USER_SERVICE = userService;
     }
-
-    @POST
-    @Path("/import-list")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response importGnuVocableList(final String gnuContent, final User user) {
-        try {
-            VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
-        } catch (IncompleteVocableListException | DataAlreadyExistsException |
-                InvalidVocableListException | UnknownLanguagesException |
-                DuplicateVocablesInSetException e) {
-            e.printStackTrace();
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
-        }
-        System.out.println("Successfully imported GnuVocableList.");
-        return Response
-                .status(Response.Status.CREATED)
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
-    }
-
 
     @POST
     @Path("/delete-list")
@@ -86,15 +65,35 @@ public class VocabularyServiceRestAdapter {
         return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
     }
 
+    // TODO continue with functions above
+
+    @POST
+    @Path("/import-gnu")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response importGnuVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final String gnuContent) {
+        try {
+            final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
+            VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
+        } catch (IncompleteVocableListException | DataAlreadyExistsException | InvalidVocableListException | DuplicateVocablesInSetException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (UnknownLanguagesException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+        System.out.println("Successfully imported GnuVocableList.");
+        return Response.status(Response.Status.CREATED).build();
+    }
+
     @GET
-    @Path("/get-lang-sets")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    @Path("/language-sets")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAllLanguageSets() {
         List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
         return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
     }
-
-    // TODO continue with functions above
 
     @GET
     @Path("/language-references/{lang}")
