@@ -68,8 +68,9 @@ public class AuthServiceImpl implements AuthService {
         LoginData loginData = loginDataDAO.selectLoginDataByUserEmail(email);
 
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
+            final AuthTokens tokens = insertNewUserTokens(loginData.getUser());
             final LoggedInUser user = new LoggedInUser(loginData.getUser());
-            user.setAuthTokens(insertNewUserTokens(user));
+            user.setAuthTokens(tokens);
             return user;
         }
         return null;
