@@ -1,7 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
-import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -55,11 +54,7 @@ public class AuthServiceRestAdapter {
             );
         } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         }
 
         System.out.println("Successfully registered user: " + user.toString());
@@ -82,11 +77,7 @@ public class AuthServiceRestAdapter {
         }
 
         System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
-        return Response
-                .status(Response.Status.BAD_REQUEST)
-                .entity("Invalid login, please try again.")
-                .type(MediaType.TEXT_PLAIN_TYPE)
-                .build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Invalid login, please try again.").type(MediaType.TEXT_PLAIN).build();
     }
 
     @GET
@@ -104,11 +95,7 @@ public class AuthServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response refreshAuthTokens(final String refreshToken) {
         if (refreshToken == null || refreshToken.isEmpty()) {
-            return Response
-                    .status(Response.Status.FORBIDDEN)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .entity("Refresh Token must not be null or empty!")
-                    .build();
+            return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Refresh Token must not be null or empty!").build();
         }
 
         final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
@@ -116,7 +103,7 @@ public class AuthServiceRestAdapter {
         else return Response
                 .status(Response.Status.FORBIDDEN)
                 .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
-                .type(MediaType.TEXT_PLAIN_TYPE).build();
+                .type(MediaType.TEXT_PLAIN).build();
     }
 
     @PUT
@@ -132,16 +119,10 @@ public class AuthServiceRestAdapter {
             AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
         System.out.println("The following user changed her/his password successfully: " + user);
         return Response.noContent().build();

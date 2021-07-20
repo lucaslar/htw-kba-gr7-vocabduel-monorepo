@@ -33,13 +33,9 @@ public class UserServiceRestAdapter {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response findUsersByUsername(@QueryParam("searchStr") final String searchStr) {
         // Query param since the user could enter slashes in the client
-        if (searchStr == null ||searchStr.isEmpty()) {
+        if (searchStr == null || searchStr.isEmpty()) {
             System.out.println("Aborted search for user data due to null/empty string");
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.TEXT_PLAIN)
-                    .entity("Required query param \"searchStr\" must not be null/empty")
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Required query param \"searchStr\" must not be null/empty").build();
         }
 
         final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
@@ -58,11 +54,7 @@ public class UserServiceRestAdapter {
                     ? "No identifiers provided! Please add one of [id, email, username] incl. value as query param."
                     : ("Too many identifiers provided! Only one must be given but found were " + notNullParams.size());
             System.out.println("Failed to get user data; reason: " + message);
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.TEXT_PLAIN)
-                    .entity(message)
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(message).build();
         }
 
         User user;
@@ -103,18 +95,10 @@ public class UserServiceRestAdapter {
             USER_SERVICE.updateUser(data);
         } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN)
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (InvalidUserException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN)
-                    .build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         }
 
         System.out.println("Successfully updated user data: " + data);
