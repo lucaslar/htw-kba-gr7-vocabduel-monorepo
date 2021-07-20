@@ -24,6 +24,10 @@
             "title": "Are you sure?",
             "message": "Please confirm you want to delete the following list:",
             "cannotBeUndone": "This action cannot be undone"
+        },
+        "vocabulary": {
+            "unit": "Unit",
+            "availableSince": "Available since"
         }
     },
     "snackbar": {

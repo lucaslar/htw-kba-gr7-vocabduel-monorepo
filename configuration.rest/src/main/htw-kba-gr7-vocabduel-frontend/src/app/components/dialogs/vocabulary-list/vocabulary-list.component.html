@@ -1,0 +1,131 @@
+<div mat-dialog-title class="d-flex">
+    <mat-icon class="my-auto mr-2"> menu_book </mat-icon>
+    <div class="my-auto">{{ list.title }}</div>
+</div>
+
+<mat-dialog-content>
+    <div class="my-n2">
+        <div class="my-2 d-flex">
+            <div class="mx-n1 my-auto">
+                <app-overlapping-flags
+                    [languageSet]="languageSet"
+                ></app-overlapping-flags>
+            </div>
+
+            <div class="d-flex flex-column my-auto ml-1">
+                <div class="d-flex">
+                    <div class="my-auto">
+                        <strong>{{
+                            'general.language.' + languageSet.learntLanguage
+                                | lowercase
+                                | translate
+                        }}</strong>
+                        ({{ languageSet.learntLanguage }})
+                    </div>
+
+                    <mat-icon class="my-auto"> arrow_forward </mat-icon>
+
+                    <div class="my-auto mx-1">
+                        <strong>{{
+                            'general.language.' + languageSet.knownLanguage
+                                | lowercase
+                                | translate
+                        }}</strong>
+                        ({{ languageSet.knownLanguage }})
+                    </div>
+                </div>
+                <span>
+                    <strong>{{ 'dialog.vocabulary.unit' | translate }}:</strong>
+                    {{ unitTitle }}
+                </span>
+            </div>
+        </div>
+
+        <div class="my-2 d-flex">
+            <div class="mx-2 text-center my-auto">
+                <mat-icon
+                    [color]="isAuthorSelf ? 'accent' : 'primary'"
+                    class="prominent-medium-icon"
+                    [class.color-darkgrey]="!author"
+                >
+                    person
+                </mat-icon>
+            </div>
+            <div class="my-auto ml-1">
+                <strong> {{ 'general.importedBy' | translate }}: </strong>
+                <br />
+                <ng-container *ngIf="author; else deletedAuthor">
+                    {{ author.username }}
+                    <span *ngIf="isAuthorSelf" class="color-accent">
+                        ({{ 'general.itsYou' | translate }})
+                    </span>
+                    <br />
+                    {{ author.firstName }} {{ author.lastName }}
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="my-2 d-flex">
+            <div class="mx-2 text-center my-auto">
+                <mat-icon class="prominent-medium-icon"> schedule </mat-icon>
+            </div>
+            <div class="my-auto ml-1">
+                <strong>
+                    {{ 'dialog.vocabulary.availableSince' | translate }}:
+                </strong>
+                <br />
+                {{ list.timestamp | date }}
+            </div>
+        </div>
+    </div>
+
+    <mat-divider class="position-relative my-3"></mat-divider>
+
+    <h2 class="mb-2">{{ 'header.actions.vocabulary' | translate }}:</h2>
+
+    <div class="d-table mt-2 w-100">
+        <ng-container *ngFor="let vocable of list.vocables; last as lastVoc">
+            <div class="d-table-row">
+                <div class="d-table-cell py-2 pr-2">
+                    <app-translation-group
+                        [translationGroup]="vocable.vocable"
+                    ></app-translation-group>
+                </div>
+
+                <mat-divider
+                    class="d-table-cell"
+                    [vertical]="true"
+                ></mat-divider>
+
+                <div class="d-table-cell pl-2 py-2">
+                    <div
+                        *ngFor="
+                            let tg of vocable.translations;
+                            last as lastTranslation
+                        "
+                    >
+                        <app-translation-group
+                            [translationGroup]="tg"
+                        ></app-translation-group>
+                        <mat-divider class='my-1' *ngIf="!lastTranslation"></mat-divider>
+                    </div>
+                </div>
+            </div>
+            <div class="d-table-row" *ngIf="!lastVoc">
+                <mat-divider class="d-table-cell"></mat-divider>
+                <mat-divider class="d-table-cell"></mat-divider>
+                <mat-divider class="d-table-cell"></mat-divider>
+            </div>
+        </ng-container>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button color="primary" mat-button mat-dialog-close>
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>
+
+<ng-template #deletedAuthor>
+    <span class="color-darkgrey">{{ 'general.deletedUser' | translate }}</span>
+</ng-template>
