@@ -6,7 +6,6 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.ScoreServiceRestA
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.AuthServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.UserServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.rest.VocabularyServiceRestAdapter;
-import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -21,14 +20,13 @@ public class ConfigurationRestEasyImpl extends Application {
     private final Set<Object> SINGLETONS = new HashSet<>();
 
     public ConfigurationRestEasyImpl() {
-        CorsFilter corsFilter = new CorsFilter();
-        corsFilter.getAllowedOrigins().add("*");
-        corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
-        SINGLETONS.add(corsFilter);
-
+        // Auth interceptor:
         SINGLETONS.add(CONTEXT.getBean(AuthInterceptor.class));
+
+        // Adapter for the landing page:
         SINGLETONS.add(CONTEXT.getBean(LandingPageAdapter.class));
 
+        // Services:
         SINGLETONS.add(CONTEXT.getBean(UserServiceRestAdapter.class));
         SINGLETONS.add(CONTEXT.getBean(AuthServiceRestAdapter.class));
         SINGLETONS.add(CONTEXT.getBean(VocabularyServiceRestAdapter.class));
