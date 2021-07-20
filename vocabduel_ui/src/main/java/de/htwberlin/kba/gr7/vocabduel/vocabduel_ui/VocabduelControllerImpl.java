@@ -349,8 +349,8 @@ public class VocabduelControllerImpl implements VocabduelController {
             input.close();
 
             try {
-                final int result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
-                if (result == 0) VIEW.printGnuImportSuccessful(args.get(ACTION_ARG_FILE));
+                final VocableList result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
+                if (result != null) VIEW.printGnuImportSuccessful(args.get(ACTION_ARG_FILE));
             } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException e) {
                 e.printStackTrace();
             }

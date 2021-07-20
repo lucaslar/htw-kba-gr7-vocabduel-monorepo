@@ -38,7 +38,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException {
+    public VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException {
         final List<String> lines = Arrays.stream(gnuContent.split("\n")).collect(Collectors.toList());
         if (lines.size() < 2) throw new IncompleteVocableListException("Not enough lines, expected at least two");
 
@@ -71,7 +71,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         vocableUnitDAO.insertVocableUnit(unit);
 
-        return 0;
+        return list;
     }
 
     @Override

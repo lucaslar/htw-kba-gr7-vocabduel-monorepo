@@ -86,20 +86,21 @@ public class VocabularyServiceRestAdapter {
     @POST
     @Path("/import-gnu")
     @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
     public Response importGnuVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final String gnuContent) {
+        VocableList imported;
         try {
             final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
-            VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
+            imported = VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
         } catch (IncompleteVocableListException | DataAlreadyExistsException | InvalidVocableListException | DuplicateVocablesInSetException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UnknownLanguagesException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         }
         System.out.println("Successfully imported GNU Vocable list.");
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED).entity(imported).type(MediaType.APPLICATION_JSON).build();
     }
 
     @DELETE

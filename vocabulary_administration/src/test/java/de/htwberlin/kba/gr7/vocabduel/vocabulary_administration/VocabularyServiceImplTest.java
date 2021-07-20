@@ -166,8 +166,7 @@ public class VocabularyServiceImplTest {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format.txt";
         final int initialListsLength = existingVocableUnit.getVocableLists().size();
-        final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
-        Assert.assertEquals(0, statusCode);
+        Assert.assertNotNull(vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L)));
 
         final String expectedTitle = "GNU Unit title";
         existingVocableList1.setTitle(expectedTitle);
@@ -184,8 +183,7 @@ public class VocabularyServiceImplTest {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingLanguageSet);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_unit.txt";
         final int initialUnitsLength = existingLanguageSet.getVocableUnits().size();
-        final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
-        Assert.assertEquals(0, statusCode);
+        Assert.assertNotNull(vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L)));
 
         final String expectedUnitTitle = "GNU Unit title";
         existingVocableUnit.setTitle(expectedUnitTitle);
@@ -202,8 +200,7 @@ public class VocabularyServiceImplTest {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_language_set.txt";
         final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
-        final int statusCode = vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
-        Assert.assertEquals(0, statusCode);
+        Assert.assertNotNull(vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L)));
 
         Mockito.when(queryMock.getResultList()).thenReturn(Stream.of(existingLanguageSet).collect(Collectors.toList()));
         final List<LanguageSet> refreshedLanguageSets = vocabularyLib.getAllLanguageSets();
