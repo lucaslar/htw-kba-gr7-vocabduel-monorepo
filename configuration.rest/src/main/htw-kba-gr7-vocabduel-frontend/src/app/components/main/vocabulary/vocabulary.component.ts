@@ -71,11 +71,11 @@ export class VocabularyComponent implements OnInit {
             this.vocabulary
                 .importGnuFile$(fileReader.result as string)
                 .pipe(finalize(() => delete this.file))
-                .subscribe(() => {
-                    this.snackbar.showSnackbar(
-                        'snackbar.thanksForImport',
-                        this.currentUser!
-                    );
+                .subscribe((imported) => {
+                    this.snackbar.showSnackbar('snackbar.thanksForImport', {
+                        firstName: this.currentUser!.firstName,
+                        title: imported.title,
+                    });
                     this.languageSets$ = this.vocabulary.languageSets$;
                 });
         };

@@ -38,7 +38,7 @@
         "accountDeleted": "Goodbye {{ firstName }}! Your account has been deleted successfully!",
         "userUpdated": "User account has been updated successfully, {{ firstName }}!",
         "fileNotAccepted": "File not accepted - must be .txt!",
-        "thanksForImport": "File has been imported successfully. Thanks for your contribution, {{ firstName }}!",
+        "thanksForImport": "\"{{ title }}\" has been imported successfully. Thanks for your contribution, {{ firstName }}!",
         "listDeleted": "List \"{{ title }}\" has been deleted successfully!"
     },
     "general": {

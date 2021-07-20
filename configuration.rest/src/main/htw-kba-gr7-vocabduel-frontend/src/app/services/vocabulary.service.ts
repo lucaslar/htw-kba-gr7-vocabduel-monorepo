@@ -50,9 +50,9 @@ export class VocabularyService {
         );
     }
 
-    importGnuFile$(data: string): Observable<void> {
+    importGnuFile$(data: string): Observable<VocableList> {
         const url = `${environment.endpointUrl}/vocabulary/import-gnu`;
-        return this.http.post<void>(url, data);
+        return this.http.post<VocableList>(url, data);
     }
 
     deleteVocableList$(list: VocableList): Observable<void> {
