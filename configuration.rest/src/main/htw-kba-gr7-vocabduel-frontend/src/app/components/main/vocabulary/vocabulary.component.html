@@ -1,0 +1,206 @@
+<div class="my-n3">
+    <div class="my-3 d-flex">
+        <mat-icon class="flex-grow-0 mr-2 my-auto"> school </mat-icon>
+        <h1 class="flex-grow-1 my-auto" appEllipsisTooltip>
+            {{ 'header.actions.vocabulary' | translate }}
+        </h1>
+    </div>
+
+    <mat-card class="my-3" *ngIf="currentUser$ | async as user">
+        <mat-card-title class="mb-3">
+            {{ 'main.vocabulary.import.title' | translate }}
+        </mat-card-title>
+        <mat-card-content>
+            <ngx-dropzone
+                (change)="onFileDropped($event)"
+                [multiple]="false"
+                [accept]="'.txt'"
+            >
+                <ngx-dropzone-label class="text-center">
+                    <mat-icon class="prominent-icon"> article </mat-icon>
+                    <br />
+                    {{ 'main.vocabulary.import.action' | translate }}
+                </ngx-dropzone-label>
+                <ngx-dropzone-preview
+                    *ngIf="file"
+                    [removable]="true"
+                    (removed)="file = undefined"
+                >
+                    <ngx-dropzone-label>
+                        {{ file.name }}
+                    </ngx-dropzone-label>
+                </ngx-dropzone-preview>
+            </ngx-dropzone>
+
+            <div class="d-flex">
+                <button
+                    class="ml-auto mt-3"
+                    mat-flat-button
+                    color="primary"
+                    [disabled]="navigation.isLoadingIndicated || !file"
+                    (click)="contributeFile(user)"
+                >
+                    {{ 'main.vocabulary.import.contribute' | translate }}
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="my-3">
+        <mat-card-title>
+            {{ 'main.vocabulary.sets.title' | translate }}
+        </mat-card-title>
+        <mat-card-content>
+            <ng-container *ngIf="languageSets$ | async as sets; else loading">
+                <mat-accordion *ngIf="sets.length; else noVocabularyYet">
+                    <mat-expansion-panel
+                        *ngFor="let set of sets"
+                        class="mat-elevation-z0 no-padding-body"
+                    >
+                        <mat-expansion-panel-header class="pl-0">
+                            <mat-panel-title class="d-flex color-primary">
+                                <div
+                                    class="mat-elevation-z2 overlapping flag-icon-background mx-1 my-auto flag-icon-squared {{
+                                        set.learntLanguage | flagForLang
+                                    }}"
+                                ></div>
+                                <div
+                                    class="mat-elevation-z2 flag-icon-background ml-n3 my-auto flag-icon-squared {{
+                                        set.knownLanguage | flagForLang
+                                    }}"
+                                ></div>
+
+                                <div class="my-auto mx-1">
+                                    <strong>{{
+                                        'general.language.' + set.learntLanguage
+                                            | lowercase
+                                            | translate
+                                    }}</strong>
+                                    ({{ set.learntLanguage }})
+                                </div>
+
+                                <mat-icon class="my-auto">
+                                    arrow_forward
+                                </mat-icon>
+
+                                <div class="my-auto mx-1">
+                                    <strong>{{
+                                        'general.language.' + set.knownLanguage
+                                            | lowercase
+                                            | translate
+                                    }}</strong>
+                                    ({{ set.knownLanguage }})
+                                </div>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <mat-nav-list *ngFor="let unit of set.vocableUnits">
+                            <div mat-subheader>{{ unit.title }}</div>
+                            <ng-container
+                                *ngFor="
+                                    let list of unit.vocableLists;
+                                    last as last
+                                "
+                            >
+                                <mat-list-item
+                                    [matTooltip]="
+                                        ('general.clickForDetails'
+                                            | translate) +
+                                        ': ' +
+                                        list.title
+                                    "
+                                >
+                                    <!-- TODO: Implement on click -->
+                                    <!-- TODO: Implement delete if author = self -->
+                                    <mat-icon mat-list-icon
+                                        >library_books</mat-icon
+                                    >
+                                    <div mat-line>{{ list.title }}</div>
+                                    <div mat-line>
+                                        {{ 'general.importedBy' | translate }}:
+                                        <span
+                                            *ngIf="
+                                                list.author;
+                                                else deletedAuthor
+                                            "
+                                            class="color-primary"
+                                        >
+                                            {{ list.author.username }}
+                                        </span>
+                                    </div>
+                                </mat-list-item>
+                                <mat-divider
+                                    *ngIf="!last"
+                                    class="position-relative"
+                                ></mat-divider>
+                            </ng-container>
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-container>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="my-3">
+        <mat-card-title>
+            {{ 'main.vocabulary.supported.title' | translate }}
+        </mat-card-title>
+        <mat-card-content>
+            <ng-container *ngIf="languages$ | async as supported; else loading">
+                <p class="my-3">
+                    {{ 'main.vocabulary.supported.info' | translate }}
+                </p>
+                <p class="mb-3">
+                    <strong class="color-primary">
+                        {{ 'general.note' | translate }}:
+                    </strong>
+                    {{
+                        'main.vocabulary.supported.flagsDisclaimer' | translate
+                    }}
+                </p>
+                <div class="row m-n2">
+                    <div
+                        class="lang m-2 p-2"
+                        *ngFor="let lang of supported"
+                        (click)="onReferenceClicked(lang)"
+                    >
+                        <div
+                            class="mat-elevation-z5 flag-icon-background mx-auto flag-icon-squared {{
+                                lang | flagForLang
+                            }}"
+                        ></div>
+                        <div class="text-center mt-2">
+                            <strong>{{
+                                'general.language.' + lang
+                                    | lowercase
+                                    | translate
+                            }}</strong>
+                            ({{ lang }})
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<ng-template #deletedAuthor>
+    <span class="color-darkgrey">{{ 'general.deletedUser' | translate }}</span>
+</ng-template>
+
+<ng-template #loading>
+    <div class="m-auto d-flex flex-column p-2">
+        <mat-spinner class="mx-auto"></mat-spinner>
+        <div class="mt-2 mx-auto">
+            {{ 'general.results.loading' | translate }}
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #noVocabularyYet>
+    <div class="m-auto d-flex flex-column p-2 color-darkgrey">
+        <mat-icon class="prominent-icon mx-auto"> menu_book </mat-icon>
+        <div class="mt-2 mx-auto">
+            {{ 'main.vocabulary.sets.none' | translate }}
+        </div>
+    </div>
+</ng-template>

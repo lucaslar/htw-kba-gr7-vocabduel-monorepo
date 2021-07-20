@@ -1,0 +1,134 @@
+<mat-card>
+    <div mat-card-title>
+        <span appEllipsisTooltip>
+            {{ 'main.registration.title' | translate }}
+        </span>
+    </div>
+    <mat-card-subtitle>
+        {{ 'main.registration.subtitle' | translate }}
+    </mat-card-subtitle>
+
+    <form (ngSubmit)="auth.register(user)">
+        <mat-card-content class="row">
+            <div class="col-12 d-flex">
+                <mat-icon class="flex-grow-0 my-auto mr-3"> person </mat-icon>
+                <h2 class="m-0 flex-grow-1 my-auto" appEllipsisTooltip>
+                    {{ 'general.userDataSection.personalData' | translate }}
+                </h2>
+            </div>
+
+            <div class="col-12">
+                <mat-divider class="mt-2 mb-3 position-relative"></mat-divider>
+            </div>
+
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input matInput [(ngModel)]="user.username" name="username" />
+                <mat-label>{{ 'general.user.username' | translate }}</mat-label>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input matInput [(ngModel)]="user.email" name="email" />
+                <mat-label>{{ 'general.user.email' | translate }}</mat-label>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input matInput [(ngModel)]="user.firstName" name="firstName" />
+                <mat-label>{{
+                    'general.user.firstName' | translate
+                }}</mat-label>
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input matInput [(ngModel)]="user.lastName" name="lastName" />
+                <mat-label>{{ 'general.user.lastName' | translate }}</mat-label>
+            </mat-form-field>
+
+            <div class="col-12 d-flex">
+                <mat-icon class="flex-grow-0 my-auto mr-3"> vpn_key </mat-icon>
+                <h2 class="m-0 flex-grow-1 my-auto" appEllipsisTooltip>
+                    {{ 'general.userDataSection.accessData' | translate }}
+                </h2>
+            </div>
+
+            <div class="col-12">
+                <mat-divider class="mt-2 mb-3 position-relative"></mat-divider>
+            </div>
+
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input
+                    matInput
+                    type="password"
+                    [(ngModel)]="user.password"
+                    name="password"
+                />
+                <mat-label>{{ 'general.user.password' | translate }}</mat-label>
+            </mat-form-field>
+            <mat-form-field
+                appearance="outline"
+                color="primary"
+                class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+                <input
+                    matInput
+                    type="password"
+                    [(ngModel)]="user.confirm"
+                    name="confirmPassword"
+                />
+                <mat-label> {{ 'general.user.confirm' | translate }}</mat-label>
+            </mat-form-field>
+
+            <div class="col-12">
+                <mat-divider class="mb-3 position-relative"></mat-divider>
+            </div>
+        </mat-card-content>
+        <div class="flex-column row">
+            <div class="mx-auto col-12 col-md-6 col-lg-4">
+                <button
+                    mat-flat-button
+                    class="w-100"
+                    color="primary"
+                    [disabled]="
+                        navigation.isLoadingIndicated ||
+                        !(
+                            user.username &&
+                            user.email &&
+                            user.firstName &&
+                            user.lastName &&
+                            user.password &&
+                            user.confirm
+                        )
+                    "
+                >
+                    {{ 'main.registration.register' | translate }}
+                    <mat-icon>send</mat-icon>
+                </button>
+            </div>
+
+            <div class="col-12 text-center mt-4">
+                <a routerLink="/login" class="color-primary">
+                    {{ 'main.registration.orSignIn' | translate }}
+                </a>
+            </div>
+        </div>
+    </form>
+</mat-card>

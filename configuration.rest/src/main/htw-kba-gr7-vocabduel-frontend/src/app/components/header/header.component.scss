@@ -1,0 +1,29 @@
+mat-toolbar {
+    background: #fafafadd;
+
+    @supports (
+        (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))
+    ) {
+        background: #fafafa22;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    &,
+    * {
+        transition: 0.3s;
+    }
+
+    .header-content {
+        padding: 24px 24px 20px;
+        height: unset;
+
+        @media (max-width: 767.98px) {
+            padding: 16px 16px 12px;
+        }
+    }
+
+    .loading-indicator {
+        height: 4px;
+    }
+}

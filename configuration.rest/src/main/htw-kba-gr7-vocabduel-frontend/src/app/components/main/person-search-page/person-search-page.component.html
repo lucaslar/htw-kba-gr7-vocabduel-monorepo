@@ -1,0 +1,26 @@
+<div class="d-flex flex-column h-100">
+    <div class="mb-3 d-flex">
+        <mat-icon class="flex-grow-0 mr-2 my-auto"> person_search </mat-icon>
+        <h1 class="flex-grow-1 my-auto" appEllipsisTooltip>
+            {{ 'header.actions.searchPerson' | translate }}
+        </h1>
+    </div>
+
+    <p *ngIf="currentUser; else loggedOutInfo">
+        {{ 'main.personSearch.loggedIn' | translate }}
+    </p>
+
+    <ng-template #loggedOutInfo>
+        <p>{{ 'main.personSearch.loggedOut.intro' | translate }}</p>
+        <p>
+            <strong class="color-primary">
+                {{ 'general.note' | translate }}:
+            </strong>
+            {{ 'main.personSearch.loggedOut.noScoresInfo' | translate }}
+        </p>
+    </ng-template>
+
+    <div class="flex-grow-1">
+        <app-person-search [ownId]="currentUser?.id" (userSelected)="displayUserDetails($event)"></app-person-search>
+    </div>
+</div>

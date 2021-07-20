@@ -1,0 +1,137 @@
+{
+    "header": {
+        "appTitle": "Vocabduel",
+        "actions": {
+            "home": "Dashboard",
+            "settings": "Settings",
+            "language": "Language selection",
+            "searchPerson": "User search",
+            "logout": "Logout",
+            "login": "Login",
+            "vocabulary": "Vocabulary"
+        }
+    },
+    "dialog": {
+        "error": {
+            "title": "Oops, something happened...",
+            "message": "The following error occurred:",
+            "adjustEndpointHint": "Even if not logged in, you can configure the API endpoint URL in this application's settings."
+        },
+        "languageReferences": {
+            "title": "References for: {{ lang }}",
+            "description": "When importing a vocabulary list, {{ lang }} can be referred to as (case insensitive):"
+        }
+    },
+    "snackbar": {
+        "tokenWasRefreshed": "Token has been refreshed successfully!",
+        "endpointUrlSet": "Endpoint URL has been set successfully!",
+        "defaultUrlReset": "Endpoint URL has been reset to its default value!",
+        "passwordUpdated": "Your password has been updated successfully!",
+        "accountDeleted": "Goodbye {{ firstName }}! Your account has been deleted successfully!",
+        "userUpdated": "User account has been updated successfully, {{ firstName }}!",
+        "fileNotAccepted": "File not accepted - must be .txt!",
+        "thanksForImport": "File has been imported successfully. Thanks for your contribution, {{ firstName }}!"
+    },
+    "general": {
+        "close": "Close",
+        "save": "Save",
+        "proTip": "Pro tip",
+        "note": "Note",
+        "update": "Update",
+        "delete": "Delete",
+        "user": {
+            "username": "Username",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "password": "Password",
+            "confirm": "Confirm password"
+        },
+        "results": {
+            "loading": "Loading...",
+            "searching": "Searching...",
+            "noSearchYet": "No search yet",
+            "forStr": "Search results for \"{{ str }}\"",
+            "none": "No search results for \"{{ str }}\""
+        },
+        "userDataSection": {
+            "personalData": "Personal data",
+            "accessData": "Access data"
+        },
+        "itsYou": "It's you!",
+        "language": {
+            "ar": "Arabic",
+            "cmn": "Chinese",
+            "de": "German",
+            "en": "English",
+            "es": "Spanish",
+            "fr": "French",
+            "hi": "Hindi",
+            "it": "Italian",
+            "ja": "Japanese",
+            "ko": "Korean",
+            "pt": "Portuguese",
+            "ru": "Russian"
+        },
+        "importedBy": "Imported by",
+        "deletedUser": "Deleted user",
+        "clickForDetails": "Click for details"
+    },
+    "main": {
+        "registration": {
+            "title": "Registration",
+            "subtitle": "Create an account and start playing, contributing and learning!",
+            "register": "Register",
+            "orSignIn": "Already have an account? Sign in"
+        },
+        "login": {
+            "subtitle": "Log in to your Vocabduel account",
+            "login": "Sign in",
+            "orSignUp": "Don't have an account yet? Sign up"
+        },
+        "settings": {
+            "authTokens": {
+                "info": "If you want to access the API, you can use your auth tokens. But beware of their expiration time. Your access token has to be refreshed every 5 minutes - in this client, this is done automatically.",
+                "accessToken": "Access Token",
+                "refreshToken": "Refresh Token"
+            },
+            "url": "Server URL",
+            "accessData": {
+                "currentPassword": "Current password",
+                "newPassword": "New password"
+            },
+            "reset": {
+                "action": "Reset",
+                "tooltip": "Reset to default ({{ defaultUrl }})"
+            },
+            "deleteAccount": {
+                "title": "Delete account",
+                "infoText": "{{ firstName }}, we would really miss you and want to make sure you know what you are doing. Please confirm deleting your account by entering your username ({{ username }}) and confirming.",
+                "noteVocableLists": "If you have imported any lists, we would love to keep your input. However, you can remove them manually before deleting your account if you don't want to share them. All running games will be quit."
+            }
+        },
+        "personSearch": {
+            "loggedOut": {
+                "intro": "Interested in who already signed up? Search for Vocabduel users here...",
+                "noScoresInfo": "You have to be logged in in order to see user scores. By clicking on a player, you will only be able to see the vocabulary lists contributed by this user."
+            },
+            "loggedIn": "Search for other players here. Select a player in order to get information about vocabulary lists contributed by this user and her/his game scores."
+        },
+        "vocabulary": {
+            "supported": {
+                "title": "Supported languages",
+                "info": "The following languages are supported by Vocabduel. Click on a language to see how it can be referred to when importing vocabulary.",
+                "flagsDisclaimer": "The displayed flags might only represent one country the respective language is spoken in."
+            },
+            "sets": {
+                "title": "Available vocabulary",
+                "none": "No vocabulary yet. Be the one to change that by importing a GNU file!"
+            },
+            "import": {
+                "title": "Import a file",
+                "action": "Click here or drop a GNU file",
+                "contribute": "Contribute"
+            }
+        }
+    }
+}

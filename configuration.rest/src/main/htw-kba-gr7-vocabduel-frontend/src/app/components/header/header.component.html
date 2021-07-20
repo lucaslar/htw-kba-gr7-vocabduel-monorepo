@@ -1,0 +1,37 @@
+<mat-toolbar [class.mat-elevation-z3]="isScrolled">
+    <mat-toolbar-row class="header-content">
+        <button
+            mat-icon-button
+            color="primary"
+            class="mr-2 d-sm-none"
+            (click)="navigation.isSidebarOpened = true"
+        >
+            <mat-icon>menu</mat-icon>
+        </button>
+
+        <div appEllipsisTooltip class="flex-grow-1">
+            {{ 'header.appTitle' | translate }}
+        </div>
+
+        <div class="flex-grow-0 d-none d-sm-inline">
+            <button
+                *ngFor="let action of navigation.navigationItems"
+                mat-icon-button
+                [class]="action.colorClass"
+                [matTooltip]="action.translationKey | translate"
+                (click)="action.onClick()"
+            >
+                <mat-icon>
+                    {{ action.icon }}
+                </mat-icon>
+            </button>
+        </div>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row class="loading-indicator vw-100 p-0">
+        <mat-progress-bar
+            *ngIf="navigation.isLoadingIndicated"
+            mode="indeterminate"
+        ></mat-progress-bar>
+    </mat-toolbar-row>
+</mat-toolbar>

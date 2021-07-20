@@ -1,0 +1,46 @@
+<div mat-dialog-title class="d-flex">
+    <div
+        class="flex-grow-0 mr-2 mat-elevation-z5 flag-icon-background my-auto flag-icon-squared {{
+            data.lang | flagForLang
+        }}"
+    ></div>
+    <div class="flex-grow-1 my-auto">
+        {{
+            'dialog.languageReferences.title'
+                | translate
+                    : {
+                          lang:
+                              ('general.language.' + data.lang
+                              | lowercase
+                              | translate)
+                      }
+        }}
+    </div>
+</div>
+
+<mat-dialog-content>
+    <p>
+        {{
+            'dialog.languageReferences.description'
+                | translate
+                    : {
+                          lang:
+                              ('general.language.' + data.lang
+                              | lowercase
+                              | translate)
+                      }
+        }}
+    </p>
+
+    <ul>
+        <li *ngFor="let ref of data.references">
+            <strong>{{ ref }}</strong>
+        </li>
+    </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions class="d-flex">
+    <button mat-dialog-close mat-button class="ml-auto" color="primary">
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>

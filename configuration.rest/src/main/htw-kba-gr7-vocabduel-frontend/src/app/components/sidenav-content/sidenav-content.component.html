@@ -1,0 +1,12 @@
+<mat-nav-list>
+    <a
+        mat-list-item
+        *ngFor="let item of navigation.navigationItems"
+        class="my-auto"
+        [ngClass]="item.colorClass"
+        (click)="item.onClick()"
+    >
+        <mat-icon class="mr-2">{{ item.icon }}</mat-icon>
+        {{ item.translationKey | translate }}
+    </a>
+</mat-nav-list>

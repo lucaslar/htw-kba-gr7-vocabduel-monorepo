@@ -1,0 +1,66 @@
+<div class="d-flex">
+    <mat-card class="mx-auto">
+        <div mat-card-title>
+            <span appEllipsisTooltip>
+                {{ 'header.actions.login' | translate }}
+            </span>
+        </div>
+        <mat-card-subtitle>
+            {{ 'main.login.subtitle' | translate }}
+        </mat-card-subtitle>
+        <form (ngSubmit)="auth.login(data)">
+            <mat-card-content class="row">
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12"
+                >
+                    <mat-icon color="primary" matSuffix>
+                        alternate_email
+                    </mat-icon>
+                    <input matInput [(ngModel)]="data.email" name="email" />
+                    <mat-label>
+                        {{ 'general.user.email' | translate }}
+                    </mat-label>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12"
+                >
+                    <mat-icon color="primary" matSuffix>vpn_key</mat-icon>
+                    <input
+                        matInput
+                        type="password"
+                        [(ngModel)]="data.password"
+                        name="password"
+                    />
+                    <mat-label>
+                        {{ 'general.user.password' | translate }}
+                    </mat-label>
+                </mat-form-field>
+            </mat-card-content>
+            <div class="flex-column">
+                <button
+                    mat-flat-button
+                    class="w-100"
+                    color="primary"
+                    [disabled]="
+                        navigation.isLoadingIndicated ||
+                        !(data.email && data.password)
+                    "
+                >
+                    {{ 'main.login.login' | translate }}
+                    <mat-icon>send</mat-icon>
+                </button>
+
+                <div class="w-100 text-center mt-4">
+                    <a routerLink="/registration" class="color-primary">
+                        {{ 'main.login.orSignUp' | translate }}
+                    </a>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>
