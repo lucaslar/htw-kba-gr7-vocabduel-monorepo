@@ -12,6 +12,9 @@ public class UntranslatedVocable {
     @JoinColumn(name = "TranslationGroup_id")
     private TranslationGroup vocable;
 
+    @Version
+    private Integer version;
+
     public UntranslatedVocable() {
     }
 
@@ -34,5 +37,9 @@ public class UntranslatedVocable {
 
     public void setVocable(TranslationGroup vocable) {
         this.vocable = vocable;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

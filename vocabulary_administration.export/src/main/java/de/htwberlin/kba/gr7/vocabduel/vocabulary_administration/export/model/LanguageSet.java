@@ -16,6 +16,9 @@ public class LanguageSet implements Serializable {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableUnit> vocableUnits;
 
+    @Version
+    private Integer version;
+
     public LanguageSet() {
     }
 
@@ -46,5 +49,9 @@ public class LanguageSet implements Serializable {
 
     public void setVocableUnits(List<VocableUnit> vocableUnits) {
         this.vocableUnits = vocableUnits;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

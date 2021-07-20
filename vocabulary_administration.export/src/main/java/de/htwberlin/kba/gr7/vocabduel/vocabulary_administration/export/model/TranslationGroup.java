@@ -18,6 +18,9 @@ public class TranslationGroup {
     @ElementCollection
     private List<String> exemplarySentencesOrAdditionalInfo;
 
+    @Version
+    private Integer version;
+
     public TranslationGroup(){ }
 
     public TranslationGroup(Long id, List<String> synonyms){
@@ -50,5 +53,9 @@ public class TranslationGroup {
 
     public void setExemplarySentencesOrAdditionalInfo(List<String> exemplarySentencesOrAdditionalInfo) {
         this.exemplarySentencesOrAdditionalInfo = exemplarySentencesOrAdditionalInfo;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

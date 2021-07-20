@@ -322,44 +322,6 @@
 			"name": "VocabularyAdministration",
 			"item": [
 				{
-					"name": "Get List by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/vocabulary/list/107",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"vocabulary",
-								"list",
-								"107"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get List of Author (by ID)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/vocabulary/lists-of-author/2",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"vocabulary",
-								"lists-of-author",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Supported Languages",
 					"request": {
 						"method": "GET",
@@ -397,24 +359,6 @@
 					"response": []
 				},
 				{
-					"name": "All Language Sets",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/vocabulary/language-sets",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"vocabulary",
-								"language-sets"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Import Vocabulary",
 					"request": {
 						"method": "POST",
@@ -437,6 +381,62 @@
 							"path": [
 								"vocabulary",
 								"import-gnu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/list/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"list",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List of Author (by ID)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/lists-of-author/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"lists-of-author",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Language Sets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/vocabulary/language-sets",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"language-sets"
 							]
 						}
 					},

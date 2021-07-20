@@ -13,6 +13,9 @@ public class VocableUnit {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<VocableList> vocableLists;
 
+    @Version
+    private Integer version;
+
     public VocableUnit() {
     }
 
@@ -42,5 +45,9 @@ public class VocableUnit {
 
     public void setVocableLists(List<VocableList> vocableLists) {
         this.vocableLists = vocableLists;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

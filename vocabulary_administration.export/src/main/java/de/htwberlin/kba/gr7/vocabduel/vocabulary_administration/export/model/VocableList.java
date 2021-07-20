@@ -24,6 +24,9 @@ public class VocableList {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Vocable> vocables;
 
+    @Version
+    private Integer version;
+
     public VocableList() {}
 
     public VocableList(Long id) {
@@ -70,5 +73,9 @@ public class VocableList {
 
     public void setVocables(List<Vocable> vocables) {
         this.vocables = vocables;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }
