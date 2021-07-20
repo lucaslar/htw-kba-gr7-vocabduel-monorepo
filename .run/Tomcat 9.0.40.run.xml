@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tomcat 9.0.40" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.40" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
-    <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/configuration_rest/app" />
+    <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/api" />
     <option name="UPDATING_POLICY" value="restart-server" />
     <deployment>
       <artifact name="configuration.rest:war">
         <settings>
-          <option name="CONTEXT_PATH" value="/configuration_rest" />
+          <option name="CONTEXT_PATH" value="/" />
         </settings>
       </artifact>
     </deployment>
