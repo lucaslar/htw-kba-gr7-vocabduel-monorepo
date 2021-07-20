@@ -48,3 +48,12 @@ body {
 .no-padding-body .mat-expansion-panel-body {
     padding: 0 !important;
 }
+.flag-icon-background {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+
+    &.overlapping {
+        z-index: 10;
+    }
+}

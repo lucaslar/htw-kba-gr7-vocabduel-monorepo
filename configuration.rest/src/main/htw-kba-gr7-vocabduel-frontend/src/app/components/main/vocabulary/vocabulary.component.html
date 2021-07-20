@@ -70,16 +70,9 @@
                     >
                         <mat-expansion-panel-header class="pl-0">
                             <mat-panel-title class="d-flex color-primary">
-                                <div
-                                    class="mat-elevation-z2 overlapping flag-icon-background mx-1 my-auto flag-icon-squared {{
-                                        set.learntLanguage | flagForLang
-                                    }}"
-                                ></div>
-                                <div
-                                    class="mat-elevation-z2 flag-icon-background ml-n3 my-auto flag-icon-squared {{
-                                        set.knownLanguage | flagForLang
-                                    }}"
-                                ></div>
+                                <app-overlapping-flags
+                                    [languageSet]="set"
+                                ></app-overlapping-flags>
 
                                 <div class="my-auto mx-1">
                                     <strong>{{
@@ -112,7 +105,9 @@
                                     last as last
                                 "
                             >
-                                <mat-list-item (click)="showVocabulary(list)">
+                                <mat-list-item
+                                    (click)="showVocabulary(list, unit, set)"
+                                >
                                     <mat-icon mat-list-icon>
                                         menu_book
                                     </mat-icon>
