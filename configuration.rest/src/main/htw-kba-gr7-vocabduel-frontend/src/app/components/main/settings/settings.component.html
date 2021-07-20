@@ -10,9 +10,9 @@
         <strong class="color-primary">
             {{ 'general.proTip' | translate }}:
         </strong>
-        {{ 'main.settings.authTokens.info' | translate }}
+        <p>{{ 'main.settings.authTokens.info' | translate }}</p>
 
-        <div class="d-table mt-1">
+        <div class="d-table mt-1 mb-2 pb-1">
             <div class="d-table-row">
                 <div class="d-table-cell pr-2">
                     <strong>
@@ -34,6 +34,12 @@
                 <div class="d-table-cell token">{{ storage.refreshToken }}</div>
             </div>
         </div>
+
+        <p>{{ 'main.settings.authTokens.tokenSchemeInfo' | translate }}</p>
+
+        <pre class="token-example p-2">
+-H "Authorization: Bearer {{ storage.token }}"</pre
+        >
     </mat-card-content>
 </mat-card>
 
