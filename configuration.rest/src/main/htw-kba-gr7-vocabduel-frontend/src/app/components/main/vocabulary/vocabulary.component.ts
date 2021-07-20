@@ -12,6 +12,7 @@ import { NavigationService } from '../../../services/navigation.service';
 import { finalize } from 'rxjs/operators';
 import { VocableList } from '../../../model/vocable-list';
 import { ConfirmDeleteComponent } from '../../dialogs/confirm-delete/confirm-delete.component';
+import { VocabularyListComponent } from '../../dialogs/vocabulary-list/vocabulary-list.component';
 
 @Component({
     selector: 'app-vocabulary',
@@ -19,9 +20,9 @@ import { ConfirmDeleteComponent } from '../../dialogs/confirm-delete/confirm-del
     styleUrls: ['./vocabulary.component.scss'],
 })
 export class VocabularyComponent implements OnInit {
-    currentUser$?: Observable<User | null>;
     languages$?: Observable<string[]>;
     languageSets$?: Observable<LanguageSet[]>;
+    currentUser?: User | null;
 
     file?: File;
 
@@ -34,9 +35,14 @@ export class VocabularyComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.currentUser$ = this.auth.currentUser$;
         this.languages$ = this.vocabulary.supportedLanguages$;
         this.languageSets$ = this.vocabulary.languageSets$;
+        this.auth.currentUser$.subscribe((user) => {
+            if (user) {
+                const { authTokens, ...userData } = user;
+                this.currentUser = userData;
+            }
+        });
     }
 
     onReferenceClicked(lang: string): void {
@@ -52,7 +58,7 @@ export class VocabularyComponent implements OnInit {
         else this.snackbar.showSnackbar('snackbar.fileNotAccepted');
     }
 
-    contributeFile(user: User): void {
+    contributeFile(): void {
         const fileReader = new FileReader();
 
         fileReader.onerror = (e) => {
@@ -67,7 +73,7 @@ export class VocabularyComponent implements OnInit {
                 .subscribe(() => {
                     this.snackbar.showSnackbar(
                         'snackbar.thanksForImport',
-                        user
+                        this.currentUser!
                     );
                     this.languageSets$ = this.vocabulary.languageSets$;
                 });
