@@ -11,6 +11,7 @@ export class ErrorService implements ErrorHandler {
         [HttpStatusCode.Forbidden, 'Forbidden'],
         [HttpStatusCode.BadRequest, 'Bad Request'],
         [HttpStatusCode.NotFound, 'Not Found'],
+        [HttpStatusCode.InternalServerError, 'Internal Server Error'],
     ]);
 
     constructor(
