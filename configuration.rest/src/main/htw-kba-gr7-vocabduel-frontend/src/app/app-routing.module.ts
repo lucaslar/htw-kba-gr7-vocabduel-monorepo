@@ -25,7 +25,11 @@ const routes: Routes = [
         component: DashboardComponent,
         canActivate: [AuthGuard],
     },
-    { path: 'settings', component: SettingsComponent },
+    {
+        path: 'settings',
+        component: SettingsComponent,
+        canActivate: [AuthGuard],
+    },
     { path: 'vocabulary', component: VocabularyComponent },
     { path: 'user-search', component: PersonSearchPageComponent },
     { path: '**', redirectTo: 'dashboard' },

@@ -5,7 +5,7 @@
     </h1>
 </div>
 
-<mat-card class="mb-3 p-4" *ngIf="currentUser">
+<mat-card class="mb-3 p-4">
     <mat-card-content>
         <strong class="color-primary">
             {{ 'general.proTip' | translate }}:
@@ -37,47 +37,88 @@
     </mat-card-content>
 </mat-card>
 
-<mat-accordion [multi]="true">
-    <mat-expansion-panel>
+<mat-accordion *ngIf="currentUser">
+    <mat-expansion-panel expanded>
         <mat-expansion-panel-header>
             <mat-panel-title class="d-flex color-primary">
-                <mat-icon class="my-auto mr-2">dns</mat-icon>
+                <mat-icon class="my-auto mr-2">manage_accounts</mat-icon>
                 <strong class="my-auto">
-                    {{ 'main.settings.url' | translate }}
+                    {{ 'general.userDataSection.personalData' | translate }}
                 </strong>
             </mat-panel-title>
         </mat-expansion-panel-header>
         <form>
-            <mat-form-field appearance="outline" color="primary" class="w-100">
-                <input
-                    matInput
-                    [value]="storage.endpointUrl"
-                    name="endpointUrl"
-                    #urlInput
-                />
-                <mat-label>
-                    {{ 'main.settings.url' | translate }}
-                </mat-label>
-            </mat-form-field>
+            <div class="row">
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6 col-lg-4 col-xl-3"
+                >
+                    <input
+                        matInput
+                        [(ngModel)]="userData.username"
+                        name="username"
+                    />
+                    <mat-label>{{
+                        'general.user.username' | translate
+                    }}</mat-label>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6 col-lg-4 col-xl-3"
+                >
+                    <input matInput [(ngModel)]="userData.email" name="email" />
+                    <mat-label>{{
+                        'general.user.email' | translate
+                    }}</mat-label>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6 col-lg-4 col-xl-3"
+                >
+                    <input
+                        matInput
+                        [(ngModel)]="userData.firstName"
+                        name="firstName"
+                    />
+                    <mat-label>{{
+                        'general.user.firstName' | translate
+                    }}</mat-label>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6 col-lg-4 col-xl-3"
+                >
+                    <input
+                        matInput
+                        [(ngModel)]="userData.lastName"
+                        name="lastName"
+                    />
+                    <mat-label>{{
+                        'general.user.lastName' | translate
+                    }}</mat-label>
+                </mat-form-field>
+            </div>
             <div class="d-flex m-n2">
                 <div class="ml-auto">
                     <button
                         type="button"
                         class="m-2"
                         mat-flat-button
-                        [matTooltip]="
-                            'main.settings.reset.tooltip'
-                                | translate: { defaultUrl: defaultEndpoint }
-                        "
                         [disabled]="
                             navigation.isLoadingIndicated ||
-                            storage.endpointUrl === defaultEndpoint
+                            (currentUser.username === userData.username &&
+                                currentUser.email === userData.email &&
+                                currentUser.firstName === userData.firstName &&
+                                currentUser.lastName === userData.lastName)
                         "
-                        (click)="
-                            storage.endpointUrl = null;
-                            urlInput.value = defaultEndpoint;
-                            snackbar.showSnackbar('snackbar.defaultUrlReset')
-                        "
+                        (click)="bothUserData = currentUser"
                     >
                         <mat-icon>refresh</mat-icon>
                         {{ 'main.settings.reset.action' | translate }}
@@ -88,12 +129,100 @@
                         class="m-2"
                         [disabled]="
                             navigation.isLoadingIndicated ||
-                            urlInput.value === storage.endpointUrl
+                            !userData.username ||
+                            !userData.email ||
+                            !userData.email ||
+                            !userData.lastName ||
+                            (currentUser.username === userData.username &&
+                                currentUser.email === userData.email &&
+                                currentUser.firstName === userData.firstName &&
+                                currentUser.lastName === userData.lastName)
                         "
-                        (click)="
-                            storage.endpointUrl = urlInput.value;
-                            snackbar.showSnackbar('snackbar.endpointUrlSet')
+                        (click)="updateUserData()"
+                    >
+                        {{ 'general.update' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title class="d-flex color-primary">
+                <mat-icon class="my-auto mr-2">lock</mat-icon>
+                <strong class="my-auto">
+                    {{ 'general.userDataSection.accessData' | translate }}
+                </strong>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form>
+            <div class="row">
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6 mx-auto"
+                >
+                    <input
+                        matInput
+                        type="password"
+                        [(ngModel)]="passwordData.currentPassword"
+                        name="currentPassword"
+                    />
+                    <mat-label>{{
+                        'main.settings.accessData.currentPassword' | translate
+                    }}</mat-label>
+                </mat-form-field>
+            </div>
+
+            <mat-divider class="position-relative mb-3"></mat-divider>
+
+            <div class="row">
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6"
+                >
+                    <input
+                        matInput
+                        type="password"
+                        [(ngModel)]="passwordData.newPassword"
+                        name="password"
+                    />
+                    <mat-label>{{
+                        'main.settings.accessData.newPassword' | translate
+                    }}</mat-label>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    color="primary"
+                    class="col-12 col-md-6"
+                >
+                    <input
+                        matInput
+                        type="password"
+                        [(ngModel)]="passwordData.confirm"
+                        name="confirmPassword"
+                    />
+                    <mat-label>
+                        {{ 'general.user.confirm' | translate }}</mat-label
+                    >
+                </mat-form-field>
+            </div>
+
+            <div class="d-flex">
+                <div class="ml-auto">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        [disabled]="
+                            navigation.isLoadingIndicated ||
+                            !passwordData.currentPassword ||
+                            !passwordData.newPassword ||
+                            !passwordData.confirm
                         "
+                        (click)="auth.updatePassword(passwordData)"
                     >
                         {{ 'general.save' | translate }}
                     </button>
@@ -102,254 +231,50 @@
         </form>
     </mat-expansion-panel>
 
-    <ng-container *ngIf="currentUser">
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title class="d-flex color-primary">
-                    <mat-icon class="my-auto mr-2">manage_accounts</mat-icon>
-                    <strong class="my-auto">
-                        {{ 'general.userDataSection.personalData' | translate }}
-                    </strong>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <form>
-                <div class="row">
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6 col-lg-4 col-xl-3"
-                    >
-                        <input
-                            matInput
-                            [(ngModel)]="userData.username"
-                            name="username"
-                        />
-                        <mat-label>{{
-                            'general.user.username' | translate
-                        }}</mat-label>
-                    </mat-form-field>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title class="d-flex color-warn">
+                <mat-icon class="my-auto mr-2">error_outline</mat-icon>
+                <strong class="my-auto">
+                    {{ 'main.settings.deleteAccount.title' | translate }}
+                </strong>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>
+            {{
+                'main.settings.deleteAccount.infoText' | translate: currentUser
+            }}
+        </p>
+        <p>
+            <strong>{{ 'general.note' | translate }}:</strong>
+            {{
+                'main.settings.deleteAccount.noteVocableLists'
+                    | translate: currentUser
+            }}
+        </p>
 
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6 col-lg-4 col-xl-3"
+        <form>
+            <mat-form-field appearance="outline" color="warn" class="w-100">
+                <input #deleteConfirmInput matInput name="username" />
+                <mat-label>
+                    {{ 'general.user.username' | translate }}
+                </mat-label>
+            </mat-form-field>
+            <div class="d-flex">
+                <div class="ml-auto">
+                    <button
+                        mat-flat-button
+                        color="warn"
+                        (click)="user.deleteAccount(currentUser)"
+                        [disabled]="
+                            navigation.isLoadingIndicated ||
+                            deleteConfirmInput.value !== currentUser.username
+                        "
                     >
-                        <input
-                            matInput
-                            [(ngModel)]="userData.email"
-                            name="email"
-                        />
-                        <mat-label>{{
-                            'general.user.email' | translate
-                        }}</mat-label>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6 col-lg-4 col-xl-3"
-                    >
-                        <input
-                            matInput
-                            [(ngModel)]="userData.firstName"
-                            name="firstName"
-                        />
-                        <mat-label>{{
-                            'general.user.firstName' | translate
-                        }}</mat-label>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6 col-lg-4 col-xl-3"
-                    >
-                        <input
-                            matInput
-                            [(ngModel)]="userData.lastName"
-                            name="lastName"
-                        />
-                        <mat-label>{{
-                            'general.user.lastName' | translate
-                        }}</mat-label>
-                    </mat-form-field>
+                        {{ 'general.delete' | translate }}
+                    </button>
                 </div>
-                <div class="d-flex m-n2">
-                    <div class="ml-auto">
-                        <button
-                            type="button"
-                            class="m-2"
-                            mat-flat-button
-                            [disabled]="
-                                navigation.isLoadingIndicated ||
-                                (currentUser.username === userData.username &&
-                                    currentUser.email === userData.email &&
-                                    currentUser.firstName ===
-                                        userData.firstName &&
-                                    currentUser.lastName === userData.lastName)
-                            "
-                            (click)="bothUserData = currentUser"
-                        >
-                            <mat-icon>refresh</mat-icon>
-                            {{ 'main.settings.reset.action' | translate }}
-                        </button>
-                        <button
-                            mat-flat-button
-                            color="primary"
-                            class="m-2"
-                            [disabled]="
-                                navigation.isLoadingIndicated ||
-                                !userData.username ||
-                                !userData.email ||
-                                !userData.email ||
-                                !userData.lastName ||
-                                (currentUser.username === userData.username &&
-                                    currentUser.email === userData.email &&
-                                    currentUser.firstName ===
-                                        userData.firstName &&
-                                    currentUser.lastName === userData.lastName)
-                            "
-                            (click)="updateUserData()"
-                        >
-                            {{ 'general.update' | translate }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title class="d-flex color-primary">
-                    <mat-icon class="my-auto mr-2">lock</mat-icon>
-                    <strong class="my-auto">
-                        {{ 'general.userDataSection.accessData' | translate }}
-                    </strong>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <form>
-                <div class="row">
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6 mx-auto"
-                    >
-                        <input
-                            matInput
-                            type="password"
-                            [(ngModel)]="passwordData.currentPassword"
-                            name="currentPassword"
-                        />
-                        <mat-label>{{
-                            'main.settings.accessData.currentPassword'
-                                | translate
-                        }}</mat-label>
-                    </mat-form-field>
-                </div>
-
-                <mat-divider class="position-relative mb-3"></mat-divider>
-
-                <div class="row">
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6"
-                    >
-                        <input
-                            matInput
-                            type="password"
-                            [(ngModel)]="passwordData.newPassword"
-                            name="password"
-                        />
-                        <mat-label>{{
-                            'main.settings.accessData.newPassword' | translate
-                        }}</mat-label>
-                    </mat-form-field>
-
-                    <mat-form-field
-                        appearance="outline"
-                        color="primary"
-                        class="col-12 col-md-6"
-                    >
-                        <input
-                            matInput
-                            type="password"
-                            [(ngModel)]="passwordData.confirm"
-                            name="confirmPassword"
-                        />
-                        <mat-label>
-                            {{ 'general.user.confirm' | translate }}</mat-label
-                        >
-                    </mat-form-field>
-                </div>
-
-                <div class="d-flex">
-                    <div class="ml-auto">
-                        <button
-                            mat-flat-button
-                            color="primary"
-                            [disabled]="
-                                navigation.isLoadingIndicated ||
-                                !passwordData.currentPassword ||
-                                !passwordData.newPassword ||
-                                !passwordData.confirm
-                            "
-                            (click)="auth.updatePassword(passwordData)"
-                        >
-                            {{ 'general.save' | translate }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title class="d-flex color-warn">
-                    <mat-icon class="my-auto mr-2">error_outline</mat-icon>
-                    <strong class="my-auto">
-                        {{ 'main.settings.deleteAccount.title' | translate }}
-                    </strong>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <p>
-                {{
-                    'main.settings.deleteAccount.infoText'
-                        | translate: currentUser
-                }}
-            </p>
-            <p>
-                <strong>{{ 'general.note' | translate }}:</strong>
-                {{
-                    'main.settings.deleteAccount.noteVocableLists'
-                        | translate: currentUser
-                }}
-            </p>
-
-            <form>
-                <mat-form-field appearance="outline" color="warn" class="w-100">
-                    <input #deleteConfirmInput matInput name="username" />
-                    <mat-label>
-                        {{ 'general.user.username' | translate }}
-                    </mat-label>
-                </mat-form-field>
-                <div class="d-flex">
-                    <div class="ml-auto">
-                        <button
-                            mat-flat-button
-                            color="warn"
-                            (click)="user.deleteAccount(currentUser)"
-                            [disabled]="
-                                navigation.isLoadingIndicated ||
-                                deleteConfirmInput.value !==
-                                    currentUser.username
-                            "
-                        >
-                            {{ 'general.delete' | translate }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </mat-expansion-panel>
-    </ng-container>
+            </div>
+        </form>
+    </mat-expansion-panel>
 </mat-accordion>

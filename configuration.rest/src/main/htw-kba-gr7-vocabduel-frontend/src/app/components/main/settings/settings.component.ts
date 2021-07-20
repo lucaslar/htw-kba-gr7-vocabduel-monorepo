@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
 import { StorageService } from '../../../services/storage.service';
 import { PasswordData } from '../../../model/internal/password-data';
@@ -14,8 +13,6 @@ import { NavigationService } from '../../../services/navigation.service';
     styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-    readonly defaultEndpoint = environment.endpointUrl;
-
     readonly passwordData: PasswordData = {
         currentPassword: '',
         newPassword: '',

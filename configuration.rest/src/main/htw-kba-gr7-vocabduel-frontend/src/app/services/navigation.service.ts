@@ -25,12 +25,6 @@ export class NavigationService {
             onClick: async () => this.navigateAndClose('user-search'),
         },
         {
-            icon: 'settings',
-            translationKey: 'header.actions.settings',
-            colorClass: 'color-primary',
-            onClick: async () => this.navigateAndClose('settings'),
-        },
-        {
             icon: 'language',
             translationKey: 'header.actions.language',
             colorClass: 'color-primary',
@@ -46,6 +40,12 @@ export class NavigationService {
             onClick: async () => this.navigateAndClose('dashboard'),
         },
         ...this.sharedNavItems,
+        {
+            icon: 'settings',
+            translationKey: 'header.actions.settings',
+            colorClass: 'color-primary',
+            onClick: async () => this.navigateAndClose('settings'),
+        },
         {
             icon: 'power_settings_new',
             translationKey: 'header.actions.logout',

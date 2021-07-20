@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { StorageService } from './storage.service';
+import { environment } from '../../environments/environment';
 import { tap } from 'rxjs/operators';
 import { LanguageSet } from '../model/language-set';
 
@@ -9,23 +9,20 @@ import { LanguageSet } from '../model/language-set';
     providedIn: 'root',
 })
 export class VocabularyService {
-    constructor(
-        private readonly http: HttpClient,
-        private readonly storage: StorageService
-    ) {}
+    constructor(private readonly http: HttpClient) {}
 
     get supportedLanguages$(): Observable<string[]> {
-        const url = `${this.storage.endpointUrl}/vocabulary/supported-languages`;
+        const url = `${environment.endpointUrl}/vocabulary/supported-languages`;
         return this.http.get<string[]>(url).pipe(tap((langs) => langs.sort()));
     }
 
     referencesFor$(lang: string): Observable<string[]> {
-        const url = `${this.storage.endpointUrl}/vocabulary/language-references/${lang}`;
+        const url = `${environment.endpointUrl}/vocabulary/language-references/${lang}`;
         return this.http.get<string[]>(url).pipe(tap((langs) => langs.sort()));
     }
 
     get languageSets$(): Observable<LanguageSet[]> {
-        const url = `${this.storage.endpointUrl}/vocabulary/language-sets`;
+        const url = `${environment.endpointUrl}/vocabulary/language-sets`;
         return this.http.get<LanguageSet[]>(url).pipe(
             tap((sets) => {
                 sets.forEach((ls) => {
@@ -46,7 +43,7 @@ export class VocabularyService {
     }
 
     importGnuFile$(data: string): Observable<void> {
-        const url = `${this.storage.endpointUrl}/vocabulary/import-gnu`;
+        const url = `${environment.endpointUrl}/vocabulary/import-gnu`;
         return this.http.post<void>(url, data);
     }
 

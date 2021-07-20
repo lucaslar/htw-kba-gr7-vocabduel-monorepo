@@ -10,6 +10,7 @@ import { LoggedInUser } from '../model/logged-in-user';
 import { TokenData } from '../model/token-data';
 import { PasswordData } from '../model/internal/password-data';
 import { SnackbarService } from './snackbar.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +29,7 @@ export class AuthService {
     // TODO Implement procedure after registration/login
 
     login(loginData: LoginData): void {
-        const url = `${this.storage.endpointUrl}/auth/login`;
+        const url = `${environment.endpointUrl}/auth/login`;
         this.http
             .post<LoggedInUser>(url, loginData)
             .subscribe((result) => this.onSuccessfulAuth(result));
@@ -36,7 +37,7 @@ export class AuthService {
 
     // TODO: Typify
     register(userData: any): void {
-        const url = `${this.storage.endpointUrl}/auth/register`;
+        const url = `${environment.endpointUrl}/auth/register`;
         this.http
             .post<LoggedInUser>(url, userData)
             .subscribe((result) => this.onSuccessfulAuth(result));
@@ -44,7 +45,7 @@ export class AuthService {
 
     get refreshToken$(): Observable<TokenData> {
         const refreshToken = this.storage.refreshToken;
-        const url = `${this.storage.endpointUrl}/auth/refresh-token`;
+        const url = `${environment.endpointUrl}/auth/refresh-token`;
         return this.http.post<TokenData>(url, refreshToken).pipe(
             tap((response) => {
                 this.storage.token = response.token;
@@ -65,7 +66,7 @@ export class AuthService {
     }
 
     updatePassword(data: PasswordData): void {
-        const url = `${this.storage.endpointUrl}/auth/update-password`;
+        const url = `${environment.endpointUrl}/auth/update-password`;
         this.http.put<TokenData>(url, data).subscribe(() => {
             data.currentPassword = '';
             data.newPassword = '';
@@ -83,7 +84,7 @@ export class AuthService {
 
     private get fetchCurrentUser$(): Observable<LoggedInUser> {
         return this.http
-            .get<LoggedInUser>(`${this.storage.endpointUrl}/auth/current-user`)
+            .get<LoggedInUser>(`${environment.endpointUrl}/auth/current-user`)
             .pipe(
                 tap((user) => {
                     if (!user) this.storage.token = null;

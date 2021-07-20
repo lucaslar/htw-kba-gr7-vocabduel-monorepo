@@ -14,8 +14,7 @@
     "dialog": {
         "error": {
             "title": "Oops, something happened...",
-            "message": "The following error occurred:",
-            "adjustEndpointHint": "Even if not logged in, you can configure the API endpoint URL in this application's settings."
+            "message": "The following error occurred:"
         },
         "languageReferences": {
             "title": "References for: {{ lang }}",
@@ -95,7 +94,6 @@
                 "accessToken": "Access Token",
                 "refreshToken": "Refresh Token"
             },
-            "url": "Server URL",
             "accessData": {
                 "currentPassword": "Current password",
                 "newPassword": "New password"
