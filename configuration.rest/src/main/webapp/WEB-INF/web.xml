@@ -21,10 +21,17 @@
             <param-value>de.htwberlin.kba.gr7.vocabduel.configuration.rest.ConfigurationRestEasyImpl</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>client</servlet-name>
+        <jsp-file>/app/index.html</jsp-file>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>resteasy-servlet</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>client</servlet-name>
+        <url-pattern>/app/</url-pattern>
+    </servlet-mapping>
 </web-app>
