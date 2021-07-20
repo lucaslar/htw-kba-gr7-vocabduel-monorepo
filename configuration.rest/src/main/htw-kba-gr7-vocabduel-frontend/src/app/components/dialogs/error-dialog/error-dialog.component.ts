@@ -12,7 +12,13 @@ export class ErrorDialogComponent {
     constructor(@Inject(MAT_DIALOG_DATA) error: any) {
         this.errorMessage = '';
 
-        for (const e of [error.title, error.name, error.message, error.error]) {
+        for (const e of [
+            error.name,
+            error.title,
+            `${error.status ?? ''} ${error.statusText ?? ''}`.trim() ??
+                error.message,
+            error.error,
+        ]) {
             if (e && typeof e === 'string' && e.trim()) {
                 this.errorMessage += e + '\n';
             }
