@@ -22,7 +22,7 @@ public class AuthInterceptor implements ContainerRequestFilter {
     public static final String USER_HEADER = "user";
     private final Response ACCESS_DENIED = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header!");
     private final Response ACCESS_DENIED_NO_USER = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header. Your token was valid but does not seem to belong to an existing user account!", false);
-    private final Response ACCESS_DENIED_NO_TOKEN = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header, but no such or an empty token was given!", false);
+    private final Response ACCESS_DENIED_NO_TOKEN = StandardizedUnauthorized.respond("This action requires a preceding login/valid " + HttpHeaders.AUTHORIZATION + " header, but either no token, an empty token or a value not matching \"Bearer <token>\" was given!", false);
     private final AuthService AUTH_SERVICE;
 
     @Context
@@ -36,8 +36,9 @@ public class AuthInterceptor implements ContainerRequestFilter {
     public void filter(final ContainerRequestContext requestContext) {
         if (!resourceInfo.getResourceMethod().isAnnotationPresent(PermitAll.class)) {
             final String tokenStr = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-            if (tokenStr == null || tokenStr.isEmpty()) requestContext.abortWith(ACCESS_DENIED_NO_TOKEN);
-            else {
+            if (tokenStr == null || tokenStr.isEmpty() || !tokenStr.startsWith("Bearer")) {
+                requestContext.abortWith(ACCESS_DENIED_NO_TOKEN);
+            } else {
                 final String token = tokenStr.replaceFirst("Bearer ", "");
                 if (!AUTH_SERVICE.hasAccessRights(token)) requestContext.abortWith(ACCESS_DENIED);
                 else {
