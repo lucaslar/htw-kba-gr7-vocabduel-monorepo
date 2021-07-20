@@ -7,11 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.List;
 
-public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO{
+public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
 
     private final EntityManager ENTITY_MANAGER;
 
-    public StoredRefreshTokenDAOImpl(EntityManager entityManager){
+    public StoredRefreshTokenDAOImpl(EntityManager entityManager) {
         ENTITY_MANAGER = entityManager;
     }
 
@@ -30,6 +30,14 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO{
     @Override
     public void insertStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
         ENTITY_MANAGER.getTransaction().begin();
+        ENTITY_MANAGER.persist(new StoredRefreshToken(user, refreshToken));
+        ENTITY_MANAGER.getTransaction().commit();
+    }
+
+    @Override
+    public void removeUserTokensIfFiveOrMorePresent(User user) {
+        ENTITY_MANAGER.getTransaction().begin();
+
         try {
             final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) ENTITY_MANAGER
                     .createQuery("from StoredRefreshToken where user = :user")
@@ -39,7 +47,6 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO{
         } catch (NoResultException ignored) {
         }
 
-        ENTITY_MANAGER.persist(new StoredRefreshToken(user, refreshToken));
         ENTITY_MANAGER.getTransaction().commit();
     }
 

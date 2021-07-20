@@ -138,6 +138,7 @@ public class AuthServiceImpl implements AuthService {
     private AuthTokens insertNewUserTokens(final User user) {
         final String refreshToken = generateRefreshToken(user);
         final String token = generateAuthToken(user);
+        storedRefreshTokenDAO.removeUserTokensIfFiveOrMorePresent(user);
         storedRefreshTokenDAO.insertStoredRefreshTokenByUserAndToken(user, refreshToken);
         return new AuthTokens(refreshToken, token);
     }

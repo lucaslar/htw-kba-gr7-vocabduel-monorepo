@@ -9,6 +9,8 @@ public interface StoredRefreshTokenDAO {
 
      void insertStoredRefreshTokenByUserAndToken(User user, String refreshToken);
 
+     void removeUserTokensIfFiveOrMorePresent(User user);
+
      boolean deleteStoredRefreshTokenByUserId(Long userId);
 
      boolean deleteStoredRefreshToken(StoredRefreshToken storedRefreshToken);
