@@ -16,6 +16,8 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    @Version
+    private Integer version;
 
     public User() {
     }
@@ -73,6 +75,10 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 
     @Override

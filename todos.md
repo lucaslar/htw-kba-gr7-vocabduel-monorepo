@@ -2,6 +2,8 @@
 - core config good practice?
 - Fix MySQL error on closing server
 - (mention?) Angular defaults status code to OK
+- exceptions due to optimistic locking? => (How to) handle?
+- Dependency Injection (interfaces) for DAO? 
 
 - send Mail to Kempa:
     - use DAO classes AND interfaces?

@@ -17,6 +17,9 @@ public class LoginData implements Serializable {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Version
+    private Integer version;
+
     public LoginData() {}
 
     public LoginData(final User user, final String passwordHash) {
@@ -38,5 +41,9 @@ public class LoginData implements Serializable {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }
