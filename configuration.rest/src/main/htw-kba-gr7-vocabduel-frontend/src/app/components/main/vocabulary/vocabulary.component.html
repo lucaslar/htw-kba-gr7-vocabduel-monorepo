@@ -51,7 +51,18 @@
             {{ 'main.vocabulary.sets.title' | translate }}
         </mat-card-title>
         <mat-card-content>
+            <p *ngIf="!(currentUser$ | async)">
+                <strong class="color-primary">
+                    {{ 'general.note' | translate }}:
+                </strong>
+                {{ 'main.vocabulary.sets.loginToImport' | translate }}
+            </p>
+
             <ng-container *ngIf="languageSets$ | async as sets; else loading">
+                <p *ngIf="sets?.length">
+                    {{ 'main.vocabulary.sets.introText' | translate }}
+                </p>
+
                 <mat-accordion *ngIf="sets.length; else noVocabularyYet">
                     <mat-expansion-panel
                         *ngFor="let set of sets"
@@ -101,31 +112,63 @@
                                     last as last
                                 "
                             >
-                                <mat-list-item
-                                    [matTooltip]="
-                                        ('general.clickForDetails'
-                                            | translate) +
-                                        ': ' +
-                                        list.title
-                                    "
-                                >
-                                    <!-- TODO: Implement on click -->
-                                    <!-- TODO: Implement delete if author = self -->
-                                    <mat-icon mat-list-icon
-                                        >library_books</mat-icon
-                                    >
-                                    <div mat-line>{{ list.title }}</div>
+                                <mat-list-item (click)="showVocabulary(list)">
+                                    <mat-icon mat-list-icon>
+                                        library_books
+                                    </mat-icon>
                                     <div mat-line>
-                                        {{ 'general.importedBy' | translate }}:
-                                        <span
-                                            *ngIf="
-                                                list.author;
-                                                else deletedAuthor
-                                            "
-                                            class="color-primary"
-                                        >
-                                            {{ list.author.username }}
+                                        <span>
+                                            {{ list.title }}
                                         </span>
+                                    </div>
+                                    <div mat-line>
+                                        <span>
+                                            {{
+                                                'general.importedBy'
+                                                    | translate
+                                            }}:
+                                            <span
+                                                *ngIf="
+                                                    list.author;
+                                                    else deletedAuthor
+                                                "
+                                                [class]="
+                                                    (currentUser$ | async) &&
+                                                    (currentUser$ | async)
+                                                        ?.id === list.author?.id
+                                                        ? 'color-accent'
+                                                        : 'color-primary'
+                                                "
+                                            >
+                                                {{ list.author.username }}
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div mat-line class="color-darkgrey">
+                                        <span>
+                                            {{ list.timestamp | date }}
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        *ngIf="currentUser$ | async as user"
+                                        class="no-click"
+                                    >
+                                        <button
+                                            mat-icon-button
+                                            color="warn"
+                                            *ngIf="
+                                                (currentUser$ | async) &&
+                                                (currentUser$ | async)?.id ===
+                                                    list.author?.id
+                                            "
+                                            (click)="deleteList(list, $event)"
+                                            [matTooltip]="
+                                                'general.delete' | translate
+                                            "
+                                        >
+                                            <mat-icon> delete </mat-icon>
+                                        </button>
                                     </div>
                                 </mat-list-item>
                                 <mat-divider

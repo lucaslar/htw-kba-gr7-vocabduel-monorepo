@@ -4,12 +4,20 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { tap } from 'rxjs/operators';
 import { LanguageSet } from '../model/language-set';
+import { VocableList } from '../model/vocable-list';
 
 @Injectable({
     providedIn: 'root',
 })
 export class VocabularyService {
     constructor(private readonly http: HttpClient) {}
+
+    private static sortByTitle(
+        a: { title: string },
+        b: { title: string }
+    ): number {
+        return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+    }
 
     get supportedLanguages$(): Observable<string[]> {
         const url = `${environment.endpointUrl}/vocabulary/supported-languages`;
@@ -47,10 +55,8 @@ export class VocabularyService {
         return this.http.post<void>(url, data);
     }
 
-    private static sortByTitle(
-        a: { title: string },
-        b: { title: string }
-    ): number {
-        return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+    deleteVocableList$(list: VocableList): Observable<void> {
+        const url = `${environment.endpointUrl}/vocabulary/delete-list/${list.id}`;
+        return this.http.delete<void>(url);
     }
 }

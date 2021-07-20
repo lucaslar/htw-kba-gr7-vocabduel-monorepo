@@ -30,6 +30,7 @@ import { VocabularyComponent } from './components/main/vocabulary/vocabulary.com
 import { FlagForLangPipe } from './pipes/flag-for-lang.pipe';
 import { LanguageReferencesComponent } from './components/dialogs/language-references/language-references.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { ConfirmDeleteComponent } from './components/dialogs/confirm-delete/confirm-delete.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -51,6 +52,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         VocabularyComponent,
         FlagForLangPipe,
         LanguageReferencesComponent,
+        ConfirmDeleteComponent,
     ],
     imports: [
         BrowserModule,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '../../../model/internal/user';
 import { AuthService } from '../../../services/auth.service';
 import { VocabularyService } from '../../../services/vocabulary.service';
@@ -10,13 +10,15 @@ import { NgxDropzoneChangeEvent } from 'ngx-dropzone';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { NavigationService } from '../../../services/navigation.service';
 import { finalize } from 'rxjs/operators';
+import { VocableList } from '../../../model/vocable-list';
+import { ConfirmDeleteComponent } from '../../dialogs/confirm-delete/confirm-delete.component';
 
 @Component({
     selector: 'app-vocabulary',
     templateUrl: './vocabulary.component.html',
     styleUrls: ['./vocabulary.component.scss'],
 })
-export class VocabularyComponent {
+export class VocabularyComponent implements OnInit {
     currentUser$?: Observable<User | null>;
     languages$?: Observable<string[]>;
     languageSets$?: Observable<LanguageSet[]>;
@@ -71,5 +73,28 @@ export class VocabularyComponent {
                 });
         };
         fileReader.readAsText(this.file!);
+    }
+
+    showVocabulary(list: VocableList): void {
+        // TODO: Implement
+        console.log(list);
+    }
+
+    deleteList(list: VocableList, event: MouseEvent): void {
+        event.stopPropagation();
+        this.dialog
+            .open(ConfirmDeleteComponent, { data: list })
+            .afterClosed()
+            .subscribe((res) => {
+                if (res) {
+                    this.vocabulary.deleteVocableList$(list).subscribe(() => {
+                        this.snackbar.showSnackbar(
+                            'snackbar.listDeleted',
+                            list
+                        );
+                        this.languageSets$ = this.vocabulary.languageSets$;
+                    });
+                }
+            });
     }
 }

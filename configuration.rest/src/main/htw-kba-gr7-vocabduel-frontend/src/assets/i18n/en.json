@@ -19,6 +19,11 @@
         "languageReferences": {
             "title": "References for: {{ lang }}",
             "description": "When importing a vocabulary list, {{ lang }} can be referred to as (case insensitive):"
+        },
+        "confirmDelete": {
+            "title": "Are you sure?",
+            "message": "Please confirm you want to delete the following list:",
+            "cannotBeUndone": "This action cannot be undone"
         }
     },
     "snackbar": {
@@ -29,7 +34,8 @@
         "accountDeleted": "Goodbye {{ firstName }}! Your account has been deleted successfully!",
         "userUpdated": "User account has been updated successfully, {{ firstName }}!",
         "fileNotAccepted": "File not accepted - must be .txt!",
-        "thanksForImport": "File has been imported successfully. Thanks for your contribution, {{ firstName }}!"
+        "thanksForImport": "File has been imported successfully. Thanks for your contribution, {{ firstName }}!",
+        "listDeleted": "List \"{{ title }}\" has been deleted successfully!"
     },
     "general": {
         "close": "Close",
@@ -73,8 +79,7 @@
             "ru": "Russian"
         },
         "importedBy": "Imported by",
-        "deletedUser": "Deleted user",
-        "clickForDetails": "Click for details"
+        "deletedUser": "Deleted user"
     },
     "main": {
         "registration": {
@@ -124,7 +129,9 @@
             },
             "sets": {
                 "title": "Available vocabulary",
-                "none": "No vocabulary yet. Be the one to change that by importing a GNU file!"
+                "none": "No vocabulary yet. Be the one to change that by importing a GNU file!",
+                "introText": "Here's a list of all available vocabulary, structured by languages and units. Click on a list to see its content.",
+                "loginToImport": "Want to contribute? You have to be logged in to import a list."
             },
             "import": {
                 "title": "Import a file",
