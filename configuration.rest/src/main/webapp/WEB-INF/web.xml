@@ -33,5 +33,12 @@
     <servlet-mapping>
         <servlet-name>client</servlet-name>
         <url-pattern>/app/</url-pattern>
+        <url-pattern>/app/login</url-pattern>
+        <url-pattern>/app/registration</url-pattern>
+        <url-pattern>/app/settings</url-pattern>
+        <url-pattern>/app/dashboard</url-pattern>
+        <url-pattern>/app/vocabulary</url-pattern>
+        <url-pattern>/app/user-search</url-pattern>
+        <!-- TODO: Once finished, add all valid routes -->
     </servlet-mapping>
 </web-app>
