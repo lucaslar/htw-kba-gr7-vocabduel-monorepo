@@ -21,19 +21,30 @@ public class VocableList {
     private String title;
     @Column(nullable = false)
     private Date timestamp;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SupportedLanguage knownLanguage;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SupportedLanguage learntLanguage;
+    @Column(nullable = false)
+    private String unitTitle;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Vocable> vocables;
+
+    // TODO: Improve way for receiving language/unit information?
 
     @Version
     private Integer version;
 
-    public VocableList() {}
+    public VocableList() {
+    }
 
     public VocableList(Long id) {
         this.id = id;
     }
 
-    public VocableList(Long id, User author, String title){
+    public VocableList(Long id, User author, String title) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -73,6 +84,30 @@ public class VocableList {
 
     public void setVocables(List<Vocable> vocables) {
         this.vocables = vocables;
+    }
+
+    public SupportedLanguage getKnownLanguage() {
+        return knownLanguage;
+    }
+
+    public void setKnownLanguage(SupportedLanguage knownLanguage) {
+        this.knownLanguage = knownLanguage;
+    }
+
+    public SupportedLanguage getLearntLanguage() {
+        return learntLanguage;
+    }
+
+    public void setLearntLanguage(SupportedLanguage learntLanguage) {
+        this.learntLanguage = learntLanguage;
+    }
+
+    public String getUnitTitle() {
+        return unitTitle;
+    }
+
+    public void setUnitTitle(String unitTitle) {
+        this.unitTitle = unitTitle;
     }
 
     public Integer getVersion() {

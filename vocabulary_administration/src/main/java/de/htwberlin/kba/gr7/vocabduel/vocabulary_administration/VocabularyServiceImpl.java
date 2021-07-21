@@ -60,6 +60,9 @@ public class VocabularyServiceImpl implements VocabularyService {
         list.setAuthor(triggeringUser);
         list.setVocables(vocables);
         list.setTimestamp(new Date());
+        list.setLearntLanguage(langFrom);
+        list.setKnownLanguage(langTo);
+        list.setUnitTitle(headline.get(3));
 
         final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
         if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
