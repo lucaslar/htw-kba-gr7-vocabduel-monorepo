@@ -1,9 +1,12 @@
-<div mat-dialog-title>
-    {{ user.firstName }}
-    {{ user.lastName }}
-    <span [ngClass]="ownId === user.id ? 'color-accent' : 'color-primary'">
-        ({{ user.username }})
-    </span>
+<div mat-dialog-title class="d-flex">
+    <mat-icon class="my-auto mr-2"> person </mat-icon>
+    <div class="my-auto">
+        {{ user.firstName }}
+        {{ user.lastName }}
+        <span [ngClass]="ownId === user.id ? 'color-accent' : 'color-primary'">
+            ({{ user.username }})
+        </span>
+    </div>
 </div>
 
 <mat-dialog-content>
