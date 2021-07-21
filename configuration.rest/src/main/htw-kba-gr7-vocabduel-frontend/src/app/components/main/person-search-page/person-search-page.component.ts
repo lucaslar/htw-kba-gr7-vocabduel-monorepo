@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../model/internal/user';
 import { AuthService } from '../../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
 import { VocabularyService } from '../../../services/vocabulary.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserDetailsComponent } from '../../dialogs/user-details/user-details.component';
 
 @Component({
     selector: 'app-person-search-page',
@@ -15,6 +17,7 @@ export class PersonSearchPageComponent implements OnInit {
 
     constructor(
         private readonly auth: AuthService,
+        private readonly dialog: MatDialog,
         private readonly vocabulary: VocabularyService,
         private readonly router: Router,
         private readonly route: ActivatedRoute
@@ -29,7 +32,12 @@ export class PersonSearchPageComponent implements OnInit {
     }
 
     displayUserDetails(user: User): void {
-        // TODO Implement
+        this.vocabulary.listsOfAuthor$(user).subscribe((vocableLists) => {
+            // TODO: Add score stats
+            this.dialog.open(UserDetailsComponent, {
+                data: { ownId: this.currentUser?.id, user, vocableLists },
+            });
+        });
     }
 
     addQueryParam(q: string): void {

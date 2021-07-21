@@ -34,6 +34,7 @@ import { ConfirmDeleteComponent } from './components/dialogs/confirm-delete/conf
 import { VocabularyListComponent } from './components/dialogs/vocabulary-list/vocabulary-list.component';
 import { OverlappingFlagsComponent } from './components/shared/overlapping-flags/overlapping-flags.component';
 import { TranslationGroupComponent } from './components/dialogs/vocabulary-list/translation-group/translation-group.component';
+import { UserDetailsComponent } from './components/dialogs/user-details/user-details.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,6 +60,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         VocabularyListComponent,
         OverlappingFlagsComponent,
         TranslationGroupComponent,
+        UserDetailsComponent,
     ],
     imports: [
         BrowserModule,

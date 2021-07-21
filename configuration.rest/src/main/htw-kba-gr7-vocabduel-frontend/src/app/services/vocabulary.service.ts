@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { tap } from 'rxjs/operators';
 import { LanguageSet } from '../model/language-set';
 import { VocableList } from '../model/vocable-list';
+import { User } from '../model/internal/user';
 
 @Injectable({
     providedIn: 'root',
@@ -58,5 +59,10 @@ export class VocabularyService {
     deleteVocableList$(list: VocableList): Observable<void> {
         const url = `${environment.endpointUrl}/vocabulary/delete-list/${list.id}`;
         return this.http.delete<void>(url);
+    }
+
+    listsOfAuthor$(user: User): Observable<VocableList[]> {
+        const url = `${environment.endpointUrl}/vocabulary/lists-of-author/${user.id}`;
+        return this.http.get<VocableList[]>(url);
     }
 }

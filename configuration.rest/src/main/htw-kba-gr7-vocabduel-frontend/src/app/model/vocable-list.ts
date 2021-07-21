@@ -7,4 +7,7 @@ export class VocableList {
     title!: string;
     timestamp!: Date;
     vocables!: Vocable[];
+    learntLanguage!: string;
+    knownLanguage!: string;
+    unitTitle!: string;
 }

@@ -1,0 +1,43 @@
+<div mat-dialog-title>
+    {{ user.firstName }}
+    {{ user.lastName }}
+    <span [ngClass]="ownId === user.id ? 'color-accent' : 'color-primary'">
+        ({{ user.username }})
+    </span>
+</div>
+
+<mat-dialog-content>
+    <div class="d-flex">
+        <mat-icon
+            [color]="ownId === user.id ? 'accent' : 'primary'"
+            class="my-auto mr-3 prominent-icon"
+        >
+            person
+        </mat-icon>
+        <div class="my-auto">
+            <strong>
+                {{ user.username }}
+                <span *ngIf="user.id === ownId" class="color-accent">
+                    ({{ 'general.itsYou' | translate }})
+                </span>
+            </strong>
+            <br />
+            {{ user.firstName }}
+            {{ user.lastName }}
+            <br />
+            <span class="color-darkgrey">
+                {{ user.email }}
+            </span>
+        </div>
+    </div>
+
+    <!-- TODO: Display properly -->
+
+    <pre>{{ vocableLists | json }}</pre>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button color="primary" mat-button mat-dialog-close>
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>
