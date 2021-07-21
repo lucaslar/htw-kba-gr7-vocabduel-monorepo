@@ -36,6 +36,7 @@ import { OverlappingFlagsComponent } from './components/shared/overlapping-flags
 import { TranslationGroupComponent } from './components/dialogs/vocabulary-list/translation-group/translation-group.component';
 import { UserDetailsComponent } from './components/dialogs/user-details/user-details.component';
 import { LanguageSetsAccordionComponent } from './components/shared/language-sets-accordion/language-sets-accordion.component';
+import { LangSetsByVocabularyPipe } from './pipes/lang-sets-by-vocabulary.pipe';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -63,6 +64,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         TranslationGroupComponent,
         UserDetailsComponent,
         LanguageSetsAccordionComponent,
+        LangSetsByVocabularyPipe,
     ],
     imports: [
         BrowserModule,
