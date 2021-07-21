@@ -413,7 +413,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT}}}\r\n{oi} : {Hallo}\r\n{bom dia} : {guten Tag}\r\n{exemplo} : {Beispiel}\r\n{mesa} : {Tisch}\r\n{computador} : {Computer}\r\n{garrafa} : {Flasche}\r\n{copo} : {Glas}{{{zum Trinken}}}{{{}}}\r\n{vidrio} : {Glas}{{{Material}}}{{{}}}\r\n{rir(-se)} : {lachen}"
+							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT}}}\r\n{oi} : {Hallo}\r\n{bom dia} : {guten Tag}\r\n{exemplo} : {Beispiel}\r\n{mesa} : {Tisch}\r\n{computador} : {Computer}\r\n{garrafa} : {Flasche}\r\n{copo} : {Glas}{{{zum Trinken}}}{{{}}}\r\n{vidrio} : {Glas}{{{Material}}}{{{}}}\r\n{rir(-se)} : {lachen}{{{}}}{{{Eu faço as piadas e ele ri-se delas.}}}"
 						},
 						"url": {
 							"raw": "{{url}}/vocabulary/import-gnu",
@@ -726,20 +726,20 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/score/finished-games",
+									"raw": "{{url}}/score/record",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"score",
-										"finished-games"
+										"record"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Own Score Record of Player (ID)",
+							"name": "Score Record of Player",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -750,13 +750,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/score/finished-games",
+									"raw": "{{url}}/score/finished-games/4",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"score",
-										"finished-games"
+										"finished-games",
+										"4"
 									]
 								}
 							},
