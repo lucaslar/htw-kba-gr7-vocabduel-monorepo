@@ -262,7 +262,7 @@ public class GameServiceImplStartGameTest {
                 .map(t -> {
                     final TranslationGroup vTg = new TranslationGroup(Collections.singletonList(t + " vocab"));
                     final TranslationGroup tTg = new TranslationGroup(Collections.singletonList(t));
-                    return new Vocable(vTg, Arrays.asList(tTg, new TranslationGroup(Collections.singletonList("I'm everywhere"))));
+                    return new Vocable(vTg, Arrays.asList(tTg, new TranslationGroup(Collections.singletonList("I'm everywhere"))), null, null);
                 })
                 .collect(Collectors.toList());
 

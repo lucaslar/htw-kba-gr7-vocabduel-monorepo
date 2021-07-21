@@ -59,7 +59,10 @@ public class GameDataMock {
             Vocable myVoc = new Vocable(
                     (long) i,
                     new TranslationGroup((long) i, Collections.singletonList("unknownWord" + i)),
-                    Collections.singletonList(new TranslationGroup((long) i, Collections.singletonList("translation" + i))));
+                    Collections.singletonList(new TranslationGroup((long) i, Collections.singletonList("translation" + i))),
+                    null,
+                    null
+            );
             if (tempVocableList == null) {
                 tempVocableList = new ArrayList<>();
             }
@@ -115,7 +118,9 @@ public class GameDataMock {
         myList.get(0).setVocables(Collections.singletonList(
                 new Vocable(
                         new TranslationGroup(Collections.singletonList("unknownWord")),
-                        Collections.singletonList(new TranslationGroup(Collections.singletonList("translation")))
+                        Collections.singletonList(new TranslationGroup(Collections.singletonList("translation"))),
+                        null,
+                        null
                 )
         ));
         myList = new ArrayList<>(myList);
@@ -124,7 +129,9 @@ public class GameDataMock {
                 Collections.singletonList((
                                 new Vocable(
                                         new TranslationGroup(Collections.singletonList("unknownWord2")),
-                                        Collections.singletonList(new TranslationGroup(Collections.singletonList("translation2")))
+                                        Collections.singletonList(new TranslationGroup(Collections.singletonList("translation2"))),
+                                        null,
+                                        null
                                 )
                         )
                 ));
@@ -164,7 +171,9 @@ public class GameDataMock {
         for (int i = 1; i <= ((GameService.NR_OF_ROUNDS / 2) + 1); i++) {
             Vocable tempVoc = new Vocable(
                     new TranslationGroup(Collections.singletonList(title + "unknownWord" + i)),
-                    Collections.singletonList(new TranslationGroup(Collections.singletonList(title + "translation" + i)))
+                    Collections.singletonList(new TranslationGroup(Collections.singletonList(title + "translation" + i))),
+                    null,
+                    null
             );
             if (input == null) input = new ArrayList<>();
             input.add(tempVoc);

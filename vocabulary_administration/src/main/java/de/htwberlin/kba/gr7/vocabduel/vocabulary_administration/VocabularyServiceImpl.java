@@ -58,7 +58,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         final VocableList list = new VocableList();
         list.setTitle(listName);
         list.setAuthor(triggeringUser);
-        list.setVocables(parseGnuVocableData(lines));
+        list.setVocables(vocables);
         list.setTimestamp(new Date());
 
         final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
@@ -159,8 +159,23 @@ public class VocabularyServiceImpl implements VocabularyService {
         List<Vocable> vocables = new ArrayList<>();
         for (final String[] vocAndTranslations : splitted) {
             final TranslationGroup vocable = getVocableFromString(vocAndTranslations[0]);
-            final List<TranslationGroup> translations = getTranslationVocableTranslationsFromString(vocAndTranslations[1]);
-            vocables.add(new Vocable(vocable, translations));
+            final List<TranslationGroup> translations = getVocableTranslationsFromString(vocAndTranslations[1]);
+
+            String exampleKnownLang = null;
+            String exampleLearntLang = null;
+
+            final Matcher vocMatcher = THREE_BRACKETS_PATTERN.matcher(vocAndTranslations[1]);
+            int i = 0;
+            while (vocMatcher.find()) {
+                if (!vocMatcher.group(1).isEmpty()) {
+                    final String example = vocMatcher.group(1).replace("\\,", ",").replace("\\;", ";").trim();
+                    if (i == 0) exampleKnownLang = example;
+                    else exampleLearntLang = example;
+                }
+                i++;
+            }
+
+            vocables.add(new Vocable(vocable, translations, exampleKnownLang, exampleLearntLang));
         }
         return vocables;
     }
@@ -176,34 +191,20 @@ public class VocabularyServiceImpl implements VocabularyService {
         final TranslationGroup tg = new TranslationGroup();
         tg.setSynonyms(asSynonymList(vocData.get(0)));
         vocData.remove(0);
-        if (vocData.size() > 0) tg.setExemplarySentencesOrAdditionalInfo(vocData);
+        if (vocData.size() > 0) tg.setAdditionalInfo(vocData);
         return tg;
     }
 
-    private List<TranslationGroup> getTranslationVocableTranslationsFromString(final String str) throws InvalidVocableListException {
-        final Matcher vocMatcher = ONE_BRACKET_PATTERN.matcher(str);
-
+    private List<TranslationGroup> getVocableTranslationsFromString(final String str) throws InvalidVocableListException {
+        final Matcher vocMatcher = ONE_BRACKET_PATTERN.matcher(str.split("\\{\\{\\{")[0]);
         final List<List<String>> vocData = new ArrayList<>();
-        final Map<List<String>, List<String>> explanations = new HashMap<>();
-
-        while (vocMatcher.find()) {
-            if (vocMatcher.group(0).matches("\\{\\{\\{(.*?)}")) {
-                final String exp = vocMatcher.group(1).substring(2).trim();
-                if (!exp.isEmpty()) explanations.put(vocData.get(vocData.size() - 1), asSynonymList(exp));
-            } else vocData.add(asSynonymList(vocMatcher.group(1).trim()));
-        }
+        while (vocMatcher.find()) vocData.add(asSynonymList(vocMatcher.group(1).trim()));
 
         if (vocData.size() == 0) {
             throw new InvalidVocableListException("Invalid vocable data in known language (no match for " + ONE_BRACKET_PATTERN + "):\n" + str);
         }
 
-        return vocData.stream().map((synonyms) -> {
-            final TranslationGroup tg = new TranslationGroup(synonyms);
-            if (explanations.get(synonyms) != null) {
-                tg.setExemplarySentencesOrAdditionalInfo(explanations.get(synonyms));
-            }
-            return tg;
-        }).collect(Collectors.toList());
+        return vocData.stream().map(TranslationGroup::new).collect(Collectors.toList());
     }
 
     private List<String> asSynonymList(final String gnuVocable) {

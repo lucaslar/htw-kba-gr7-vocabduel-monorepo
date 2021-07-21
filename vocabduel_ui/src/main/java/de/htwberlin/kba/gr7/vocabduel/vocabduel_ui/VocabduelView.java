@@ -258,10 +258,10 @@ public class VocabduelView {
                 .collect(Collectors.toList());
         for (final Vocable vocable : sortedVocables) {
             toBePrinted.append(vocablePrefix).append("|-- ").append(vocable.getVocable().getSynonyms());
-            if (vocable.getVocable().getExemplarySentencesOrAdditionalInfo() != null &&
-                    vocable.getVocable().getExemplarySentencesOrAdditionalInfo().size() > 0
+            if (vocable.getVocable().getAdditionalInfo() != null &&
+                    vocable.getVocable().getAdditionalInfo().size() > 0
             ) {
-                toBePrinted.append(vocable.getVocable().getExemplarySentencesOrAdditionalInfo());
+                toBePrinted.append(vocable.getVocable().getAdditionalInfo());
             }
             toBePrinted.append(" => ");
 
@@ -269,11 +269,11 @@ public class VocabduelView {
                 toBePrinted
                         .append("[")
                         .append(String.join(", ", t.getSynonyms()));
-                if (t.getExemplarySentencesOrAdditionalInfo() != null &&
-                        t.getExemplarySentencesOrAdditionalInfo().size() > 0
+                if (t.getAdditionalInfo() != null &&
+                        t.getAdditionalInfo().size() > 0
                 ) {
                     toBePrinted.append(" (");
-                    t.getExemplarySentencesOrAdditionalInfo().forEach(toBePrinted::append);
+                    t.getAdditionalInfo().forEach(toBePrinted::append);
                     toBePrinted.append(")");
                 }
                 toBePrinted.append("]");
@@ -414,20 +414,20 @@ public class VocabduelView {
 
     public void printQuestionAndAnswers(final VocabduelRound round, final String answerCmd) {
         final StringBuilder qAndA = new StringBuilder("Round " + round.getRoundNr() + ") " + round.getQuestion().getVocable().getSynonyms());
-        final List<String> hints = round.getQuestion().getVocable().getExemplarySentencesOrAdditionalInfo();
-        if (hints != null && !hints.isEmpty()) qAndA.append(" (Hint/additional information: ").append(hints);
+        final List<String> hints = round.getQuestion().getVocable().getAdditionalInfo();
+        if (hints != null && !hints.isEmpty()) qAndA.append(" (Additional information: ").append(hints);
 
         final int asciiA = 97;
         for (int i = asciiA; i < asciiA + round.getAnswers().size(); i++) {
             final TranslationGroup translationGroup = round.getAnswers().get(i - asciiA);
-            final List<String> answerHints = translationGroup.getExemplarySentencesOrAdditionalInfo();
+            final List<String> answerHints = translationGroup.getAdditionalInfo();
             qAndA
                     .append("\n...")
                     .append((char) i)
                     .append(") ")
                     .append(translationGroup.getSynonyms());
             if (answerHints != null && !answerHints.isEmpty()) {
-                qAndA.append(" (Hint/additional information: ").append(answerHints);
+                qAndA.append(" (Additional information: ").append(answerHints);
             }
         }
 
@@ -448,7 +448,7 @@ public class VocabduelView {
 
     public void printRoundResultLoss(final TranslationGroup correctAnswer) {
         final StringBuilder builder = new StringBuilder("That's wrong! The right answer would've been: " + correctAnswer.getSynonyms());
-        final List<String> hints = correctAnswer.getExemplarySentencesOrAdditionalInfo();
+        final List<String> hints = correctAnswer.getAdditionalInfo();
         if (hints != null && !hints.isEmpty()) builder.append(" (Hint/additional information: ").append(hints);
         System.out.println(builder);
     }

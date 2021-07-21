@@ -31,7 +31,7 @@ public class VocabularyServiceImplTest {
             final TranslationGroup es = new TranslationGroup();
             es.setSynonyms(Stream.of(words[0]).collect(Collectors.toList()));
             en.setSynonyms(Stream.of(words[1]).collect(Collectors.toList()));
-            return new Vocable(es, Collections.singletonList(en));
+            return new Vocable(es, Collections.singletonList(en), null, null);
         }).collect(Collectors.toList());
     }
 

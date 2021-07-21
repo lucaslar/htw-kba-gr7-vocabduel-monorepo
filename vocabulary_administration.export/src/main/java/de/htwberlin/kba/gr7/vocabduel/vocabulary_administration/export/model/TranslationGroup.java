@@ -11,12 +11,11 @@ public class TranslationGroup {
 
     @Column(name = "synonyms", nullable = false)
     @ElementCollection
-//    @CollectionTable(name="Synonyms", joinColumns = @JoinColumn(name=""))
     private List<String> synonyms;
 
-    @Column(name = "example_sentence_info", nullable = false)
+    @Column(name = "additional_info", nullable = false)
     @ElementCollection
-    private List<String> exemplarySentencesOrAdditionalInfo;
+    private List<String> additionalInfo;
 
     @Version
     private Integer version;
@@ -30,9 +29,9 @@ public class TranslationGroup {
 
     public TranslationGroup(List<String> synonyms){ this.synonyms = synonyms; }
 
-    public TranslationGroup(List<String> synonyms, List<String> exemplarySentencesOrAdditionalInfo){
+    public TranslationGroup(List<String> synonyms, List<String> additionalInfo){
         this.synonyms = synonyms;
-        this.exemplarySentencesOrAdditionalInfo = exemplarySentencesOrAdditionalInfo;
+        this.additionalInfo = additionalInfo;
     }
 
     public Long getId() {
@@ -47,12 +46,12 @@ public class TranslationGroup {
         this.synonyms = synonyms;
     }
 
-    public List<String> getExemplarySentencesOrAdditionalInfo() {
-        return exemplarySentencesOrAdditionalInfo;
+    public List<String> getAdditionalInfo() {
+        return additionalInfo;
     }
 
-    public void setExemplarySentencesOrAdditionalInfo(List<String> exemplarySentencesOrAdditionalInfo) {
-        this.exemplarySentencesOrAdditionalInfo = exemplarySentencesOrAdditionalInfo;
+    public void setAdditionalInfo(List<String> additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public Integer getVersion() {
