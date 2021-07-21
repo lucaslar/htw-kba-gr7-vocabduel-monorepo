@@ -35,16 +35,18 @@ export class PersonSearchPageComponent implements OnInit {
         this.vocabulary.listsOfAuthor$(user).subscribe((vocableLists) => {
             // TODO: Add score stats
             this.dialog.open(UserDetailsComponent, {
-                data: { ownId: this.currentUser?.id, user, vocableLists },
+                data: { currentUser: this.currentUser, user, vocableLists },
             });
         });
     }
 
     addQueryParam(q: string): void {
-        this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { q },
-            queryParamsHandling: 'merge',
-        }).then();
+        this.router
+            .navigate([], {
+                relativeTo: this.route,
+                queryParams: { q },
+                queryParamsHandling: 'merge',
+            })
+            .then();
     }
 }

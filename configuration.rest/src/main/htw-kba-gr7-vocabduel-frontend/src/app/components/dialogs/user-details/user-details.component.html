@@ -3,24 +3,28 @@
     <div class="my-auto">
         {{ user.firstName }}
         {{ user.lastName }}
-        <span [ngClass]="ownId === user.id ? 'color-accent' : 'color-primary'">
+        <span
+            [ngClass]="
+                currentUser?.id === user.id ? 'color-accent' : 'color-primary'
+            "
+        >
             ({{ user.username }})
         </span>
     </div>
 </div>
 
-<mat-dialog-content>
+<mat-dialog-content [@.disabled]="disableAnimation">
     <div class="d-flex">
         <mat-icon
-            [color]="ownId === user.id ? 'accent' : 'primary'"
+            [color]="currentUser?.id === user.id ? 'accent' : 'primary'"
             class="my-auto mr-3 prominent-icon"
         >
             person
         </mat-icon>
-        <div class="my-auto">
+        <div class="my-auto ml-n1">
             <strong>
                 {{ user.username }}
-                <span *ngIf="user.id === ownId" class="color-accent">
+                <span *ngIf="user.id === currentUser?.id" class="color-accent">
                     ({{ 'general.itsYou' | translate }})
                 </span>
             </strong>
@@ -34,9 +38,22 @@
         </div>
     </div>
 
-    <!-- TODO: Display properly -->
+    <div class="d-flex mt-4">
+        <mat-icon class="my-auto mr-2"> menu_book </mat-icon>
+        <h2 class="my-auto">
+            {{ 'dialog.userDetails.importsBy' | translate: user }}
+        </h2>
+    </div>
 
-    <pre>{{ vocableLists | json }}</pre>
+    <mat-divider class="position-relative my-2"></mat-divider>
+
+    <app-language-sets-accordion
+        *ngIf="vocableLists?.length"
+        [languageSets]="vocableLists | langSetsByVocabulary"
+        [currentUser]="currentUser"
+    >
+        <!-- TODO Implement on select/ (on delete) -->
+    </app-language-sets-accordion>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

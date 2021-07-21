@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User } from '../../../model/internal/user';
 import { VocableList } from '../../../model/vocable-list';
@@ -8,21 +8,27 @@ import { VocableList } from '../../../model/vocable-list';
     templateUrl: './user-details.component.html',
     styleUrls: ['./user-details.component.scss'],
 })
-export class UserDetailsComponent {
+export class UserDetailsComponent implements AfterViewInit {
     user!: User;
     vocableLists!: VocableList[];
-    ownId?: number;
+    currentUser?: User;
+
+    disableAnimation = true;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
         data: {
-            ownId: number;
+            currentUser: User;
             user: User;
             vocableLists: VocableList[];
         }
     ) {
-        this.ownId = data.ownId;
+        this.currentUser = data.currentUser;
         this.user = data.user;
         this.vocableLists = data.vocableLists;
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => (this.disableAnimation = false));
     }
 }

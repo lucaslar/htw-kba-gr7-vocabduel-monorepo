@@ -29,6 +29,9 @@
             "unit": "Unit",
             "availableSince": "Available since",
             "exampleOrHint": "Example or hint"
+        },
+        "userDetails": {
+            "importsBy": "Imports by {{ username }}"
         }
     },
     "snackbar": {
