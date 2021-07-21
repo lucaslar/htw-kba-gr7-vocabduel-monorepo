@@ -4,6 +4,7 @@
 - (mention?) Angular defaults status code to OK
 - exceptions due to optimistic locking? => (How to) handle?
 - Dependency Injection (interfaces) for DAO? 
+- legal to habe game_service in user api ? (in order to remove widow games)
 
 - send Mail to Kempa:
     - use DAO classes AND interfaces?

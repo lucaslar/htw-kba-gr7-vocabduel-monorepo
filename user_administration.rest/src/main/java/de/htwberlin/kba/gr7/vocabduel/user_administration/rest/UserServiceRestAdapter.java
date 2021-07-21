@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.rest;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class UserServiceRestAdapter {
 
     private final UserService USER_SERVICE;
+    private final GameService GAME_SERVICE;
 
     @Inject
-    public UserServiceRestAdapter(UserService userService) {
+    public UserServiceRestAdapter(final UserService userService, final GameService gameService) {
         USER_SERVICE = userService;
+        GAME_SERVICE = gameService;
     }
 
     @GET
@@ -112,6 +115,12 @@ public class UserServiceRestAdapter {
         final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
+
+        if (GAME_SERVICE != null) {
+            GAME_SERVICE.removeWidowGames();
+            System.out.println("Successfully removed widow games (if existent).");
+        }
+
         return Response.noContent().build();
     }
 }

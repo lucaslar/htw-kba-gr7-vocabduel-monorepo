@@ -98,13 +98,4 @@ public class GameServiceRestAdapter {
         System.out.println("Successfully answered Question: " + answer.toString());
         return Response.ok(answer).type(MediaType.APPLICATION_JSON).build();
     }
-
-    @POST
-    @Path("/delete-widows")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response deleteWidowGames() {
-        GAME_SERVICE.removeWidowGames();
-        System.out.println("Successfully removed widow games.");
-        return Response.status(javax.ws.rs.core.Response.Status.OK).build();
-    }
 }
