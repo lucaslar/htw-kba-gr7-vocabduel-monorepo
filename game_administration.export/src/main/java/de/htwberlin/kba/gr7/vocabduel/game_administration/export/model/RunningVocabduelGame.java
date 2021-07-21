@@ -15,7 +15,7 @@ public class RunningVocabduelGame extends VocabduelGame {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToMany
-    private List<VocableList> vocableLists;
+    private List<VocableList> vocableLists; // TODO Move to Vocabduel game? (=> also included in finished game)
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "game")
     private List<VocabduelRound> rounds;
 

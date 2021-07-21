@@ -661,7 +661,108 @@
 				},
 				{
 					"name": "Score",
-					"item": []
+					"item": [
+						{
+							"name": "Finish a Game",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "41"
+								},
+								"url": {
+									"raw": "{{url}}/score/finish-game",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"score",
+										"finish-game"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Own Finished Games",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/score/finished-games",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"score",
+										"finished-games"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Own Score Record",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/score/finished-games",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"score",
+										"finished-games"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Own Score Record of Player (ID)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/score/finished-games",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"score",
+										"finished-games"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}

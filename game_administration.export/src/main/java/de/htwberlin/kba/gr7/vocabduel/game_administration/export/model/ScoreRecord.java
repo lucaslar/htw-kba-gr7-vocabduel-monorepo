@@ -19,6 +19,22 @@ public class ScoreRecord {
         this.draws = draws;
     }
 
+    public User getUser() {
+        return USER;
+    }
+
+    public long getWins() {
+        return wins;
+    }
+
+    public long getLosses() {
+        return losses;
+    }
+
+    public long getDraws() {
+        return draws;
+    }
+
     @Override
     public String toString() {
         return "Record for " + USER + ":\n" + wins + "-" + losses + "-" + draws + (" (Wins - Losses - Draws)");

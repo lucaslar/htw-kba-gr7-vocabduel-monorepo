@@ -5,6 +5,8 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAc
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
+import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Controller;
@@ -20,65 +22,71 @@ import java.util.List;
 public class ScoreServiceRestAdapter {
 
     private final ScoreService SCORE_SERVICE;
+    private final UserService USER_SERVICE;
 
     @Inject
-    public ScoreServiceRestAdapter(ScoreService scoreService) {
+    public ScoreServiceRestAdapter(final ScoreService scoreService, final UserService userService) {
         SCORE_SERVICE = scoreService;
+        USER_SERVICE = userService;
+    }
+
+    @POST
+    @Path("/finish-game")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response finishGame(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final long gameId) {
+        final User user = USER_SERVICE.getUserDataById(userId);
+        PersonalFinishedGame game;
+        try {
+            game = SCORE_SERVICE.finishGame(user, gameId);
+        } catch (NoAccessException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
+        } catch (UnfinishedGameException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
+        }
+        System.out.println("Successfully finished Game: " + game.toString());
+        return Response.ok(game).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     @GET
-    @Path("/get-finished-games")
+    @Path("/finished-games")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getPersonalFinishedGames(final User user) {
+    public Response getPersonalFinishedGames(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
+        final User user = USER_SERVICE.getUserDataById(userId);
         List<PersonalFinishedGame> games;
         try {
             games = SCORE_SERVICE.getPersonalFinishedGames(user);
         } catch (InvalidUserException e) {
-            e.printStackTrace();
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
+            return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
         return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
-    @Path("/get-record")
+    @Path("/record")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getRecordOfUser(final User user) {
+    public Response getOwnRecord(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
+        return getRecordCore(userId);
+    }
+
+    @GET
+    @Path("/record/{userId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getRecordOfUser(@PathParam("userId") final Long userId) {
+        return getRecordCore(userId);
+    }
+
+    private Response getRecordCore(final Long userId) {
+        final User user = USER_SERVICE.getUserDataById(userId);
         ScoreRecord record;
         try {
             record = SCORE_SERVICE.getRecordOfUser(user);
         } catch (InvalidUserException e) {
             e.printStackTrace();
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         }
         return Response.ok(record).type(MediaType.APPLICATION_JSON).build();
-    }
-
-    @POST
-    @Path("/finish-game")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response finishGame(final User user, final long gameId) {
-        PersonalFinishedGame game;
-        try {
-            game = SCORE_SERVICE.finishGame(user, gameId);
-        } catch (UnfinishedGameException | NoAccessException e) {
-            e.printStackTrace();
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build();
-        }
-        System.out.println("Successfully finished Game: " + game.toString());
-        return Response.ok(game).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 }
