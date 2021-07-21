@@ -10,7 +10,7 @@ export class FlagForLangPipe implements PipeTransform {
         else if (value === 'KO') value = 'KR';
         else if (value === 'CMN') value = 'CN';
         else if (value === 'EN') value = 'GB';
-        else if (value === 'AR') value = 'LB';
+        else if (value === 'AR') value = 'PS';
         return `flag-icon-${value.toLowerCase()}`;
     }
 }
