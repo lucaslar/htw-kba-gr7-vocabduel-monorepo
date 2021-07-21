@@ -110,11 +110,11 @@ public class AuthServiceRestAdapter {
     @Path("/update-password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN})
-    public Response updatePassword(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final PasswordData data) {
+    public Response updatePassword(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final PasswordData data) {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "update-password");
         if (missingDataResponse != null) return missingDataResponse;
 
-        final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
+        final User user = USER_SERVICE.getUserDataById(userId);
         try {
             AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {

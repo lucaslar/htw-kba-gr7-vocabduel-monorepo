@@ -85,11 +85,11 @@ public class UserServiceRestAdapter {
     @Path("/update-account")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response updateUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final User data) {
+    public Response updateUser(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final User data) {
         if (data.getId() == null) {
             System.out.println("User update failed due to missing ID");
             return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("No user id given!").build();
-        } else if (Long.parseLong(userId) != data.getId()) {
+        } else if (!userId.equals(data.getId())) {
             System.out.println("User update failed due to no access (" + userId + " tried to access " + data.getId() + ")");
             return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("You are not allowed to alter this user's data!").build();
         }
@@ -111,8 +111,8 @@ public class UserServiceRestAdapter {
     @DELETE
     @Path("/delete-account")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId) {
-        final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
+    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
+        final User user = USER_SERVICE.getUserDataById(userId);
         USER_SERVICE.deleteUser(user);
         System.out.println("Successfully deleted user: " + user.toString());
 

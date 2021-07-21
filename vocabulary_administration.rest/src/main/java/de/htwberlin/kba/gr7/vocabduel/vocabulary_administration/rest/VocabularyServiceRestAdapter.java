@@ -87,10 +87,10 @@ public class VocabularyServiceRestAdapter {
     @Path("/import-gnu")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
-    public Response importGnuVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, final String gnuContent) {
+    public Response importGnuVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final String gnuContent) {
         VocableList imported;
         try {
-            final User user = USER_SERVICE.getUserDataById(Long.parseLong(userId));
+            final User user = USER_SERVICE.getUserDataById(userId);
             imported = VOCABULARY_SERVICE.importGnuVocableList(gnuContent, user);
         } catch (IncompleteVocableListException | DataAlreadyExistsException | InvalidVocableListException | DuplicateVocablesInSetException e) {
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class VocabularyServiceRestAdapter {
     @DELETE
     @Path("/delete-list/{listId}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response deleteVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final String userId, @PathParam("listId") final Long listId) {
+    public Response deleteVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, @PathParam("listId") final Long listId) {
         final VocableList list = VOCABULARY_SERVICE.getVocableListById(listId);
 
         if (list == null) {
@@ -114,7 +114,7 @@ public class VocabularyServiceRestAdapter {
         }
 
         try {
-            VOCABULARY_SERVICE.deleteVocableList(list, USER_SERVICE.getUserDataById(Long.parseLong(userId)));
+            VOCABULARY_SERVICE.deleteVocableList(list, USER_SERVICE.getUserDataById(userId));
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
