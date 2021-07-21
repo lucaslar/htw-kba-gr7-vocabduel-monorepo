@@ -39,6 +39,60 @@
 							"response": []
 						},
 						{
+							"name": "Register (Different User) Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Audrey\",\r\n    \"lastName\": \"Hepburn\",\r\n    \"username\": \"audrey\",\r\n    \"email\": \"audreyh@mail.us\",\r\n    \"password\": \"123audrEY\",\r\n    \"confirm\": \"123audrEY\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register (for Deletion)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Max\",\r\n    \"lastName\": \"Mustermann\",\r\n    \"username\": \"mmuster\",\r\n    \"email\": \"mm@mustermail.de\",\r\n    \"password\": \"Max$$$$Muster\",\r\n    \"confirm\": \"Max$$$$Muster\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Login",
 							"request": {
 								"method": "POST",
@@ -94,7 +148,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Bearer {{token}}",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
 										"type": "text"
 									}
 								],
@@ -118,7 +172,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Bearer {{token}}",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
 										"type": "text"
 									}
 								],
@@ -177,13 +231,7 @@
 							"name": "User by Email",
 							"request": {
 								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token}}",
-										"type": "text"
-									}
-								],
+								"header": [],
 								"url": {
 									"raw": "{{url}}/user/get?email=arnold@strongmail.at",
 									"host": [
@@ -207,13 +255,7 @@
 							"name": "User by Username",
 							"request": {
 								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token}}",
-										"type": "text"
-									}
-								],
+								"header": [],
 								"url": {
 									"raw": "{{url}}/user/get?username=arnie1947",
 									"host": [
@@ -264,7 +306,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Bearer {{token}}",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
 										"type": "text"
 									}
 								],
@@ -297,7 +339,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Bearer {{token}}",
+										"value": "Bearer {{token (for user with id 6, valid until 2026)}}",
 										"type": "text"
 									}
 								],
@@ -365,13 +407,41 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
+								"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT}}}\r\n{Oi} : {Hi}\r\n{Bom dia} : {Guten Tag}\r\n"
+							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT}}}\r\n{oi} : {Hallo}\r\n{bom dia} : {guten Tag}\r\n{exemplo} : {Beispiel}\r\n{mesa} : {Tisch}\r\n{computador} : {Computer}\r\n{garrafa} : {Flasche}\r\n{copo} : {Glas}{{{zum Trinken}}}{{{}}}\r\n{vidrio} : {Glas}{{{Material}}}{{{}}}\r\n{rir(-se)} : {lachen}"
+						},
+						"url": {
+							"raw": "{{url}}/vocabulary/import-gnu",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"vocabulary",
+								"import-gnu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import Vocabulary (for Deletion)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{{Bom dia!}}}{{{pt}}}{{{de}}}{{{Easy PT for Deletion}}}\r\n{exemplo} : {Beispiel}"
 						},
 						"url": {
 							"raw": "{{url}}/vocabulary/import-gnu",
@@ -392,14 +462,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/vocabulary/list/4",
+							"raw": "{{url}}/vocabulary/list/8",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"vocabulary",
 								"list",
-								"4"
+								"8"
 							]
 						}
 					},
@@ -449,19 +519,19 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
+								"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{url}}/vocabulary/delete-list/4",
+							"raw": "{{url}}/vocabulary/delete-list/37",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"vocabulary",
 								"delete-list",
-								"4"
+								"37"
 							]
 						}
 					},
@@ -509,8 +579,16 @@
 			"value": "http://localhost:8080/api"
 		},
 		{
-			"key": "token",
-			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2NjI4OTgxLCJleHAiOjE2ODk1MjgxODF9.DeLukplaKJzV7euu9oH75F9o26q3FEC3XFdkXw3HLSk"
+			"key": "token (for user with id 2, valid until 2026)",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiaWF0IjoxNjI2ODI2MDMwLCJleHAiOjE2NDkyOTAwMzB9.ANHEiD6Fef-79iJxo_XijQnPJwsi59EESgvuwdQ4YCs"
+		},
+		{
+			"key": "token (for user with id 4, valid until 2026)",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwiaWF0IjoxNjI2ODI2MDUwLCJleHAiOjE2NDkyOTAwNTB9.ELO5MAxLjVaJ5eEouLPk59t2iLy-3ziyoh-JfVjYkNs"
+		},
+		{
+			"key": "token (for user with id 6, valid until 2026)",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NiwiaWF0IjoxNjI2ODI2MTIyLCJleHAiOjE2NDkyOTAxMjJ9.Zn_lgTTG7MKGvwjm6gO6roL2k8cCYK1ignWE4N9fwdE"
 		}
 	]
 }
