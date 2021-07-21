@@ -144,6 +144,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         VOCABULARY_SERVICE = vocabularyService;
         GAME_SERVICE = gameService;
         SCORE_SERVICE = scoreService;
+        storage.setUserService(USER_SERVICE);
     }
 
     @Override
@@ -217,11 +218,11 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (action == null) VIEW.printUnknownParam(actionName);
         else if (action.isGuarded() && STORAGE.getLoggedInUser() == null) {
             VIEW.printActionRequiresLogin();
-        } else if (action.isGuarded() && !actionName.equals(ACTION_KEY_LOGOUT) && !actionName.equals(ACTION_KEY_LOGOUT_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getLoggedInUser().getAuthTokens().getToken())) {
+        } else if (action.isGuarded() && !actionName.equals(ACTION_KEY_LOGOUT) && !actionName.equals(ACTION_KEY_LOGOUT_SHORT) && !AUTH_SERVICE.hasAccessRights(STORAGE.getAuthTokens().getToken())) {
             VIEW.printInvalidAuthToken();
-            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getLoggedInUser().getAuthTokens().getRefreshToken());
+            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(STORAGE.getAuthTokens().getRefreshToken());
             if (tokens != null) {
-                STORAGE.getLoggedInUser().setAuthTokens(tokens);
+                STORAGE.setAuthTokens(tokens);
                 VIEW.printSuccessfullyRefreshedTokens(tokens);
                 handleUserInput(actionName, userInputArgs);
             } else {
@@ -331,7 +332,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onLogoutCalled() {
-        STORAGE.setLoggedInUser(null);
+        STORAGE.rmLoggedInUser();
         VIEW.printLogoutSuccessful();
     }
 
@@ -381,7 +382,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onUpdateCalled(final HashMap<String, String> args) {
         VIEW.printOptionalParamsInfo(args.keySet(), ACTION_ARG_USERNAME, ACTION_ARG_EMAIL, ACTION_ARG_FIRSTNAME, ACTION_ARG_LASTNAME);
-        final LoggedInUser user = STORAGE.getLoggedInUser();
+        final User user = STORAGE.getLoggedInUser();
 
         final String prevUsername = user.getUsername();
         final String prevFirstname = user.getFirstName();
@@ -395,7 +396,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         if (args.get(ACTION_ARG_USERNAME) != null || args.get(ACTION_ARG_EMAIL) != null || args.get(ACTION_ARG_FIRSTNAME) != null || args.get(ACTION_ARG_LASTNAME) != null) {
             try {
-                USER_SERVICE.updateUser(LoggedInUser.asUser(user));
+                USER_SERVICE.updateUser(user);
                 VIEW.printSuccessfulUserUpdate(user);
             } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException e) {
                 user.setEmail(prevEmail);
