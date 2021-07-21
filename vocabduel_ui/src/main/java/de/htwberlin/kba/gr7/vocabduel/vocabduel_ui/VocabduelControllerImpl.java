@@ -590,7 +590,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     }
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ROUND));
-                } catch (InvalidAnswerNrException | NoAccessException e) {
+                } catch (InvalidVocabduelGameNrException | NoAccessException e) {
                     e.printStackTrace();
                 } catch (UnfinishedGameException e) {
                     VIEW.printGameNotFinishedByOpponent();

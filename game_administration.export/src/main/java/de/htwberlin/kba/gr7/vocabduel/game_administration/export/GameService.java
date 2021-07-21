@@ -71,10 +71,10 @@ public interface GameService {
      * @param roundNr   Nr of the round the answer is to be submitted for.
      * @param answerNr  Nr of the answer submitted by the given <code>player</code>.
      * @return Result for the given <code>round</code> from the perspective of the given <code>player</code> incl. the correct answer in case of having submitted a wrong one.
-     * @throws InvalidAnswerNrException The question has already been answered by the current user.
+     * @throws InvalidVocabduelGameNrException The question has already been answered by the current user or an invalid answer number has been stated.
      * @throws NoAccessException The given user is no participant of the given round or it could not be found at all.
      */
-    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidAnswerNrException, NoAccessException;
+    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException;
 
     /**
      * Removes all running games with at least one removed user and all finished games with two removed users.

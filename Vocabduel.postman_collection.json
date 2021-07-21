@@ -281,7 +281,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/user/find?searchStr=aR",
+									"raw": "{{url}}/user/find?searchStr=A",
 									"host": [
 										"{{url}}"
 									],
@@ -292,7 +292,7 @@
 									"query": [
 										{
 											"key": "searchStr",
-											"value": "aR"
+											"value": "A"
 										}
 									]
 								}
@@ -544,7 +544,120 @@
 			"item": [
 				{
 					"name": "Game",
-					"item": []
+					"item": [
+						{
+							"name": "Start Game",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"opponentId\": 4,\r\n    \"vocableListIds\": [8]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/game/start",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"start"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Current Open Games",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/game/open-games",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"open-games"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Current Round for Game",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/game/current-round/41",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"current-round",
+										"41"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Answer Question",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "1"
+								},
+								"url": {
+									"raw": "{{url}}/game/answer/41/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"answer",
+										"41",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "Score",
