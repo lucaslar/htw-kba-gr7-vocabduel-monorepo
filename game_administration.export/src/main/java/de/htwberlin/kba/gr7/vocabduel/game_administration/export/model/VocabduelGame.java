@@ -24,6 +24,9 @@ public abstract class VocabduelGame {
     @Enumerated(EnumType.STRING)
     private SupportedLanguage knownLanguage;
 
+    @Version
+    private Integer version;
+
     public VocabduelGame() {
     }
 
@@ -57,5 +60,9 @@ public abstract class VocabduelGame {
 
     public void setPlayerB(User playerB) {
         this.playerB = playerB;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

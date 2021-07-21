@@ -26,6 +26,9 @@ public class VocabduelRound implements Serializable {
     @Enumerated(EnumType.STRING)
     private Result resultPlayerB;
 
+    @Version
+    private Integer version;
+
     public VocabduelRound() {}
 
     public VocabduelRound(int roundNr){ this.roundNr = roundNr; }
@@ -72,5 +75,9 @@ public class VocabduelRound implements Serializable {
 
     public void setResultPlayerB(Result resultPlayerB) {
         this.resultPlayerB = resultPlayerB;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }
