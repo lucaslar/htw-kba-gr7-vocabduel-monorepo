@@ -1,0 +1,91 @@
+<mat-accordion>
+    <mat-expansion-panel
+        *ngFor="let set of languageSets"
+        class="mat-elevation-z0 no-padding-body"
+    >
+        <mat-expansion-panel-header class="pl-0">
+            <mat-panel-title class="d-flex color-primary">
+                <app-overlapping-flags
+                    [languageFrom]="set.learntLanguage"
+                    [languageTo]="set.knownLanguage"
+                ></app-overlapping-flags>
+
+                <div class="my-auto mx-1">
+                    <strong>{{
+                        'general.language.' + set.learntLanguage
+                            | lowercase
+                            | translate
+                    }}</strong>
+                    ({{ set.learntLanguage }})
+                </div>
+
+                <mat-icon class="my-auto"> arrow_forward </mat-icon>
+
+                <div class="my-auto mx-1">
+                    <strong>{{
+                        'general.language.' + set.knownLanguage
+                            | lowercase
+                            | translate
+                    }}</strong>
+                    ({{ set.knownLanguage }})
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list *ngFor="let unit of set.vocableUnits">
+            <div mat-subheader>{{ unit.title }}</div>
+            <ng-container *ngFor="let list of unit.vocableLists; last as last">
+                <mat-list-item (click)="listSelected.emit(list)">
+                    <mat-icon mat-list-icon> menu_book </mat-icon>
+                    <div mat-line>
+                        <span>
+                            {{ list.title }}
+                        </span>
+                    </div>
+                    <div mat-line>
+                        <span>
+                            {{ 'general.importedBy' | translate }}:
+                            <span
+                                *ngIf="list.author; else deletedAuthor"
+                                [class]="
+                                    currentUser &&
+                                    currentUser.id === list.author?.id
+                                        ? 'color-accent'
+                                        : 'color-primary'
+                                "
+                            >
+                                {{ list.author.username }}
+                            </span>
+                        </span>
+                    </div>
+                    <div mat-line class="color-darkgrey">
+                        <span>
+                            {{ list.timestamp | date }}
+                        </span>
+                    </div>
+
+                    <button
+                        mat-icon-button
+                        color="warn"
+                        *ngIf="
+                            showDelete &&
+                            currentUser &&
+                            currentUser.id === list.author?.id
+                        "
+                        (click)="onDeleteClicked(list, $event)"
+                        [matTooltip]="'general.delete' | translate"
+                    >
+                        <mat-icon> delete </mat-icon>
+                    </button>
+                </mat-list-item>
+                <mat-divider
+                    *ngIf="!last"
+                    class="position-relative"
+                ></mat-divider>
+            </ng-container>
+        </mat-nav-list>
+    </mat-expansion-panel>
+</mat-accordion>
+
+<ng-template #deletedAuthor>
+    <span class="color-darkgrey">{{ 'general.deletedUser' | translate }}</span>
+</ng-template>

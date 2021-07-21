@@ -62,7 +62,7 @@ export class VocabularyComponent implements OnInit {
     contributeFile(): void {
         const fileReader = new FileReader();
 
-        fileReader.onerror = (e) => {
+        fileReader.onerror = () => {
             delete this.file;
             throw new Error('File could not be parsed');
         };
@@ -89,8 +89,7 @@ export class VocabularyComponent implements OnInit {
         });
     }
 
-    deleteList(list: VocableList, event: MouseEvent): void {
-        event.stopPropagation();
+    deleteList(list: VocableList): void {
         this.dialog
             .open(ConfirmDeleteComponent, { data: list })
             .afterClosed()
