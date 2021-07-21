@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
+
+type NavItem = {
+    icon: string;
+    translationKey: string;
+    colorClass: string;
+    onClick: () => void;
+};
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +18,7 @@ export class NavigationService {
     isLoadingIndicated = true;
     isSidebarOpened = false;
 
-    private readonly sharedNavItems = [
+    private readonly sharedNavItems: NavItem[] = [
         {
             icon: 'school',
             translationKey: 'header.actions.vocabulary',
@@ -32,7 +39,7 @@ export class NavigationService {
         },
     ];
 
-    private readonly navigationItemsLoggedIn = [
+    private readonly navigationItemsLoggedIn: NavItem[] = [
         {
             icon: 'dashboard',
             translationKey: 'header.actions.home',
@@ -54,7 +61,7 @@ export class NavigationService {
         },
     ];
 
-    private readonly navigationItemsLoggedOut = [
+    private readonly navigationItemsLoggedOut: NavItem[] = [
         {
             icon: 'login',
             translationKey: 'header.actions.login',
@@ -70,7 +77,8 @@ export class NavigationService {
         media: MediaMatcher,
         private readonly router: Router,
         private readonly auth: AuthService,
-        private readonly storage: StorageService
+        private readonly storage: StorageService,
+        private readonly route: ActivatedRoute
     ) {
         this.mobileQuery = media.matchMedia('(max-width: 576px)');
     }
@@ -81,7 +89,7 @@ export class NavigationService {
         }
     }
 
-    get navigationItems() {
+    get navigationItems(): NavItem[] {
         return this.storage.refreshToken && this.storage.token
             ? this.navigationItemsLoggedIn
             : this.navigationItemsLoggedOut;
