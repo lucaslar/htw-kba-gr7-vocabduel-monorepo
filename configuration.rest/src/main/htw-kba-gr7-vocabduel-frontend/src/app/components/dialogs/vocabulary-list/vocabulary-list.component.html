@@ -90,6 +90,17 @@
                     <app-translation-group
                         [translationGroup]="vocable.vocable"
                     ></app-translation-group>
+
+                    <div
+                        class="mt-3"
+                        *ngIf="vocable.exampleOrAdditionalInfoLearntLang"
+                    >
+                        {{ 'dialog.vocabulary.exampleOrHint' | translate }}:
+                        <br />
+                        <strong class="color-primary">
+                            {{ vocable.exampleOrAdditionalInfoLearntLang }}
+                        </strong>
+                    </div>
                 </div>
 
                 <mat-divider
@@ -107,7 +118,21 @@
                         <app-translation-group
                             [translationGroup]="tg"
                         ></app-translation-group>
-                        <mat-divider class='my-1' *ngIf="!lastTranslation"></mat-divider>
+                        <mat-divider
+                            class="my-1"
+                            *ngIf="!lastTranslation"
+                        ></mat-divider>
+                    </div>
+
+                    <div
+                        class="mt-3"
+                        *ngIf="vocable.exampleOrAdditionalInfoKnownLang"
+                    >
+                        {{ 'dialog.vocabulary.exampleOrHint' | translate }}:
+                        <br />
+                        <strong class="color-primary">
+                            {{ vocable.exampleOrAdditionalInfoKnownLang }}
+                        </strong>
                     </div>
                 </div>
             </div>

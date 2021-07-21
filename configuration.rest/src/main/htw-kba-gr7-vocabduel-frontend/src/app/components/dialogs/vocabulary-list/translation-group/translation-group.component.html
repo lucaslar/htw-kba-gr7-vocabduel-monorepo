@@ -1,14 +1,7 @@
 <strong>{{ synonymList }}</strong>
 
-<div
-    *ngIf="translationGroup.exemplarySentencesOrAdditionalInfo?.length"
-    class="mt-1"
->
-    <div
-        *ngFor="
-            let example of translationGroup.exemplarySentencesOrAdditionalInfo
-        "
-    >
-        <em class="color-primary"> {{ example }} </em>
+<div *ngIf="translationGroup.additionalInfo?.length">
+    <div *ngFor="let example of translationGroup.additionalInfo">
+        <em class="color-darkgrey"> {{ example }} </em>
     </div>
 </div>

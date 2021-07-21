@@ -27,7 +27,8 @@
         },
         "vocabulary": {
             "unit": "Unit",
-            "availableSince": "Available since"
+            "availableSince": "Available since",
+            "exampleOrHint": "Example or hint"
         }
     },
     "snackbar": {
