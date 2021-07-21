@@ -8,7 +8,8 @@
         <div class="my-2 d-flex">
             <div class="mx-n1 my-auto">
                 <app-overlapping-flags
-                    [languageSet]="languageSet"
+                    [languageFrom]="list.learntLanguage"
+                    [languageTo]="list.knownLanguage"
                 ></app-overlapping-flags>
             </div>
 
@@ -16,27 +17,27 @@
                 <div class="d-flex">
                     <div class="my-auto">
                         <strong>{{
-                            'general.language.' + languageSet.learntLanguage
+                            'general.language.' + list.learntLanguage
                                 | lowercase
                                 | translate
                         }}</strong>
-                        ({{ languageSet.learntLanguage }})
+                        ({{ list.learntLanguage }})
                     </div>
 
                     <mat-icon class="my-auto"> arrow_forward </mat-icon>
 
                     <div class="my-auto mx-1">
                         <strong>{{
-                            'general.language.' + languageSet.knownLanguage
+                            'general.language.' + list.knownLanguage
                                 | lowercase
                                 | translate
                         }}</strong>
-                        ({{ languageSet.knownLanguage }})
+                        ({{ list.knownLanguage }})
                     </div>
                 </div>
                 <span>
                     <strong>{{ 'dialog.vocabulary.unit' | translate }}:</strong>
-                    {{ unitTitle }}
+                    {{ list.unitTitle }}
                 </span>
             </div>
         </div>

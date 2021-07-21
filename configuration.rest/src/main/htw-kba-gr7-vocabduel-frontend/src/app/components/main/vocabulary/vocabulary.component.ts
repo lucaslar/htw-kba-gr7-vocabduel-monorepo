@@ -82,14 +82,10 @@ export class VocabularyComponent implements OnInit {
         fileReader.readAsText(this.file!);
     }
 
-    showVocabulary(
-        list: VocableList,
-        unit: VocableUnit,
-        set: LanguageSet
-    ): void {
+    showVocabulary(list: VocableList): void {
         const self = this.currentUser;
         this.dialog.open(VocabularyListComponent, {
-            data: { self, list, unit, set },
+            data: { self, list },
         });
     }
 

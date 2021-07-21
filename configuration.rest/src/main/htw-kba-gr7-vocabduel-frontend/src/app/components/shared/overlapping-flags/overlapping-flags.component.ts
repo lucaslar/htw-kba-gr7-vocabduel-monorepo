@@ -7,5 +7,6 @@ import { LanguageSet } from '../../../model/language-set';
     styleUrls: ['./overlapping-flags.component.scss'],
 })
 export class OverlappingFlagsComponent {
-    @Input() languageSet!: LanguageSet;
+    @Input() languageFrom!: string;
+    @Input() languageTo!: string;
 }
