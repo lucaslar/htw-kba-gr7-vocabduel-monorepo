@@ -44,7 +44,7 @@ public class GameServiceRestAdapter {
     @POST
     @Path("/start")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
     public Response startGame(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final StartGameData data) {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "start-game");
         if (missingDataResponse != null) return missingDataResponse;
@@ -60,13 +60,13 @@ public class GameServiceRestAdapter {
             gameInfo = new MinimizedPersonalGameInfo(game, self);
         } catch (NotEnoughVocabularyException | InvalidGameSetupException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
 
         System.out.println("Successfully started new ame: " + gameInfo);
-        return Response.status(Response.Status.CREATED).entity(gameInfo.getId()).build();
+        return Response.status(Response.Status.CREATED).type(MediaType.APPLICATION_JSON).entity(gameInfo).build();
     }
 
     @GET
