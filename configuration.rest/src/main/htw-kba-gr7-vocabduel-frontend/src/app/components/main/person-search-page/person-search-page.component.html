@@ -21,6 +21,11 @@
     </ng-template>
 
     <div class="flex-grow-1">
-        <app-person-search [ownId]="currentUser?.id" (userSelected)="displayUserDetails($event)"></app-person-search>
+        <app-person-search
+            [searchStr]="initialSearchVal"
+            [ownId]="currentUser?.id"
+            (userSelected)="displayUserDetails($event)"
+            (afterSearch)='addQueryParam($event)'
+        ></app-person-search>
     </div>
 </div>

@@ -10,10 +10,7 @@
                 color="primary"
                 matSuffix
                 [disabled]="!navigation.isLoadingIndicated && !searchStr.trim()"
-                (click)="
-                    results$ = user.findUsers$(searchStr);
-                    lastEmittedStr = searchStr
-                "
+                (click)="search()"
             >
                 <mat-icon> search </mat-icon>
             </button>
