@@ -67,7 +67,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         final VocableUnit unit = getOrCreateLanguageUnit(headline.get(3), langFrom, langTo);
         if (unit.getVocableLists() == null) unit.setVocableLists(new ArrayList<>());
         else if (unit.getVocableLists().stream().anyMatch(vl -> vl.getTitle().equals(listName))) {
-            throw new DataAlreadyExistsException("List named \"" + listName + "\" does already exist!");
+            throw new DataAlreadyExistsException("List named \"" + listName + "\" does already exist in Unit " + headline.get(3) + " of language set " + langFrom + " => " + langTo + ")!");
         }
 
         unit.getVocableLists().add(list);
