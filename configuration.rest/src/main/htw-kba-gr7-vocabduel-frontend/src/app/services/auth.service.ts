@@ -11,6 +11,7 @@ import { TokenData } from '../model/token-data';
 import { PasswordData } from '../model/internal/password-data';
 import { SnackbarService } from './snackbar.service';
 import { environment } from '../../environments/environment';
+import { RegistrationData } from '../model/internal/registration-data';
 
 @Injectable({
     providedIn: 'root',
@@ -26,8 +27,6 @@ export class AuthService {
         private readonly snackbar: SnackbarService
     ) {}
 
-    // TODO Implement procedure after registration/login
-
     login(loginData: LoginData): void {
         const url = `${environment.endpointUrl}/auth/login`;
         this.http
@@ -35,8 +34,7 @@ export class AuthService {
             .subscribe((result) => this.onSuccessfulAuth(result));
     }
 
-    // TODO: Typify
-    register(userData: any): void {
+    register(userData: RegistrationData): void {
         const url = `${environment.endpointUrl}/auth/register`;
         this.http
             .post<LoggedInUser>(url, userData)

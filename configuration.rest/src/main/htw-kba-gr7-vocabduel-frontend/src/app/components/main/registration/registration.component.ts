@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { NavigationService } from '../../../services/navigation.service';
+import { RegistrationData } from '../../../model/internal/registration-data';
 
 @Component({
     selector: 'app-registration',
@@ -8,7 +9,7 @@ import { NavigationService } from '../../../services/navigation.service';
     styleUrls: ['./registration.component.scss'],
 })
 export class RegistrationComponent {
-    readonly user = {
+    readonly user: RegistrationData = {
         username: '',
         email: '',
         firstName: '',
