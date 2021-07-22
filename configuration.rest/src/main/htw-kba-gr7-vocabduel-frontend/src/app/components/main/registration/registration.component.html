@@ -1,9 +1,7 @@
 <mat-card>
-    <div mat-card-title>
-        <span appEllipsisTooltip>
-            {{ 'main.registration.title' | translate }}
-        </span>
-    </div>
+    <mat-card-title>
+        {{ 'main.registration.title' | translate }}
+    </mat-card-title>
     <mat-card-subtitle>
         {{ 'main.registration.subtitle' | translate }}
     </mat-card-subtitle>
@@ -45,9 +43,9 @@
                 class="col-12 col-md-6 col-xl-3"
             >
                 <input matInput [(ngModel)]="user.firstName" name="firstName" />
-                <mat-label>{{
-                    'general.user.firstName' | translate
-                }}</mat-label>
+                <mat-label>
+                    {{ 'general.user.firstName' | translate }}
+                </mat-label>
             </mat-form-field>
 
             <mat-form-field
