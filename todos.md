@@ -1,12 +1,10 @@
 - Injection of Entity Manager without @PersistenceContext / without constructor?
-- core config good practice?
 - Fix MySQL error on closing server
-- (mention?) Angular defaults status code to OK
-- exceptions due to optimistic locking? => (How to) handle?
-- Dependency Injection (interfaces) for DAO? 
-- legal to habe game_service in user api ? (in order to remove widow games)
+- exceptions due to optimistic locking
+- Dependency Injection (interfaces) for DAO 
+- legal to have game_service in user api ? (in order to remove widow games)
+- Frontend
 
-- send Mail to Kempa:
-    - use DAO classes AND interfaces?
-    - in which module should DAO be stored? interface and classes together?
-    - required args interceptor possible?  
+Docu:
+- mvn -v > 3.6 needed
+- Angular defaults status code to OK
