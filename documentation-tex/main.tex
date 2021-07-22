@@ -1,0 +1,68 @@
+\title{
+    \textbf{Vocabduel\\
+    \large Datenverarbeitungskonzept eines betrieblichen Informationssystems}
+    \\ \large \textit{W3-KBA: Komponentenbasierte Entwicklung komplexer Anwendungen}
+}
+\author{
+    Sebastian Darius Kehl (s0550355),
+    \\Lucas Larisch (s0558070)
+}
+\date{25. Juli 2021}
+
+\documentclass[11pt]{article}
+
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage[all]{nowidow}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage[bottom]{footmisc}
+\usepackage[hidelinks]{hyperref}
+\usepackage[a4paper, total={210mm,297mm}, left=25mm, right=25mm, top=30mm, bottom=20mm]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{fancyhdr}
+
+\setstretch{1.3}
+\setlength{\parskip}{6pt}
+\setlength{\footnotesep}{0pt}
+\renewcommand{\footnotesize}{\fontsize{9pt}{11pt}\selectfont}
+
+\graphicspath{ {./images/} }
+
+%---content---
+\begin{document}
+    \pagenumbering{gobble}
+    \maketitle
+    \vfill
+    \begin{center}
+        \includegraphics[width=0.3\textwidth]{htw-logo}
+    \end{center}
+    \newpage
+    \tableofcontents\newpage
+
+%---sections---
+    \setcounter{page}{1}
+    \pagenumbering{arabic}
+
+    \input{./sections/1-komponentenschnitt.tex}
+    \input{./sections/2-schnittstellen.tex}
+    \input{./sections/3-datenmodell.tex}
+    \input{./sections/4-gui.tex}
+    \input{./sections/5-frameworks.tex}
+    \input{./sections/6-env.tex}
+
+%---sources---
+    \newpage
+    \pagenumbering{Roman}
+
+%---appendices---
+% ?
+
+\end{document}
