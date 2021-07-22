@@ -1,3 +1,13 @@
 .author-icon {
     width: 64px;
 }
+
+.clickable-author {
+    transition: 0.3s;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: rgba(0,0,0,.04);
+    }
+}

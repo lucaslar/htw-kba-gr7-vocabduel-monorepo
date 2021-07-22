@@ -24,8 +24,10 @@
         <app-person-search
             [searchStr]="initialSearchVal"
             [ownId]="currentUser?.id"
-            (userSelected)="displayUserDetails($event)"
-            (afterSearch)='addQueryParam($event)'
+            (userSelected)="
+                dialogManagement.openUserDialog($event, currentUser)
+            "
+            (afterSearch)="addQueryParam($event)"
         ></app-person-search>
     </div>
 </div>

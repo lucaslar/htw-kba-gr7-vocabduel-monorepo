@@ -51,9 +51,11 @@
         *ngIf="vocableLists?.length"
         [languageSets]="vocableLists | langSetsByVocabulary"
         [currentUser]="currentUser"
+        [showDelete]="false"
+        (listSelected)="onListSelected($event)"
     >
-        <!-- TODO Implement on select/ (on delete) -->
     </app-language-sets-accordion>
+    <!-- TODO Implement else -->
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

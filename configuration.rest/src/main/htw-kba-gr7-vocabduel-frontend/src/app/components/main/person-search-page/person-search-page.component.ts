@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../model/internal/user';
 import { AuthService } from '../../../services/auth.service';
-import { MatDialog } from '@angular/material/dialog';
 import { VocabularyService } from '../../../services/vocabulary.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserDetailsComponent } from '../../dialogs/user-details/user-details.component';
+import { ComplexDialogManagementService } from '../../../services/complex-dialog-management.service';
 
 @Component({
     selector: 'app-person-search-page',
@@ -16,8 +15,8 @@ export class PersonSearchPageComponent implements OnInit {
     initialSearchVal!: string;
 
     constructor(
+        readonly dialogManagement: ComplexDialogManagementService,
         private readonly auth: AuthService,
-        private readonly dialog: MatDialog,
         private readonly vocabulary: VocabularyService,
         private readonly router: Router,
         private readonly route: ActivatedRoute
@@ -29,15 +28,6 @@ export class PersonSearchPageComponent implements OnInit {
         });
         this.initialSearchVal =
             this.route.snapshot.queryParamMap.get('q') ?? '';
-    }
-
-    displayUserDetails(user: User): void {
-        this.vocabulary.listsOfAuthor$(user).subscribe((vocableLists) => {
-            // TODO: Add score stats
-            this.dialog.open(UserDetailsComponent, {
-                data: { currentUser: this.currentUser, user, vocableLists },
-            });
-        });
     }
 
     addQueryParam(q: string): void {

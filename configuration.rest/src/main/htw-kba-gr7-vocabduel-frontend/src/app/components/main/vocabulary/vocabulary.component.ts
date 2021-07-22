@@ -12,8 +12,7 @@ import { NavigationService } from '../../../services/navigation.service';
 import { finalize } from 'rxjs/operators';
 import { VocableList } from '../../../model/vocable-list';
 import { ConfirmDeleteComponent } from '../../dialogs/confirm-delete/confirm-delete.component';
-import { VocabularyListComponent } from '../../dialogs/vocabulary-list/vocabulary-list.component';
-import { VocableUnit } from '../../../model/vocable-unit';
+import { ComplexDialogManagementService } from '../../../services/complex-dialog-management.service';
 
 @Component({
     selector: 'app-vocabulary',
@@ -29,6 +28,7 @@ export class VocabularyComponent implements OnInit {
 
     constructor(
         readonly navigation: NavigationService,
+        readonly dialogManagement: ComplexDialogManagementService,
         private readonly vocabulary: VocabularyService,
         private readonly auth: AuthService,
         private readonly dialog: MatDialog,
@@ -80,13 +80,6 @@ export class VocabularyComponent implements OnInit {
                 });
         };
         fileReader.readAsText(this.file!);
-    }
-
-    showVocabulary(list: VocableList): void {
-        const self = this.currentUser;
-        this.dialog.open(VocabularyListComponent, {
-            data: { self, list },
-        });
     }
 
     deleteList(list: VocableList): void {

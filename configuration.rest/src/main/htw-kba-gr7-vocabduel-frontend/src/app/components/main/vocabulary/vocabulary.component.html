@@ -68,7 +68,12 @@
                     [languageSets]="sets"
                     [currentUser]="currentUser ? currentUser : undefined"
                     (deleteClicked)="deleteList($event)"
-                    (listSelected)="showVocabulary($event)"
+                    (listSelected)="
+                        dialogManagement.openVocableListDialog(
+                            $event,
+                            currentUser
+                        )
+                    "
                 ></app-language-sets-accordion>
             </ng-container>
         </mat-card-content>
