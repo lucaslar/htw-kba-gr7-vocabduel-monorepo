@@ -50,6 +50,7 @@
     <app-language-sets-accordion
         *ngIf="vocableLists?.length; else noImportedVocabulary"
         [languageSets]="vocableLists | langSetsByVocabulary"
+        [displayImportedBy]="false"
         [currentUser]="currentUser"
         [showDelete]="false"
         (listSelected)="onListSelected($event)"

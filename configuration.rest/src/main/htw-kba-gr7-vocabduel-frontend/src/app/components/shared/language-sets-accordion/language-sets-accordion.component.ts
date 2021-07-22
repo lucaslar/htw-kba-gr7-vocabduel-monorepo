@@ -16,8 +16,9 @@ import { NavigationService } from '../../../services/navigation.service';
 export class LanguageSetsAccordionComponent {
     @Input() languageSets!: LanguageSet[];
     @Input() showDelete = true;
-    @Input() currentUser?: User;
     @Input() noElevation = true;
+    @Input() displayImportedBy = true;
+    @Input() currentUser?: User;
     @Output() itemDeleted: EventEmitter<VocableList> = new EventEmitter();
     @Output() listSelected: EventEmitter<VocableList> = new EventEmitter();
 

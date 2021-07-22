@@ -42,7 +42,7 @@
                             {{ list.title }}
                         </span>
                     </div>
-                    <div mat-line>
+                    <div mat-line *ngIf="displayImportedBy">
                         <span>
                             {{ 'general.importedBy' | translate }}:
                             <span
