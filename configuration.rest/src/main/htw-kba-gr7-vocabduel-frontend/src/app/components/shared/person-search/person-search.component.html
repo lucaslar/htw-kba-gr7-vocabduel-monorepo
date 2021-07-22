@@ -1,21 +1,55 @@
 <div class="d-flex flex-column h-100">
-    <form class="flex-grow-0">
-        <mat-form-field appearance="outline" color="primary" class="w-100">
-            <input matInput [(ngModel)]="searchStr" name="username" />
-            <mat-label>
-                {{ 'general.user.username' | translate }}
-            </mat-label>
+    <form ngForm autocomplete="off" class="d-flex search-bar-container mb-3">
+        <div class="flex-grow-1">
+            <div
+                id="search-bar"
+                class="d-flex w-100 mat-elevation-z3"
+                (click)="searchInput.focus()"
+                [class.active-input]="isSearchbarElementActive"
+            >
+                <div class="flex-grow-1">
+                    <label class="m-0 h-100">
+                        <input
+                            #searchInput
+                            type="search"
+                            [placeholder]="'general.user.username' | translate"
+                            class="h-100 w-100 border-0"
+                            name="search"
+                            [(ngModel)]="searchStr"
+                        />
+                    </label>
+                </div>
+                <div class="flex-grow-0 my-auto">
+                    <button
+                        mat-icon-button
+                        type="reset"
+                        *ngIf="searchStr?.length"
+                        #clearButton
+                    >
+                        <mat-icon> clear </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow-0">
             <button
-                mat-icon-button
-                color="primary"
-                matSuffix
-                [disabled]="!navigation.isLoadingIndicated && !searchStr.trim()"
+                mat-button
+                id="search-button"
+                class="background-primary text-uppercase mat-elevation-z3"
+                type="submit"
+                [disabled]="
+                    !navigation.isLoadingIndicated && !searchStr?.trim()
+                "
                 (click)="search()"
             >
                 <mat-icon> search </mat-icon>
+                <span id="search-text">
+                    {{ 'main.personSearch.search' | translate }}
+                </span>
             </button>
-        </mat-form-field>
+        </div>
     </form>
+
     <div class="flex-grow-1">
         <ng-container *ngIf="lastEmittedStr !== undefined; else noSearchYet">
             <ng-container *ngIf="results$ | async as results; else searching">

@@ -128,7 +128,8 @@
                 "intro": "Interested in who already signed up? Search for Vocabduel users here...",
                 "noScoresInfo": "You have to be logged in in order to see user scores. By clicking on a player, you will only be able to see the vocabulary lists contributed by this user."
             },
-            "loggedIn": "Search for other players here. Select a player in order to get information about vocabulary lists contributed by this user and her/his game scores."
+            "loggedIn": "Search for other players here. Select a player in order to get information about vocabulary lists contributed by this user and her/his game scores.",
+            "search": "Search"
         },
         "vocabulary": {
             "supported": {

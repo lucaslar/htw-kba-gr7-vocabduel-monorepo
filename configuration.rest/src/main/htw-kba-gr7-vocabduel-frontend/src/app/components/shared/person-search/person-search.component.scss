@@ -3,6 +3,82 @@ mat-card {
     transition: 0.3s;
 
     &:hover {
-        background-color: rgba(0,0,0,.04);
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.search-bar-container {
+    margin: 0 -4px;
+
+    * {
+        outline: none;
+    }
+
+    > * {
+        padding: 0 4px;
+    }
+
+    #search-bar,
+    #search-button {
+        border-radius: 24px;
+        height: 48px;
+        padding: 0 24px;
+    }
+
+    #search-bar {
+        cursor: text;
+        font-size: 12pt;
+        background-color: white;
+        border: 2px solid transparent;
+
+        &:active,
+        &:focus,
+        &.active-input,
+        &:not(:disabled):hover {
+            border-color: #3f51b5 !important;
+        }
+
+        label {
+            width: calc(100% + 8px);
+
+            input {
+                background-color: transparent;
+
+                &[type='text']::-ms-clear,
+                &[type='text']::-ms-reveal {
+                    display: none;
+                    width: 0;
+                    height: 0;
+                }
+
+                &[type='search']::-webkit-search-decoration,
+                &[type='search']::-webkit-search-cancel-button,
+                &[type='search']::-webkit-search-results-button,
+                &[type='search']::-webkit-search-results-decoration {
+                    display: none;
+                }
+            }
+        }
+
+        button {
+            left: 8px;
+        }
+    }
+
+    #search-button {
+        min-width: 48px;
+        transition: 0.3s;
+
+        &:disabled {
+            background-color: lightgray !important;
+        }
+
+        @media (max-width: 991.98px) {
+            padding: 0;
+
+            #search-text {
+                display: none;
+            }
+        }
     }
 }

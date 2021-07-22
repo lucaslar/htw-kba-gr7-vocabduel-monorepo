@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../../../model/internal/user';
 import { UserService } from '../../../services/user.service';
@@ -14,6 +22,10 @@ export class PersonSearchComponent implements OnInit {
     @Input() searchStr = '';
     @Output() readonly userSelected: EventEmitter<User> = new EventEmitter();
     @Output() readonly afterSearch: EventEmitter<string> = new EventEmitter();
+
+    @ViewChild('clearButton', { read: ElementRef })
+    private readonly clearButton!: ElementRef;
+    @ViewChild('searchInput') private readonly searchInput!: ElementRef;
 
     results$?: Observable<User[]>;
     lastEmittedStr?: string;
@@ -31,5 +43,12 @@ export class PersonSearchComponent implements OnInit {
         this.results$ = this.user.findUsers$(this.searchStr);
         this.lastEmittedStr = this.searchStr;
         this.afterSearch.emit(this.searchStr);
+    }
+
+    get isSearchbarElementActive(): boolean {
+        return (
+            document.activeElement === this.searchInput?.nativeElement ||
+            document.activeElement === this.clearButton?.nativeElement
+        );
     }
 }
