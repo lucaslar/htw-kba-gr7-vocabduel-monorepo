@@ -1,9 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.LanguageSetDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.VocableListDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.VocableUnitDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
@@ -26,15 +24,15 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final Pattern THREE_BRACKETS_PATTERN = Pattern.compile("\\{\\{\\{(.*?)}}}");
     private final Pattern ONE_BRACKET_PATTERN = Pattern.compile("\\{(.*?)}");
 
-    private final VocableUnitDAOImpl vocableUnitDAO;
-    private final VocableListDAOImpl vocableListDAO;
-    private final LanguageSetDAOImpl languageSetDAO;
+    private final VocableUnitDAO VOCABLE_UNIT_DAO;
+    private final VocableListDAO VOCABLE_LIST_DAO;
+    private final LanguageSetDAO LANGUAGE_SET_DAO;
 
-    VocabularyServiceImpl(final EntityManager entityManager) {
+    VocabularyServiceImpl(final VocableUnitDAO vocableUnitDao, final VocableListDAO vocableListDao, final LanguageSetDAO languageSetDao) {
         initializeLangMapping();
-        vocableUnitDAO = new VocableUnitDAOImpl(entityManager);
-        vocableListDAO = new VocableListDAOImpl(entityManager);
-        languageSetDAO = new LanguageSetDAOImpl(entityManager);
+        VOCABLE_UNIT_DAO = vocableUnitDao;
+        VOCABLE_LIST_DAO = vocableListDao;
+        LANGUAGE_SET_DAO = languageSetDao;
     }
 
     @Override
@@ -72,7 +70,7 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         unit.getVocableLists().add(list);
 
-        vocableUnitDAO.insertVocableUnit(unit);
+        VOCABLE_UNIT_DAO.insertVocableUnit(unit);
 
         return list;
     }
@@ -83,33 +81,33 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
         }
-        final VocableUnit unit = vocableUnitDAO.selectVocableUnitByVocableList(vocables);
+        final VocableUnit unit = VOCABLE_UNIT_DAO.selectVocableUnitByVocableList(vocables);
         unit.setVocableLists(unit.getVocableLists().stream().filter(l -> !l.getId().equals(vocables.getId())).collect(Collectors.toList()));
 
-        final VocableList list = vocableListDAO.selectVocableList(vocables);
-        vocableListDAO.deleteVocableList(list);
+        final VocableList list = VOCABLE_LIST_DAO.selectVocableList(vocables);
+        VOCABLE_LIST_DAO.deleteVocableList(list);
         if (unit.getVocableLists().isEmpty()) {
-            final LanguageSet languageSet = languageSetDAO.selectLanguageSetByVocableUnit(unit);
+            final LanguageSet languageSet = LANGUAGE_SET_DAO.selectLanguageSetByVocableUnit(unit);
             languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
-            vocableUnitDAO.deleteVocableUnit(unit);
-            if (languageSet.getVocableUnits().isEmpty()) languageSetDAO.deleteLanguageSet(languageSet);
+            VOCABLE_UNIT_DAO.deleteVocableUnit(unit);
+            if (languageSet.getVocableUnits().isEmpty()) LANGUAGE_SET_DAO.deleteLanguageSet(languageSet);
         }
         return 0;
     }
 
     @Override
     public VocableList getVocableListById(Long id) {
-        return vocableListDAO.selectVocableListById(id);
+        return VOCABLE_LIST_DAO.selectVocableListById(id);
     }
 
     @Override
     public List<VocableList> getVocableListsOfUser(User user) {
-        return vocableListDAO.selectVocableListsByUserId(user.getId());
+        return VOCABLE_LIST_DAO.selectVocableListsByUserId(user.getId());
     }
 
     @Override
     public List<LanguageSet> getAllLanguageSets() {
-        return languageSetDAO.selectLanguageSets();
+        return LANGUAGE_SET_DAO.selectLanguageSets();
     }
 
     @Override
@@ -234,14 +232,14 @@ public class VocabularyServiceImpl implements VocabularyService {
         else {
             unit = new VocableUnit(unitName);
             ls.getVocableUnits().add(unit);
-            languageSetDAO.insertLanguageSet(ls);
+            LANGUAGE_SET_DAO.insertLanguageSet(ls);
         }
 
         return unit;
     }
 
     private LanguageSet getOrCreateLanguageSet(final SupportedLanguage from, final SupportedLanguage to) {
-        return languageSetDAO.selectOrInsertLanguageSetBySupportedLanguages(from, to);
+        return LANGUAGE_SET_DAO.selectOrInsertLanguageSetBySupportedLanguages(from, to);
     }
 
     private void validateVocables(final List<Vocable> vocables) throws DuplicateVocablesInSetException {

@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.junit.Assert;
@@ -8,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -56,7 +56,11 @@ public class VocabularyServiceImplTest {
 
     @Before
     public void setup() {
-        vocabularyLib = new VocabularyServiceImpl(entityManager);
+        final VocableListDAO listDao = new VocableListDAOImpl(entityManager);
+        final VocableUnitDAO unitDao = new VocableUnitDAOImpl(entityManager);
+        final LanguageSetDAO langSetsDao = new LanguageSetDAOImpl(entityManager);
+
+        vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);

@@ -1,16 +1,18 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
+@Repository
 public class VocableListDAOImpl implements VocableListDAO{
 
+    @PersistenceContext
     private final EntityManager ENTITY_MANAGER;
 
     public VocableListDAOImpl(EntityManager entityManager){

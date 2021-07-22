@@ -2,12 +2,16 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
-public class VocableUnitDAOImpl implements VocableUnitDAO{
+@Repository
+public class VocableUnitDAOImpl implements VocableUnitDAO {
 
+    @PersistenceContext
     private final EntityManager ENTITY_MANAGER;
 
     public VocableUnitDAOImpl(EntityManager entityManager){
@@ -26,12 +30,12 @@ public class VocableUnitDAOImpl implements VocableUnitDAO{
         VocableUnit unit = null;
         ENTITY_MANAGER.clear();
         ENTITY_MANAGER.getTransaction().begin();
-        try{
+        try {
             unit = (VocableUnit) ENTITY_MANAGER
                     .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
                     .setParameter("list", vocables)
                     .getSingleResult();
-        } catch (PersistenceException e){
+        } catch (PersistenceException e) {
             ENTITY_MANAGER.getTransaction().rollback();
             throw e;
         }

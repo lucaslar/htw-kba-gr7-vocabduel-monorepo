@@ -3,15 +3,19 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
+@Repository
 public class LanguageSetDAOImpl implements LanguageSetDAO{
 
-    private EntityManager ENTITY_MANAGER;
+    @PersistenceContext
+    private final EntityManager ENTITY_MANAGER;
 
     public LanguageSetDAOImpl(EntityManager entityManager){
         ENTITY_MANAGER = entityManager;
