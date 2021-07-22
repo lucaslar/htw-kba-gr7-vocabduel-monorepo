@@ -121,4 +121,15 @@ public class GameServiceRestAdapter {
         System.out.println("Successfully answered question: " + answer.toString());
         return Response.ok(answer).type(MediaType.APPLICATION_JSON).build();
     }
+
+    @DELETE
+    @Path("/delete-account-and-game-widows")
+    public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
+        final User user = USER_SERVICE.getUserDataById(userId);
+        USER_SERVICE.deleteUser(user);
+        System.out.println("Successfully deleted user: " + user.toString());
+        GAME_SERVICE.removeWidowGames();
+        System.out.println("Successfully removed widow games (if existent).");
+        return Response.noContent().build();
+    }
 }

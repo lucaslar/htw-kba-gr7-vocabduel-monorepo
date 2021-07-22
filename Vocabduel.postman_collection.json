@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1c7bab01-b019-4a4a-90f9-5b398a1bc7fe",
+		"_postman_id": "a9595cbc-85be-4276-801b-21f3e009659f",
 		"name": "Vocabduel",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -331,30 +331,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "Delete User",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token (for user with id 6, valid until 2026)}}",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{url}}/user/delete-account",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"user",
-										"delete-account"
-									]
-								}
-							},
-							"response": []
 						}
 					]
 				}
@@ -579,6 +555,39 @@
 							"response": []
 						},
 						{
+							"name": "Start Game (Widow-to-be)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 2, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"opponentId\": 6,\r\n    \"vocableListIds\": [8]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/game/start",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"start"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Current Open Games",
 							"request": {
 								"method": "GET",
@@ -652,6 +661,30 @@
 										"answer",
 										"41",
 										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User and Widows Games",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token (for user with id 6, valid until 2026)}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/game/delete-account-and-game-widows",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"game",
+										"delete-account-and-game-widows"
 									]
 								}
 							},
