@@ -55,12 +55,14 @@ public class VocableListDAOImpl implements VocableListDAO{
 
     @Override
     public boolean deleteVocableList(VocableList vocables) {
-        try{
+        ENTITY_MANAGER.getTransaction().begin();
+        try {
             ENTITY_MANAGER.remove(vocables);
-        } catch (PersistenceException e){
+        } catch (PersistenceException e) {
             ENTITY_MANAGER.getTransaction().rollback();
             throw e;
         }
+        ENTITY_MANAGER.getTransaction().commit();
         return true;
     }
 }
