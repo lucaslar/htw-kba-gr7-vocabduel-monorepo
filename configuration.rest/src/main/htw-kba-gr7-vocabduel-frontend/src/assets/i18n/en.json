@@ -148,6 +148,14 @@
                 "action": "Click here or drop a GNU file",
                 "contribute": "Contribute"
             }
+        },
+        "dashboard": {
+            "hello": "Hey {{ firstName }}, it's great to have you here!",
+            "intro": "Have a look at your games and vocabulary all in one place: your personal dashboard.",
+            "contributions": {
+                "title": "Your contributed vocabulary",
+                "message": "Here's a list of the vocabulary you imported, structured by languages and units. Click on a list to see its content or delete it."
+            }
         }
     }
 }
