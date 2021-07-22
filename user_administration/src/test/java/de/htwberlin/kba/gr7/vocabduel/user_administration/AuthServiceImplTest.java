@@ -1,6 +1,10 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAO;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAO;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
@@ -15,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -62,7 +65,10 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userService, entityManager);
+        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+
+        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));

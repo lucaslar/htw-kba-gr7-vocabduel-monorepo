@@ -2,16 +2,20 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
-public class LoginDataDAOImpl implements LoginDataDAO{
+@Repository
+public class LoginDataDAOImpl implements LoginDataDAO {
 
+    @PersistenceContext
     private final EntityManager ENTITY_MANAGER;
 
-    public LoginDataDAOImpl(EntityManager entityManager){
+    public LoginDataDAOImpl(final EntityManager entityManager) {
         ENTITY_MANAGER = entityManager;
     }
 

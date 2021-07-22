@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
@@ -7,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -42,7 +42,11 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-        userAdministration = new UserServiceImpl(entityManager);
+        final UserDAO userDAO = new UserDAOImpl(entityManager);
+        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+
+        userAdministration = new UserServiceImpl(userDAO, storedRefreshTokenDAO, loginDataDAO);
 
         user1 = new User(42L);
         user2 = new User(123L);

@@ -1,16 +1,20 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class UserDAOImpl implements UserDAO{
 
+    @PersistenceContext
     private final EntityManager ENTITY_MANAGER;
 
-    public UserDAOImpl(EntityManager entityManager){
+    public UserDAOImpl(final EntityManager entityManager){
         ENTITY_MANAGER = entityManager;
     }
 

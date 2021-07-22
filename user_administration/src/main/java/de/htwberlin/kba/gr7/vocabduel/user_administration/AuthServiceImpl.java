@@ -1,8 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAO;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAO;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -30,15 +29,15 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserService USER_SERVICE;
 
-    private final LoginDataDAOImpl loginDataDAO;
-    private final StoredRefreshTokenDAOImpl storedRefreshTokenDAO;
+    private final LoginDataDAO LOGIN_DATA_DAO;
+    private final StoredRefreshTokenDAO STORED_REFRESH_TOKEN_DAO;
 
     private final SecretKeySpec TOKEN_KEY;
 
-    public AuthServiceImpl(final UserService userService, final EntityManager entityManager) {
+    public AuthServiceImpl(final UserService userService, final LoginDataDAO loginDataDao, final StoredRefreshTokenDAO storedRefreshTokenDao) {
         USER_SERVICE = userService;
-        loginDataDAO = new LoginDataDAOImpl(entityManager);
-        storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        LOGIN_DATA_DAO = loginDataDao;
+        STORED_REFRESH_TOKEN_DAO = storedRefreshTokenDao;
         TOKEN_KEY = initializeTokenkey();
     }
 
@@ -58,14 +57,14 @@ public class AuthServiceImpl implements AuthService {
 
         final User user = new User(username, email, firstname, lastname);
 
-        loginDataDAO.insertLoginData(new LoginData(user, hashPassword(password)));
+        LOGIN_DATA_DAO.insertLoginData(new LoginData(user, hashPassword(password)));
 
         return loginUser(email, password);
     }
 
     @Override
     public LoggedInUser loginUser(String email, String password) {
-        LoginData loginData = loginDataDAO.selectLoginDataByUserEmail(email);
+        LoginData loginData = LOGIN_DATA_DAO.selectLoginDataByUserEmail(email);
 
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
             final AuthTokens tokens = insertNewUserTokens(loginData.getUser());
@@ -93,9 +92,9 @@ public class AuthServiceImpl implements AuthService {
         try {
             final User user = fetchUser(refreshToken);
             if (user != null) {
-                StoredRefreshToken foundToken = storedRefreshTokenDAO.selectStoredRefreshTokenByUserAndToken(user, refreshToken);
+                StoredRefreshToken foundToken = STORED_REFRESH_TOKEN_DAO.selectStoredRefreshTokenByUserAndToken(user, refreshToken);
                 if (validateToken(foundToken.getRefreshToken())) {
-                    storedRefreshTokenDAO.deleteStoredRefreshToken(foundToken);
+                    STORED_REFRESH_TOKEN_DAO.deleteStoredRefreshToken(foundToken);
                     return insertNewUserTokens(user);
                 }
             }
@@ -108,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
     public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException {
         if (user == null) throw new InvalidUserException("Invalid user");
 
-        LoginData loginData = loginDataDAO.selectLoginDataByUser(user);
+        LoginData loginData = LOGIN_DATA_DAO.selectLoginDataByUser(user);
 
         if (loginData == null) throw new InvalidUserException("User could not be found");
         else if (!validatePassword(loginData.getPasswordHash(), currentPassword)) {
@@ -118,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
         Validation.passwordValidation(password, confirmPassword);
 
         loginData.setPasswordHash(hashPassword(password));
-        loginDataDAO.insertLoginData(loginData);
+        LOGIN_DATA_DAO.insertLoginData(loginData);
 
         return 0;
     }
@@ -139,8 +138,8 @@ public class AuthServiceImpl implements AuthService {
     private AuthTokens insertNewUserTokens(final User user) {
         final String refreshToken = generateRefreshToken(user);
         final String token = generateAuthToken(user);
-        storedRefreshTokenDAO.removeUserTokensIfFiveOrMorePresent(user);
-        storedRefreshTokenDAO.insertStoredRefreshTokenByUserAndToken(user, refreshToken);
+        STORED_REFRESH_TOKEN_DAO.removeUserTokensIfFiveOrMorePresent(user);
+        STORED_REFRESH_TOKEN_DAO.insertStoredRefreshTokenByUserAndToken(user, refreshToken);
         return new AuthTokens(refreshToken, token);
     }
 

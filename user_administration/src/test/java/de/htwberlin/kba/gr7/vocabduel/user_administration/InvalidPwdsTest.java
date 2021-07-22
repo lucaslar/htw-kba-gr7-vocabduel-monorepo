@@ -1,6 +1,10 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAO;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAO;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -12,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -63,7 +66,10 @@ public class InvalidPwdsTest {
 
     @Before
     public void setup() {
-        auth = new AuthServiceImpl(userService, entityManager);
+        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+
+        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");
