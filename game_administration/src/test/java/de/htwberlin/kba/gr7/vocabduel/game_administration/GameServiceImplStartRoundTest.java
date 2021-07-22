@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -10,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -38,7 +38,11 @@ public class GameServiceImplStartRoundTest {
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
+        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
+        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
         mock = new GameDataMock();
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);

@@ -1,8 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.VocabduelRoundDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAO;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAO;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.VocabduelRoundDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -13,7 +13,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.Vocabular
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,21 +21,20 @@ public class GameServiceImpl implements GameService {
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
 
-    private final RunningVocabduelGameDAOImpl runningVocabduelGameDAO;
-    private final VocabduelRoundDAOImpl vocabduelRoundDAO;
-    private final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO;
+    private final RunningVocabduelGameDAO RUNNING_VOCABDUEL_GAME_DAO;
+    private final VocabduelRoundDAO VOCABDUEL_ROUND_DAO;
+    private final FinishedVocabduelGameDAO FINISHED_VOCABDUEL_GAME_DAO;
 
     public static int getFixNumberOfRoundsPerGame() {
         return GameService.NR_OF_ROUNDS;
     }
 
-    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final EntityManager entityManager) {
+    public GameServiceImpl(final UserService userService, final VocabularyService vocabularyService, final RunningVocabduelGameDAO runningVocabduelGameDao, final VocabduelRoundDAO vocabduelRoundDao, final FinishedVocabduelGameDAO finishedVocabduelGameDao) {
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
-
-        runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-        vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
-        finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+        RUNNING_VOCABDUEL_GAME_DAO = runningVocabduelGameDao;
+        VOCABDUEL_ROUND_DAO = vocabduelRoundDao;
+        FINISHED_VOCABDUEL_GAME_DAO = finishedVocabduelGameDao;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class GameServiceImpl implements GameService {
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
         final RunningVocabduelGame newGame = createVocaduelGameWithRounds(playerA, playerB, vocableLists, languageSet);
-        runningVocabduelGameDAO.insertRunningVocabduelGame(newGame);
+        RUNNING_VOCABDUEL_GAME_DAO.insertRunningVocabduelGame(newGame);
         return newGame;
     }
 
@@ -54,7 +52,7 @@ public class GameServiceImpl implements GameService {
     public List<RunningVocabduelGame> getPersonalChallengedGames(User user) {
         List<RunningVocabduelGame> games = null;
         if (user != null) {
-            games = runningVocabduelGameDAO.selectRunningVocabduelGamesByUser(user);
+            games = RUNNING_VOCABDUEL_GAME_DAO.selectRunningVocabduelGamesByUser(user);
         }
         return games;
     }
@@ -64,7 +62,7 @@ public class GameServiceImpl implements GameService {
 
         VocabduelRound round = null;
         if (player != null) {
-            round = vocabduelRoundDAO.selectVocabduelRoundByGameIdAndUser(player, gameId);
+            round = VOCABDUEL_ROUND_DAO.selectVocabduelRoundByGameIdAndUser(player, gameId);
         }
         if (round == null) {
             throw new NoAccessException("No round found or you do not seem to have access. Are you sure you stated a running game that you still have open questions in? Check your games to find out.");
@@ -102,7 +100,7 @@ public class GameServiceImpl implements GameService {
                 if (round.getGame().getPlayerA().getId().equals(player.getId())) round.setResultPlayerA(result);
                 else round.setResultPlayerB(result);
 
-                vocabduelRoundDAO.updateVocabduelRound(round);
+                VOCABDUEL_ROUND_DAO.updateVocabduelRound(round);
 
                 if (result == Result.LOSS) correctAnswerResult.setCorrectAnswer(correctAnswer.get());
                 return correctAnswerResult;
@@ -113,9 +111,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public int removeWidowGames() {
-        runningVocabduelGameDAO.deleteRunningVocabduelGameWhereUserDoesntExist();
+        RUNNING_VOCABDUEL_GAME_DAO.deleteRunningVocabduelGameWhereUserDoesntExist();
 
-        finishedVocabduelGameDAO.deleteFinishedVocabduelGamesWhereUserDoesntExist();
+        FINISHED_VOCABDUEL_GAME_DAO.deleteFinishedVocabduelGamesWhereUserDoesntExist();
 
         return 0;
     }

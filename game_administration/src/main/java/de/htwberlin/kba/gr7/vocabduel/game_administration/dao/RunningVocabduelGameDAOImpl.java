@@ -2,16 +2,20 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
 
+    @PersistenceContext
     private final EntityManager ENTITY_MANAGER;
 
-    public RunningVocabduelGameDAOImpl(EntityManager entityManager){
+    public RunningVocabduelGameDAOImpl(final EntityManager entityManager) {
         ENTITY_MANAGER = entityManager;
     }
 

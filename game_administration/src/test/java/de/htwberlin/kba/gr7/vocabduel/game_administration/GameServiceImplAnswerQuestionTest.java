@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidVocabduelGameNrException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
@@ -37,7 +38,11 @@ public class GameServiceImplAnswerQuestionTest {
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
+        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
+        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
         mock = new GameDataMock();
 
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);

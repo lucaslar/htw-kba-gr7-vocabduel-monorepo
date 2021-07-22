@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
@@ -13,13 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,7 +42,11 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
-        gameAdministration = new GameServiceImpl(userService, vocabularyService, entityManager);
+        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
+        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
 

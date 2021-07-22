@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -11,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -64,7 +64,10 @@ public class ScoreServiceImplTest {
 
     @Before
     public void setup() {
-        scoreAdministration = new ScoreServiceImpl(userService, entityManager);
+        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+
+        scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
         playerA = new User(4711L);
         playerB = new User(42L);
         playerC = new User(2020L);

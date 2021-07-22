@@ -1,7 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAO;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
@@ -11,7 +11,6 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.Inva
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,14 +18,13 @@ import java.util.stream.Collectors;
 public class ScoreServiceImpl implements ScoreService {
     private final UserService USER_SERVICE;
 
-    private final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO;
-    private final RunningVocabduelGameDAOImpl runningVocabduelGameDAO;
+    private final FinishedVocabduelGameDAO finishedVocabduelGameDAO;
+    private final RunningVocabduelGameDAO runningVocabduelGameDAO;
 
-    public ScoreServiceImpl(final UserService userService, final EntityManager entityManager) {
+    public ScoreServiceImpl(final UserService userService, final FinishedVocabduelGameDAO finishedVocabduelGameDao, final RunningVocabduelGameDAO runningVocabduelGameDao) {
         USER_SERVICE = userService;
-
-        finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-        runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+        finishedVocabduelGameDAO = finishedVocabduelGameDao;
+        runningVocabduelGameDAO = runningVocabduelGameDao;
     }
 
     @Override
