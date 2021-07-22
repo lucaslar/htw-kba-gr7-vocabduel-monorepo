@@ -122,8 +122,8 @@ public class GameServiceImpl implements GameService {
 
     private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException {
         if (vocableLists == null) throw new InvalidGameSetupException("No vocable lists provided!");
-        if (playerA == null) throw new InvalidGameSetupException("No user object given! (initiator)");
-        if (playerB == null) throw new InvalidGameSetupException("No user object given! (opponent)");
+        if (playerA == null) throw new InvalidGameSetupException("No user (initiator) given/found! ");
+        if (playerB == null) throw new InvalidGameSetupException("No user (opponent) given/found!");
 
         if (vocableLists.stream().anyMatch(Objects::isNull)) {
             throw new InvalidGameSetupException("At least one vocable list is null!");
