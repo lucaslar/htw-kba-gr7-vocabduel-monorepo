@@ -1,9 +1,10 @@
 <mat-accordion>
     <mat-expansion-panel
         *ngFor="let set of languageSets"
-        class="mat-elevation-z0 no-padding-body"
+        [class.mat-elevation-z0]="noElevation"
+        [class.no-padding-body]="noElevation"
     >
-        <mat-expansion-panel-header class="pl-0">
+        <mat-expansion-panel-header [class]="noElevation ? 'pl-0' : 'pl-2'">
             <mat-panel-title class="d-flex color-primary">
                 <app-overlapping-flags
                     [languageFrom]="set.learntLanguage"

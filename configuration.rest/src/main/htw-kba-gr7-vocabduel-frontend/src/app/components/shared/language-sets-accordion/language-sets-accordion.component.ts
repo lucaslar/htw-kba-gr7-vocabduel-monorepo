@@ -12,6 +12,7 @@ export class LanguageSetsAccordionComponent {
     @Input() languageSets!: LanguageSet[];
     @Input() showDelete = true;
     @Input() currentUser?: User;
+    @Input() noElevation = true;
     @Output() deleteClicked: EventEmitter<VocableList> = new EventEmitter();
     @Output() listSelected: EventEmitter<VocableList> = new EventEmitter();
 
