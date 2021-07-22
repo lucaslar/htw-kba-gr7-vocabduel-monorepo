@@ -6,6 +6,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../model/internal/user';
 import { NavigationService } from '../../../services/navigation.service';
+import { GameService } from '../../../services/game.service';
 
 @Component({
     selector: 'app-settings',
@@ -24,10 +25,11 @@ export class SettingsComponent implements OnInit {
 
     constructor(
         readonly auth: AuthService,
-        readonly user: UserService,
+        readonly game: GameService,
         readonly navigation: NavigationService,
         readonly storage: StorageService,
-        readonly snackbar: SnackbarService
+        readonly snackbar: SnackbarService,
+        private readonly user: UserService
     ) {}
 
     ngOnInit(): void {

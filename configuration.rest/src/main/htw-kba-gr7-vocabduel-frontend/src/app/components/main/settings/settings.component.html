@@ -271,7 +271,7 @@
                     <button
                         mat-flat-button
                         color="warn"
-                        (click)="user.deleteAccount(currentUser)"
+                        (click)="game.deleteAccountAndWidows(currentUser)"
                         [disabled]="
                             navigation.isLoadingIndicated ||
                             deleteConfirmInput.value !== currentUser.username
