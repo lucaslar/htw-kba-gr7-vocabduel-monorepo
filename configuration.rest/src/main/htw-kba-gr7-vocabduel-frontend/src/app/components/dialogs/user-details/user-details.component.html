@@ -48,14 +48,13 @@
     <mat-divider class="position-relative my-2"></mat-divider>
 
     <app-language-sets-accordion
-        *ngIf="vocableLists?.length"
+        *ngIf="vocableLists?.length; else noImportedVocabulary"
         [languageSets]="vocableLists | langSetsByVocabulary"
         [currentUser]="currentUser"
         [showDelete]="false"
         (listSelected)="onListSelected($event)"
     >
     </app-language-sets-accordion>
-    <!-- TODO Implement else -->
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
@@ -63,3 +62,12 @@
         {{ 'general.close' | translate }}
     </button>
 </mat-dialog-actions>
+
+<ng-template #noImportedVocabulary>
+    <div class="m-3 color-darkgrey d-flex flex-column">
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon"
+            >menu_book</mat-icon
+        >
+        <span class="mx-auto">{{ 'general.noImportsYet' | translate }}</span>
+    </div>
+</ng-template>

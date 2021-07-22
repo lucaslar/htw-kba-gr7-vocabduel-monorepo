@@ -87,7 +87,8 @@
             "ru": "Russian"
         },
         "importedBy": "Imported by",
-        "deletedUser": "Deleted user"
+        "deletedUser": "Deleted user",
+        "noImportsYet": "No imports yet"
     },
     "main": {
         "registration": {
