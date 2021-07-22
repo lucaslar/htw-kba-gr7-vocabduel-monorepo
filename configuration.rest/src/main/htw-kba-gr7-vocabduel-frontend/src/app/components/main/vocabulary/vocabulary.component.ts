@@ -10,8 +10,6 @@ import { NgxDropzoneChangeEvent } from 'ngx-dropzone';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { NavigationService } from '../../../services/navigation.service';
 import { finalize } from 'rxjs/operators';
-import { VocableList } from '../../../model/vocable-list';
-import { ConfirmDeleteComponent } from '../../dialogs/confirm-delete/confirm-delete.component';
 import { ComplexDialogManagementService } from '../../../services/complex-dialog-management.service';
 
 @Component({
@@ -29,7 +27,7 @@ export class VocabularyComponent implements OnInit {
     constructor(
         readonly navigation: NavigationService,
         readonly dialogManagement: ComplexDialogManagementService,
-        private readonly vocabulary: VocabularyService,
+        readonly vocabulary: VocabularyService,
         private readonly auth: AuthService,
         private readonly dialog: MatDialog,
         private readonly snackbar: SnackbarService
@@ -80,22 +78,5 @@ export class VocabularyComponent implements OnInit {
                 });
         };
         fileReader.readAsText(this.file!);
-    }
-
-    deleteList(list: VocableList): void {
-        this.dialog
-            .open(ConfirmDeleteComponent, { data: list })
-            .afterClosed()
-            .subscribe((res) => {
-                if (res) {
-                    this.vocabulary.deleteVocableList$(list).subscribe(() => {
-                        this.snackbar.showSnackbar(
-                            'snackbar.listDeleted',
-                            list
-                        );
-                        this.languageSets$ = this.vocabulary.languageSets$;
-                    });
-                }
-            });
     }
 }

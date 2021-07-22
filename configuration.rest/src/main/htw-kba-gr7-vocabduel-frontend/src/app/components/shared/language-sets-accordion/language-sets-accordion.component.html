@@ -72,6 +72,7 @@
                             currentUser &&
                             currentUser.id === list.author?.id
                         "
+                        [disabled]="navigation.isLoadingIndicated"
                         (click)="onDeleteClicked(list, $event)"
                         [matTooltip]="'general.delete' | translate"
                     >

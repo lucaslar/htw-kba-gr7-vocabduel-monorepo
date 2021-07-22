@@ -67,7 +67,7 @@
                     *ngIf="sets.length; else noVocabularyYet"
                     [languageSets]="sets"
                     [currentUser]="currentUser ? currentUser : undefined"
-                    (deleteClicked)="deleteList($event)"
+                    (itemDeleted)="languageSets$ = vocabulary.languageSets$"
                     (listSelected)="
                         dialogManagement.openVocableListDialog(
                             $event,
