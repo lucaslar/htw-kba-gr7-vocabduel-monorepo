@@ -65,7 +65,7 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
 
-        System.out.println("Successfully started new ame: " + gameInfo);
+        System.out.println("Successfully started new game: " + gameInfo);
         return Response.status(Response.Status.CREATED).type(MediaType.APPLICATION_JSON).entity(gameInfo).build();
     }
 
