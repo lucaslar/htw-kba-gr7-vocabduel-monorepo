@@ -63,3 +63,13 @@ body {
         z-index: 10;
     }
 }
+
+.clickable {
+    cursor: pointer;
+    transition: 0.3s !important;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
