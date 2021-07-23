@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../../services/game.service';
 import { VocabduelRound } from '../../../model/vocabduel-round';
 import { Observable } from 'rxjs';
 import { CorrectAnswerResult } from '../../../model/correct-answer-result';
 import { NavigationService } from '../../../services/navigation.service';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { TranslationGroup } from '../../../model/translation-group';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { ScoreService } from '../../../services/score.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PersonalFinishedGame } from '../../../model/personal-finished-game';
 import { PersonalFinishedGameComponent } from '../../dialogs/personal-finished-game/personal-finished-game.component';
 
 @Component({
@@ -18,7 +17,7 @@ import { PersonalFinishedGameComponent } from '../../dialogs/personal-finished-g
     templateUrl: './play-game.component.html',
     styleUrls: ['./play-game.component.scss'],
 })
-export class PlayGameComponent implements OnInit {
+export class PlayGameComponent {
     gameId: number;
     round$!: Observable<VocabduelRound>;
     result?: CorrectAnswerResult;
@@ -36,10 +35,10 @@ export class PlayGameComponent implements OnInit {
         private readonly dialog: MatDialog
     ) {
         this.gameId = +this.route.snapshot.params.gameId;
-    }
-
-    ngOnInit(): void {
-        this.loadQuestion();
+        this.round$ = this.route.data.pipe(
+            map((d) => d.data),
+            tap((round) => (this.answerOpts = round.answers))
+        );
     }
 
     handleNext(roundNr: number): void {

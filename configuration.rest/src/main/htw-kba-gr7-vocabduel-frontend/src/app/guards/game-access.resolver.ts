@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
 import {
-    ActivatedRouteSnapshot,
-    CanActivate,
-    Router,
+    Resolve,
     RouterStateSnapshot,
+    ActivatedRouteSnapshot,
+    Router,
 } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { GameService } from '../services/game.service';
+import { VocabduelRound } from '../model/vocabduel-round';
 
 @Injectable({
     providedIn: 'root',
 })
-export class GameAccessGuard implements CanActivate {
+export class GameAccessResolver implements Resolve<VocabduelRound | boolean> {
     constructor(private game: GameService, private router: Router) {}
 
-    canActivate(
+    resolve(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
-    ): Observable<boolean> {
+    ): Observable<VocabduelRound | boolean> {
         return this.game.round$(+route.params.gameId).pipe(
-            map((game) => !!game),
             catchError((err) => {
                 if (err.status === 403 || err.status === 404) {
                     return this.router.navigate(['/dashboard']);

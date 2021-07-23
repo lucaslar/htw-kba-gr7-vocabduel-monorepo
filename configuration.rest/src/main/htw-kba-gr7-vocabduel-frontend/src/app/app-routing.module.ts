@@ -9,7 +9,7 @@ import { SettingsComponent } from './components/main/settings/settings.component
 import { PersonSearchPageComponent } from './components/main/person-search-page/person-search-page.component';
 import { VocabularyComponent } from './components/main/vocabulary/vocabulary.component';
 import { PlayGameComponent } from './components/main/play-game/play-game.component';
-import { GameAccessGuard } from './guards/game-access.guard';
+import { GameAccessResolver } from './guards/game-access.resolver';
 
 const routes: Routes = [
     {
@@ -49,7 +49,8 @@ const routes: Routes = [
     {
         path: 'play/:gameId',
         component: PlayGameComponent,
-        canActivate: [AuthGuard, GameAccessGuard],
+        canActivate: [AuthGuard],
+        resolve: { data: GameAccessResolver },
         data: { animation: 'PlayGame' },
     },
     { path: '**', redirectTo: 'dashboard' },
