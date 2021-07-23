@@ -77,7 +77,7 @@ const horizontalSliding = (
 
 const leftToRightRoutes = [
     ['Login', 'Registration'],
-    ['Dashboard'],
+    ['Dashboard', 'PlayGame'],
     ['Vocabulary'],
     ['UserSearch'],
     ['Settings'],

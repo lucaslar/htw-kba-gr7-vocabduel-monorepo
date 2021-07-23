@@ -38,6 +38,7 @@ import { UserDetailsComponent } from './components/dialogs/user-details/user-det
 import { LanguageSetsAccordionComponent } from './components/shared/language-sets-accordion/language-sets-accordion.component';
 import { LangSetsByVocabularyPipe } from './pipes/lang-sets-by-vocabulary.pipe';
 import { OpenGamesComponent } from './components/main/dashboard/open-games/open-games.component';
+import { PlayGameComponent } from './components/main/play-game/play-game.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -67,6 +68,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         LanguageSetsAccordionComponent,
         LangSetsByVocabularyPipe,
         OpenGamesComponent,
+        PlayGameComponent,
     ],
     imports: [
         BrowserModule,

@@ -8,6 +8,7 @@ import { UnauthorizedGuard } from './guards/unauthorized.guard';
 import { SettingsComponent } from './components/main/settings/settings.component';
 import { PersonSearchPageComponent } from './components/main/person-search-page/person-search-page.component';
 import { VocabularyComponent } from './components/main/vocabulary/vocabulary.component';
+import { PlayGameComponent } from './components/main/play-game/play-game.component';
 
 const routes: Routes = [
     {
@@ -44,11 +45,17 @@ const routes: Routes = [
         component: PersonSearchPageComponent,
         data: { animation: 'UserSearch' },
     },
+    {
+        path: 'play/:gameId',
+        component: PlayGameComponent,
+        canActivate: [AuthGuard],
+        data: { animation: 'PlayGame' }, // TODO Implement guard(s)...
+    },
     { path: '**', redirectTo: 'dashboard' },
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
     exports: [RouterModule],
 })
 export class AppRoutingModule {}

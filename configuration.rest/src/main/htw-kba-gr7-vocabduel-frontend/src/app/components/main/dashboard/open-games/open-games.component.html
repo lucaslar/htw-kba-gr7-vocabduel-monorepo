@@ -14,7 +14,11 @@
                         class="position-relative mt-2 mb-2"
                     ></mat-divider>
 
-                    <div class="d-flex clickable" mat-ripple (click)='showOpponentDetails()'>
+                    <div
+                        class="d-flex clickable"
+                        mat-ripple
+                        (click)="showOpponentDetails()"
+                    >
                         <div class="mx-2 text-center my-auto">
                             <mat-icon
                                 class="prominent-medium-icon"
@@ -72,16 +76,18 @@
                 <mat-divider class="position-relative"></mat-divider>
 
                 <mat-card-actions align="end">
-                    <button mat-button (click)='showGameDetails()'>
+                    <button mat-button (click)="showGameDetails()">
                         {{ 'general.details' | translate }}
                     </button>
                     <button
                         [disabled]="
+                            navigation.isLoadingIndicated ||
                             game.totalRounds === game.finishedRoundsSelf
                         "
                         mat-flat-button
+                        [routerLink]="[]"
                         color="primary"
-                        (click)='play()'
+                        (click)="router.navigate(['play', game.id])"
                     >
                         {{ 'general.play' | translate }}
                     </button>

@@ -90,8 +90,8 @@
         "deletedUser": "Deleted user",
         "noImportsYet": "No imports yet",
         "opponent": "Opponent",
-      "details": "Details",
-      "play": "Play"
+        "details": "Details",
+        "play": "Play"
     },
     "main": {
         "registration": {
@@ -165,6 +165,10 @@
                 "finishedRounds": "Finished rounds",
                 "waitingForUserToFinish": "Waiting for {{ firstName }} to finish"
             }
+        },
+        "game": {
+            "round": "Round",
+            "whatDoesMean": "How would you translate..."
         }
     }
 }

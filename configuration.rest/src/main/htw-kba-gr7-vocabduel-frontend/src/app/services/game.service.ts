@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { RunningGame } from '../model/running-game';
 import { tap } from 'rxjs/operators';
+import { VocabduelRound } from '../model/vocabduel-round';
+import { CorrectAnswerResult } from '../model/correct-answer-result';
 
 @Injectable({
     providedIn: 'root',
@@ -27,6 +29,16 @@ export class GameService {
                 });
             })
         );
+    }
+
+    round$(gameId: number): Observable<VocabduelRound> {
+        const url = `${environment.endpointUrl}/game/current-round/${gameId}`;
+        return this.http.get<VocabduelRound>(url);
+    }
+
+    answer$(gameId: number, roundNr: number, index: number): Observable<CorrectAnswerResult> {
+        const url = `${environment.endpointUrl}/game/answer/${gameId}/${roundNr}`;
+        return this.http.post<CorrectAnswerResult>(url, '' + index);
     }
 
     deleteAccountAndWidows(user: User): void {

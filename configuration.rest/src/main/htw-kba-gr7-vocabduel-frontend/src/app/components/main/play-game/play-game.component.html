@@ -1,0 +1,57 @@
+<div class="d-flex h-100">
+    <div class="m-auto w-100 round-wrapper text-center">
+        <ng-container *ngIf="round$ | async as round; else loading">
+            <div class="color-primary mb-3">
+                <strong>
+                    {{ 'main.game.round' | translate }} {{ round.roundNr }}
+                </strong>
+            </div>
+
+            <mat-divider class="position-relative my-3"></mat-divider>
+
+            <div class="color-darkgrey">
+                {{ 'main.game.whatDoesMean' | translate }}
+            </div>
+            <div class="my-2 text-center">
+                <div
+                    class="question py-2"
+                    *ngFor="
+                        let synonym of round.question.vocable.synonyms;
+                        index as index
+                    "
+                    [class.color-darkgrey]="index !== 0"
+                >
+                    {{ synonym }}
+                </div>
+            </div>
+
+            <div class="row mn-2">
+                <div
+                    class="col-12 col-sm-6 p-2"
+                    *ngFor="let answer of round.answers; index as index"
+                >
+                    <mat-card
+                        class="clickable py-5 d-flex flex-column h-100"
+                        (click)="answerQuestion(round.roundNr, index)"
+                    >
+                        <mat-card-title
+                            class="py-2 my-auto"
+                            *ngFor="let synonym of answer.synonyms"
+                        >
+                            {{ synonym }}
+                        </mat-card-title>
+                    </mat-card>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="d-flex flex-column p-2">
+        <mat-spinner class="mx-auto"></mat-spinner>
+        <div class="mt-2 mx-auto">
+            {{ 'general.results.loading' | translate }}
+        </div>
+    </div>
+</ng-template>
