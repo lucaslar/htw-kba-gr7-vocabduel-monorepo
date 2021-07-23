@@ -4,6 +4,9 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SnackbarService } from './snackbar.service';
 import { AuthService } from './auth.service';
+import { Observable } from 'rxjs';
+import { RunningGame } from '../model/running-game';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -15,12 +18,22 @@ export class GameService {
         private readonly snackbar: SnackbarService
     ) {}
 
+    get openGames$(): Observable<RunningGame[]> {
+        const url = `${environment.endpointUrl}/game/open-games`;
+        return this.http.get<RunningGame[]>(url).pipe(
+            tap((r) => {
+                return r.sort((a, b) => {
+                    return a.finishedRoundsSelf - b.finishedRoundsSelf;
+                });
+            })
+        );
+    }
+
     deleteAccountAndWidows(user: User): void {
-        this.http
-            .delete(`${environment.endpointUrl}/game/delete-account-and-game-widows`)
-            .subscribe(() => {
-                this.auth.logout();
-                this.snackbar.showSnackbar('snackbar.accountDeleted', user);
-            });
+        const url = `${environment.endpointUrl}/game/delete-account-and-game-widows`;
+        this.http.delete(url).subscribe(() => {
+            this.auth.logout();
+            this.snackbar.showSnackbar('snackbar.accountDeleted', user);
+        });
     }
 }

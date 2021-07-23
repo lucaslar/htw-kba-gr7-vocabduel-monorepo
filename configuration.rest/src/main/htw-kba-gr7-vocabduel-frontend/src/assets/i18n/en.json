@@ -88,7 +88,10 @@
         },
         "importedBy": "Imported by",
         "deletedUser": "Deleted user",
-        "noImportsYet": "No imports yet"
+        "noImportsYet": "No imports yet",
+        "opponent": "Opponent",
+      "details": "Details",
+      "play": "Play"
     },
     "main": {
         "registration": {
@@ -151,10 +154,16 @@
         },
         "dashboard": {
             "hello": "Hey {{ firstName }}, it's great to have you here!",
-            "intro": "Have a look at your games and vocabulary all in one place: your personal dashboard.",
+            "intro": "Have a look at your games, your record and your contributed vocabulary all in one place: your personal dashboard.",
             "contributions": {
                 "title": "Your contributed vocabulary",
                 "message": "Here's a list of the vocabulary you imported, structured by languages and units. Click on a list to see its content or delete it."
+            },
+            "games": {
+                "title": "Current games",
+                "none": "No open games",
+                "finishedRounds": "Finished rounds",
+                "waitingForUserToFinish": "Waiting for {{ firstName }} to finish"
             }
         }
     }

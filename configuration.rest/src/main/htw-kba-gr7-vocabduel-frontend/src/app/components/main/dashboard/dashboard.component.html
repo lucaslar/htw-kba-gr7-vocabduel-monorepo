@@ -7,7 +7,16 @@
 <mat-divider class="my-3"></mat-divider>
 
 <div class="d-flex mb-2">
-    <mat-icon class="flex-grow-0 my-auto mr-3"> menu_book </mat-icon>
+    <mat-icon class="flex-grow-0 my-auto mr-3"> quiz</mat-icon>
+    <h2 class="m-0 flex-grow-1 my-auto">
+        {{ 'main.dashboard.games.title' | translate }}
+    </h2>
+</div>
+
+<app-open-games></app-open-games>
+
+<div class="d-flex mt-3 mb-2">
+    <mat-icon class="flex-grow-0 my-auto mr-3"> menu_book</mat-icon>
     <h2 class="m-0 flex-grow-1 my-auto">
         {{ 'main.dashboard.contributions.title' | translate }}
     </h2>
@@ -30,13 +39,11 @@
     </ng-container>
 </ng-container>
 
-{{ 'Dashboard '.repeat(99) }}
-
 <ng-template #noImportedVocabulary>
     <div class="m-3 color-darkgrey d-flex flex-column">
-        <mat-icon class="mx-auto mb-2 prominent-medium-icon"
-            >menu_book</mat-icon
-        >
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon">
+            menu_book
+        </mat-icon>
         <span class="mx-auto">{{ 'general.noImportsYet' | translate }}</span>
     </div>
 </ng-template>

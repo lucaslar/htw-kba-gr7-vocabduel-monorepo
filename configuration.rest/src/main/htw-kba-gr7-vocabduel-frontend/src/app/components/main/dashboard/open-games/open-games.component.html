@@ -1,0 +1,110 @@
+<ng-container *ngIf="openGames$ | async as games; else loading">
+    <div class="row m-n2" *ngIf="games.length; else noOpenGames">
+        <div class="p-2 col-12 col-md-6 col-xl-4" *ngFor="let game of games">
+            <mat-card class="h-100 d-flex flex-column">
+                <mat-card-title class="flex-grow-0 mx-auto">
+                    <app-overlapping-flags
+                        [languageFrom]="game.learntLanguage"
+                        [languageTo]="game.knownLanguage"
+                    ></app-overlapping-flags>
+                </mat-card-title>
+
+                <mat-card-content class="flex-grow-1 d-flex flex-column">
+                    <mat-divider
+                        class="position-relative mt-2 mb-2"
+                    ></mat-divider>
+
+                    <div class="d-flex clickable" mat-ripple (click)='showOpponentDetails()'>
+                        <div class="mx-2 text-center my-auto">
+                            <mat-icon
+                                class="prominent-medium-icon"
+                                color="primary"
+                            >
+                                person
+                            </mat-icon>
+                        </div>
+                        <div class="my-auto ml-1">
+                            <strong>
+                                {{ 'general.opponent' | translate }}:
+                                <span class="color-primary">
+                                    {{ game.opponent.username }}
+                                </span>
+                            </strong>
+                            <br />
+                            {{ game.opponent.firstName }}
+                            {{ game.opponent.lastName }}
+                        </div>
+                    </div>
+
+                    <mat-divider
+                        class="position-relative mt-2 mb-3"
+                    ></mat-divider>
+
+                    <div class="text-center my-auto">
+                        <p>
+                            {{
+                                'main.dashboard.games.finishedRounds'
+                                    | translate
+                            }}:
+                        </p>
+
+                        <div class="mb-2 self-finished-rounds">
+                            {{ game.finishedRoundsSelf }}/{{ game.totalRounds }}
+                        </div>
+                        <div class="color-darkgrey">
+                            {{ game.opponent.firstName }}:
+                            {{ game.finishedRoundsOpponent }}/{{
+                                game.totalRounds
+                            }}
+                        </div>
+                        <strong
+                            *ngIf="game.totalRounds === game.finishedRoundsSelf"
+                            class="color-primary"
+                        >
+                            ({{
+                                'main.dashboard.games.waitingForUserToFinish'
+                                    | translate: game.opponent
+                            }})
+                        </strong>
+                    </div>
+                </mat-card-content>
+
+                <mat-divider class="position-relative"></mat-divider>
+
+                <mat-card-actions align="end">
+                    <button mat-button (click)='showGameDetails()'>
+                        {{ 'general.details' | translate }}
+                    </button>
+                    <button
+                        [disabled]="
+                            game.totalRounds === game.finishedRoundsSelf
+                        "
+                        mat-flat-button
+                        color="primary"
+                        (click)='play()'
+                    >
+                        {{ 'general.play' | translate }}
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #noOpenGames>
+    <div class="m-3 color-darkgrey d-flex flex-column">
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon"> game </mat-icon>
+        <span class="mx-auto">
+            {{ 'main.dashboard.games.none' | translate }}
+        </span>
+    </div>
+</ng-template>
+
+<ng-template #loading>
+    <div class="d-flex flex-column p-2">
+        <mat-spinner class="mx-auto"></mat-spinner>
+        <div class="mt-2 mx-auto">
+            {{ 'general.results.loading' | translate }}
+        </div>
+    </div>
+</ng-template>
