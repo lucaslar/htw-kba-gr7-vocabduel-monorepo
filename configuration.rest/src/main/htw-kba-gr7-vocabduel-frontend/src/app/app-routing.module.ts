@@ -14,24 +14,36 @@ const routes: Routes = [
         path: 'registration',
         component: RegistrationComponent,
         canActivate: [UnauthorizedGuard],
+        data: { animation: 'Registration' },
     },
     {
         path: 'login',
         component: LoginComponent,
         canActivate: [UnauthorizedGuard],
+        data: { animation: 'Login' },
     },
     {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard],
+        data: { animation: 'Dashboard' },
     },
     {
         path: 'settings',
         component: SettingsComponent,
         canActivate: [AuthGuard],
+        data: { animation: 'Settings' },
     },
-    { path: 'vocabulary', component: VocabularyComponent },
-    { path: 'user-search', component: PersonSearchPageComponent },
+    {
+        path: 'vocabulary',
+        component: VocabularyComponent,
+        data: { animation: 'Vocabulary' },
+    },
+    {
+        path: 'user-search',
+        component: PersonSearchPageComponent,
+        data: { animation: 'UserSearch' },
+    },
     { path: '**', redirectTo: 'dashboard' },
 ];
 
