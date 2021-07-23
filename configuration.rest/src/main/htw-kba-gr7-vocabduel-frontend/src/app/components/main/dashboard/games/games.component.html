@@ -1,5 +1,25 @@
-<ng-container *ngIf="openGames$ | async as games; else loading">
-    <div class="row m-n2" *ngIf="games.length; else noOpenGames">
+<div class="row m-n2" *ngIf="openGames$ | async as games; else loading">
+    <div class="p-2 col-12 col-md-6 col-xl-4">
+        <mat-card
+            mat-ripple
+            id="new-game"
+            class="class background-primary h-100 w-100 d-flex"
+            routerLink="/play/start"
+        >
+            <div class="m-auto d-flex flex-column m-n2">
+                <mat-icon class="mx-auto my-2 prominent-icon">
+                    add_circle_outline
+                </mat-icon>
+                <div class="text-center my-2">
+                    <span class="prominent-text">
+                        {{ 'main.dashboard.games.startGame' | translate }}
+                    </span>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+
+    <ng-container *ngIf="games.length; else noOpenGames">
         <div class="p-2 col-12 col-md-6 col-xl-4" *ngFor="let game of games">
             <mat-card class="h-100 d-flex flex-column">
                 <mat-card-title class="flex-grow-0 mx-auto">
@@ -10,9 +30,8 @@
                 </mat-card-title>
 
                 <mat-card-content class="flex-grow-1 d-flex flex-column">
-                    <mat-divider
-                        class="position-relative mt-2 mb-2"
-                    ></mat-divider>
+                    <mat-divider class="position-relative mt-2 mb-2">
+                    </mat-divider>
 
                     <div
                         class="d-flex clickable"
@@ -40,9 +59,8 @@
                         </div>
                     </div>
 
-                    <mat-divider
-                        class="position-relative mt-2 mb-3"
-                    ></mat-divider>
+                    <mat-divider class="position-relative mt-2 mb-3">
+                    </mat-divider>
 
                     <div class="text-center my-auto">
                         <p>
@@ -94,12 +112,12 @@
                 </mat-card-actions>
             </mat-card>
         </div>
-    </div>
-</ng-container>
+    </ng-container>
+</div>
 
 <ng-template #noOpenGames>
-    <div class="m-3 color-darkgrey d-flex flex-column">
-        <mat-icon class="mx-auto mb-2 prominent-medium-icon"> game </mat-icon>
+    <div class="m-3 flex-grow-1 color-darkgrey d-flex flex-column">
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon"> quiz </mat-icon>
         <span class="mx-auto">
             {{ 'main.dashboard.games.none' | translate }}
         </span>
@@ -107,7 +125,7 @@
 </ng-template>
 
 <ng-template #loading>
-    <div class="d-flex flex-column p-2">
+    <div class="d-flex flex-column p-4">
         <mat-spinner class="mx-auto"></mat-spinner>
         <div class="mt-2 mx-auto">
             {{ 'general.results.loading' | translate }}

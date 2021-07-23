@@ -1,0 +1,104 @@
+<div class="h-100 h-100 d-flex flex-column">
+    <div class="m-auto d-flex flex-column w-100 page-container">
+        <h1 class="color-primary text-center mt-auto">
+            {{ 'main.startGame.title' | translate }}...
+        </h1>
+
+        <mat-card mat-ripple class="clickable" (click)="selectOpponent()">
+            <mat-card-title>
+                {{ 'general.opponent' | translate }}
+            </mat-card-title>
+            <mat-card-subtitle>
+                {{ 'main.startGame.clickToEdit' | translate }}
+            </mat-card-subtitle>
+
+            <div class="d-flex mx-n2">
+                <div class="mx-2 text-center my-auto">
+                    <mat-icon
+                        class="prominent-medium-icon {{
+                            opponent ? 'color-primary' : 'color-darkgrey'
+                        }}"
+                    >
+                        person
+                    </mat-icon>
+                </div>
+                <div class="my-auto ml-1">
+                    <ng-container *ngIf="opponent; else noOpponent">
+                        <strong>
+                            <span class="color-primary">
+                                {{ opponent?.username }}
+                            </span>
+                        </strong>
+                        <br />
+                        {{ opponent?.firstName }}
+                        {{ opponent?.lastName }}
+                    </ng-container>
+                </div>
+            </div>
+        </mat-card>
+
+        <mat-card mat-ripple class="clickable mt-3" (click)="selectLists()">
+            <mat-card-title>
+                {{ 'header.actions.vocabulary' | translate }}
+            </mat-card-title>
+            <mat-card-subtitle>
+                {{ 'main.startGame.clickToEdit' | translate }}
+            </mat-card-subtitle>
+
+            <ng-container *ngIf="totalVocables as len; else noVocabulary">
+                {{ len }}
+            </ng-container>
+        </mat-card>
+
+        <mat-divider class="position-relative my-3"></mat-divider>
+
+        <div class="precondition d-flex" [class.checked]="opponent">
+            <mat-icon class="mr-3 my-auto">
+                {{
+                    opponent ? 'check_circle_outline' : 'radio_button_unchecked'
+                }}
+            </mat-icon>
+            <div class="my-auto">
+                {{ 'main.startGame.precondition.userSpecified' | translate }}
+            </div>
+        </div>
+        <div class="precondition d-flex" [class.checked]="totalVocables > 8">
+            <mat-icon class="mr-3 my-auto">
+                {{
+                    opponent ? 'check_circle_outline' : 'radio_button_unchecked'
+                }}
+            </mat-icon>
+            <div class="my-auto">
+                {{ 'main.startGame.precondition.atLeast9Vocables' | translate }}
+            </div>
+        </div>
+
+        <mat-divider class="position-relative my-3"></mat-divider>
+
+        <button
+            mat-flat-button
+            color="primary"
+            class="mx-auto mb-auto"
+            [disabled]="
+                !opponent || totalVocables < 9 || navigation.isLoadingIndicated
+            "
+        >
+            {{ 'main.startGame.start' | translate }}
+        </button>
+    </div>
+</div>
+
+<ng-template #noOpponent>
+    <span class="color-darkgrey">
+        {{ 'main.startGame.noOpponentSpecified' | translate }}
+    </span>
+</ng-template>
+
+<ng-template #noVocabulary>
+    <div class="d-flex flex-column color-darkgrey text-center">
+        <mat-icon class="prominent-medium-icon mx-auto mb-2">
+            menu_book
+        </mat-icon>
+        {{ 'main.startGame.noVocabularySpecified' | translate }}
+    </div>
+</ng-template>

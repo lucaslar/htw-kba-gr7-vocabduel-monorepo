@@ -165,16 +165,29 @@
                 "message": "Here's a list of the vocabulary you imported, structured by languages and units. Click on a list to see its content or delete it."
             },
             "games": {
-                "title": "Current games",
+                "title": "Your games",
                 "none": "No open games",
                 "finishedRounds": "Finished rounds",
-                "waitingForUserToFinish": "Waiting for {{ firstName }} to finish"
+                "waitingForUserToFinish": "Waiting for {{ firstName }} to finish",
+                "startGame": "Start game"
             }
         },
         "game": {
             "round": "Round",
             "whatDoesMean": "How would you translate...",
             "nextQuestion": "Next question"
+        },
+        "startGame": {
+            "title": "Let's get started",
+            "findOpponent": "Find opponent",
+            "noOpponentSpecified": "No opponent selected",
+            "noVocabularySpecified": "No vocabulary selected",
+            "start": "Start",
+            "clickToEdit": "Click to edit",
+            "precondition": {
+                "userSpecified": "Opponent specified",
+                "atLeast9Vocables": "List(s) with at least nine vocables"
+            }
         }
     }
 }

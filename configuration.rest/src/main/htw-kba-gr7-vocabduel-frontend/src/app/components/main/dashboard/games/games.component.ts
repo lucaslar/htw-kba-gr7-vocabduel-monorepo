@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { NavigationService } from '../../../../services/navigation.service';
 
 @Component({
-    selector: 'app-open-games',
-    templateUrl: './open-games.component.html',
-    styleUrls: ['./open-games.component.scss'],
+    selector: 'app-games',
+    templateUrl: './games.component.html',
+    styleUrls: ['./games.component.scss'],
 })
-export class OpenGamesComponent {
+export class GamesComponent {
     readonly openGames$: Observable<RunningGame[]>;
 
     constructor(

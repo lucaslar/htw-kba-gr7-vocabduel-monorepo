@@ -1,0 +1,11 @@
+.page-container {
+    max-width: 460px;
+
+    .precondition {
+        color: darkgray;
+        transition: 0.3s;
+        &.checked {
+            color: darkgreen;
+        }
+    }
+}

@@ -10,6 +10,7 @@ import { PersonSearchPageComponent } from './components/main/person-search-page/
 import { VocabularyComponent } from './components/main/vocabulary/vocabulary.component';
 import { PlayGameComponent } from './components/main/play-game/play-game.component';
 import { GameAccessResolver } from './guards/game-access.resolver';
+import { StartGameComponent } from './components/main/start-game/start-game.component';
 
 const routes: Routes = [
     {
@@ -45,6 +46,12 @@ const routes: Routes = [
         path: 'user-search',
         component: PersonSearchPageComponent,
         data: { animation: 'UserSearch' },
+    },
+    {
+        path: 'play/start',
+        component: StartGameComponent,
+        data: { animation: 'StartGame' },
+        canActivate: [AuthGuard],
     },
     {
         path: 'play/:gameId',
