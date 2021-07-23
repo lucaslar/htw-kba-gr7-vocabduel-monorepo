@@ -31,8 +31,19 @@
                     *ngFor="let answer of round.answers; index as index"
                 >
                     <mat-card
-                        class="clickable py-5 d-flex flex-column h-100"
+                        [class.clickable]="
+                            selected === undefined &&
+                            !navigation.isLoadingIndicated
+                        "
+                        class="py-4 d-flex flex-column h-100"
                         (click)="answerQuestion(round.roundNr, index)"
+                        [class.background-warn]="
+                            index === selected && result?.result === 'LOSS'
+                        "
+                        [class.background-primary]="index === correctIndex"
+                        [class.background-green]="
+                            index === selected && result?.result === 'WIN'
+                        "
                     >
                         <mat-card-title
                             class="py-2 my-auto"
@@ -43,6 +54,21 @@
                     </mat-card>
                 </div>
             </div>
+
+            <button
+                mat-flat-button
+                [color]="round.roundNr < 9 ? 'primary' : 'accent'"
+                class="mt-4"
+                [disabled]="!result || navigation.isLoadingIndicated"
+                (click)="handleNext(round.roundNr)"
+            >
+                {{
+                    (round.roundNr < 9
+                        ? 'main.game.nextQuestion'
+                        : 'general.finish'
+                    ) | translate
+                }}
+            </button>
         </ng-container>
     </div>
 </div>

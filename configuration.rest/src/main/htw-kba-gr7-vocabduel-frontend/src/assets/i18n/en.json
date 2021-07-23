@@ -43,7 +43,11 @@
         "userUpdated": "User account has been updated successfully, {{ firstName }}!",
         "fileNotAccepted": "File not accepted - must be .txt!",
         "thanksForImport": "\"{{ title }}\" has been imported successfully. Thanks for your contribution, {{ firstName }}!",
-        "listDeleted": "List \"{{ title }}\" has been deleted successfully!"
+        "listDeleted": "List \"{{ title }}\" has been deleted successfully!",
+        "answer": {
+            "right": "That was right!",
+            "wrong": "That was wrong!"
+        }
     },
     "general": {
         "close": "Close",
@@ -91,7 +95,8 @@
         "noImportsYet": "No imports yet",
         "opponent": "Opponent",
         "details": "Details",
-        "play": "Play"
+        "play": "Play",
+        "finish": "Finish"
     },
     "main": {
         "registration": {
@@ -168,7 +173,8 @@
         },
         "game": {
             "round": "Round",
-            "whatDoesMean": "How would you translate..."
+            "whatDoesMean": "How would you translate...",
+            "nextQuestion": "Next question"
         }
     }
 }
