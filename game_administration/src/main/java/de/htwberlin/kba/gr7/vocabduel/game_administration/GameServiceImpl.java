@@ -174,7 +174,8 @@ public class GameServiceImpl implements GameService {
 
             Collections.shuffle(flatVocables);
             // false answers:
-            final List<TranslationGroup> answers = flatVocables
+            final List<TranslationGroup> answers = new ArrayList<>();
+            flatVocables
                     .stream()
                     // Avoid that synonym stored to another vocable is questioned
                     // E.g. Buenos Dias & Buenas Tares = Guten Tag
@@ -184,9 +185,12 @@ public class GameServiceImpl implements GameService {
                                     .stream().anyMatch(s -> vocable.getTranslations()
                                             .stream().anyMatch(vt -> vt.getSynonyms()
                                                     .stream().anyMatch(vs -> vs.equals(s))))))
-                    .limit(3)
-                    .map(x -> x.getTranslations().get((int) (Math.random() * x.getTranslations().size())))
-                    .collect(Collectors.toList());
+                    .flatMap(v -> v.getTranslations().stream())
+                    .forEach(candidate -> {
+                        if (answers.size() < 3 && answers.stream().noneMatch(ac -> ac != candidate && ac.getSynonyms().containsAll(candidate.getSynonyms()))) {
+                            answers.add(candidate);
+                        }
+                    });
 
             if (answers.size() != 3) {
                 throw new NotEnoughVocabularyException("Not enough unique vocabulary to add false options for " + vocable.getVocable().getSynonyms() + ".");
