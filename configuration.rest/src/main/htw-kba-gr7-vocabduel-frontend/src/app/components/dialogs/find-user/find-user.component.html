@@ -16,6 +16,7 @@
                 </mat-expansion-panel-header>
                 <div class="p-1">
                     <app-person-search
+                        [exclude]="currentUser.id"
                         (userSelected)="ref.close($event)"
                     ></app-person-search>
                 </div>
@@ -42,7 +43,9 @@
                                 name="identifier"
                                 #input
                                 (input)="
-                                    invalidFormat = false; notFound = false
+                                    invalidFormat = false;
+                                    notFound = false;
+                                    userIsSelf = false
                                 "
                             />
                             <mat-label>
@@ -75,6 +78,14 @@
                                 {{
                                     'dialog.findOpponent.userNotFound'
                                         | translate
+                                }}
+                            </span>
+                            <span
+                                class="color-warn mx-2 my-auto"
+                                *ngIf="userIsSelf"
+                            >
+                                {{
+                                    'dialog.findOpponent.userIsSelf' | translate
                                 }}
                             </span>
                             <span

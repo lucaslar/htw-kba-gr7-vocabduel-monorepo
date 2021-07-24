@@ -1,7 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { AfterViewInit, Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NavigationService } from '../../../services/navigation.service';
 import { UserService } from '../../../services/user.service';
+import { User } from '../../../model/internal/user';
 
 @Component({
     selector: 'app-find-user',
@@ -13,11 +14,13 @@ export class FindUserComponent implements AfterViewInit {
     identifier: 'id' | 'username' | 'email' = 'id';
     invalidFormat = false;
     notFound = false;
+    userIsSelf = false;
 
     constructor(
         readonly ref: MatDialogRef<FindUserComponent>,
         readonly navigation: NavigationService,
-        private readonly user: UserService
+        private readonly user: UserService,
+        @Inject(MAT_DIALOG_DATA) readonly currentUser: User
     ) {}
 
     ngAfterViewInit(): void {
@@ -26,7 +29,10 @@ export class FindUserComponent implements AfterViewInit {
 
     searchByIdentifier(value: string): void {
         this.user.getUser$({ [this.identifier]: value } as any).subscribe(
-            (res) => this.ref.close(res),
+            (res) => {
+                if (res.id === this.currentUser.id) this.userIsSelf = true;
+                else this.ref.close(res);
+            },
             (err) => {
                 if (err.status === 400) this.invalidFormat = true;
                 else if (err.status === 404) this.notFound = true;

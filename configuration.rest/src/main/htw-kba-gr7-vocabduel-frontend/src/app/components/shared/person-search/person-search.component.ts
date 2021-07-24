@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { User } from '../../../model/internal/user';
 import { UserService } from '../../../services/user.service';
 import { NavigationService } from '../../../services/navigation.service';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-person-search',
@@ -20,6 +21,7 @@ import { NavigationService } from '../../../services/navigation.service';
 export class PersonSearchComponent implements OnInit {
     @Input() ownId?: number;
     @Input() searchStr = '';
+    @Input() exclude?: number;
     @Output() readonly userSelected: EventEmitter<User> = new EventEmitter();
     @Output() readonly afterSearch: EventEmitter<string> = new EventEmitter();
 
@@ -40,7 +42,13 @@ export class PersonSearchComponent implements OnInit {
     }
 
     search(): void {
-        this.results$ = this.user.findUsers$(this.searchStr);
+        this.results$ = this.user.findUsers$(this.searchStr).pipe(
+            map((users) => {
+                return this.exclude !== undefined
+                    ? users.filter((u) => u.id !== this.exclude)
+                    : users;
+            })
+        );
         this.lastEmittedStr = this.searchStr;
         this.afterSearch.emit(this.searchStr);
     }

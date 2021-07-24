@@ -40,7 +40,8 @@
             "id": "ID",
             "find": "Find",
             "invalidFormat": "Invalid format (must be a number)",
-            "userNotFound": "No user found"
+            "userNotFound": "No user found",
+            "userIsSelf": "User must not be yourself"
         }
     },
     "snackbar": {
