@@ -1,5 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,6 +14,7 @@ public class VocableUnit {
     @Column(nullable = false)
     private String title;
     @OneToMany(cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
     private List<VocableList> vocableLists;
 
     @Version

@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -53,8 +54,9 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
         List<LanguageSet> languageSets = null;
         try {
             languageSets = (List<LanguageSet>) entityManager
-                    .createQuery("from LanguageSet")
+                    .createQuery("select ls from LanguageSet ls fetch all properties")
                     .getResultList();
+            initializeLazyLoadedLanguageSetData(languageSets);
         } catch (NoResultException ignored) {
         }
         return languageSets;
@@ -64,5 +66,16 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     public boolean deleteLanguageSet(LanguageSet languageSet) throws PersistenceException {
         entityManager.remove(languageSet);
         return true;
+    }
+
+    private void initializeLazyLoadedLanguageSetData(final List<LanguageSet> languageSets) {
+        languageSets.forEach(ls -> ls.getVocableUnits().forEach(vu -> vu.getVocableLists().forEach(vl -> vl.getVocables().forEach(v -> {
+            Hibernate.initialize(v.getVocable().getSynonyms());
+            Hibernate.initialize(v.getVocable().getAdditionalInfo());
+            v.getTranslations().forEach(t -> {
+                Hibernate.initialize(t.getSynonyms());
+                Hibernate.initialize(t.getAdditionalInfo());
+            });
+        }))));
     }
 }

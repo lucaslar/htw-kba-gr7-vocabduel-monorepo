@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,8 +31,18 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
                     .setParameter("gameId", gameId)
                     .setMaxResults(1)
                     .getSingleResult();
+            initializeLazyLoadedRoundVocableData(round);
         } catch (NoResultException ignored) {
         }
         return round;
+    }
+
+    private void initializeLazyLoadedRoundVocableData(final VocabduelRound round) {
+        Hibernate.initialize(round.getQuestion().getVocable().getSynonyms());
+        Hibernate.initialize(round.getQuestion().getVocable().getAdditionalInfo());
+        round.getAnswers().forEach(a -> {
+            Hibernate.initialize(a.getSynonyms());
+            Hibernate.initialize(a.getAdditionalInfo());
+        });
     }
 }
