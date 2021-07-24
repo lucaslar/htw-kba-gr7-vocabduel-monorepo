@@ -520,7 +520,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
-        } catch (PersistenceException e) {
+        } catch (UndeletableListException e) {
             VIEW.printVocableListInRunningGame();
         }
     }

@@ -6,7 +6,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Lan
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -38,10 +37,10 @@ public interface VocabularyService {
      * @param vocables       The vocable list to be deleted.
      * @param triggeringUser User triggering the deletion process.
      * @return int database status of the delete query.
-     * @throws DifferentAuthorException The user who wants to delete the list has not the rights to do so, i.e. is not the list's author.
-     * @throws PersistenceException     The list cannot be deleted because of constraint violations (use force param to overcome this issue).
+     * @throws DifferentAuthorException  The user who wants to delete the list has not the rights to do so, i.e. is not the list's author.
+     * @throws UndeletableListException The list cannot be deleted because of constraint violations.
      */
-    int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, PersistenceException;
+    int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException;
 
     /**
      * @param id ID the vocable list for is to be returned.

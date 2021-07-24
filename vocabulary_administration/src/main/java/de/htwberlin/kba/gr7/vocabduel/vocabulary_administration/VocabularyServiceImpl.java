@@ -78,7 +78,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, PersistenceException {
+    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException {
         final User author = vocables.getAuthor();
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
@@ -91,7 +91,14 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (unit.getVocableLists().isEmpty()) {
             final LanguageSet languageSet = LANGUAGE_SET_DAO.selectLanguageSetByVocableUnit(unit);
             languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
-            VOCABLE_UNIT_DAO.deleteVocableUnit(unit);
+            try {
+                VOCABLE_UNIT_DAO.deleteVocableUnit(unit);
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+                final String err = "This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.";
+                System.out.println("List with ID " + list.getId() + " could not be deleted. If the stacktrace above indicates that it is used by a running game, this is not a problem.");
+                throw new UndeletableListException(err);
+            }
             if (languageSet.getVocableUnits().isEmpty()) LANGUAGE_SET_DAO.deleteLanguageSet(languageSet);
         }
         return 0;

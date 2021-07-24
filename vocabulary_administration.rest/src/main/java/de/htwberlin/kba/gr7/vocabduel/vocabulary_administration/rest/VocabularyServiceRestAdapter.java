@@ -119,11 +119,9 @@ public class VocabularyServiceRestAdapter {
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (PersistenceException e) {
-            final String err = "This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.";
-            System.out.println("List with ID "+list.getId()+" could not be deleted. If the stacktrace below indicates that it is used by a running game, this is not a problem:");
+        } catch (UndeletableListException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.FORBIDDEN).entity(err).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(e).build();
         }
         System.out.println("Successfully deleted vocable list with ID " + list.getId());
         return Response.noContent().build();

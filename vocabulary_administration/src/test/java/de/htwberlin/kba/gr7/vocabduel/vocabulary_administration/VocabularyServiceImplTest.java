@@ -213,19 +213,19 @@ public class VocabularyServiceImplTest {
     }
 
     @Test(expected = DifferentAuthorException.class)
-    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException, PersistenceException {
+    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException {
         vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));
     }
 
     @Test(expected = PersistenceException.class)
-    public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, PersistenceException {
+    public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, UndeletableListException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         Mockito.doThrow(new PersistenceException()).when(entityManager).remove(Mockito.any());
         vocabularyLib.deleteVocableList(existingVocableList1, author);
     }
 
     @Test
-    public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException {
+    public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException {
         final int initialSize = existingVocableUnit.getVocableLists().size();
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
@@ -234,7 +234,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldDeleteEmptyUnitList() throws DifferentAuthorException {
+    public void shouldDeleteEmptyUnitList() throws DifferentAuthorException, UndeletableListException {
         final int initialSize = existingLanguageSet.getVocableUnits().size();
         existingVocableUnit.setVocableLists(existingVocableUnit.getVocableLists().stream().filter(l -> l == existingVocableList1).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit, existingLanguageSet);
