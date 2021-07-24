@@ -80,8 +80,7 @@ const leftToRightRoutes = [
     ['Dashboard', 'StartGame', 'PlayGame'],
     ['Vocabulary'],
     ['UserSearch'],
-    ['Settings'],
-    // TODO: Complete
+    ['Settings']
 ];
 
 const generateTransitions = (): AnimationMetadata[] => {
