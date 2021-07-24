@@ -13,69 +13,52 @@ import java.util.List;
 public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
 
     @PersistenceContext
-    private final EntityManager ENTITY_MANAGER;
-
-    public StoredRefreshTokenDAOImpl(final EntityManager entityManager) {
-        ENTITY_MANAGER = entityManager;
-    }
+    private EntityManager entityManager;
 
     @Override
     public StoredRefreshToken selectStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
-        ENTITY_MANAGER.getTransaction().begin();
-        final StoredRefreshToken foundToken = (StoredRefreshToken) ENTITY_MANAGER
+        return (StoredRefreshToken) entityManager
                 .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
                 .setParameter("user", user)
                 .setParameter("token", refreshToken)
                 .getSingleResult();
-        ENTITY_MANAGER.getTransaction().commit();
-        return foundToken;
     }
 
     @Override
     public void insertStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(new StoredRefreshToken(user, refreshToken));
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.persist(new StoredRefreshToken(user, refreshToken));
     }
 
     @Override
     public void removeUserTokensIfFiveOrMorePresent(User user) {
-        ENTITY_MANAGER.getTransaction().begin();
-
         try {
-            final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) ENTITY_MANAGER
+            final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) entityManager
                     .createQuery("from StoredRefreshToken where user = :user")
                     .setParameter("user", user)
                     .getResultList();
-            if (storedRefreshTokens.size() > 4) storedRefreshTokens.forEach(ENTITY_MANAGER::remove);
+            if (storedRefreshTokens.size() > 4) storedRefreshTokens.forEach(entityManager::remove);
         } catch (NoResultException ignored) {
         }
-
-        ENTITY_MANAGER.getTransaction().commit();
     }
 
     @Override
     public boolean deleteStoredRefreshTokenByUserId(Long userId) {
         boolean res = false;
-        ENTITY_MANAGER.getTransaction().begin();
         try {
-            final List<StoredRefreshToken> tokens = ENTITY_MANAGER
+            final List<StoredRefreshToken> tokens = entityManager
                     .createQuery("select s from StoredRefreshToken s where user_id = :user")
                     .setParameter("user", userId)
                     .getResultList();
-            if (tokens != null && !tokens.isEmpty()) tokens.forEach(ENTITY_MANAGER::remove);
+            if (tokens != null && !tokens.isEmpty()) tokens.forEach(entityManager::remove);
             res = true;
         } catch (NoResultException ignored) {
         }
-        ENTITY_MANAGER.getTransaction().commit();
         return res;
     }
 
     @Override
     public boolean deleteStoredRefreshToken(StoredRefreshToken storedRefreshToken) {
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.remove(storedRefreshToken);
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.remove(storedRefreshToken);
         return true;
     }
 }

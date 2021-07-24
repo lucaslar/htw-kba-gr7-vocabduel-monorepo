@@ -64,10 +64,10 @@ public class ScoreServiceImplTest {
 
     @Before
     public void setup() {
-        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-
-        scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
+//        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
+//        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
+//
+//        scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
         playerA = new User(4711L);
         playerB = new User(42L);
         playerC = new User(2020L);

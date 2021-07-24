@@ -65,10 +65,10 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
-        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
-
-        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
+//        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+//        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+//
+//        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));

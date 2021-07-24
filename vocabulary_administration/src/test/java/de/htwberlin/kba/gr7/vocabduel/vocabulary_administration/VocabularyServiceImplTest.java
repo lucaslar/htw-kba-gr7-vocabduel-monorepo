@@ -56,11 +56,11 @@ public class VocabularyServiceImplTest {
 
     @Before
     public void setup() {
-        final VocableListDAO listDao = new VocableListDAOImpl(entityManager);
-        final VocableUnitDAO unitDao = new VocableUnitDAOImpl(entityManager);
-        final LanguageSetDAO langSetsDao = new LanguageSetDAOImpl(entityManager);
-
-        vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
+//        final VocableListDAO listDao = new VocableListDAOImpl(entityManager);
+//        final VocableUnitDAO unitDao = new VocableUnitDAOImpl(entityManager);
+//        final LanguageSetDAO langSetsDao = new LanguageSetDAOImpl(entityManager);
+//
+//        vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
         Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
