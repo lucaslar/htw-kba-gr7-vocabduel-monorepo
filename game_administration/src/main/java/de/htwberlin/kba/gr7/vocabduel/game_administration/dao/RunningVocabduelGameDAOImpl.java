@@ -29,6 +29,7 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .setParameter("user", user)
                     .getResultList();
         } catch (NoResultException ignored) {
+            // ignored => return null (games) in case of no result
         }
         return games;
     }
@@ -44,6 +45,7 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .setParameter("gameId", gameId)
                     .getSingleResult();
         } catch (NoResultException ignored) {
+            // ignored => return null (myGame) in case of no result
         }
         return myGame;
     }
@@ -59,6 +61,7 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             runningGames.forEach(entityManager::remove);
             res = true;
         } catch (NoResultException ignored) {
+            // ignored => a user might have no finished game => not a problem
         }
         return res;
     }

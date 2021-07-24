@@ -24,6 +24,7 @@ public class UserDAOImpl implements UserDAO {
                     .setParameter("searchString", searchString.toLowerCase() + "%")
                     .getResultList();
         } catch (NoResultException ignored) {
+            // ignored => return null (users) if no users could be found
         }
         return users;
     }
@@ -38,6 +39,7 @@ public class UserDAOImpl implements UserDAO {
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException ignored) {
+            // ignored => return null (user) if no user could be found
         }
         return user;
     }
@@ -57,6 +59,7 @@ public class UserDAOImpl implements UserDAO {
                     .setParameter("username", username)
                     .getSingleResult();
         } catch (NoResultException ignored) {
+            // ignored => return null (user) if no user could be found
         }
         return user;
     }

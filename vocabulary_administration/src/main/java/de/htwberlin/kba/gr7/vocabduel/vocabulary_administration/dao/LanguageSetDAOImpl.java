@@ -33,7 +33,7 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
                     .setParameter("learntLanguage", learnt)
                     .setParameter("knownLanguage", known)
                     .getSingleResult();
-        } catch (NoResultException ignored) {
+        } catch (NoResultException e) {
             languageSet = new LanguageSet(learnt, known);
             entityManager.persist(languageSet);
         }
@@ -58,6 +58,7 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
                     .getResultList();
             initializeLazyLoadedLanguageSetData(languageSets);
         } catch (NoResultException ignored) {
+            // ignored => return null (languageSets) in case of no result
         }
         return languageSets;
     }

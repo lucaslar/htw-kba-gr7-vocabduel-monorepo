@@ -40,6 +40,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
                     .getResultList();
 
         } catch (NoResultException ignored) {
+            // ignored => return null (games) if a user has no finished games yet
         }
         return games;
     }
@@ -55,6 +56,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             finishedGames.forEach(entityManager::remove);
             res = true;
         } catch (NoResultException ignored) {
+            // ignored => if no orphaned finished games to be deleted are found, it's not a problem
         }
         return res;
     }
