@@ -14,6 +14,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshTok
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
@@ -25,6 +26,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final UserService USER_SERVICE;

@@ -6,6 +6,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.Vocabular
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import static de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage.*;
 
 @Service
+@Transactional
 public class VocabularyServiceImpl implements VocabularyService {
 
     private HashMap<String, SupportedLanguage> languageMapping;
