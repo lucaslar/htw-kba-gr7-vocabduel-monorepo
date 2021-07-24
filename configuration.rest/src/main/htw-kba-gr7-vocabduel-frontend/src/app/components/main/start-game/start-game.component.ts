@@ -46,6 +46,11 @@ export class StartGameComponent implements OnInit {
     }
 
     selectLists(): void {
-        // TODO Implement
+        this.dialog
+            .open(VocabListSelectionComponent)
+            .afterClosed()
+            .subscribe((lists) => {
+                if (lists) this.lists = lists;
+            });
     }
 }

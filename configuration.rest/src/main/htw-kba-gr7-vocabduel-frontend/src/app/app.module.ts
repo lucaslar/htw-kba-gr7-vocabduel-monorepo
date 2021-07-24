@@ -42,6 +42,7 @@ import { PlayGameComponent } from './components/main/play-game/play-game.compone
 import { PersonalFinishedGameComponent } from './components/dialogs/personal-finished-game/personal-finished-game.component';
 import { StartGameComponent } from './components/main/start-game/start-game.component';
 import { FindUserComponent } from './components/dialogs/find-user/find-user.component';
+import { VocabListSelectionComponent } from './components/dialogs/vocab-list-selection/vocab-list-selection.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -75,6 +76,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         PersonalFinishedGameComponent,
         StartGameComponent,
         FindUserComponent,
+        VocabListSelectionComponent,
     ],
     imports: [
         BrowserModule,

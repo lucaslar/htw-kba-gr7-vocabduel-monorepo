@@ -66,6 +66,7 @@
         "note": "Note",
         "update": "Update",
         "delete": "Delete",
+        "confirm": "Confirm",
         "user": {
             "username": "Username",
             "firstName": "First name",
@@ -196,7 +197,7 @@
             "clickToEdit": "Click to edit",
             "precondition": {
                 "userSpecified": "Opponent selected",
-                "atLeast9Vocables": "List(s) with at least nine selected"
+                "atLeast9Vocables": "List(s) with at least nine vocables selected"
             }
         }
     }
