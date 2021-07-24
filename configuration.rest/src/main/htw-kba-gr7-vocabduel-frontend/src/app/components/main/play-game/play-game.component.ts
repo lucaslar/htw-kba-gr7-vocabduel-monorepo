@@ -11,6 +11,8 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { ScoreService } from '../../../services/score.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PersonalFinishedGameComponent } from '../../dialogs/personal-finished-game/personal-finished-game.component';
+import { AuthService } from '../../../services/auth.service';
+import { User } from '../../../model/internal/user';
 
 @Component({
     selector: 'app-play-game',
@@ -24,6 +26,7 @@ export class PlayGameComponent {
     selected?: number;
     correctIndex?: number;
     answerOpts?: TranslationGroup[];
+    private currentUser!: User;
 
     constructor(
         readonly navigation: NavigationService,
@@ -32,13 +35,18 @@ export class PlayGameComponent {
         private readonly game: GameService,
         private readonly score: ScoreService,
         private readonly snackbar: SnackbarService,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly auth: AuthService
     ) {
         this.gameId = +this.route.snapshot.params.gameId;
         this.round$ = this.route.data.pipe(
             map((d) => d.data),
             tap((round) => (this.answerOpts = round.answers))
         );
+
+        this.auth.currentUser$.subscribe((user) => {
+            if (user) this.currentUser = user;
+        });
     }
 
     handleNext(roundNr: number): void {
@@ -48,7 +56,10 @@ export class PlayGameComponent {
                   (finishedGame) => {
                       this.dialog
                           .open(PersonalFinishedGameComponent, {
-                              data: finishedGame,
+                              data: {
+                                  finishedGame,
+                                  currentUser: this.currentUser,
+                              },
                           })
                           .afterClosed()
                           .subscribe(() => {

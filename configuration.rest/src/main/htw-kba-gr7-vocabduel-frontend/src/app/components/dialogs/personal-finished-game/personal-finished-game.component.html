@@ -1,3 +1,89 @@
-<!-- TODO: Implement -->
+<div mat-dialog-title class="d-flex">
+    <mat-icon class="my-auto mr-2"> emoji_events </mat-icon>
+    <div class="my-auto">
+        {{
+            finishedGame.opponent
+                ? ('dialog.finishedGame.titleAgainst'
+                  | translate: finishedGame.opponent)
+                : ('dialog.finishedGame.title' | translate)
+        }}
+    </div>
+</div>
 
-<pre>{{ finishedGame | json }}</pre>
+<mat-dialog-content class="d-flex flex-column">
+    <div class="mx-auto mb-2">
+        <app-overlapping-flags
+            [languageTo]="finishedGame.knownLanguage"
+            [languageFrom]="finishedGame.learntLanguage"
+        >
+        </app-overlapping-flags>
+    </div>
+
+    <h1 class="color-primary text-center mb-0">
+        {{
+            'general.itsA.' + (finishedGame.gameResult | lowercase) | translate
+        }}
+    </h1>
+
+    <h3 class="color-darkgrey text-center">
+        {{
+            'general.gameResultSecondLine.' +
+                (finishedGame.gameResult | lowercase) | translate
+        }}
+    </h3>
+
+    <mat-divider class="position-relative my-2"></mat-divider>
+
+    <canvas
+        baseChart
+        [datasets]="[
+            { data: [finishedGame.ownPoints, finishedGame.opponentPoints] }
+        ]"
+        [legend]="true"
+        [labels]="[
+            'general.yourPoints' | translate,
+            'general.yourOpponentsPoints' | translate
+        ]"
+        [options]="{ responsive: true }"
+        [chartType]="'doughnut'"
+    >
+    </canvas>
+
+    <div
+        class="mt-3 mb-2 d-flex"
+        (click)="openOpponentDialog()"
+        mat-ripple
+        [class.clickable]="finishedGame.opponent"
+    >
+        <div class="mx-2 text-center my-auto">
+            <mat-icon
+                class="prominent-medium-icon {{
+                    finishedGame.opponent ? 'color-primary' : 'color-darkgrey'
+                }}"
+            >
+                person
+            </mat-icon>
+        </div>
+        <div class="my-auto ml-1">
+            <strong> {{ 'general.opponent' | translate }}: </strong>
+            <ng-container *ngIf="finishedGame.opponent; else deletedOpponent">
+                <strong class="color-primary">
+                    {{ finishedGame.opponent.username }}
+                </strong>
+                <br />
+                {{ finishedGame.opponent.firstName }}
+                {{ finishedGame.opponent.lastName }}
+            </ng-container>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>
+
+<ng-template #deletedOpponent>
+    <span class="color-darkgrey">{{ 'general.deletedUser' | translate }}</span>
+</ng-template>

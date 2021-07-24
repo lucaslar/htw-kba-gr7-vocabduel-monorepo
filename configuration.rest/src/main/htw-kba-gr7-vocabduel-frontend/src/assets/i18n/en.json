@@ -47,6 +47,10 @@
         },
         "runningGame": {
             "title": "Running game against {{ firstName }}"
+        },
+        "finishedGame": {
+            "title": "Your finished game",
+            "titleAgainst": "Your game against {{ firstName }}"
         }
     },
     "snackbar": {
@@ -115,7 +119,19 @@
         "finish": "Finish",
         "wins": "Wins",
         "losses": "Losses",
-        "draws": "Draws"
+        "draws": "Draws",
+        "yourPoints": "Your points",
+        "yourOpponentsPoints": "Your opponent's points",
+        "itsA": {
+            "draw": "It's a draw!",
+            "win": "You won!",
+            "loss": "You lost"
+        },
+        "gameResultSecondLine": {
+            "draw": "Let's play again and see who wins",
+            "win": "Congratulations! How about another game to give you opponent a chance?",
+            "loss": "Don't worry, better luck next time! How about starting another game right now?"
+        }
     },
     "main": {
         "registration": {
