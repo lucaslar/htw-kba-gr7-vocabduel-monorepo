@@ -17,6 +17,8 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.Inva
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -34,11 +36,14 @@ public class GameServiceRestAdapter {
     private final UserService USER_SERVICE;
     private final VocabularyService VOCABULARY_SERVICE;
 
+    private final SessionFactory SESSION_FACTORY;
+
     @Inject
-    public GameServiceRestAdapter(final GameService gameService, final UserService userService, final VocabularyService vocabularyService) {
+    public GameServiceRestAdapter(final GameService gameService, final UserService userService, final VocabularyService vocabularyService, final SessionFactory sessionFactory) {
         GAME_SERVICE = gameService;
         USER_SERVICE = userService;
         VOCABULARY_SERVICE = vocabularyService;
+        SESSION_FACTORY = sessionFactory;
     }
 
     @POST
@@ -46,12 +51,14 @@ public class GameServiceRestAdapter {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
     public Response startGame(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final StartGameData data) {
+        final Session session = SESSION_FACTORY.openSession();
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "start-game");
         if (missingDataResponse != null) return missingDataResponse;
 
         final User self = USER_SERVICE.getUserDataById(userId);
         final User opponent = USER_SERVICE.getUserDataById(data.getOpponentId());
         final List<VocableList> lists = data.getVocableListIds().stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
+        lists.forEach(session::update);
 
         MinimizedPersonalGameInfo gameInfo;
 
@@ -73,8 +80,10 @@ public class GameServiceRestAdapter {
     @Path("/open-games")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonalChallengedGames(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
+        final Session session = SESSION_FACTORY.openSession();
         final User user = USER_SERVICE.getUserDataById(userId);
         final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(user);
+        games.forEach(session::update);
         final List<MinimizedPersonalGameInfo> minimizedGameInfo = games.stream().map(g -> new MinimizedPersonalGameInfo(g, user)).collect(Collectors.toList());
         return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
     }
