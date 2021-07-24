@@ -25,7 +25,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.nio.charset.StandardCharsets;
@@ -42,8 +41,6 @@ public class AuthServiceImplTest {
     private UserService userService;
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
     @Mock
     private Query queryMock;
     private AuthServiceImpl auth;
@@ -94,7 +91,6 @@ public class AuthServiceImplTest {
         expiredAuthToken = generateAuthToken(true, existingUser.getId());
         authTokenOfUnknownUser = generateAuthToken(false, UNKNOWN_ID);
 
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(userService.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);

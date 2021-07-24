@@ -46,4 +46,8 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
             Hibernate.initialize(a.getAdditionalInfo());
         });
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

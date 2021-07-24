@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -33,18 +32,20 @@ public class GameServiceImplStartRoundTest {
     private VocabularyService vocabularyService;
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
 
     @Before
     public void setup() {
-//        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-//        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
-//        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-//
-//        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
+        final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
+        runningVocabduelGameDAO.setEntityManager(entityManager);
+        final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
+        vocabduelRoundDAO.setEntityManager(entityManager);
+        final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
+        finishedVocabduelGameDAO.setEntityManager(entityManager);
+
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
         mock = new GameDataMock();
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.setMaxResults(Mockito.anyInt())).thenReturn(queryMock);

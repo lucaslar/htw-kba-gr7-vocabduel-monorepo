@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.stream.Collectors;
@@ -31,17 +30,19 @@ public class GameServiceImplRemoveWidowGamesTest {
     @Mock
     private EntityManager entityManager;
     @Mock
-    private EntityTransaction entityTransaction;
-    @Mock
     private Query queryMock;
 
     @Before
     public void setup() {
-//        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-//        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
-//        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-//        gameService = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+
+        final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
+        runningVocabduelGameDAO.setEntityManager(entityManager);
+        final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
+        vocabduelRoundDAO.setEntityManager(entityManager);
+        final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
+        finishedVocabduelGameDAO.setEntityManager(entityManager);
+        gameService = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
     }
 

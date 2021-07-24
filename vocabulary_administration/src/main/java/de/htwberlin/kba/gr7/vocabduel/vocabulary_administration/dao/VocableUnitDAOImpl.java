@@ -33,4 +33,8 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
         entityManager.remove(unit);
         return true;
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

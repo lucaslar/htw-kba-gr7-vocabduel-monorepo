@@ -33,7 +33,8 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
                     .setParameter("learntLanguage", learnt)
                     .setParameter("knownLanguage", known)
                     .getSingleResult();
-        } catch (NoResultException e) {
+
+        } catch (NoResultException ignored) {
             languageSet = new LanguageSet(learnt, known);
             entityManager.persist(languageSet);
         }
@@ -70,13 +71,23 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     }
 
     private void initializeLazyLoadedLanguageSetData(final List<LanguageSet> languageSets) {
-        languageSets.forEach(ls -> ls.getVocableUnits().forEach(vu -> vu.getVocableLists().forEach(vl -> vl.getVocables().forEach(v -> {
-            Hibernate.initialize(v.getVocable().getSynonyms());
-            Hibernate.initialize(v.getVocable().getAdditionalInfo());
-            v.getTranslations().forEach(t -> {
-                Hibernate.initialize(t.getSynonyms());
-                Hibernate.initialize(t.getAdditionalInfo());
+        languageSets.forEach(ls -> {
+            if (!(ls.getVocableUnits() == null) && !ls.getVocableUnits().isEmpty()) ls.getVocableUnits().forEach(vu -> {
+                if (!(vu.getVocableLists() == null) && !vu.getVocableLists().isEmpty()) vu.getVocableLists().forEach(vl -> {
+                    if (!(vl.getVocables() == null) && !vl.getVocables().isEmpty()) vl.getVocables().forEach(v -> {
+                        Hibernate.initialize(v.getVocable().getSynonyms());
+                        Hibernate.initialize(v.getVocable().getAdditionalInfo());
+                        v.getTranslations().forEach(t -> {
+                            Hibernate.initialize(t.getSynonyms());
+                            Hibernate.initialize(t.getAdditionalInfo());
+                        });
+                    });
+                });
             });
-        }))));
+        });
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

@@ -15,6 +15,10 @@ public class LoginDataDAOImpl implements LoginDataDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public setEntityManager(EntityManager entityManager){
+        this.entityManager = entityManager;
+    }
+
     @Override
     public void insertLoginData(LoginData loginData) {
         entityManager.persist(loginData);

@@ -46,22 +46,22 @@ public class VocabularyServiceImplTest {
     private List<LanguageSet> languages;
 
     @Mock
-    private EntityManagerFactory emf;
-    @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
     @Mock
     private Query queryMock;
 
     @Before
     public void setup() {
-//        final VocableListDAO listDao = new VocableListDAOImpl(entityManager);
-//        final VocableUnitDAO unitDao = new VocableUnitDAOImpl(entityManager);
-//        final LanguageSetDAO langSetsDao = new LanguageSetDAOImpl(entityManager);
-//
-//        vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+
+        final VocableListDAOImpl listDao = new VocableListDAOImpl();
+        listDao.setEntityManager(entityManager);
+        final VocableUnitDAOImpl unitDao = new VocableUnitDAOImpl();
+        unitDao.setEntityManager(entityManager);
+        final LanguageSetDAOImpl langSetsDao = new LanguageSetDAOImpl();
+        langSetsDao.setEntityManager(entityManager);
+
+        vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
+
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         author = new User(42L);

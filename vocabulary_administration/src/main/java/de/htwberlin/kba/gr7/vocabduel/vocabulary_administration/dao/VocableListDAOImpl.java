@@ -59,4 +59,8 @@ public class VocableListDAOImpl implements VocableListDAO {
             });
         });
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

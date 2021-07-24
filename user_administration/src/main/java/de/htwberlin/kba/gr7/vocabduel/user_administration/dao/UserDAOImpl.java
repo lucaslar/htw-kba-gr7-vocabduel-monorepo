@@ -14,6 +14,10 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public setEntityManager(EntityManager entityManager){
+        this.entityManager = entityManager;
+    }
+
     @Override
     public List<User> selectUsersByUsername(String searchString) {
         List<User> users = null;

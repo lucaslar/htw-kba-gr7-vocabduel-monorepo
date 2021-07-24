@@ -58,16 +58,18 @@ public class ScoreServiceImplTest {
     @Mock
     private EntityManager entityManager;
     @Mock
-    private EntityTransaction entityTransaction;
-    @Mock
     private Query queryMock;
 
     @Before
     public void setup() {
-//        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-//        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-//
-//        scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
+
+        final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
+        runningVocabduelGameDAO.setEntityManager(entityManager);
+        final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
+        finishedVocabduelGameDAO.setEntityManager(entityManager);
+
+        scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
+
         playerA = new User(4711L);
         playerB = new User(42L);
         playerC = new User(2020L);
@@ -82,7 +84,6 @@ public class ScoreServiceImplTest {
         final FinishedVocabduelGame game5 = mockFinishedGame(playerF, 1, playerE, 1);
         finishedGames = Stream.of(game1, game2, game3, game4, game5).collect(Collectors.toList());
 
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
     }
