@@ -198,6 +198,14 @@
             "precondition": {
                 "userSpecified": "Opponent selected",
                 "atLeast9Vocables": "List(s) with at least nine vocables selected"
+            },
+            "list": {
+                "one": "One list",
+                "n": "{{ n }} lists"
+            },
+            "vocable": {
+                "one": "One vocable",
+                "n": "{{ n }} vocables"
             }
         }
     }

@@ -15,7 +15,7 @@
             <div class="d-flex mx-n2">
                 <div class="mx-2 text-center my-auto">
                     <mat-icon
-                        class="prominent-medium-icon {{
+                        class="prominent-medium-icon mx-2 {{
                             opponent ? 'color-primary' : 'color-darkgrey'
                         }}"
                     >
@@ -45,9 +45,58 @@
                 {{ 'main.startGame.clickToEdit' | translate }}
             </mat-card-subtitle>
 
-            <ng-container *ngIf="totalVocables as len; else noVocabulary">
-                {{ len }}
-            </ng-container>
+            <div class="d-flex mx-n2">
+                <div
+                    class="mx-2 text-center my-auto"
+                    *ngIf="!lists?.length; else flags"
+                >
+                    <mat-icon class="prominent-medium-icon mx-2 color-darkgrey">
+                        menu_book
+                    </mat-icon>
+                </div>
+                <div class="my-auto ml-1 flex-grow-1 d-flex flex-column">
+                    <ng-container
+                        *ngIf="totalVocables as len; else noVocabulary"
+                    >
+                        <div class="d-flex my-auto" *ngIf="lists[0] as l">
+                            <div class="my-auto mx-1">
+                                <strong>{{
+                                    'general.language.' + l.learntLanguage
+                                        | lowercase
+                                        | translate
+                                }}</strong>
+                                ({{ l.learntLanguage }})
+                            </div>
+
+                            <mat-icon class="my-auto"> arrow_forward </mat-icon>
+
+                            <div class="my-auto mx-1">
+                                <strong>{{
+                                    'general.language.' + l.knownLanguage
+                                        | lowercase
+                                        | translate
+                                }}</strong>
+                                ({{ l.knownLanguage }})
+                            </div>
+                        </div>
+                        <div class="my-auto">
+                            {{
+                                (len === 1
+                                    ? 'main.startGame.list.one'
+                                    : 'main.startGame.list.n'
+                                ) | translate: { n: lists.length }
+                            }}
+                            /
+                            {{
+                                (len === 1
+                                    ? 'main.startGame.vocable.one'
+                                    : 'main.startGame.vocable.n'
+                                ) | translate: { n: len }
+                            }}
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
         </mat-card>
 
         <mat-divider class="position-relative my-3"></mat-divider>
@@ -95,10 +144,16 @@
 </ng-template>
 
 <ng-template #noVocabulary>
-    <div class="d-flex flex-column color-darkgrey text-center">
-        <mat-icon class="prominent-medium-icon mx-auto mb-2">
-            menu_book
-        </mat-icon>
+    <span class="color-darkgrey">
         {{ 'main.startGame.noVocabularySpecified' | translate }}
+    </span>
+</ng-template>
+
+<ng-template #flags>
+    <div class="flags-wrapper">
+        <app-overlapping-flags
+            [languageFrom]="lists[0].learntLanguage"
+            [languageTo]="lists[0].knownLanguage"
+        ></app-overlapping-flags>
     </div>
 </ng-template>
