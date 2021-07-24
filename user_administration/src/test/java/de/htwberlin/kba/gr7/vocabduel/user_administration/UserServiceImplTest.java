@@ -42,11 +42,11 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-//        final UserDAO userDAO = new UserDAOImpl(entityManager);
-//        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
-//        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
-//
-//        userAdministration = new UserServiceImpl(userDAO, storedRefreshTokenDAO, loginDataDAO);
+        final UserDAO userDAO = new UserDAOImpl(entityManager);
+        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+
+        userAdministration = new UserServiceImpl(userDAO, storedRefreshTokenDAO, loginDataDAO);
 
         user1 = new User(42L);
         user2 = new User(123L);
@@ -65,7 +65,7 @@ public class UserServiceImplTest {
 
         usersList = Stream.of(user1, user2, user3, user4).collect(Collectors.toList());
 
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.getSingleResult()).thenReturn(null);

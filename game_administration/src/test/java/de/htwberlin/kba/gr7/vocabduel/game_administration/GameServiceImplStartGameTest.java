@@ -42,11 +42,14 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
-//        final RunningVocabduelGameDAO runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl(entityManager);
-//        final VocabduelRoundDAO vocabduelRoundDAO = new VocabduelRoundDAOImpl(entityManager);
-//        final FinishedVocabduelGameDAO finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl(entityManager);
-//
-//        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+        final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
+        runningVocabduelGameDAO.setEntityManager(entityManager);
+        final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
+        vocabduelRoundDAO.setEntityManager(entityManager);
+        final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
+        finishedVocabduelGameDAO.setEntityManager(entityManager);
+
+        gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
 
@@ -63,7 +66,7 @@ public class GameServiceImplStartGameTest {
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
     }
 
     @Test()

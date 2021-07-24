@@ -85,7 +85,7 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
         });
     }
 
- //   public void setEntityManager(EntityManager entityManager) {
- //       this.entityManager = entityManager;
- //   }
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

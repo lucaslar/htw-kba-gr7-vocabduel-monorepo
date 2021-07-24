@@ -59,4 +59,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
         return res;
     }
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

@@ -62,4 +62,8 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
         }
         return res;
     }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

@@ -65,10 +65,10 @@ public class AuthServiceImplTest {
 
     @Before
     public void setup() {
-//        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
-//        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
-//
-//        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
+        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
+        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
+
+        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
 
         final String secret = "SuperSecretKey123HtwBerlinVocabduel2021";
         final byte[] encoded = (Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8)));
@@ -94,7 +94,7 @@ public class AuthServiceImplTest {
         expiredAuthToken = generateAuthToken(true, existingUser.getId());
         authTokenOfUnknownUser = generateAuthToken(false, UNKNOWN_ID);
 
-        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
+//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(userService.getUserDataByEmail(existingUser.getEmail())).thenReturn(existingUser);
