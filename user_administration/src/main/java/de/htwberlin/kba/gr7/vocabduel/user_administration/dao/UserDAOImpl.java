@@ -2,7 +2,6 @@ package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
