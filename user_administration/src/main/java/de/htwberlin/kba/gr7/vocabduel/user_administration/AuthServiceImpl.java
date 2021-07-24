@@ -14,10 +14,13 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshTok
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.Validation;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.InvalidNameException;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,6 +31,9 @@ import java.util.Date;
 public class AuthServiceImpl implements AuthService {
 
     private final UserService USER_SERVICE;
+
+    @PersistenceContext()
+    private EntityManager entityManager;
 
     private final LoginDataDAO LOGIN_DATA_DAO;
     private final StoredRefreshTokenDAO STORED_REFRESH_TOKEN_DAO;
@@ -48,18 +54,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
-        Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
-        Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
-        Validation.nameValidation(firstname);
-        Validation.nameValidation(lastname);
-        Validation.passwordValidation(password, confirmPassword);
+//        Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
+//        Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
+//        Validation.nameValidation(firstname);
+//        Validation.nameValidation(lastname);
+//        Validation.passwordValidation(password, confirmPassword);
 
         final User user = new User(username, email, firstname, lastname);
 
-        LOGIN_DATA_DAO.insertLoginData(new LoginData(user, hashPassword(password)));
+        entityManager.persist(new LoginData(user, hashPassword(password)));
 
-        return loginUser(email, password);
+        return null; // loginUser(email, password);
     }
 
     @Override

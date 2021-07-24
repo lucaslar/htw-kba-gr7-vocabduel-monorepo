@@ -12,40 +12,36 @@ import javax.persistence.PersistenceException;
 public class VocableUnitDAOImpl implements VocableUnitDAO {
 
     @PersistenceContext
-    private final EntityManager ENTITY_MANAGER;
-
-    public VocableUnitDAOImpl(EntityManager entityManager){
-        ENTITY_MANAGER = entityManager;
-    }
+    private EntityManager entityManager;
 
     @Override
     public void insertVocableUnit(VocableUnit unit) {
-        ENTITY_MANAGER.getTransaction().begin();
-        ENTITY_MANAGER.persist(unit);
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        entityManager.persist(unit);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public VocableUnit selectVocableUnitByVocableList(VocableList vocables) throws PersistenceException {
         VocableUnit unit = null;
-        ENTITY_MANAGER.clear();
-        ENTITY_MANAGER.getTransaction().begin();
+        entityManager.clear();
+        entityManager.getTransaction().begin();
         try {
-            unit = (VocableUnit) ENTITY_MANAGER
+            unit = (VocableUnit) entityManager
                     .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
                     .setParameter("list", vocables)
                     .getSingleResult();
         } catch (PersistenceException e) {
-            ENTITY_MANAGER.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             throw e;
         }
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.getTransaction().commit();
         return unit;
     }
 
     @Override
     public boolean deleteVocableUnit(VocableUnit unit) {
-        ENTITY_MANAGER.remove(unit);
+        entityManager.remove(unit);
         return true;
     }
 }

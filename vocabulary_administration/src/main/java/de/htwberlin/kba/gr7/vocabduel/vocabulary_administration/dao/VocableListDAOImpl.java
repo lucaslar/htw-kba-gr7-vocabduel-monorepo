@@ -13,27 +13,23 @@ import java.util.List;
 public class VocableListDAOImpl implements VocableListDAO{
 
     @PersistenceContext
-    private final EntityManager ENTITY_MANAGER;
-
-    public VocableListDAOImpl(EntityManager entityManager){
-        ENTITY_MANAGER = entityManager;
-    }
+    private EntityManager entityManager;
 
     @Override
     public VocableList selectVocableList(VocableList vocables) throws PersistenceException {
         try {
-            return ENTITY_MANAGER.find(VocableList.class, vocables.getId());
+            return entityManager.find(VocableList.class, vocables.getId());
         } catch (PersistenceException e){
-            ENTITY_MANAGER.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             throw e;
         }
     }
 
     @Override
     public VocableList selectVocableListById(Long id) {
-        ENTITY_MANAGER.getTransaction().begin();
-        final VocableList vocableList = ENTITY_MANAGER.find(VocableList.class, id);
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        final VocableList vocableList = entityManager.find(VocableList.class, id);
+        entityManager.getTransaction().commit();
         return vocableList;
     }
 
@@ -41,28 +37,28 @@ public class VocableListDAOImpl implements VocableListDAO{
     public List<VocableList> selectVocableListsByUserId(Long userId) {
         List<VocableList> vocableLists = null;
         try{
-            ENTITY_MANAGER.getTransaction().begin();
-            vocableLists = (List<VocableList>) ENTITY_MANAGER
+            entityManager.getTransaction().begin();
+            vocableLists = (List<VocableList>) entityManager
                 .createQuery("select vl from VocableList vl inner join vl.author a where a.id = :id")
                 .setParameter("id", userId)
                 .getResultList();
         } catch (
         NoResultException ignored) {
         }
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.getTransaction().commit();
         return vocableLists;
     }
 
     @Override
     public boolean deleteVocableList(VocableList vocables) {
-        ENTITY_MANAGER.getTransaction().begin();
+        entityManager.getTransaction().begin();
         try {
-            ENTITY_MANAGER.remove(vocables);
+            entityManager.remove(vocables);
         } catch (PersistenceException e) {
-            ENTITY_MANAGER.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             throw e;
         }
-        ENTITY_MANAGER.getTransaction().commit();
+        entityManager.getTransaction().commit();
         return true;
     }
 }
