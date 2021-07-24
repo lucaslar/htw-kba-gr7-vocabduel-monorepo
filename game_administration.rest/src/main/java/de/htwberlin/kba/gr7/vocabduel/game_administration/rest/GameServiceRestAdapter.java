@@ -13,6 +13,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.StartGameDa
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.MissingData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
@@ -55,54 +56,63 @@ public class GameServiceRestAdapter {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "start-game");
         if (missingDataResponse != null) return missingDataResponse;
 
-        final User self = USER_SERVICE.getUserDataById(userId);
-        final User opponent = USER_SERVICE.getUserDataById(data.getOpponentId());
-        final List<VocableList> lists = data.getVocableListIds().stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
-        lists.forEach(session::update);
-
-        MinimizedPersonalGameInfo gameInfo;
 
         try {
+            final User self = USER_SERVICE.getUserDataById(userId);
+            final User opponent = USER_SERVICE.getUserDataById(data.getOpponentId());
+            final List<VocableList> lists = data.getVocableListIds().stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
+            lists.forEach(session::update);
+
             final RunningVocabduelGame game = GAME_SERVICE.startGame(self, opponent, lists);
-            gameInfo = new MinimizedPersonalGameInfo(game, self);
+            final MinimizedPersonalGameInfo gameInfo = new MinimizedPersonalGameInfo(game, self);
+
+            System.out.println("Successfully started new game: " + gameInfo);
+            return Response.status(Response.Status.CREATED).type(MediaType.APPLICATION_JSON).entity(gameInfo).build();
+
         } catch (NotEnoughVocabularyException | InvalidGameSetupException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-
-        System.out.println("Successfully started new game: " + gameInfo);
-        return Response.status(Response.Status.CREATED).type(MediaType.APPLICATION_JSON).entity(gameInfo).build();
     }
 
     @GET
     @Path("/open-games")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonalChallengedGames(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
-        final Session session = SESSION_FACTORY.openSession();
-        final User user = USER_SERVICE.getUserDataById(userId);
-        final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(user);
-        games.forEach(session::update);
-        final List<MinimizedPersonalGameInfo> minimizedGameInfo = games.stream().map(g -> new MinimizedPersonalGameInfo(g, user)).collect(Collectors.toList());
-        return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
+        try {
+            final Session session = SESSION_FACTORY.openSession();
+            final User user = USER_SERVICE.getUserDataById(userId);
+            final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(user);
+            games.forEach(session::update);
+            final List<MinimizedPersonalGameInfo> minimizedGameInfo = games.stream().map(g -> new MinimizedPersonalGameInfo(g, user)).collect(Collectors.toList());
+            return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @GET
     @Path("/current-round/{gameId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response startRound(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, @PathParam("gameId") final Long gameId) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        MinimizedRoundInfo round;
-
         try {
-            round = new MinimizedRoundInfo(GAME_SERVICE.startRound(user, gameId));
+            final User user = USER_SERVICE.getUserDataById(userId);
+            final MinimizedRoundInfo round = new MinimizedRoundInfo(GAME_SERVICE.startRound(user, gameId));
+            System.out.println("Successfully started/requested round by user with ID " + userId + " for game " + gameId);
+            return Response.ok(round).type(MediaType.APPLICATION_JSON).build();
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        System.out.println("Successfully started/requested round by user with ID " + userId + " for game " + gameId);
-        return Response.ok(round).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
@@ -115,30 +125,36 @@ public class GameServiceRestAdapter {
             @PathParam("roundNr") final int roundNr,
             final int answerNr
     ) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        CorrectAnswerResult answer;
-
         try {
-            answer = GAME_SERVICE.answerQuestion(user, gameId, roundNr, answerNr);
+            final User user = USER_SERVICE.getUserDataById(userId);
+            final CorrectAnswerResult answer = GAME_SERVICE.answerQuestion(user, gameId, roundNr, answerNr);
+            System.out.println("Successfully answered question: " + answer.toString());
+            return Response.ok(answer).type(MediaType.APPLICATION_JSON).build();
         } catch (InvalidVocabduelGameNrException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        System.out.println("Successfully answered question: " + answer.toString());
-        return Response.ok(answer).type(MediaType.APPLICATION_JSON).build();
     }
 
     @DELETE
     @Path("/delete-account-and-game-widows")
     public Response deleteUser(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        USER_SERVICE.deleteUser(user);
-        System.out.println("Successfully deleted user: " + user.toString());
-        GAME_SERVICE.removeWidowGames();
-        System.out.println("Successfully removed widow games (if existent).");
-        return Response.noContent().build();
+        try {
+            final User user = USER_SERVICE.getUserDataById(userId);
+            USER_SERVICE.deleteUser(user);
+            System.out.println("Successfully deleted user: " + user.toString());
+            GAME_SERVICE.removeWidowGames();
+            System.out.println("Successfully removed widow games (if existent).");
+            return Response.noContent().build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 }

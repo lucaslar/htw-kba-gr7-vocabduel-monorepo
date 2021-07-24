@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabduel_ui;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.AuthTokens;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.LoggedInUser;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -24,7 +25,12 @@ public class CliSessionStorage {
     }
 
     public User getLoggedInUser() {
-        return userId == null ? null : userService.getUserDataById(userId);
+        try {
+            return userId == null ? null : userService.getUserDataById(userId);
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public AuthTokens getAuthTokens() {

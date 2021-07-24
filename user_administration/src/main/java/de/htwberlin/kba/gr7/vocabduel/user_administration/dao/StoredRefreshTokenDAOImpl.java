@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
 import org.springframework.stereotype.Repository;
@@ -16,21 +17,31 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
     private EntityManager entityManager;
 
     @Override
-    public StoredRefreshToken selectStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
-        return (StoredRefreshToken) entityManager
-                .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
-                .setParameter("user", user)
-                .setParameter("token", refreshToken)
-                .getSingleResult();
+    public StoredRefreshToken selectStoredRefreshTokenByUserAndToken(User user, String refreshToken) throws NoResultException, InternalUserModuleException {
+        try {
+            return (StoredRefreshToken) entityManager
+                    .createQuery("from StoredRefreshToken where user = :user and refreshToken = :token")
+                    .setParameter("user", user)
+                    .setParameter("token", refreshToken)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 
     @Override
-    public void insertStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
-        entityManager.persist(new StoredRefreshToken(user, refreshToken));
+    public void insertStoredRefreshTokenByUserAndToken(User user, String refreshToken) throws InternalUserModuleException {
+        try {
+            entityManager.persist(new StoredRefreshToken(user, refreshToken));
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 
     @Override
-    public void removeUserTokensIfFiveOrMorePresent(User user) {
+    public void removeUserTokensIfFiveOrMorePresent(User user) throws InternalUserModuleException {
         try {
             final List<StoredRefreshToken> storedRefreshTokens = (List<StoredRefreshToken>) entityManager
                     .createQuery("from StoredRefreshToken where user = :user")
@@ -39,11 +50,13 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             if (storedRefreshTokens.size() > 4) storedRefreshTokens.forEach(entityManager::remove);
         } catch (NoResultException ignored) {
             // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
     }
 
     @Override
-    public boolean deleteStoredRefreshTokenByUserId(Long userId) {
+    public boolean deleteStoredRefreshTokenByUserId(Long userId) throws InternalUserModuleException {
         boolean res = false;
         try {
             final List<StoredRefreshToken> tokens = entityManager
@@ -54,14 +67,20 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             res = true;
         } catch (NoResultException ignored) {
             // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return res;
     }
 
     @Override
-    public boolean deleteStoredRefreshToken(StoredRefreshToken storedRefreshToken) {
-        entityManager.remove(storedRefreshToken);
-        return true;
+    public boolean deleteStoredRefreshToken(StoredRefreshToken storedRefreshToken) throws InternalUserModuleException {
+        try {
+            entityManager.remove(storedRefreshToken);
+            return true;
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 
     public void setEntityManager(EntityManager entityManager){

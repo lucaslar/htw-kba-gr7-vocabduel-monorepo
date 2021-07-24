@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.Unfi
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException {
+    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException {
         if (user == null || USER_SERVICE.getUserDataById(user.getId()) == null) {
             throw new InvalidUserException("User could not be found");
         }
@@ -43,7 +44,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException {
+    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException {
         final List<PersonalFinishedGame> finishedGames = getPersonalFinishedGames(user);
         if (finishedGames == null || finishedGames.isEmpty()) return new ScoreRecord(user);
         else {

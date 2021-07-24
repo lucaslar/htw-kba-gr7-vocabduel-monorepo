@@ -22,26 +22,30 @@ public interface UserService {
      *
      * @param searchString String users are to be searched by (compared with their usernames).
      * @return List of users matching/including the given search string.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    List<User> findUsersByUsername(String searchString);
+    List<User> findUsersByUsername(String searchString) throws InternalUserModuleException;
 
     /**
      * @param id ID the respective user is to be returned for.
      * @return User with the given ID or null if no user found.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    User getUserDataById(Long id);
+    User getUserDataById(Long id) throws InternalUserModuleException;
 
     /**
      * @param email Email the respective user is to be returned for.
      * @return User with the given email or null if no user found.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    User getUserDataByEmail(String email);
+    User getUserDataByEmail(String email) throws InternalUserModuleException;
 
     /**
      * @param username Username the respective user is to be returned for.
      * @return User with the given username or null if no user found.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    User getUserDataByUsername(String username);
+    User getUserDataByUsername(String username) throws InternalUserModuleException;
 
     /**
      * Updates user data by a given user object.
@@ -52,14 +56,16 @@ public interface UserService {
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      * @throws IncompleteUserDataException        The passed user object does not contain all required user data.
      * @throws InvalidUserException               The given user is null or does not exist.
+     * @throws InternalUserModuleException        An internal error in the user module occurred.
      */
-    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidUserException, InvalidNameException;
+    int updateUser(User user) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException;
 
     /**
      * Deletes a single user.
      *
      * @param user User to be deleted.
      * @return int database status of the delete query.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    int deleteUser(User user);
+    int deleteUser(User user)throws InternalUserModuleException;
 }

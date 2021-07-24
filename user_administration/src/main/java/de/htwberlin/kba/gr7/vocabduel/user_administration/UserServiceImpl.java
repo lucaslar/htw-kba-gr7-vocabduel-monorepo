@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUsersByUsername(final String searchString) {
+    public List<User> findUsersByUsername(final String searchString) throws InternalUserModuleException {
         List<User> users = null;
         if (searchString != null) {
             users = USER_DAO.selectUsersByUsername(searchString);
@@ -36,12 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserDataById(Long id) {
+    public User getUserDataById(Long id) throws InternalUserModuleException {
         return USER_DAO.selectUserById(id);
     }
 
     @Override
-    public User getUserDataByEmail(String email) {
+    public User getUserDataByEmail(String email) throws InternalUserModuleException {
         User user = null;
         if (email != null) {
             user = USER_DAO.selectUserByEmail(email);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserDataByUsername(String username) {
+    public User getUserDataByUsername(String username) throws InternalUserModuleException {
         User user = null;
         if (username != null) {
             user = USER_DAO.selectUserByUsername(username);
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUser(final User user) throws InvalidUserException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException {
+    public int updateUser(final User user) throws InvalidUserException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
         if (user == null) throw new InvalidUserException("Invalid/not found user");
         final User foundUser = getUserDataById(user.getId());
         if (foundUser == null) throw new InvalidUserException("User could not be found");
@@ -79,11 +79,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteUser(final User user) {
+    public int deleteUser(final User user) throws InternalUserModuleException {
         STORED_REFRESH_TOKEN_DAO.deleteStoredRefreshTokenByUserId(user.getId());
-
         LOGIN_DATA_DAO.deleteLoginDataByUserId(user.getId());
-
         return 0;
     }
 }

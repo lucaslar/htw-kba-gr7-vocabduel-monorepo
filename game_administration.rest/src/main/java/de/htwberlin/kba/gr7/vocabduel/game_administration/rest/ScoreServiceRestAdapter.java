@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalF
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Controller;
@@ -35,33 +36,37 @@ public class ScoreServiceRestAdapter {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response finishGame(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, final long gameId) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        PersonalFinishedGame game;
         try {
-            game = SCORE_SERVICE.finishGame(user, gameId);
+            final User user = USER_SERVICE.getUserDataById(userId);
+            final PersonalFinishedGame game = SCORE_SERVICE.finishGame(user, gameId);
+            System.out.println("Successfully finished Game: " + game.toString());
+            return Response.ok(game).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
         } catch (UnfinishedGameException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        System.out.println("Successfully finished Game: " + game.toString());
-        return Response.ok(game).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     @GET
     @Path("/finished-games")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getPersonalFinishedGames(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        List<PersonalFinishedGame> games;
         try {
-            games = SCORE_SERVICE.getPersonalFinishedGames(user);
+            final User user = USER_SERVICE.getUserDataById(userId);
+            List<PersonalFinishedGame> games = SCORE_SERVICE.getPersonalFinishedGames(user);
+            return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -79,14 +84,16 @@ public class ScoreServiceRestAdapter {
     }
 
     private Response getRecordCore(final Long userId) {
-        final User user = USER_SERVICE.getUserDataById(userId);
-        ScoreRecord record;
         try {
-            record = SCORE_SERVICE.getRecordOfUser(user);
+            final User user = USER_SERVICE.getUserDataById(userId);
+            final ScoreRecord record = SCORE_SERVICE.getRecordOfUser(user);
+            return Response.ok(record).type(MediaType.APPLICATION_JSON).build();
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        return Response.ok(record).type(MediaType.APPLICATION_JSON).build();
     }
 }

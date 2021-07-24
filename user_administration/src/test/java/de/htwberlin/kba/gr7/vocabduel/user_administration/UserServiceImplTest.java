@@ -1,6 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.*;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.UserDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.junit.Assert;
@@ -71,7 +73,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldFindThreeUsersContainingUsernameStr() {
+    public void shouldFindThreeUsersContainingUsernameStr() throws InternalUserModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(usersList.stream().filter(t ->
                 t.getUsername().contains(EXISTING_USERNAME_PART)).collect(Collectors.toList()));
         final List<User> results = userAdministration.findUsersByUsername(EXISTING_USERNAME_PART);
@@ -89,14 +91,14 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldReturnNullIfNoUsersFound() {
+    public void shouldReturnNullIfNoUsersFound() throws InternalUserModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<User> results = userAdministration.findUsersByUsername(EXISTING_USERNAME_PART);
         Assert.assertNull(results);
     }
 
     @Test
-    public void shouldFindThreeUsersContainingUsernameStrIgnoringCase() {
+    public void shouldFindThreeUsersContainingUsernameStrIgnoringCase() throws InternalUserModuleException {
         final String upperCaseStr = EXISTING_USERNAME_PART.toUpperCase();
         Mockito.when(queryMock.getResultList()).thenReturn(usersList.stream().filter(t ->
                 t.getUsername().toLowerCase().contains(EXISTING_USERNAME_PART)).collect(Collectors.toList()));
@@ -115,41 +117,41 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldNotGetUserDataByIdIfNull() {
+    public void shouldNotGetUserDataByIdIfNull() throws InternalUserModuleException {
         Assert.assertNull(userAdministration.getUserDataById(null));
     }
 
     @Test
-    public void shouldNotGetUserDataByEmailIfNull() {
+    public void shouldNotGetUserDataByEmailIfNull() throws InternalUserModuleException {
         Assert.assertNull(userAdministration.getUserDataByEmail(null));
     }
 
     @Test
-    public void shouldNotGetUserDataByUsernameIfNull() {
+    public void shouldNotGetUserDataByUsernameIfNull() throws InternalUserModuleException {
         Assert.assertNull(userAdministration.getUserDataByUsername(null));
     }
 
     @Test
-    public void shouldNotGetUserDataByIdIfUnknown() {
+    public void shouldNotGetUserDataByIdIfUnknown() throws InternalUserModuleException {
         final Long wrongId = definitelyUnusedId();
         Assert.assertNull(userAdministration.getUserDataById(wrongId));
     }
 
     @Test
-    public void shouldNotGetUserDataByEmailIfUnknown() {
+    public void shouldNotGetUserDataByEmailIfUnknown() throws InternalUserModuleException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataByEmail(UNKNOWN_MAIL));
     }
 
     @Test
-    public void shouldNotGetUserDataByUsernameIfUnknown() {
+    public void shouldNotGetUserDataByUsernameIfUnknown() throws InternalUserModuleException {
         final String wrongUsername = definitelyUnusedUsername();
         Mockito.when(queryMock.getSingleResult()).thenThrow(new NoResultException());
         Assert.assertNull(userAdministration.getUserDataByUsername(wrongUsername));
     }
 
     @Test
-    public void shouldGetUserDataById() {
+    public void shouldGetUserDataById() throws InternalUserModuleException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user2);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
@@ -157,7 +159,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldGetUserDataByEmail() {
+    public void shouldGetUserDataByEmail() throws InternalUserModuleException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(user1);
         final User foundUser = userAdministration.getUserDataByEmail(EXISTING_EMAIL1);
         Assert.assertNotNull(foundUser);
@@ -165,7 +167,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldGetUserDataByUsername() {
+    public void shouldGetUserDataByUsername() throws InternalUserModuleException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user4);
         final User foundUser = userAdministration.getUserDataById(EXISTING_USER_ID);
         Assert.assertNotNull(foundUser);
@@ -173,7 +175,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowExceptionOnUpdatingIfMailAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldThrowExceptionOnUpdatingIfMailAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(user2.getEmail());
         user3.setFirstName("John");
         user3.setLastName("Doe");
@@ -183,18 +185,18 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldThrowExceptionOnUpdatingIfUserToUpdateIsNull() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldThrowExceptionOnUpdatingIfUserToUpdateIsNull() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         userAdministration.updateUser(null);
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldThrowExceptionOnUpdatingIfUserToUpdateCannotBeFound() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldThrowExceptionOnUpdatingIfUserToUpdateCannotBeFound() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.eq(user3.getId()))).thenReturn(null);
         userAdministration.updateUser(user3);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldThrowExceptionOnUpdatingIfMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         user3.setEmail("invalidmail");
         user3.setFirstName("Max");
@@ -203,7 +205,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
-    public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldThrowExceptionOnUpdatingIfUsernameAlreadyUsed() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         Mockito.when(entityManager.find(Mockito.eq(User.class), Mockito.any())).thenReturn(user3);
         Mockito.when(queryMock.getSingleResult()).thenReturn(user3, user2);
         user3.setUsername(user1.getUsername());
@@ -213,7 +215,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotUpdateUserWithNullValueEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldNotUpdateUserWithNullValueEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(null);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
@@ -223,7 +225,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotUpdateUserWithNullValueUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldNotUpdateUserWithNullValueUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(null);
         user3.setFirstName("Max");
@@ -233,7 +235,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotUpdateUserWithNullValueFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldNotUpdateUserWithNullValueFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName(null);
@@ -243,7 +245,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotUpdateUserWithNullValueLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldNotUpdateUserWithNullValueLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("max");
@@ -253,7 +255,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldUpdateUserData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException {
+    public void shouldUpdateUserData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, IncompleteUserDataException, InvalidUserException, InvalidNameException, InternalUserModuleException {
         user3.setEmail(UNKNOWN_MAIL);
         user3.setUsername(definitelyUnusedUsername());
         user3.setFirstName("Max");
@@ -268,7 +270,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldDeleteUser() {
+    public void shouldDeleteUser() throws InternalUserModuleException {
         final Long deletedUserId = user1.getId();
         final int statusCode = userAdministration.deleteUser(user1);
         Assert.assertEquals(0, statusCode);
@@ -276,7 +278,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldDeleteUserIfNoStoredAuthTokenFound() {
+    public void shouldDeleteUserIfNoStoredAuthTokenFound() throws InternalUserModuleException {
         final Long deletedUserId = user1.getId();
         Mockito.when(queryMock.getResultList()).thenThrow(new NoResultException());
         final int statusCode = userAdministration.deleteUser(user1);

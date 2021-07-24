@@ -19,7 +19,6 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import org.springframework.stereotype.Controller;
 
 import javax.naming.InvalidNameException;
-import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -289,11 +288,15 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onLoginCalled(final HashMap<String, String> args) {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
-            final LoggedInUser user = AUTH_SERVICE.loginUser(args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_PWD));
-            if (user == null) VIEW.printInvalidLogin();
-            else {
-                STORAGE.setLoggedInUser(user);
-                VIEW.printSuccessfulLogin(user);
+            try {
+                final LoggedInUser user = AUTH_SERVICE.loginUser(args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_PWD));
+                if (user == null) VIEW.printInvalidLogin();
+                else {
+                    STORAGE.setLoggedInUser(user);
+                    VIEW.printSuccessfulLogin(user);
+                }
+            } catch (InternalUserModuleException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -301,33 +304,37 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onLoginJwtCalled(final HashMap<String, String> args) {
         if (STORAGE.getLoggedInUser() != null) VIEW.printLogoutBeforeLogin(STORAGE.getLoggedInUser());
         else {
-            String token = args.get(ACTION_ARG_TOKEN);
-            String refreshToken = args.get(ACTION_ARG_REFRESH);
-            final boolean isValidInitialToken = AUTH_SERVICE.hasAccessRights(token);
+            try {
+                String token = args.get(ACTION_ARG_TOKEN);
+                String refreshToken = args.get(ACTION_ARG_REFRESH);
+                final boolean isValidInitialToken = AUTH_SERVICE.hasAccessRights(token);
 
-            if (!isValidInitialToken) {
-                VIEW.printInvalidAuthTokenInLogin();
-                final AuthTokens newTokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
-                if (newTokens == null) token = null;
-                else {
-                    token = newTokens.getToken();
-                    refreshToken = newTokens.getRefreshToken();
+                if (!isValidInitialToken) {
+                    VIEW.printInvalidAuthTokenInLogin();
+                    final AuthTokens newTokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
+                    if (newTokens == null) token = null;
+                    else {
+                        token = newTokens.getToken();
+                        refreshToken = newTokens.getRefreshToken();
+                    }
                 }
-            }
 
-            LoggedInUser user = null;
-            if (token != null) {
-                final User fetchedUser = AUTH_SERVICE.fetchUser(token);
-                if (fetchedUser != null) {
-                    user = new LoggedInUser(fetchedUser);
-                    user.setAuthTokens(new AuthTokens(refreshToken, token));
-                    STORAGE.setLoggedInUser(user);
-                    if (isValidInitialToken) VIEW.printSuccessfulLoginWithToken(user);
-                    else VIEW.printSuccessfulLoginWithRefreshedToken(user);
+                LoggedInUser user = null;
+                if (token != null) {
+                    final User fetchedUser = AUTH_SERVICE.fetchUser(token);
+                    if (fetchedUser != null) {
+                        user = new LoggedInUser(fetchedUser);
+                        user.setAuthTokens(new AuthTokens(refreshToken, token));
+                        STORAGE.setLoggedInUser(user);
+                        if (isValidInitialToken) VIEW.printSuccessfulLoginWithToken(user);
+                        else VIEW.printSuccessfulLoginWithRefreshedToken(user);
+                    }
                 }
-            }
 
-            if (user == null) VIEW.printInvalidLoginWithToken();
+                if (user == null) VIEW.printInvalidLoginWithToken();
+            } catch (InternalUserModuleException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -374,7 +381,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get(ACTION_ARG_USERNAME), args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_FIRSTNAME), args.get(ACTION_ARG_LASTNAME), args.get(ACTION_ARG_PWD), args.get(ACTION_ARG_CONFIRM));
                 STORAGE.setLoggedInUser(loggedInUser);
                 VIEW.printSuccessfulRegistration(loggedInUser);
-            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
+            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException | InternalUserModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -398,7 +405,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 USER_SERVICE.updateUser(user);
                 VIEW.printSuccessfulUserUpdate(user);
-            } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException e) {
+            } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException | InternalUserModuleException e) {
                 user.setEmail(prevEmail);
                 user.setUsername(prevUsername);
                 user.setFirstName(prevFirstname);
@@ -412,7 +419,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         try {
             AUTH_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get(ACTION_ARG_CURRENT_PWD), args.get(ACTION_ARG_NEW_PWD), args.get(ACTION_ARG_CONFIRM));
             VIEW.printSuccessfulPwdUpdate();
-        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException e) {
+        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException | InternalUserModuleException e) {
             e.printStackTrace();
         }
     }
@@ -486,21 +493,25 @@ public class VocabduelControllerImpl implements VocabduelController {
     private User findUser(final HashMap<String, String> args) {
         VIEW.printOptionalParamsInfo(args.keySet(), ACTION_ARG_ID, ACTION_ARG_USERNAME, ACTION_ARG_EMAIL);
         User user = null;
-        if (args.get(ACTION_ARG_ID) != null) {
-            VIEW.printDeterminingUserBy(ACTION_ARG_ID);
-            try {
-                final Long id = Long.parseLong(args.get(ACTION_ARG_ID));
-                user = USER_SERVICE.getUserDataById(id);
-            } catch (NumberFormatException e) {
-                VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
-            }
-        } else if (args.get(ACTION_ARG_USERNAME) != null) {
-            VIEW.printDeterminingUserBy(ACTION_ARG_USERNAME);
-            user = USER_SERVICE.getUserDataByUsername(args.get(ACTION_ARG_USERNAME));
-        } else if (args.get(ACTION_ARG_EMAIL) != null) {
-            VIEW.printDeterminingUserBy(ACTION_ARG_EMAIL);
-            user = USER_SERVICE.getUserDataByEmail(args.get(ACTION_ARG_EMAIL));
-        } else VIEW.printPleaseAddParamForUser();
+        try {
+            if (args.get(ACTION_ARG_ID) != null) {
+                VIEW.printDeterminingUserBy(ACTION_ARG_ID);
+                try {
+                    final Long id = Long.parseLong(args.get(ACTION_ARG_ID));
+                    user = USER_SERVICE.getUserDataById(id);
+                } catch (NumberFormatException e) {
+                    VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
+                }
+            } else if (args.get(ACTION_ARG_USERNAME) != null) {
+                VIEW.printDeterminingUserBy(ACTION_ARG_USERNAME);
+                user = USER_SERVICE.getUserDataByUsername(args.get(ACTION_ARG_USERNAME));
+            } else if (args.get(ACTION_ARG_EMAIL) != null) {
+                VIEW.printDeterminingUserBy(ACTION_ARG_EMAIL);
+                user = USER_SERVICE.getUserDataByEmail(args.get(ACTION_ARG_EMAIL));
+            } else VIEW.printPleaseAddParamForUser();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+        }
 
         if (user == null) VIEW.printCouldNotDetermineUser();
 
@@ -527,7 +538,12 @@ public class VocabduelControllerImpl implements VocabduelController {
 
     private void onUserSearchCalled(final HashMap<String, String> args) {
         final String searchStr = args.get(ACTION_ARG_STR);
-        final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
+        List<User> users = null;
+        try {
+            users = USER_SERVICE.findUsersByUsername(searchStr);
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+        }
         if (users == null || users.size() == 0) VIEW.printNoUsersFound();
         else VIEW.printFoundUsers(users, searchStr);
     }
@@ -537,7 +553,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         try {
             opponent = USER_SERVICE.getUserDataById(Long.parseLong(args.get(ACTION_ARG_OPPONENT)));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | InternalUserModuleException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_OPPONENT));
         }
 
@@ -556,7 +572,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printSuccessfullyStaredGame(game, ACTION_KEY_GAME_QUESTION);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get(ACTION_ARG_VOCABLE_LISTS));
-            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException e) {
+            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException e) {
                 e.printStackTrace();
             }
         } else VIEW.printCouldNotDetermineUser();
@@ -622,7 +638,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             final List<PersonalFinishedGame> hist = SCORE_SERVICE.getPersonalFinishedGames(STORAGE.getLoggedInUser());
             if (hist != null && !hist.isEmpty()) VIEW.printOwnScores(hist);
             else VIEW.printNoFinishedGamesYet();
-        } catch (InvalidUserException e) {
+        } catch (InvalidUserException | InternalUserModuleException e) {
             e.printStackTrace();
         }
     }
@@ -635,7 +651,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 hist = SCORE_SERVICE.getPersonalFinishedGames(user);
                 if (hist != null && !hist.isEmpty()) VIEW.printUserScores(hist, user);
                 else VIEW.printNoFinishedGamesYet();
-            } catch (InvalidUserException e) {
+            } catch (InvalidUserException | InternalUserModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -644,7 +660,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onScoreRecordCalled() {
         try {
             VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(STORAGE.getLoggedInUser()));
-        } catch (InvalidUserException e) {
+        } catch (InvalidUserException | InternalUserModuleException e) {
             e.printStackTrace();
         }
     }
@@ -654,7 +670,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (user != null) {
             try {
                 VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(user));
-            } catch (InvalidUserException e) {
+            } catch (InvalidUserException | InternalUserModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -664,10 +680,14 @@ public class VocabduelControllerImpl implements VocabduelController {
         final String firstname = STORAGE.getLoggedInUser().getFirstName();
         final String confirmFlag = "--" + ACTION_ARG_CONFIRM + " true";
         if (args.get(ACTION_ARG_CONFIRM) != null && args.get(ACTION_ARG_CONFIRM).equals("true")) {
-            USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
-            GAME_SERVICE.removeWidowGames();
-            STORAGE.setLoggedInUser(null);
-            VIEW.printYouWillBeMissed(firstname);
+            try {
+                USER_SERVICE.deleteUser(STORAGE.getLoggedInUser());
+                GAME_SERVICE.removeWidowGames();
+                STORAGE.setLoggedInUser(null);
+                VIEW.printYouWillBeMissed(firstname);
+            } catch (InternalUserModuleException e) {
+                e.printStackTrace();
+            }
         } else VIEW.printConfirmUserDeletion(firstname, confirmFlag);
     }
 }

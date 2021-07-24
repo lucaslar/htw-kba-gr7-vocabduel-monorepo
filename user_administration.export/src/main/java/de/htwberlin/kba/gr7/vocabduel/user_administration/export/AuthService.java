@@ -34,8 +34,9 @@ public interface AuthService {
      * @throws AlreadyRegisteredUsernameException The user's specified username is already in use and, thus, cannot be used again.
      * @throws IncompleteUserDataException        The passed user object does not contain all required user data.
      * @throws InvalidNameException               The passed user user does have an invalid first/ last name.
+     * @throws InternalUserModuleException        An internal error in the user module occurred.
      */
-    LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException;
+    LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException;
 
     /**
      * Authenticates an existing user in order to take actions in this application. The returned user object contains all
@@ -45,8 +46,9 @@ public interface AuthService {
      * @param email    Unique email address the user signs in with.
      * @param password The user's password.
      * @return User object including authentication tokens / <code>null</code> if the login was not successful.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    LoggedInUser loginUser(String email, String password);
+    LoggedInUser loginUser(String email, String password) throws InternalUserModuleException;
 
     /**
      * Verifies a given auth token, decodes it and returns the user it belongs to. If no or no valid token is given,
@@ -54,8 +56,9 @@ public interface AuthService {
      *
      * @param token Auth token the user is to be determined by.
      * @return User the given <code>token</code> belongs to or <code>null</code> in case of no/no valid token.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    User fetchUser(String token);
+    User fetchUser(String token) throws InternalUserModuleException;
 
     /**
      * Updates both refresh and auth token and returns the two tokens if the given refresh token is valid. Otherwise,
@@ -65,16 +68,18 @@ public interface AuthService {
      *
      * @param refreshToken Token to be used for refreshing auth/refresh token.
      * @return Object containing refreshed tokens, <code>null</code> if the operation was not successful.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    AuthTokens refreshAuthTokens(String refreshToken);
+    AuthTokens refreshAuthTokens(String refreshToken) throws InternalUserModuleException;
 
     /**
      * Checks whether a given auth token is valid, i.e. if the user has access rights or not.
      *
      * @param token Auth token to be checked.
      * @return <code>true</code> if the token is valid, <code>false</code> if not/<code>null</code>.
+     * @throws InternalUserModuleException An internal error in the user module occurred.
      */
-    boolean hasAccessRights(String token);
+    boolean hasAccessRights(String token) throws InternalUserModuleException;
 
     /**
      * Updates a user's password if the current password is correct and the new password is both valid and matching the
@@ -89,6 +94,7 @@ public interface AuthService {
      * @throws PasswordsDoNotMatchException <code>newPassword</code> and <code>confirmPassword</code> do not match.
      * @throws PwTooWeakException           The given password is not strong enough.
      * @throws InvalidUserException         The given user is null or does not exist.
+     * @throws InternalUserModuleException  An internal error in the user module occurred.
      */
-    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException, InvalidUserException;
+    int updateUserPassword(User user, String currentPassword, String newPassword, String confirmPassword) throws InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException, InvalidUserException, InternalUserModuleException;
 }

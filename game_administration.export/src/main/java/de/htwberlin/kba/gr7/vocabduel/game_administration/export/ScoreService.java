@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.Unfi
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
@@ -25,16 +26,18 @@ public interface ScoreService {
      *
      * @param user User whose finished games are to be returned and for whom they are to be personalized.
      * @return List of finished games including result data from the given player's point of view.
-     * @throws InvalidUserException The user could not be found.
+     * @throws InvalidUserException         The user could not be found.
+     * @throws InternalUserModuleException  An internal error in the user module occurred.
      */
-    List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException;
+    List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException;
 
     /**
      * @param user User the record of is to be counted.
      * @return Score record for the given player.
      * @throws InvalidUserException The user could not be found.
+     * @throws InternalUserModuleException  An internal error in the user module occurred.
      */
-    ScoreRecord getRecordOfUser(User user) throws InvalidUserException;
+    ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException;
 
     /**
      * Finishes a game, i.e. determines its final score and stores it. Afterwards, the finished game including its

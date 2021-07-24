@@ -42,9 +42,8 @@ public class AuthServiceRestAdapter {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "register");
         if (missingDataResponse != null) return missingDataResponse;
 
-        LoggedInUser user;
         try {
-            user = AUTH_SERVICE.registerUser(
+            final LoggedInUser user = AUTH_SERVICE.registerUser(
                     data.getUsername(),
                     data.getEmail(),
                     data.getFirstName(),
@@ -52,13 +51,16 @@ public class AuthServiceRestAdapter {
                     data.getPassword(),
                     data.getConfirm()
             );
+
+            System.out.println("Successfully registered user: " + user.toString());
+            return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-
-        System.out.println("Successfully registered user: " + user.toString());
-        return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
     @POST
@@ -70,22 +72,32 @@ public class AuthServiceRestAdapter {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "login");
         if (missingDataResponse != null) return missingDataResponse;
 
-        final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
-        if (user != null) {
-            System.out.println("A user logged in: " + user);
-            return Response.ok(user).build();
-        }
+        try {
+            final LoggedInUser user = AUTH_SERVICE.loginUser(data.getEmail(), data.getPassword());
 
-        System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
-        return Response.status(Response.Status.BAD_REQUEST).entity("Invalid login, please try again.").type(MediaType.TEXT_PLAIN).build();
+            if (user != null) {
+                System.out.println("A user logged in: " + user);
+                return Response.ok(user).build();
+            } else {
+                System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
+                return Response.status(Response.Status.BAD_REQUEST).entity("Invalid login, please try again.").type(MediaType.TEXT_PLAIN).build();
+            }
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @GET
     @Path("/current-user")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
-        // Since once this code is reached, the auth interceptor did not abort this method => fetch will not return null / we could also get the data by ID here.
-        return Response.ok(AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""))).build();
+        try {
+            return Response.ok(AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""))).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @POST
@@ -98,12 +110,17 @@ public class AuthServiceRestAdapter {
             return Response.status(Response.Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Refresh Token must not be null or empty!").build();
         }
 
-        final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
-        if (tokens != null) return Response.ok(tokens).build();
-        else return Response
-                .status(Response.Status.FORBIDDEN)
-                .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
-                .type(MediaType.TEXT_PLAIN).build();
+        try {
+            final AuthTokens tokens = AUTH_SERVICE.refreshAuthTokens(refreshToken);
+            if (tokens != null) return Response.ok(tokens).build();
+            else return Response
+                    .status(Response.Status.FORBIDDEN)
+                    .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
+                    .type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @PUT
@@ -114,17 +131,20 @@ public class AuthServiceRestAdapter {
         final Response missingDataResponse = MissingData.createMissingDataResponse(data, "update-password");
         if (missingDataResponse != null) return missingDataResponse;
 
-        final User user = USER_SERVICE.getUserDataById(userId);
         try {
+            final User user = USER_SERVICE.getUserDataById(userId);
             AUTH_SERVICE.updateUserPassword(user, data.getCurrentPassword(), data.getNewPassword(), data.getConfirm());
+            System.out.println("The following user changed her/his password successfully: " + user);
+            return Response.noContent().build();
         } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-        System.out.println("The following user changed her/his password successfully: " + user);
-        return Response.noContent().build();
     }
 }

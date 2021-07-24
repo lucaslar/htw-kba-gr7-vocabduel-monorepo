@@ -92,12 +92,12 @@ public class ValidPwdsTest {
     }
 
     @Test
-    public void shouldNotThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+    public void shouldNotThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
         auth.registerUser("newuser", "newuser@user.de", "New", "User", PWD, PWD);
     }
 
     @Test
-    public void shouldNotThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+    public void shouldNotThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
         auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }

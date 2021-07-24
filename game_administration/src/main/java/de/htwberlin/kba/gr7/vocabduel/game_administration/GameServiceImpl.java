@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
@@ -41,7 +42,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException {
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
@@ -120,7 +121,7 @@ public class GameServiceImpl implements GameService {
         return 0;
     }
 
-    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException {
+    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException, InternalUserModuleException {
         if (vocableLists == null) throw new InvalidGameSetupException("No vocable lists provided!");
         if (playerA == null) throw new InvalidGameSetupException("No user (initiator) given/found! ");
         if (playerB == null) throw new InvalidGameSetupException("No user (opponent) given/found!");

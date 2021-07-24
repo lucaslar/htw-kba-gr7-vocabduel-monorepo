@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -40,11 +42,16 @@ public class AuthInterceptor implements ContainerRequestFilter {
                 requestContext.abortWith(ACCESS_DENIED_NO_TOKEN);
             } else {
                 final String token = tokenStr.replaceFirst("Bearer ", "");
-                if (!AUTH_SERVICE.hasAccessRights(token)) requestContext.abortWith(ACCESS_DENIED);
-                else {
-                    final User user = AUTH_SERVICE.fetchUser(token);
-                    if (user == null) requestContext.abortWith(ACCESS_DENIED_NO_USER);
-                    else requestContext.getHeaders().add(USER_HEADER, String.valueOf(user.getId()));
+                try {
+                    if (!AUTH_SERVICE.hasAccessRights(token)) requestContext.abortWith(ACCESS_DENIED);
+                    else {
+                        final User user = AUTH_SERVICE.fetchUser(token);
+                        if (user == null) requestContext.abortWith(ACCESS_DENIED_NO_USER);
+                        else requestContext.getHeaders().add(USER_HEADER, String.valueOf(user.getId()));
+                    }
+                } catch (InternalUserModuleException e) {
+                    e.printStackTrace();
+                    requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e).build());
                 }
             }
         }

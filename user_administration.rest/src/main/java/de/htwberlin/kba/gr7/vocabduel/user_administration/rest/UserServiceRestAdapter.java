@@ -38,9 +38,15 @@ public class UserServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Required query param \"searchStr\" must not be null/empty").build();
         }
 
-        final List<User> users = USER_SERVICE.findUsersByUsername(searchStr);
-        System.out.println("Incoming search for users with username: \"" + searchStr + "\" => " + users.size() + " result(s)");
-        return Response.ok(users).build();
+        final List<User> users;
+        try {
+            users = USER_SERVICE.findUsersByUsername(searchStr);
+            System.out.println("Incoming search for users with username: \"" + searchStr + "\" => " + users.size() + " result(s)");
+            return Response.ok(users).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -57,25 +63,30 @@ public class UserServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(message).build();
         }
 
-        User user;
-        if (email != null) user = USER_SERVICE.getUserDataByEmail(email);
-        else if (username != null) user = USER_SERVICE.getUserDataByUsername(username);
-        else {
-            try {
-                user = USER_SERVICE.getUserDataById(Long.parseLong(id));
-            } catch (NumberFormatException e) {
-                System.out.println("Failed to get user data due to given ID not being a number");
-                return Response.status(Response.Status.BAD_REQUEST).entity("Provided ID is not a number!").type(MediaType.TEXT_PLAIN).build();
+        try {
+            User user;
+            if (email != null) user = USER_SERVICE.getUserDataByEmail(email);
+            else if (username != null) user = USER_SERVICE.getUserDataByUsername(username);
+            else {
+                try {
+                    user = USER_SERVICE.getUserDataById(Long.parseLong(id));
+                } catch (NumberFormatException e) {
+                    System.out.println("Failed to get user data due to given ID not being a number");
+                    return Response.status(Response.Status.BAD_REQUEST).entity("Provided ID is not a number!").type(MediaType.TEXT_PLAIN).build();
+                }
             }
-        }
 
-        if (user == null) {
-            System.out.println("No matching user found for the given params: id=" + id + " , email=" + email + " , username" + username);
-            return Response.status(Response.Status.NOT_FOUND).entity("No matching user found").type(MediaType.TEXT_PLAIN).build();
-        }
+            if (user == null) {
+                System.out.println("No matching user found for the given params: id=" + id + " , email=" + email + " , username" + username);
+                return Response.status(Response.Status.NOT_FOUND).entity("No matching user found").type(MediaType.TEXT_PLAIN).build();
+            }
 
-        System.out.println("A user has been found successfully: " + user);
-        return Response.ok(user).build();
+            System.out.println("A user has been found successfully: " + user);
+            return Response.ok(user).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @PUT
@@ -99,6 +110,9 @@ public class UserServiceRestAdapter {
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
 
         System.out.println("Successfully updated user data: " + data);

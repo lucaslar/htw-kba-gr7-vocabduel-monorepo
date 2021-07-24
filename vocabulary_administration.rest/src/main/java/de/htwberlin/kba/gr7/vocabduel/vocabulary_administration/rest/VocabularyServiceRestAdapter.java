@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,14 +47,17 @@ public class VocabularyServiceRestAdapter {
     @Path("/lists-of-author/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getVocableListsByUser(@PathParam("id") final long id) {
-        final User user = USER_SERVICE.getUserDataById(id);
-
-        if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No user found for the given ID.").type(MediaType.TEXT_PLAIN).build();
+        try {
+            final User user = USER_SERVICE.getUserDataById(id);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No user found for the given ID.").type(MediaType.TEXT_PLAIN).build();
+            }
+            final List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
+            return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
-
-        final List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
-        return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -99,6 +102,9 @@ public class VocabularyServiceRestAdapter {
         } catch (UnknownLanguagesException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
         System.out.println("Successfully imported GNU Vocable list.");
         return Response.status(Response.Status.CREATED).entity(imported).type(MediaType.APPLICATION_JSON).build();
@@ -122,6 +128,9 @@ public class VocabularyServiceRestAdapter {
         } catch (UndeletableListException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e).build();
+        } catch (InternalUserModuleException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
         System.out.println("Successfully deleted vocable list with ID " + list.getId());
         return Response.noContent().build();

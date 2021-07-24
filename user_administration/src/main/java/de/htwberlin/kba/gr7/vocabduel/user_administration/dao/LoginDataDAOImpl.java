@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
 import org.springframework.stereotype.Repository;
@@ -16,12 +17,16 @@ public class LoginDataDAOImpl implements LoginDataDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertLoginData(LoginData loginData) {
-        entityManager.persist(loginData);
+    public void insertLoginData(LoginData loginData) throws InternalUserModuleException {
+        try {
+            entityManager.persist(loginData);
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 
     @Override
-    public LoginData selectLoginDataByUserEmail(String email) {
+    public LoginData selectLoginDataByUserEmail(String email) throws InternalUserModuleException {
         LoginData loginData = null;
         try {
             loginData = (LoginData) entityManager
@@ -30,12 +35,14 @@ public class LoginDataDAOImpl implements LoginDataDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (loginData) if no entry could be found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return loginData;
     }
 
     @Override
-    public LoginData selectLoginDataByUser(User user) {
+    public LoginData selectLoginDataByUser(User user) throws InternalUserModuleException {
         LoginData loginData = null;
         try {
             loginData = (LoginData) entityManager
@@ -44,12 +51,14 @@ public class LoginDataDAOImpl implements LoginDataDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (loginData) if no user could be found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return loginData;
     }
 
     @Override
-    public boolean deleteLoginDataByUserId(Long userId) {
+    public boolean deleteLoginDataByUserId(Long userId) throws InternalUserModuleException {
         boolean res = false;
         try {
             final List<LoginData> loginData = entityManager
@@ -60,6 +69,8 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             res = true;
         } catch (NoResultException ignored) {
             // ignored => a user might not have any login data stored in the database. Thus, it's no problem if none to be deleted are found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return res;
     }

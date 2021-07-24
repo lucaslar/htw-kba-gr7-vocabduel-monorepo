@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> selectUsersByUsername(String searchString) {
+    public List<User> selectUsersByUsername(String searchString) throws InternalUserModuleException {
         List<User> users = null;
         try {
             final String query = "select u from User u where lower(u.username) like :searchString";
@@ -29,12 +30,14 @@ public class UserDAOImpl implements UserDAO {
                     .getResultList();
         } catch (NoResultException ignored) {
             // ignored => return null (users) if no users could be found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return users;
     }
 
     @Override
-    public User selectUserByEmail(String email) {
+    public User selectUserByEmail(String email) throws InternalUserModuleException {
         User user = null;
         try {
             final String query = "from User as u where u.email like :email";
@@ -44,17 +47,23 @@ public class UserDAOImpl implements UserDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (user) if no user could be found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return user;
     }
 
     @Override
-    public User selectUserById(Long userId) {
-        return entityManager.find(User.class, userId);
+    public User selectUserById(Long userId) throws InternalUserModuleException {
+        try {
+            return entityManager.find(User.class, userId);
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 
     @Override
-    public User selectUserByUsername(String username) {
+    public User selectUserByUsername(String username) throws InternalUserModuleException {
         User user = null;
         try {
             final String query = "from User as u where u.username like :username";
@@ -64,13 +73,19 @@ public class UserDAOImpl implements UserDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (user) if no user could be found
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
         }
         return user;
     }
 
     @Override
-    public boolean updateUser(User user) {
-        entityManager.merge(user);
-        return true;
+    public boolean updateUser(User user) throws InternalUserModuleException {
+        try {
+            entityManager.merge(user);
+            return true;
+        } catch (Exception e) {
+            throw new InternalUserModuleException(e);
+        }
     }
 }

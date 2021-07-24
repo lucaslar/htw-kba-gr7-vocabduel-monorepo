@@ -86,12 +86,12 @@ public class InvalidPwdsTest {
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException {
+    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
         auth.registerUser("newuser", "newuser@user.de", "New", "User", PWD, PWD);
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException {
+    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
         auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }
