@@ -20,14 +20,12 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
 
     @Override
     public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) {
-        entityManager.getTransaction().begin();
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
         finishedGame.setFinishedTimestamp(new Date());
         finishedGame.setTotalPointsA((int) game.getRounds().stream().filter(r -> r.getResultPlayerA() == Result.WIN).count());
         finishedGame.setTotalPointsB((int) game.getRounds().stream().filter(r -> r.getResultPlayerB() == Result.WIN).count());
         entityManager.persist(finishedGame);
         entityManager.remove(game);
-        entityManager.getTransaction().commit();
         return finishedGame;
     }
 
@@ -35,7 +33,6 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
     public List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User user) {
         List<FinishedVocabduelGame> games = null;
         entityManager.clear();
-        entityManager.getTransaction().begin();
         try {
             games = (List<FinishedVocabduelGame>) entityManager
                     .createQuery("select g from FinishedVocabduelGame g where (g.playerA = :user or g.playerB = :user)")
@@ -44,7 +41,6 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
 
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return games;
     }
 
@@ -52,7 +48,6 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
     public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() {
         boolean res = false;
         entityManager.clear();
-        entityManager.getTransaction().begin();
         try {
             final List<FinishedVocabduelGame> finishedGames = (List<FinishedVocabduelGame>) entityManager
                     .createQuery("select f from FinishedVocabduelGame f where (playerA_id not in (select id from User) and playerB_id not in (select id from User))")
@@ -61,7 +56,6 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             res = true;
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return res;
     }
 

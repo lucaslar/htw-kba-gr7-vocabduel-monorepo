@@ -17,15 +17,12 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
 
     @Override
     public void insertRunningVocabduelGame(RunningVocabduelGame game) {
-        entityManager.getTransaction().begin();
         entityManager.persist(game);
-        entityManager.getTransaction().commit();
     }
 
     @Override
     public List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User user) {
         List<RunningVocabduelGame> games = null;
-        entityManager.getTransaction().begin();
         try {
             games = (List<RunningVocabduelGame>) entityManager
                     .createQuery("select g from RunningVocabduelGame g where (playerB = :user or playerA = :user)")
@@ -33,7 +30,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getResultList();
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return games;
     }
 
@@ -41,7 +37,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
     public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) {
         RunningVocabduelGame myGame = null;
         entityManager.clear();
-        entityManager.getTransaction().begin();
         try {
             myGame = (RunningVocabduelGame) entityManager
                     .createQuery("select g from RunningVocabduelGame g where g.id = :gameId and (g.playerA = :user or g.playerB = :user)")
@@ -50,7 +45,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return myGame;
     }
 
@@ -58,7 +52,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
     public boolean deleteRunningVocabduelGameWhereUserDoesntExist() {
         boolean res = false;
         entityManager.clear();
-        entityManager.getTransaction().begin();
         try {
             final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) entityManager
                     .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
@@ -67,7 +60,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             res = true;
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return res;
     }
 }

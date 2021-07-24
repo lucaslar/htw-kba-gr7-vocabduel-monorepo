@@ -16,16 +16,13 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
 
     @Override
     public boolean updateVocabduelRound(VocabduelRound round) {
-        entityManager.getTransaction().begin();
         entityManager.merge(round);
-        entityManager.getTransaction().commit();
         return true;
     }
 
     @Override
     public VocabduelRound selectVocabduelRoundByGameIdAndUser(User player, Long gameId) {
         VocabduelRound round = null;
-        entityManager.getTransaction().begin();
         try {
             round = (VocabduelRound) entityManager
                     .createQuery("select r from RunningVocabduelGame g inner join g.rounds r where g.id = :gameId and ((g.playerA = :user and r.resultPlayerA is null) or (g.playerB = :user and r.resultPlayerB is null))")
@@ -35,7 +32,6 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
         }
-        entityManager.getTransaction().commit();
         return round;
     }
 }
