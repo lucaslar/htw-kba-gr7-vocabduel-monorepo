@@ -19,4 +19,15 @@ export class UserService {
         const url = `${environment.endpointUrl}/user/find`;
         return this.http.get<User[]>(url, { params: { searchStr } });
     }
+
+    getUser$(
+        value:
+            | { username: string }
+            | { email: string }
+            | { id: string  }
+    ): Observable<User> {
+        const url = `${environment.endpointUrl}/user/get`;
+        console.log(value)
+        return this.http.get<User>(url, { params: value });
+    }
 }

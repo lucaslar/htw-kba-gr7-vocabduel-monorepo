@@ -1,0 +1,115 @@
+<div class="d-flex flex-column h-100">
+    <h1 mat-dialog-title>
+        {{ 'dialog.findOpponent.title' | translate }}
+    </h1>
+
+    <mat-dialog-content class="flex-grow-1" [@.disabled]="disableAnimation">
+        <mat-accordion>
+            <mat-expansion-panel class="mat-elevation-z0 no-padding-body">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="d-flex color-primary">
+                        <mat-icon class="my-auto mr-2">person_search</mat-icon>
+                        <strong class="my-auto">
+                            {{ 'header.actions.searchPerson' | translate }}
+                        </strong>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="p-1">
+                    <app-person-search
+                        (userSelected)="ref.close($event)"
+                    ></app-person-search>
+                </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel class="mat-elevation-z0 no-padding-body">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="d-flex color-primary">
+                        <mat-icon class="my-auto mr-2">push_pin</mat-icon>
+                        <strong class="my-auto">
+                            {{ 'dialog.findOpponent.exactSearch' | translate }}
+                        </strong>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="p-1">
+                    <form>
+                        <mat-form-field
+                            class="w-100"
+                            appearance="outline"
+                            color="primary"
+                        >
+                            <input
+                                matInput
+                                name="identifier"
+                                #input
+                                (input)="
+                                    invalidFormat = false; notFound = false
+                                "
+                            />
+                            <mat-label>
+                                {{
+                                    'dialog.findOpponent.identifier' | translate
+                                }}
+                            </mat-label>
+                        </mat-form-field>
+
+                        <div class="d-flex">
+                            <mat-button-toggle-group
+                                [(ngModel)]="identifier"
+                                name="identifier-type"
+                            >
+                                <mat-button-toggle value="id">
+                                    {{ 'dialog.findOpponent.id' | translate }}
+                                </mat-button-toggle>
+                                <mat-button-toggle value="email">
+                                    {{ 'general.user.email' | translate }}
+                                </mat-button-toggle>
+                                <mat-button-toggle value="username">
+                                    {{ 'general.user.username' | translate }}
+                                </mat-button-toggle>
+                            </mat-button-toggle-group>
+
+                            <span
+                                class="color-warn mx-2 my-auto"
+                                *ngIf="notFound"
+                            >
+                                {{
+                                    'dialog.findOpponent.userNotFound'
+                                        | translate
+                                }}
+                            </span>
+                            <span
+                                class="color-warn mx-2 my-auto"
+                                *ngIf="invalidFormat"
+                            >
+                                {{
+                                    'dialog.findOpponent.invalidFormat'
+                                        | translate
+                                }}
+                            </span>
+
+                            <button
+                                mat-flat-button
+                                class="ml-auto"
+                                color="primary"
+                                [disabled]="
+                                    navigation.isLoadingIndicated ||
+                                    !input.value.trim()
+                                "
+                                (click)="searchByIdentifier(input.value)"
+                            >
+                                <mat-icon>push_pin</mat-icon>
+                                {{ 'dialog.findOpponent.find' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>
+            {{ 'general.close' | translate }}
+        </button>
+    </mat-dialog-actions>
+</div>

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { User } from '../../../model/internal/user';
 import { VocableList } from '../../../model/vocable-list';
 import { NavigationService } from '../../../services/navigation.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FindUserComponent } from '../../dialogs/find-user/find-user.component';
 
 @Component({
     selector: 'app-start-game',
@@ -12,7 +14,10 @@ export class StartGameComponent {
     opponent?: User;
     lists?: VocableList[];
 
-    constructor(readonly navigation: NavigationService) {}
+    constructor(
+        readonly navigation: NavigationService,
+        private readonly dialog: MatDialog
+    ) {}
 
     get totalVocables(): number {
         const count = this.lists
@@ -22,7 +27,12 @@ export class StartGameComponent {
     }
 
     selectOpponent(): void {
-        // TODO Implement
+        this.dialog
+            .open(FindUserComponent, { width: '80vw' })
+            .afterClosed()
+            .subscribe((user) => {
+                if (user) this.opponent = user;
+            });
     }
 
     selectLists(): void {

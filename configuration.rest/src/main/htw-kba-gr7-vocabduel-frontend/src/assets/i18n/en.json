@@ -32,6 +32,15 @@
         },
         "userDetails": {
             "importsBy": "Imports by {{ username }}"
+        },
+        "findOpponent": {
+            "title": "Find an opponent",
+            "exactSearch": "Exact search",
+            "identifier": "Identifier",
+            "id": "ID",
+            "find": "Find",
+            "invalidFormat": "Invalid format (must be a number)",
+            "userNotFound": "No user found"
         }
     },
     "snackbar": {
@@ -185,8 +194,8 @@
             "start": "Start",
             "clickToEdit": "Click to edit",
             "precondition": {
-                "userSpecified": "Opponent specified",
-                "atLeast9Vocables": "List(s) with at least nine vocables"
+                "userSpecified": "Opponent selected",
+                "atLeast9Vocables": "List(s) with at least nine selected"
             }
         }
     }

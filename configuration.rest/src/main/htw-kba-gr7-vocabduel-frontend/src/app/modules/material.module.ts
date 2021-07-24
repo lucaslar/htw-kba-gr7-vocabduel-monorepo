@@ -15,12 +15,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRippleModule } from '@angular/material/core';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
     declarations: [],
     imports: [CommonModule],
     exports: [
         MatButtonModule,
+        MatButtonToggleModule,
         MatCardModule,
         MatDialogModule,
         MatExpansionModule,
