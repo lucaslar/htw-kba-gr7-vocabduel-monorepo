@@ -47,5 +47,3 @@ public class ConfigurationRestEasyImpl extends Application {
         return SINGLETONS;
     }
 }
-
-// TODO Sort every list lang list alphabetically
