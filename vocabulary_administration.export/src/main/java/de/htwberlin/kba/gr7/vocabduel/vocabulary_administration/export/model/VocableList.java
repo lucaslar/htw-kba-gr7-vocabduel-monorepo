@@ -1,6 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -30,9 +32,8 @@ public class VocableList {
     @Column(nullable = false)
     private String unitTitle;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Fetch(FetchMode.JOIN)
     private List<Vocable> vocables;
-
-    // TODO: Improve way for receiving language/unit information?
 
     @Version
     private Integer version;

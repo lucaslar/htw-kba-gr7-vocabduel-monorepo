@@ -1,5 +1,8 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -12,8 +15,8 @@ public class LanguageSet implements Serializable {
     @Id
     @Enumerated(EnumType.STRING)
     private SupportedLanguage learntLanguage;
-    //    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentLanguageSet")
     @OneToMany(cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
     private List<VocableUnit> vocableUnits;
 
     @Version
