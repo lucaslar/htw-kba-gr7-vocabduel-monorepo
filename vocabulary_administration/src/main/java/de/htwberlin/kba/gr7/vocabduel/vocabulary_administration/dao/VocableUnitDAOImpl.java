@@ -16,27 +16,16 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
 
     @Override
     public void insertVocableUnit(VocableUnit unit) {
-        entityManager.getTransaction().begin();
         entityManager.persist(unit);
-        entityManager.getTransaction().commit();
     }
 
     @Override
     public VocableUnit selectVocableUnitByVocableList(VocableList vocables) throws PersistenceException {
-        VocableUnit unit = null;
         entityManager.clear();
-        entityManager.getTransaction().begin();
-        try {
-            unit = (VocableUnit) entityManager
-                    .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
-                    .setParameter("list", vocables)
-                    .getSingleResult();
-        } catch (PersistenceException e) {
-            entityManager.getTransaction().rollback();
-            throw e;
-        }
-        entityManager.getTransaction().commit();
-        return unit;
+        return (VocableUnit) entityManager
+                .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
+                .setParameter("list", vocables)
+                .getSingleResult();
     }
 
     @Override
