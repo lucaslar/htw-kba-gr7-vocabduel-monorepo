@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="record.wins + record.losses + record.draws; else noFinishedGames">
     <canvas
         baseChart
         [datasets]="[
@@ -32,3 +32,12 @@
     >
     </canvas>
 </div>
+
+<ng-template #noFinishedGames>
+    <div class="m-3 color-darkgrey d-flex flex-column">
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon">
+            emoji_events
+        </mat-icon>
+        <span class="mx-auto">{{ 'general.noFinishedGames' | translate }}</span>
+    </div>
+</ng-template>
