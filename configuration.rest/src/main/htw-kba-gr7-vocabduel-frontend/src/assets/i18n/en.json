@@ -107,7 +107,10 @@
         "opponent": "Opponent",
         "details": "Details",
         "play": "Play",
-        "finish": "Finish"
+        "finish": "Finish",
+        "wins": "Wins",
+        "losses": "Losses",
+        "draws": "Draws"
     },
     "main": {
         "registration": {
@@ -181,7 +184,8 @@
                 "finishedRounds": "Finished rounds",
                 "waitingForUserToFinish": "Waiting for {{ firstName }} to finish",
                 "startGame": "Start game"
-            }
+            },
+            "yourRecord": "Your record"
         },
         "game": {
             "round": "Round",

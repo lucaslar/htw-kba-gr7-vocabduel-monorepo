@@ -43,6 +43,8 @@ import { PersonalFinishedGameComponent } from './components/dialogs/personal-fin
 import { StartGameComponent } from './components/main/start-game/start-game.component';
 import { FindUserComponent } from './components/dialogs/find-user/find-user.component';
 import { VocabListSelectionComponent } from './components/dialogs/vocab-list-selection/vocab-list-selection.component';
+import { UserRecordComponent } from './components/shared/user-record/user-record.component';
+import { ChartsModule } from 'ng2-charts';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -77,6 +79,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         StartGameComponent,
         FindUserComponent,
         VocabListSelectionComponent,
+        UserRecordComponent,
     ],
     imports: [
         BrowserModule,
@@ -93,6 +96,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         MaterialModule,
         FormsModule,
         NgxDropzoneModule,
+        ChartsModule,
     ],
     providers: [
         {
