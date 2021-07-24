@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { NavigationService } from '../../../../services/navigation.service';
 import { ComplexDialogManagementService } from '../../../../services/complex-dialog-management.service';
 import { User } from '../../../../model/internal/user';
+import { MatDialog } from '@angular/material/dialog';
+import { GameDetailsComponent } from '../../../dialogs/game-details/game-details.component';
 
 @Component({
     selector: 'app-games',
@@ -20,7 +22,8 @@ export class GamesComponent {
         readonly router: Router,
         readonly navigation: NavigationService,
         private readonly gameService: GameService,
-        private readonly dialogManagement: ComplexDialogManagementService
+        private readonly dialogManagement: ComplexDialogManagementService,
+        private readonly dialog: MatDialog
     ) {
         this.openGames$ = gameService.openGames$;
     }
@@ -29,7 +32,9 @@ export class GamesComponent {
         this.dialogManagement.openUserDialog(opponent, this.currentUser);
     }
 
-    showGameDetails(): void {
-        // TODO: Implement
+    showGameDetails(game: RunningGame): void {
+        this.dialog.open(GameDetailsComponent, {
+            data: { game, currentUser: this.currentUser },
+        });
     }
 }

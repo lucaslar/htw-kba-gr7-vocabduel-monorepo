@@ -10,12 +10,14 @@ public class MinimizedUsedListInfo {
     private String title;
     private User author;
     private Date timestamp;
+    private String unitTitle;
 
     public MinimizedUsedListInfo(final VocableList list) {
         id = list.getId();
         title = list.getTitle();
         author = list.getAuthor();
         timestamp = list.getTimestamp();
+        unitTitle = list.getUnitTitle();
     }
 
     public Long getId() {
@@ -32,6 +34,10 @@ public class MinimizedUsedListInfo {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    public String getUnitTitle() {
+        return unitTitle;
     }
 
     @Override

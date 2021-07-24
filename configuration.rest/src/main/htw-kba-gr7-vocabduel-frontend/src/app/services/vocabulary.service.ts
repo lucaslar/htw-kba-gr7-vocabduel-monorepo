@@ -65,4 +65,9 @@ export class VocabularyService {
         const url = `${environment.endpointUrl}/vocabulary/lists-of-author/${user.id}`;
         return this.http.get<VocableList[]>(url);
     }
+
+    listById$(id: number): Observable<VocableList> {
+        const url = `${environment.endpointUrl}/vocabulary/list/${id}`;
+        return this.http.get<VocableList>(url);
+    }
 }

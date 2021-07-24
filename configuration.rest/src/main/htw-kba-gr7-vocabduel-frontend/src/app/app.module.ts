@@ -45,6 +45,7 @@ import { FindUserComponent } from './components/dialogs/find-user/find-user.comp
 import { VocabListSelectionComponent } from './components/dialogs/vocab-list-selection/vocab-list-selection.component';
 import { UserRecordComponent } from './components/shared/user-record/user-record.component';
 import { ChartsModule } from 'ng2-charts';
+import { GameDetailsComponent } from './components/dialogs/game-details/game-details.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -80,6 +81,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         FindUserComponent,
         VocabListSelectionComponent,
         UserRecordComponent,
+        GameDetailsComponent,
     ],
     imports: [
         BrowserModule,

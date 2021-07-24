@@ -1,0 +1,155 @@
+<div mat-dialog-title class="d-flex">
+    <mat-icon class="my-auto mr-2"> quiz </mat-icon>
+    <div class="my-auto">
+        {{ 'dialog.runningGame.title' | translate: game.opponent }}
+        <span class="color-primary">({{ game.opponent.username }})</span>
+    </div>
+</div>
+
+<mat-dialog-content>
+    <div class="my-n2">
+        <div class="my-2 d-flex">
+            <div class="mx-n1 my-auto">
+                <app-overlapping-flags
+                    [languageFrom]="game.learntLanguage"
+                    [languageTo]="game.knownLanguage"
+                ></app-overlapping-flags>
+            </div>
+            <div class="d-flex flex-column my-auto ml-1">
+                <div class="d-flex">
+                    <div class="my-auto">
+                        <strong>{{
+                            'general.language.' + game.learntLanguage
+                                | lowercase
+                                | translate
+                        }}</strong>
+                        ({{ game.learntLanguage }})
+                    </div>
+
+                    <mat-icon class="my-auto"> arrow_forward </mat-icon>
+
+                    <div class="my-auto mx-1">
+                        <strong>{{
+                            'general.language.' + game.knownLanguage
+                                | lowercase
+                                | translate
+                        }}</strong>
+                        ({{ game.knownLanguage }})
+                    </div>
+                </div>
+                <span>
+                    {{
+                        (game.usedVocabularyLists.length === 1
+                            ? 'main.startGame.list.one'
+                            : 'main.startGame.list.n'
+                        ) | translate: { n: game.usedVocabularyLists.length }
+                    }}
+                </span>
+            </div>
+        </div>
+
+        <div
+            class="my-2 d-flex clickable"
+            (click)="openOpponentDialog()"
+            mat-ripple
+        >
+            <div class="mx-2 text-center my-auto">
+                <mat-icon color="primary" class="prominent-medium-icon">
+                    person
+                </mat-icon>
+            </div>
+            <div class="my-auto ml-1">
+                <strong>
+                    {{ 'general.opponent' | translate }}:
+                    <span class="color-primary">
+                        {{ game.opponent.username }}
+                    </span>
+                </strong>
+                <br />
+                {{ game.opponent.firstName }}
+                {{ game.opponent.lastName }}
+            </div>
+        </div>
+    </div>
+
+    <mat-divider class="position-relative my-3"></mat-divider>
+
+    <div class="text-center my-auto">
+        <p>{{ 'main.dashboard.games.finishedRounds' | translate }}:</p>
+
+        <div class="mb-2 self-finished-rounds">
+            {{ game.finishedRoundsSelf }}/{{ game.totalRounds }}
+        </div>
+        <div class="color-darkgrey">
+            {{ game.opponent.firstName }}: {{ game.finishedRoundsOpponent }}/{{
+                game.totalRounds
+            }}
+        </div>
+        <strong
+            *ngIf="game.totalRounds === game.finishedRoundsSelf"
+            class="color-primary"
+        >
+            ({{
+                'main.dashboard.games.waitingForUserToFinish'
+                    | translate: game.opponent
+            }})
+        </strong>
+    </div>
+
+    <mat-divider class="position-relative my-3"> </mat-divider>
+
+    <h2 class="mb-2">{{ 'header.actions.vocabulary' | translate }}:</h2>
+
+    <ng-container
+        *ngFor="let set of game.usedVocabularyLists | langSetsByVocabulary"
+    >
+        <mat-nav-list *ngFor="let unit of set.vocableUnits">
+            <div mat-subheader>{{ unit.title }}</div>
+            <ng-container *ngFor="let list of unit.vocableLists; last as last">
+                <mat-list-item (click)="onListSelected(list)">
+                    <mat-icon mat-list-icon> menu_book </mat-icon>
+                    <div mat-line>
+                        <span>
+                            {{ list.title }}
+                        </span>
+                    </div>
+                    <div mat-line>
+                        <span>
+                            {{ 'general.importedBy' | translate }}:
+                            <span
+                                *ngIf="list.author; else deletedAuthor"
+                                [class]="
+                                    currentUser &&
+                                    currentUser.id === list.author?.id
+                                        ? 'color-accent'
+                                        : 'color-primary'
+                                "
+                            >
+                                {{ list.author.username }}
+                            </span>
+                        </span>
+                    </div>
+                    <div mat-line class="color-darkgrey">
+                        <span>
+                            {{ list.timestamp | date }}
+                        </span>
+                    </div>
+                </mat-list-item>
+                <mat-divider
+                    *ngIf="!last"
+                    class="position-relative"
+                ></mat-divider>
+            </ng-container>
+        </mat-nav-list>
+    </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button color="primary" mat-button mat-dialog-close>
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>
+
+<ng-template #deletedAuthor>
+    <span class="color-darkgrey">{{ 'general.deletedUser' | translate }}</span>
+</ng-template>
