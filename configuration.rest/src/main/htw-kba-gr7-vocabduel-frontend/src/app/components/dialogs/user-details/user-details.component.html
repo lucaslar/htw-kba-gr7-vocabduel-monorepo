@@ -47,7 +47,10 @@
 
     <mat-divider class="position-relative my-2"></mat-divider>
 
-    <app-user-record [user]="user"></app-user-record>
+    <app-user-record
+        *ngIf="scoreRecord; else notLoggedInInfo"
+        [record]="scoreRecord"
+    ></app-user-record>
 
     <div class="d-flex mt-4">
         <mat-icon class="my-auto mr-2"> menu_book </mat-icon>
@@ -75,11 +78,17 @@
     </button>
 </mat-dialog-actions>
 
+<ng-template #notLoggedInInfo>
+    <p class="color-darkgrey">
+        <em> {{ 'dialog.userDetails.youHaveToBeLoggedIn' | translate }} </em>
+    </p>
+</ng-template>
+
 <ng-template #noImportedVocabulary>
     <div class="m-3 color-darkgrey d-flex flex-column">
-        <mat-icon class="mx-auto mb-2 prominent-medium-icon"
-            >menu_book</mat-icon
-        >
+        <mat-icon class="mx-auto mb-2 prominent-medium-icon">
+            menu_book
+        </mat-icon>
         <span class="mx-auto">{{ 'general.noImportsYet' | translate }}</span>
     </div>
 </ng-template>

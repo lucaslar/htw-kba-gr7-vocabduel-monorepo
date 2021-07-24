@@ -32,7 +32,8 @@
         },
         "userDetails": {
             "importsBy": "Imports by {{ firstName }}",
-            "scoreRecord": "Score record"
+            "scoreRecord": "Score record",
+            "youHaveToBeLoggedIn": "You have to be logged in in order to see score records."
         },
         "findOpponent": {
             "title": "Find an opponent",

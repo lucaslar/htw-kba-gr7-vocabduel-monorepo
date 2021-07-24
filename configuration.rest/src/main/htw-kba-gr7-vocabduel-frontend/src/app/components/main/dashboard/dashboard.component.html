@@ -22,9 +22,9 @@
     </h2>
 </div>
 
-<div class="row">
+<div class="row" *ngIf="record$ | async as record; else loading">
     <div class="col-xl-6 col-lg-8 col-12 mx-auto">
-        <app-user-record></app-user-record>
+        <app-user-record [record]="record"></app-user-record>
     </div>
 </div>
 

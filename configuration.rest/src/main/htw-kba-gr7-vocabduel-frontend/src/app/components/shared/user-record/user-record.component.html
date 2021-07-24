@@ -1,4 +1,4 @@
-<div *ngIf="record$ | async as record; else loading">
+<div>
     <canvas
         baseChart
         [datasets]="[
@@ -32,12 +32,3 @@
     >
     </canvas>
 </div>
-
-<ng-template #loading>
-    <div class="d-flex flex-column p-2">
-        <mat-spinner class="mx-auto"></mat-spinner>
-        <div class="mt-2 mx-auto">
-            {{ 'general.results.loading' | translate }}
-        </div>
-    </div>
-</ng-template>

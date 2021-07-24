@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 
@@ -77,8 +77,7 @@ export class NavigationService {
         media: MediaMatcher,
         private readonly router: Router,
         private readonly auth: AuthService,
-        private readonly storage: StorageService,
-        private readonly route: ActivatedRoute
+        private readonly storage: StorageService
     ) {
         this.mobileQuery = media.matchMedia('(max-width: 576px)');
     }

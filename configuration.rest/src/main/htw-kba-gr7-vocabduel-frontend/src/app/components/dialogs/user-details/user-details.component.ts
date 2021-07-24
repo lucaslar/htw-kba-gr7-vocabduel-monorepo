@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../../model/internal/user';
 import { VocableList } from '../../../model/vocable-list';
 import { ComplexDialogManagementService } from '../../../services/complex-dialog-management.service';
+import { ScoreRecord } from '../../../model/score-record';
 
 @Component({
     selector: 'app-user-details',
@@ -13,6 +14,7 @@ export class UserDetailsComponent implements AfterViewInit {
     user!: User;
     vocableLists!: VocableList[];
     currentUser?: User;
+    scoreRecord?: ScoreRecord;
 
     disableAnimation = true;
 
@@ -22,6 +24,7 @@ export class UserDetailsComponent implements AfterViewInit {
             currentUser: User;
             user: User;
             vocableLists: VocableList[];
+            scoreRecord: ScoreRecord;
         },
         private readonly ref: MatDialogRef<UserDetailsComponent>,
         private readonly dialogManagement: ComplexDialogManagementService
@@ -29,6 +32,7 @@ export class UserDetailsComponent implements AfterViewInit {
         this.currentUser = data.currentUser;
         this.user = data.user;
         this.vocableLists = data.vocableLists;
+        this.scoreRecord = data.scoreRecord;
     }
 
     ngAfterViewInit(): void {

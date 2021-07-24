@@ -5,6 +5,8 @@ import { UserDetailsComponent } from '../components/dialogs/user-details/user-de
 import { VocabularyService } from './vocabulary.service';
 import { VocableList } from '../model/vocable-list';
 import { VocabularyListComponent } from '../components/dialogs/vocabulary-list/vocabulary-list.component';
+import { ScoreRecord } from '../model/score-record';
+import { ScoreService } from './score.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,15 +14,26 @@ import { VocabularyListComponent } from '../components/dialogs/vocabulary-list/v
 export class ComplexDialogManagementService {
     constructor(
         private readonly dialog: MatDialog,
+        private readonly score: ScoreService,
         private readonly vocabulary: VocabularyService
     ) {}
 
     openUserDialog(user: User, currentUser?: User | null): void {
-        this.vocabulary.listsOfAuthor$(user).subscribe((vocableLists) => {
-            // TODO: Add score stats
+        const openDialog = (
+            vocableLists: VocableList[],
+            scoreRecord?: ScoreRecord
+        ) => {
             this.dialog.open(UserDetailsComponent, {
-                data: { currentUser, user, vocableLists },
+                data: { currentUser, user, vocableLists, scoreRecord },
             });
+        };
+
+        this.vocabulary.listsOfAuthor$(user).subscribe((vocableLists) => {
+            currentUser
+                ? this.score
+                      .userRecord$(user)
+                      .subscribe((record) => openDialog(vocableLists, record))
+                : openDialog(vocableLists);
         });
     }
 
