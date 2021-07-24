@@ -131,6 +131,7 @@
             [disabled]="
                 !opponent || totalVocables < 9 || navigation.isLoadingIndicated
             "
+            (click)="startGame()"
         >
             {{ 'main.startGame.start' | translate }}
         </button>

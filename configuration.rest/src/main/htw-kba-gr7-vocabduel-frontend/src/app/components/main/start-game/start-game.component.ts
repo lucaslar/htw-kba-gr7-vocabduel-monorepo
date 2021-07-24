@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { FindUserComponent } from '../../dialogs/find-user/find-user.component';
 import { VocabListSelectionComponent } from '../../dialogs/vocab-list-selection/vocab-list-selection.component';
 import { AuthService } from '../../../services/auth.service';
+import { GameService } from '../../../services/game.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-start-game',
@@ -14,13 +16,15 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class StartGameComponent implements OnInit {
     opponent?: User;
-    lists?: VocableList[];
+    lists: VocableList[] = [];
     currentUser!: User;
 
     constructor(
         readonly navigation: NavigationService,
         private readonly dialog: MatDialog,
-        private readonly auth: AuthService
+        private readonly auth: AuthService,
+        private readonly game: GameService,
+        private readonly router: Router
     ) {}
 
     ngOnInit(): void {
@@ -52,5 +56,11 @@ export class StartGameComponent implements OnInit {
             .subscribe((lists) => {
                 if (lists) this.lists = lists;
             });
+    }
+
+    startGame(): void {
+        this.game.startGame$(this.opponent!, this.lists).subscribe((game) => {
+            this.router.navigate(['play', game.id]).then();
+        });
     }
 }

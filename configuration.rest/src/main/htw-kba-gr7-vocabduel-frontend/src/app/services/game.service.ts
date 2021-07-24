@@ -9,6 +9,7 @@ import { RunningGame } from '../model/running-game';
 import { tap } from 'rxjs/operators';
 import { VocabduelRound } from '../model/vocabduel-round';
 import { CorrectAnswerResult } from '../model/correct-answer-result';
+import { VocableList } from '../model/vocable-list';
 
 @Injectable({
     providedIn: 'root',
@@ -36,7 +37,11 @@ export class GameService {
         return this.http.get<VocabduelRound>(url);
     }
 
-    answer$(gameId: number, roundNr: number, index: number): Observable<CorrectAnswerResult> {
+    answer$(
+        gameId: number,
+        roundNr: number,
+        index: number
+    ): Observable<CorrectAnswerResult> {
         const url = `${environment.endpointUrl}/game/answer/${gameId}/${roundNr}`;
         return this.http.post<CorrectAnswerResult>(url, '' + index);
     }
@@ -46,6 +51,14 @@ export class GameService {
         this.http.delete(url).subscribe(() => {
             this.auth.logout();
             this.snackbar.showSnackbar('snackbar.accountDeleted', user);
+        });
+    }
+
+    startGame$(opponent: User, lists: VocableList[]): Observable<any> {
+        const url = `${environment.endpointUrl}/game/start`;
+        return this.http.post(url, {
+            opponentId: opponent.id,
+            vocableListIds: lists.map((l) => l.id),
         });
     }
 }
