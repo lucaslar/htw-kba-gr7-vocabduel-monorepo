@@ -34,6 +34,7 @@ public class GameServiceImplRemoveWidowGamesTest {
 
     @Before
     public void setup() {
+
         final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
         runningVocabduelGameDAO.setEntityManager(entityManager);
         final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
@@ -41,6 +42,7 @@ public class GameServiceImplRemoveWidowGamesTest {
         final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
         finishedVocabduelGameDAO.setEntityManager(entityManager);
         gameService = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
     }
 

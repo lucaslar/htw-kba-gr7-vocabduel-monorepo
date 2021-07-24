@@ -21,13 +21,12 @@ public class ConfigurationRestEasyImpl extends Application {
     private final Set<Object> SINGLETONS = new HashSet<>();
 
     public ConfigurationRestEasyImpl() {
-        // For local development only (if not set, requests to the same server are not prohibited):
+        // If you want to test the API with a client running on another port, you can use/configure this code for your needs:
         // TODO Comment out when in production in order to support every port
-        CorsFilter corsFilter = new CorsFilter();
-        corsFilter.getAllowedOrigins().add("http://localhost:4200"); // local dev
-        corsFilter.getAllowedOrigins().add("http://localhost:8080"); // productive application
-        corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
-        SINGLETONS.add(corsFilter);
+         CorsFilter corsFilter = new CorsFilter();
+         corsFilter.getAllowedOrigins().add("*"); // for dev mode only!
+         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
+         SINGLETONS.add(corsFilter);
 
         // Auth interceptor:
         SINGLETONS.add(CONTEXT.getBean(AuthInterceptor.class));

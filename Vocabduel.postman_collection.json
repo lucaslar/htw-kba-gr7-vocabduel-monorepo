@@ -783,13 +783,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/score/finished-games/4",
+									"raw": "{{url}}/score/record/4",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"score",
-										"finished-games",
+										"record",
 										"4"
 									]
 								}

@@ -33,6 +33,7 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
                     .getSingleResult();
             initializeLazyLoadedRoundVocableData(round);
         } catch (NoResultException ignored) {
+            // ignored => return null (round) if no round could be found
         }
         return round;
     }

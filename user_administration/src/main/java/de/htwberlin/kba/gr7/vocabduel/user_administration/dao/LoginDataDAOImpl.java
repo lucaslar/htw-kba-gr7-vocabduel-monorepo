@@ -15,7 +15,7 @@ public class LoginDataDAOImpl implements LoginDataDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public LoginDataDAOImpl(EntityManager entityManager){
+    public setEntityManager(EntityManager entityManager){
         this.entityManager = entityManager;
     }
 
@@ -33,6 +33,7 @@ public class LoginDataDAOImpl implements LoginDataDAO {
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException ignored) {
+            // ignored => return null (loginData) if no entry could be found
         }
         return loginData;
     }
@@ -46,6 +47,7 @@ public class LoginDataDAOImpl implements LoginDataDAO {
                     .setParameter("user", user)
                     .getSingleResult();
         } catch (NoResultException ignored) {
+            // ignored => return null (loginData) if no user could be found
         }
         return loginData;
     }
@@ -61,6 +63,7 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             if (loginData != null && !loginData.isEmpty()) loginData.forEach(entityManager::remove);
             res = true;
         } catch (NoResultException ignored) {
+            // ignored => a user might not have any login data stored in the database. Thus, it's no problem if none to be deleted are found
         }
         return res;
     }

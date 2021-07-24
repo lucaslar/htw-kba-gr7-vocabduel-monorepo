@@ -39,6 +39,6 @@
         <url-pattern>/app/dashboard</url-pattern>
         <url-pattern>/app/vocabulary</url-pattern>
         <url-pattern>/app/user-search</url-pattern>
-        <!-- TODO: Once finished, add all valid routes -->
+        <url-pattern>/app/play/*</url-pattern>
     </servlet-mapping>
 </web-app>

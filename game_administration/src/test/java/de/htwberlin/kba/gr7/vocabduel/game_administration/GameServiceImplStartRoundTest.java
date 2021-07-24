@@ -35,6 +35,7 @@ public class GameServiceImplStartRoundTest {
 
     @Before
     public void setup() {
+
         final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
         runningVocabduelGameDAO.setEntityManager(entityManager);
         final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
@@ -43,6 +44,7 @@ public class GameServiceImplStartRoundTest {
         finishedVocabduelGameDAO.setEntityManager(entityManager);
 
         gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
         mock = new GameDataMock();
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);

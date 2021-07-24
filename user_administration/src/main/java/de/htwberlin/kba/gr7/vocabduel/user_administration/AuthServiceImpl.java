@@ -101,6 +101,7 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
         } catch (NoResultException ignored) {
+            // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none are found
         }
         return null;
     }
@@ -172,6 +173,7 @@ public class AuthServiceImpl implements AuthService {
                 return true;
             }
         } catch (JwtException ignored) {
+            // ignored => return false if the token is not valid, i.e. null or not parsable
         }
         return false;
     }

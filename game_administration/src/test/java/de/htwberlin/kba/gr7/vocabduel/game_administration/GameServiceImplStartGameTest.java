@@ -39,6 +39,7 @@ public class GameServiceImplStartGameTest {
 
     @Before
     public void setup() {
+
         final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
         runningVocabduelGameDAO.setEntityManager(entityManager);
         final VocabduelRoundDAOImpl vocabduelRoundDAO = new VocabduelRoundDAOImpl();
@@ -47,6 +48,7 @@ public class GameServiceImplStartGameTest {
         finishedVocabduelGameDAO.setEntityManager(entityManager);
 
         gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
+
         mock = new GameDataMock();
         newGame = mock.mockVocabduelGame();
 

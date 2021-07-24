@@ -40,6 +40,12 @@ export class LangSetsByVocabularyPipe implements PipeTransform {
                     } else existingLs.vocableUnits.push(currUnit);
                 }
                 return prev;
-            }, []);
+            }, [])
+            .sort((a, b) => {
+                return a.knownLanguage + a.learntLanguage <
+                    b.knownLanguage + b.learntLanguage
+                    ? -1
+                    : 1;
+            });
     }
 }

@@ -37,8 +37,8 @@ public class VocableListDAOImpl implements VocableListDAO {
                     .setParameter("id", userId)
                     .getResultList();
             vocableLists.forEach(this::initializeLazyLoadedVocableData);
-        } catch (
-                NoResultException ignored) {
+        } catch (NoResultException ignored) {
+            // ignored => return null (vocableLists) if no lists could be found
         }
         return vocableLists;
     }

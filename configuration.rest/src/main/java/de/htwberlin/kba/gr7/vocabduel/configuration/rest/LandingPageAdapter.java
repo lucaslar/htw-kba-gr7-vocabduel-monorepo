@@ -13,7 +13,6 @@ public class LandingPageAdapter {
     @PermitAll
     @Path("/")
     public String landingPage() {
-        // TODO: Return html incl. links?
-        return "The REST API has been initialized successfully!";
+        return "<p>The Vocabduel REST configuration + application has been initialized successfully! You can access:</p><ul><li>API: <a href=\"/api\">/api/</a>[some/endpoint] (see Postman collection or technical documentation)</li><li>Web frontend: <a href=\"/app\"/>/app/</a></li></ul>";
     }
 }

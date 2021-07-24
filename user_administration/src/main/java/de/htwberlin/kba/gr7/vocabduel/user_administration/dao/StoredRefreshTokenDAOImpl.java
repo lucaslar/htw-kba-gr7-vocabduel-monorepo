@@ -15,7 +15,7 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public StoredRefreshTokenDAOImpl(EntityManager entityManager){
+    public setEntityManager(EntityManager entityManager){
         this.entityManager = entityManager;
     }
 
@@ -42,6 +42,7 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
                     .getResultList();
             if (storedRefreshTokens.size() > 4) storedRefreshTokens.forEach(entityManager::remove);
         } catch (NoResultException ignored) {
+            // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
         }
     }
 
@@ -56,6 +57,7 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             if (tokens != null && !tokens.isEmpty()) tokens.forEach(entityManager::remove);
             res = true;
         } catch (NoResultException ignored) {
+            // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
         }
         return res;
     }

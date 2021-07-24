@@ -62,12 +62,14 @@ public class ScoreServiceImplTest {
 
     @Before
     public void setup() {
+
         final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
         runningVocabduelGameDAO.setEntityManager(entityManager);
         final FinishedVocabduelGameDAOImpl finishedVocabduelGameDAO = new FinishedVocabduelGameDAOImpl();
         finishedVocabduelGameDAO.setEntityManager(entityManager);
 
         scoreAdministration = new ScoreServiceImpl(userService, finishedVocabduelGameDAO, runningVocabduelGameDAO);
+
         playerA = new User(4711L);
         playerB = new User(42L);
         playerC = new User(2020L);

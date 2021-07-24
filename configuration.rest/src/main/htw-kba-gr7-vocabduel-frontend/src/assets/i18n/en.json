@@ -132,7 +132,8 @@
             "win": "Congratulations! How about another game to give you opponent a chance?",
             "loss": "Don't worry, better luck next time! How about starting another game right now?"
         },
-        "i18nText": "At the moment, this application is only available in English. However, all string resources are extracted and an internationalization for managing language files has been implemented. I.e. another language could easily be added to this application."
+        "i18nText": "At the moment, this application is only available in English. However, all string resources are extracted and an internationalization service for managing language files has been implemented. I.e. another language could easily be added to this application.",
+        "noFinishedGames": "No finished games yet"
     },
     "main": {
         "registration": {

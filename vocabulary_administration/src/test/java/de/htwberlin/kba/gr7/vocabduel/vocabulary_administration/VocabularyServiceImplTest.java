@@ -52,6 +52,7 @@ public class VocabularyServiceImplTest {
 
     @Before
     public void setup() {
+
         final VocableListDAOImpl listDao = new VocableListDAOImpl();
         listDao.setEntityManager(entityManager);
         final VocableUnitDAOImpl unitDao = new VocableUnitDAOImpl();
@@ -60,6 +61,7 @@ public class VocabularyServiceImplTest {
         langSetsDao.setEntityManager(entityManager);
 
         vocabularyLib = new VocabularyServiceImpl(unitDao, listDao, langSetsDao);
+
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         author = new User(42L);

@@ -38,14 +38,15 @@
                         </div>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-selection-list
-                    *ngFor="let unit of set.vocableUnits"
-                >
+                <mat-selection-list *ngFor="let unit of set.vocableUnits">
                     <div mat-subheader>{{ unit.title }}</div>
                     <ng-container
                         *ngFor="let list of unit.vocableLists; last as last"
                     >
-                        <mat-list-option [value]="list" (click)='onSelectionChanged(list)'>
+                        <mat-list-option
+                            [value]="list"
+                            (click)="onSelectionChanged(list)"
+                        >
                             <mat-icon mat-list-icon> menu_book </mat-icon>
                             <div mat-line>
                                 <span>
@@ -89,7 +90,12 @@
     <button mat-button mat-dialog-close>
         {{ 'general.close' | translate }}
     </button>
-    <button mat-flat-button color="primary" [mat-dialog-close]="selection">
+    <button
+        mat-flat-button
+        color="primary"
+        [mat-dialog-close]="selection"
+        [disabled]="!selection.length"
+    >
         {{ 'general.confirm' | translate }}
     </button>
 </mat-dialog-actions>
