@@ -31,7 +31,8 @@
             "exampleOrHint": "Example or hint"
         },
         "userDetails": {
-            "importsBy": "Imports by {{ username }}"
+            "importsBy": "Imports by {{ firstName }}",
+            "scoreRecord": "Score record"
         },
         "findOpponent": {
             "title": "Find an opponent",
