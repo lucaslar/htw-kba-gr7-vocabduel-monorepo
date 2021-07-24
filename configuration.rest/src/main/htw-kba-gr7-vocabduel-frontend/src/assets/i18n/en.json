@@ -14,7 +14,7 @@
     "dialog": {
         "error": {
             "title": "Oops, something happened...",
-            "message": "The following error occurred:"
+            "message": "Unfortunately, an unexpected error occurred. Please contact your system administrator copying the following error message:"
         },
         "languageReferences": {
             "title": "References for: {{ lang }}",
