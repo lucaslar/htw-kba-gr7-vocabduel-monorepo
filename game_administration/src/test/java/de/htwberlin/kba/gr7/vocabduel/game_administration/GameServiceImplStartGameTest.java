@@ -18,7 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,8 +34,6 @@ public class GameServiceImplStartGameTest {
     private UserService userService;
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
     @Mock
     private VocabularyService vocabularyService;
 
@@ -66,7 +63,6 @@ public class GameServiceImplStartGameTest {
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(mock.mockSampleUser());
         Mockito.when(userService.getUserDataById(12L)).thenReturn(mock.mockOpponent());
         Mockito.when(vocabularyService.getAllLanguageSets()).thenReturn(langset);
-//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
     }
 
     @Test()

@@ -13,7 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.naming.InvalidNameException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
@@ -27,8 +26,6 @@ public class UserServiceImplTest {
     private UserServiceImpl userAdministration;
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
     @Mock
     private Query queryMock;
 
@@ -65,7 +62,6 @@ public class UserServiceImplTest {
 
         usersList = Stream.of(user1, user2, user3, user4).collect(Collectors.toList());
 
-//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.getSingleResult()).thenReturn(null);

@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,8 +29,6 @@ public class GameServiceImplAnswerQuestionTest {
     private VocabularyService vocabularyService;
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private EntityTransaction entityTransaction;
     @Mock
     private Query queryMock;
     private GameDataMock mock;
@@ -48,7 +45,6 @@ public class GameServiceImplAnswerQuestionTest {
         gameAdministration = new GameServiceImpl(userService, vocabularyService, runningVocabduelGameDAO, vocabduelRoundDAO, finishedVocabduelGameDAO);
         mock = new GameDataMock();
 
-//        Mockito.when(entityManager.getTransaction()).thenReturn(entityTransaction);
         Mockito.when(entityManager.createQuery(Mockito.anyString())).thenReturn(queryMock);
         Mockito.when(queryMock.setParameter(Mockito.anyString(), Mockito.any())).thenReturn(queryMock);
         Mockito.when(queryMock.setMaxResults(Mockito.anyInt())).thenReturn(queryMock);
