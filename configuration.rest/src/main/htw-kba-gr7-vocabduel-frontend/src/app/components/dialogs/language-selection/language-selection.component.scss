@@ -1,0 +1,13 @@
+p {
+    max-width: 320px;
+}
+
+.language {
+    cursor: pointer;
+
+    .flag-icon-background {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+    }
+}

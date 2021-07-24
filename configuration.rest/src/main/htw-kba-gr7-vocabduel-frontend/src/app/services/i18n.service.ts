@@ -6,10 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
     providedIn: 'root',
 })
 export class I18nService {
-    readonly supportedLanguages: Language[] = [
-        new Language('en', 'English'),
-        // new Language('de', 'Deutsch'), // TODO Add support for de?
-    ];
+    readonly supportedLanguages: Language[] = [new Language('en', 'English')];
 
     constructor(private readonly translate: TranslateService) {
         this.translate.setDefaultLang('en');

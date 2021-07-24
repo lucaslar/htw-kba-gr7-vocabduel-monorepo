@@ -3,6 +3,9 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LanguageSelectionComponent } from '../components/dialogs/language-selection/language-selection.component';
+import { Language } from '../model/internal/language';
 
 type NavItem = {
     icon: string;
@@ -35,7 +38,7 @@ export class NavigationService {
             icon: 'language',
             translationKey: 'header.actions.language',
             colorClass: 'color-primary',
-            onClick: () => console.log('to be implemented'), // TODO implement
+            onClick: () => this.dialog.open(LanguageSelectionComponent),
         },
     ];
 
@@ -77,7 +80,8 @@ export class NavigationService {
         media: MediaMatcher,
         private readonly router: Router,
         private readonly auth: AuthService,
-        private readonly storage: StorageService
+        private readonly storage: StorageService,
+        private readonly dialog: MatDialog
     ) {
         this.mobileQuery = media.matchMedia('(max-width: 576px)');
     }
