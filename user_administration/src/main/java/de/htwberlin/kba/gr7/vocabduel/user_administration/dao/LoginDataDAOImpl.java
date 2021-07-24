@@ -15,10 +15,6 @@ public class LoginDataDAOImpl implements LoginDataDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public setEntityManager(EntityManager entityManager){
-        this.entityManager = entityManager;
-    }
-
     @Override
     public void insertLoginData(LoginData loginData) {
         entityManager.persist(loginData);
@@ -66,5 +62,9 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             // ignored => a user might not have any login data stored in the database. Thus, it's no problem if none to be deleted are found
         }
         return res;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

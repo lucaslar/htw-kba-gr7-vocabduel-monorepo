@@ -66,10 +66,12 @@ public class InvalidPwdsTest {
 
     @Before
     public void setup() {
-//        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
-//        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
-//
-//        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
+        final StoredRefreshTokenDAOImpl storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl();
+        storedRefreshTokenDAO.setEntityManager(entityManager);
+        final LoginDataDAOImpl loginDataDAO = new LoginDataDAOImpl();
+        loginDataDAO.setEntityManager(entityManager);
+
+        auth = new AuthServiceImpl(userService, loginDataDAO, storedRefreshTokenDAO);
 
         existingUser = new User(42L);
         existingUser.setEmail("existinguser@user.de");

@@ -15,10 +15,6 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public setEntityManager(EntityManager entityManager){
-        this.entityManager = entityManager;
-    }
-
     @Override
     public StoredRefreshToken selectStoredRefreshTokenByUserAndToken(User user, String refreshToken) {
         return (StoredRefreshToken) entityManager
@@ -66,5 +62,9 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
     public boolean deleteStoredRefreshToken(StoredRefreshToken storedRefreshToken) {
         entityManager.remove(storedRefreshToken);
         return true;
+    }
+
+    public void setEntityManager(EntityManager entityManager){
+        this.entityManager = entityManager;
     }
 }

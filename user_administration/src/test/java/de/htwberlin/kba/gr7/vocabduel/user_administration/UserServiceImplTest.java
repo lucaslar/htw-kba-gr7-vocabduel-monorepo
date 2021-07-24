@@ -39,11 +39,14 @@ public class UserServiceImplTest {
 
     @Before
     public void setUp() {
-//        final UserDAO userDAO = new UserDAOImpl(entityManager);
-//        final StoredRefreshTokenDAO storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl(entityManager);
-//        final LoginDataDAO loginDataDAO = new LoginDataDAOImpl(entityManager);
-//
-//        userAdministration = new UserServiceImpl(userDAO, storedRefreshTokenDAO, loginDataDAO);
+        final UserDAOImpl userDAO = new UserDAOImpl();
+        userDAO.setEntityManager(entityManager);
+        final StoredRefreshTokenDAOImpl storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl();
+        storedRefreshTokenDAO.setEntityManager(entityManager);
+        final LoginDataDAOImpl loginDataDAO = new LoginDataDAOImpl();
+        loginDataDAO.setEntityManager(entityManager);
+
+        userAdministration = new UserServiceImpl(userDAO, storedRefreshTokenDAO, loginDataDAO);
 
         user1 = new User(42L);
         user2 = new User(123L);
