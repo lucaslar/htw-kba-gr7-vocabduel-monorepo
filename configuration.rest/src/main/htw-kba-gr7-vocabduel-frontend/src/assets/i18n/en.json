@@ -153,7 +153,10 @@
             "pwdNotValid": "Requires at least three of: lower, upper, digit, special",
             "pattern": "Not a valid email",
             "pwdMustMatch": "Passwords not matching"
-        }
+        },
+        "win": "Win",
+        "loss": "Loss",
+        "draw": "Draw"
     },
     "main": {
         "registration": {

@@ -28,6 +28,43 @@
     </div>
 </div>
 
+<ng-container *ngIf="finishedGames$ | async as finishedGames">
+    <div class="mt-3" *ngIf="finishedGames.length">
+        <div class="row m-n2">
+            <div
+                class="p-2 col-12 col-sm-6 col-md-4 col-xl-3"
+                *ngFor="let game of finishedGames"
+            >
+                <mat-card
+                    class="d-flex clickable"
+                    mat-ripple
+                    (click)="openFinishedGame(game)"
+                    [class.color-primary]="game.gameResult === 'WIN'"
+                    [class.color-warn]="game.gameResult === 'LOSS'"
+                >
+                    <app-overlapping-flags
+                        [languageFrom]="game.learntLanguage"
+                        [languageTo]="game.knownLanguage"
+                    ></app-overlapping-flags>
+
+                    <div class="m-auto text-center">
+                        <div class="self-finished-rounds my-auto">
+                            {{
+                                'general.' + game.gameResult
+                                    | lowercase
+                                    | translate
+                            }}
+                        </div>
+                        <div class="color-darkgrey my-auto">
+                            {{ game.finishedTimestamp | date }}
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
 <div class="d-flex mt-3 mb-2">
     <mat-icon class="flex-grow-0 my-auto mr-3"> menu_book</mat-icon>
     <h2 class="m-0 flex-grow-1 my-auto">

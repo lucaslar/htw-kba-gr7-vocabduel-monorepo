@@ -17,6 +17,11 @@ export class ScoreService {
         return this.http.post<PersonalFinishedGame>(url, '' + gameId);
     }
 
+    get finishedGames$(): Observable<PersonalFinishedGame[]> {
+        const url = `${environment.endpointUrl}/score/finished-games`;
+        return this.http.get<PersonalFinishedGame[]>(url);
+    }
+
     get ownRecord$(): Observable<ScoreRecord> {
         const url = `${environment.endpointUrl}/score/record`;
         return this.http.get<ScoreRecord>(url);
