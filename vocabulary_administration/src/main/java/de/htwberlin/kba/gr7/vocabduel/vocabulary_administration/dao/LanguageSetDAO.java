@@ -5,6 +5,7 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Lan
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public interface LanguageSetDAO {
@@ -13,10 +14,10 @@ public interface LanguageSetDAO {
 
     LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws InternalVocabularyModuleException;
 
-    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException;
+    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException, PersistenceException;
 
     List<LanguageSet> selectLanguageSets() throws InternalVocabularyModuleException;
 
-    boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException;
+    boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException, PersistenceException;
 
 }

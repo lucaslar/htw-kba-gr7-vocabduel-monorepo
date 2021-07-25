@@ -78,6 +78,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
+    @Transactional(rollbackFor = UndeletableListException.class)
     public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
         final User author = vocables.getAuthor();
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
@@ -87,19 +88,21 @@ public class VocabularyServiceImpl implements VocabularyService {
         unit.setVocableLists(unit.getVocableLists().stream().filter(l -> !l.getId().equals(vocables.getId())).collect(Collectors.toList()));
 
         final VocableList list = VOCABLE_LIST_DAO.selectVocableList(vocables);
-        VOCABLE_LIST_DAO.deleteVocableList(list);
-        if (unit.getVocableLists().isEmpty()) {
-            final LanguageSet languageSet = LANGUAGE_SET_DAO.selectLanguageSetByVocableUnit(unit);
-            languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
-            try {
+        try {
+            VOCABLE_LIST_DAO.deleteVocableList(list);
+            if (unit.getVocableLists().isEmpty()) {
+                final LanguageSet languageSet = LANGUAGE_SET_DAO.selectLanguageSetByVocableUnit(unit);
+                languageSet.setVocableUnits(languageSet.getVocableUnits().stream().filter(u -> !u.getId().equals(unit.getId())).collect(Collectors.toList()));
+
                 VOCABLE_UNIT_DAO.deleteVocableUnit(unit);
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-                final String err = "This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.";
-                System.out.println("List with ID " + list.getId() + " could not be deleted. If the stacktrace above indicates that it is used by a running game, this is not a problem.");
-                throw new UndeletableListException(err);
+                if (languageSet.getVocableUnits().isEmpty()) LANGUAGE_SET_DAO.deleteLanguageSet(languageSet);
+
             }
-            if (languageSet.getVocableUnits().isEmpty()) LANGUAGE_SET_DAO.deleteLanguageSet(languageSet);
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            final String err = "This list seems to be referenced by at least one running game. Until finished, this list cannot be deleted.";
+            System.out.println("List with ID " + list.getId() + " could not be deleted. If the stacktrace above indicates that it is used by a running game, this is not a problem.");
+            throw new UndeletableListException(err);
         }
         return 0;
     }

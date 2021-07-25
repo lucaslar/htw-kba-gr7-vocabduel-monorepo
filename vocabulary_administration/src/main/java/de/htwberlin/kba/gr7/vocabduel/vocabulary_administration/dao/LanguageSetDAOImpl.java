@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 @Repository
@@ -52,13 +53,15 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     }
 
     @Override
-    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException{
+    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException, PersistenceException  {
         try {
             final LanguageSet languageSet = (LanguageSet) entityManager
                     .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
                     .setParameter("unit", unit)
                     .getSingleResult();
             return languageSet;
+        } catch (PersistenceException e) {
+            throw e;
         } catch (Exception e){
             throw new InternalVocabularyModuleException(e);
         }
@@ -81,10 +84,12 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     }
 
     @Override
-    public boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException {
+    public boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException, PersistenceException {
         try {
             entityManager.remove(languageSet);
             return true;
+        } catch (PersistenceException e){
+            throw e;
         } catch (Exception e){
             throw new InternalVocabularyModuleException(e);
         }
