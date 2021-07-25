@@ -68,7 +68,6 @@ export class PlayGameComponent {
                   },
                   (err) => {
                       if (err?.status === 400) {
-                          console.log(err);
                           this.router.navigate(['dashboard']).then();
                       } else throw err;
                   }
@@ -81,9 +80,8 @@ export class PlayGameComponent {
             !this.navigation.isLoadingIndicated
         ) {
             this.selected = index;
-            this.game
-                .answer$(this.gameId, roundNr, index)
-                .subscribe((result) => {
+            this.game.answer$(this.gameId, roundNr, index).subscribe(
+                (result) => {
                     this.result = result;
 
                     if (result.result === 'WIN') {
@@ -96,7 +94,19 @@ export class PlayGameComponent {
                             )
                         );
                     }
-                });
+                },
+                (err) => {
+                    if (err.status === 403 || err.status === 400) {
+                        this.router
+                            .navigate(['dashboard'])
+                            .then(() =>
+                                this.snackbar.showSnackbar(
+                                    'snackbar.questionAlreadyAnswered'
+                                )
+                            );
+                    }
+                }
+            );
         }
     }
 

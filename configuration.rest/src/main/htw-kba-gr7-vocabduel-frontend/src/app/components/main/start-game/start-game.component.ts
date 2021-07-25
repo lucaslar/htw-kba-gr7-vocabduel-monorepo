@@ -8,6 +8,7 @@ import { VocabListSelectionComponent } from '../../dialogs/vocab-list-selection/
 import { AuthService } from '../../../services/auth.service';
 import { GameService } from '../../../services/game.service';
 import { Router } from '@angular/router';
+import { ManageableErrorComponent } from '../../dialogs/manageable-error/manageable-error.component';
 
 @Component({
     selector: 'app-start-game',
@@ -59,8 +60,17 @@ export class StartGameComponent implements OnInit {
     }
 
     startGame(): void {
-        this.game.startGame$(this.opponent!, this.lists).subscribe((game) => {
-            this.router.navigate(['play', game.id]).then();
-        });
+        this.game.startGame$(this.opponent!, this.lists).subscribe(
+            (game) => {
+                this.router.navigate(['play', game.id]).then();
+            },
+            (err) => {
+                if (err.status === 400) {
+                    this.dialog.open(ManageableErrorComponent, {
+                        data: err.error,
+                    });
+                } else throw err;
+            }
+        );
     }
 }

@@ -75,7 +75,9 @@
             "right": "That was right!",
             "wrong": "That was wrong!"
         },
-        "listNotDeletable": "This list is used in a current game and cannot be deleted!"
+        "listNotDeletable": "This list is used in a current game and cannot be deleted!",
+        "questionAlreadyAnswered": "This question has already been answered or does not exist any longer. Check your games.",
+        "noAccessToGame": "You do not seem to have access to this game"
     },
     "general": {
         "close": "Close",
