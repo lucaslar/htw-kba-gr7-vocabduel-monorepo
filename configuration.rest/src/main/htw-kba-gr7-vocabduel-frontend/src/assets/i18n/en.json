@@ -74,7 +74,8 @@
         "answer": {
             "right": "That was right!",
             "wrong": "That was wrong!"
-        }
+        },
+        "listNotDeletable": "This list is used in a current game and cannot be deleted!"
     },
     "general": {
         "close": "Close",

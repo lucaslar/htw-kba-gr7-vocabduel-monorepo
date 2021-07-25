@@ -11,6 +11,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { NavigationService } from '../../../services/navigation.service';
 import { finalize } from 'rxjs/operators';
 import { ComplexDialogManagementService } from '../../../services/complex-dialog-management.service';
+import { ManageableErrorComponent } from '../../dialogs/manageable-error/manageable-error.component';
 
 @Component({
     selector: 'app-vocabulary',
@@ -69,13 +70,22 @@ export class VocabularyComponent implements OnInit {
             this.vocabulary
                 .importGnuFile$(fileReader.result as string)
                 .pipe(finalize(() => delete this.file))
-                .subscribe((imported) => {
-                    this.snackbar.showSnackbar('snackbar.thanksForImport', {
-                        firstName: this.currentUser!.firstName,
-                        title: imported.title,
-                    });
-                    this.languageSets$ = this.vocabulary.languageSets$;
-                });
+                .subscribe(
+                    (imported) => {
+                        this.snackbar.showSnackbar('snackbar.thanksForImport', {
+                            firstName: this.currentUser!.firstName,
+                            title: imported.title,
+                        });
+                        this.languageSets$ = this.vocabulary.languageSets$;
+                    },
+                    (err) => {
+                        if (err.status === 400 || err.status === 404) {
+                            this.dialog.open(ManageableErrorComponent, {
+                                data: err.error,
+                            });
+                        } else throw err;
+                    }
+                );
         };
         fileReader.readAsText(this.file!);
     }

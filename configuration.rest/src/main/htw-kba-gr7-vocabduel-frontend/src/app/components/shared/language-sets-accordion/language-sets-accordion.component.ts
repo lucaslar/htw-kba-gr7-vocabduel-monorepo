@@ -36,13 +36,22 @@ export class LanguageSetsAccordionComponent {
             .afterClosed()
             .subscribe((res) => {
                 if (res) {
-                    this.vocabulary.deleteVocableList$(list).subscribe(() => {
-                        this.snackbar.showSnackbar(
-                            'snackbar.listDeleted',
-                            list
-                        );
-                        this.itemDeleted.emit(list);
-                    });
+                    this.vocabulary.deleteVocableList$(list).subscribe(
+                        () => {
+                            this.snackbar.showSnackbar(
+                                'snackbar.listDeleted',
+                                list
+                            );
+                            this.itemDeleted.emit(list);
+                        },
+                        (err) => {
+                            if (err.status === 403) {
+                                this.snackbar.showSnackbar(
+                                    'snackbar.listNotDeletable'
+                                );
+                            } else throw err;
+                        }
+                    );
                 }
             });
     }
