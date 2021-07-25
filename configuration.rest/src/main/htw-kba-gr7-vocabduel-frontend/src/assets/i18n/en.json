@@ -59,6 +59,10 @@
         "fastWorld": {
             "title": "We're living in a fast world...",
             "message": "Some data you tried to access is not available any more. Most likely, it has been removed in the meantime."
+        },
+        "lockMessage": {
+            "title": "Try it again",
+            "message": "Some data was just updated while you tried to access it. This is no problem, just re-try what you were doing. If necessary, you can also reload this page in your browser to trigger reloading displayed data."
         }
     },
     "snackbar": {

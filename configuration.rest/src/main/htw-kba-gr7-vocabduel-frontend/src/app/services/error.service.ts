@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../components/dialogs/error-dialog/error-dialog.component';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { RemovedSourceComponent } from '../components/dialogs/removed-source/removed-source.component';
+import { LockingInfoComponent } from '../components/dialogs/locking-info/locking-info.component';
 
 @Injectable({
     providedIn: 'root',
@@ -26,6 +27,11 @@ export class ErrorService implements ErrorHandler {
         this.ngZone.run(() => {
             if (error instanceof HttpErrorResponse && error.status === 404) {
                 this.dialog.open(RemovedSourceComponent);
+            } else if (
+                error instanceof HttpErrorResponse &&
+                error.status === 412
+            ) {
+                this.dialog.open(LockingInfoComponent);
             } else {
                 this.dialog.open(ErrorDialogComponent, {
                     data: error.stack ?? error,

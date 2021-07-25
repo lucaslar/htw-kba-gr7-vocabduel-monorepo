@@ -50,6 +50,7 @@ import { LanguageSelectionComponent } from './components/dialogs/language-select
 import { FirstObjectKeyPipe } from './pipes/first-object-key.pipe';
 import { ManageableErrorComponent } from './components/dialogs/manageable-error/manageable-error.component';
 import { RemovedSourceComponent } from './components/dialogs/removed-source/removed-source.component';
+import { LockingInfoComponent } from './components/dialogs/locking-info/locking-info.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -90,6 +91,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         FirstObjectKeyPipe,
         ManageableErrorComponent,
         RemovedSourceComponent,
+        LockingInfoComponent,
     ],
     imports: [
         BrowserModule,

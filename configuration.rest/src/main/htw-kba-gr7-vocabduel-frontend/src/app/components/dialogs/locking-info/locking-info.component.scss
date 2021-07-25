@@ -1,0 +1,27 @@
+div[mat-dialog-title] {
+    width: calc(100% + 48px);
+    margin: -24px -24px 20px;
+
+    .title-content {
+        padding: 24px;
+
+        .error-icon-wrapper {
+            height: 64px;
+
+            mat-icon {
+                font-size: 64px;
+                display: inline-flex !important;
+                align-items: center !important;
+            }
+        }
+    }
+}
+
+button {
+    color: darkgreen;
+}
+
+.background-green {
+    color: white;
+    background-color: darkgreen;
+}
