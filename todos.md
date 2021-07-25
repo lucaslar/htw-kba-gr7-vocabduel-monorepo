@@ -1,5 +1,4 @@
 - Fix MySQL error on closing server
-- exceptions due to optimistic locking
 - Frontend
 
 Docu:
