@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -24,6 +25,8 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
             return true;
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
     }
 
@@ -42,6 +45,8 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
             // ignored => return null (round) if no round could be found
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return round;
     }

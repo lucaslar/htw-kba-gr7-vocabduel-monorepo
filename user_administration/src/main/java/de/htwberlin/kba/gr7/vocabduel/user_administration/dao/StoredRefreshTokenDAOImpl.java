@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.StoredRefreshToken;
@@ -29,6 +30,8 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             throw e;
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 
@@ -38,6 +41,8 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             entityManager.persist(new StoredRefreshToken(user, refreshToken));
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 
@@ -53,6 +58,8 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 
@@ -70,6 +77,8 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             // ignored => a user might not have any refresh token stored in the database. Thus, it's no problem if none to be deleted are found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return res;
     }
@@ -81,6 +90,8 @@ public class StoredRefreshTokenDAOImpl implements StoredRefreshTokenDAO {
             return true;
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 

@@ -14,10 +14,10 @@ public interface LanguageSetDAO {
 
     LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws VocabularyOptimisticLockException;
 
-    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException, PersistenceException;
+    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws PersistenceException, VocabularyOptimisticLockException;
 
     List<LanguageSet> selectLanguageSets() throws VocabularyOptimisticLockException;
 
-    boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException, PersistenceException;
+    boolean deleteLanguageSet(LanguageSet languageSet) throws PersistenceException, VocabularyOptimisticLockException;
 
 }

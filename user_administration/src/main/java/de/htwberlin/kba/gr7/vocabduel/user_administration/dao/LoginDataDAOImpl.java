@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.model.LoginData;
@@ -23,6 +24,8 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             entityManager.persist(loginData);
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 
@@ -38,6 +41,8 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             // ignored => return null (loginData) if no entry could be found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return loginData;
     }
@@ -54,6 +59,8 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             // ignored => return null (loginData) if no user could be found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return loginData;
     }
@@ -72,6 +79,8 @@ public class LoginDataDAOImpl implements LoginDataDAO {
             // ignored => a user might not have any login data stored in the database. Thus, it's no problem if none to be deleted are found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return res;
     }

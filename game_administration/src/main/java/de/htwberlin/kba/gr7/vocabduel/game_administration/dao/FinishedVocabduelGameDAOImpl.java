@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
@@ -32,6 +33,8 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             return finishedGame;
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
     }
 
@@ -49,6 +52,8 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             // ignored => return null (games) if a user has no finished games yet
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return games;
     }
@@ -67,6 +72,8 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             // ignored => if no orphaned finished games to be deleted are found, it's not a problem
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return res;
     }

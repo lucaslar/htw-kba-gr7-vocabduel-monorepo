@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,8 @@ public class UserDAOImpl implements UserDAO {
             // ignored => return null (users) if no users could be found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return users;
     }
@@ -50,6 +53,8 @@ public class UserDAOImpl implements UserDAO {
             // ignored => return null (user) if no user could be found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return user;
     }
@@ -60,6 +65,8 @@ public class UserDAOImpl implements UserDAO {
             return entityManager.find(User.class, userId);
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 
@@ -76,6 +83,8 @@ public class UserDAOImpl implements UserDAO {
             // ignored => return null (user) if no user could be found
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
         return user;
     }
@@ -87,6 +96,8 @@ public class UserDAOImpl implements UserDAO {
             return true;
         } catch (OptimisticLockException e) {
             throw new UserOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalUserModuleException(e);
         }
     }
 }

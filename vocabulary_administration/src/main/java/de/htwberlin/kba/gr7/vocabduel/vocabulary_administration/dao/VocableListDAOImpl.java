@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.hibernate.Hibernate;
@@ -20,6 +21,8 @@ public class VocableListDAOImpl implements VocableListDAO {
             return entityManager.find(VocableList.class, vocables.getId());
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -31,6 +34,8 @@ public class VocableListDAOImpl implements VocableListDAO {
             return vocableList;
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -47,6 +52,8 @@ public class VocableListDAOImpl implements VocableListDAO {
             // ignored => return null (vocableLists) if no lists could be found
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
         return vocableLists;
     }
@@ -60,6 +67,8 @@ public class VocableListDAOImpl implements VocableListDAO {
             throw new VocabularyOptimisticLockException(e);
         } catch (PersistenceException e){
             throw new PersistenceException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 

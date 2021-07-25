@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
@@ -23,6 +24,8 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             entityManager.persist(game);
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
     }
 
@@ -38,6 +41,8 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             // ignored => return null (games) in case of no result
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return games;
     }
@@ -56,6 +61,8 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             // ignored => return null (myGame) in case of no result
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return myGame;
     }
@@ -78,7 +85,6 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             // ignored => a user might have no finished game => not a problem
         } catch (OptimisticLockException e){
             throw new GameOptimisticLockException(e);
-            // ignored => a user might have no running game => not a problem
         } catch (Exception e){
             throw new InternalGameModuleException(e);
         }

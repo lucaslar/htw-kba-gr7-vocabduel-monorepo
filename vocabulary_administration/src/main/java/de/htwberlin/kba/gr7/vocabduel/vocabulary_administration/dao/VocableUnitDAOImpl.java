@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
@@ -22,6 +23,8 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
             entityManager.persist(unit);
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -35,6 +38,8 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
                     .getSingleResult();
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -45,8 +50,10 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
             return true;
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e){
             throw new PersistenceException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 

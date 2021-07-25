@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
@@ -7,12 +8,9 @@ import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.Voc
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
+import javax.persistence.*;
 import java.util.List;
+import javax.persistence.PersistenceException;
 
 @Repository
 public class LanguageSetDAOImpl implements LanguageSetDAO {
@@ -24,8 +22,10 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     public void insertLanguageSet(LanguageSet languageSet) throws VocabularyOptimisticLockException {
         try {
             entityManager.persist(languageSet);
-        }catch (OptimisticLockException e){
+        } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -46,9 +46,13 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
                 entityManager.persist(languageSet);
             } catch (OptimisticLockException e){
                 throw new VocabularyOptimisticLockException(e);
+            } catch (Exception e){
+                throw new InternalVocabularyModuleException(e);
             }
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
         return languageSet;
     }
@@ -64,7 +68,9 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
         } catch (PersistenceException e) {
-            throw e;
+            throw new PersistenceException();
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
@@ -80,6 +86,8 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
             // ignored => return null (languageSets) in case of no result
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
         return languageSets;
     }
@@ -92,7 +100,9 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
         } catch (OptimisticLockException e){
             throw new VocabularyOptimisticLockException(e);
         } catch (PersistenceException e){
-            throw e;
+            throw new PersistenceException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 
