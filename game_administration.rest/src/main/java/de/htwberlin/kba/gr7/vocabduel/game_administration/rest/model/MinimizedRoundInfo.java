@@ -13,8 +13,8 @@ public class MinimizedRoundInfo {
 
     public MinimizedRoundInfo(final VocabduelRound round) {
         roundNr = round.getRoundNr();
-        question = round.getQuestion();
         answers = round.getAnswers();
+        question = new UntranslatedVocable(round.getQuestion().getId(), round.getQuestion().getVocable());
     }
 
     public int getRoundNr() {
