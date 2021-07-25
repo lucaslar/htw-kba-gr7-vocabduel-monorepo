@@ -50,6 +50,9 @@ public class ScoreServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -65,6 +68,9 @@ public class ScoreServiceRestAdapter {
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -93,6 +99,9 @@ public class ScoreServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

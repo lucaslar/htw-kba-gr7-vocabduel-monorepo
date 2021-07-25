@@ -4,6 +4,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.exceptions.GameMappingRuntimeException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.MinimizedPersonalGameInfo;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.MinimizedRoundInfo;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.StartGameData;
@@ -76,7 +77,10 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (UserOptimisticLockException | VocabularyOptimisticLockException | GameOptimisticLockException | RuntimeException e) {
+        } catch (UserOptimisticLockException | VocabularyOptimisticLockException | GameOptimisticLockException | GameMappingRuntimeException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -95,6 +99,9 @@ public class GameServiceRestAdapter {
             return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -112,6 +119,9 @@ public class GameServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -140,6 +150,9 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -155,6 +168,9 @@ public class GameServiceRestAdapter {
             System.out.println("Successfully removed widow games (if existent).");
             return Response.noContent().build();
         } catch (UserOptimisticLockException | GameOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -179,7 +195,7 @@ public class GameServiceRestAdapter {
             try {
                 return fe.apply(arg);
             }catch (Exception e){
-                throw new RuntimeException(e);
+                throw new GameMappingRuntimeException(e);
             }
         };
     }

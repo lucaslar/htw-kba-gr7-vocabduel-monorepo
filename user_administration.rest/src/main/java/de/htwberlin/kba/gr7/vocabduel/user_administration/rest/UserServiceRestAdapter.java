@@ -45,6 +45,9 @@ public class UserServiceRestAdapter {
             return Response.ok(users).build();
         } catch (UserOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -85,6 +88,9 @@ public class UserServiceRestAdapter {
             return Response.ok(user).build();
         } catch (UserOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -111,6 +117,9 @@ public class UserServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

@@ -59,6 +59,9 @@ public class AuthServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -84,6 +87,9 @@ public class AuthServiceRestAdapter {
             }
         } catch (UserOptimisticLockException e) {
             e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
     }
@@ -95,6 +101,9 @@ public class AuthServiceRestAdapter {
         try {
             return Response.ok(AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""))).build();
         } catch (UserOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -118,6 +127,9 @@ public class AuthServiceRestAdapter {
                     .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
                     .type(MediaType.TEXT_PLAIN).build();
         } catch (UserOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -143,6 +155,9 @@ public class AuthServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         } catch (UserOptimisticLockException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.PRECONDITION_FAILED).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        } catch (RuntimeException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
