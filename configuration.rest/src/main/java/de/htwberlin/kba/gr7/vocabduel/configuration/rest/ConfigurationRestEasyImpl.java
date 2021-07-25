@@ -6,7 +6,6 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.ScoreServiceRestA
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.AuthServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.rest.UserServiceRestAdapter;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.rest.VocabularyServiceRestAdapter;
-import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -22,10 +21,10 @@ public class ConfigurationRestEasyImpl extends Application {
 
     public ConfigurationRestEasyImpl() {
         // If you want to test the API with a client running on another port, you can use/configure this code for your needs:
-         CorsFilter corsFilter = new CorsFilter();
-         corsFilter.getAllowedOrigins().add("*"); // for dev mode only!
-         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
-         SINGLETONS.add(corsFilter);
+//         CorsFilter corsFilter = new CorsFilter();
+//         corsFilter.getAllowedOrigins().add("*"); // for dev mode only!
+//         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
+//         SINGLETONS.add(corsFilter);
 
         // Auth interceptor:
         SINGLETONS.add(CONTEXT.getBean(AuthInterceptor.class));
