@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptio
 
 public class VocabularyOptimisticLockException extends Exception {
     public VocabularyOptimisticLockException(Exception hidden) {
-        super("An internal Vocabulary Module Exception occurred. Please contact a system administrator.");
+        super("An Optimistic Lock Exception occurred in Vocabulary Module. Please try again.");
         System.err.println("The following exception is only logged here but will not be made public:");
         hidden.printStackTrace();
     }
