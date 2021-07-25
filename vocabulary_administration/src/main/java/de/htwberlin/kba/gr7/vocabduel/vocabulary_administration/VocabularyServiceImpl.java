@@ -78,6 +78,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
+    @Transactional(rollbackFor = UndeletableListException.class)
     public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, VocabularyOptimisticLockException {
         final User author = vocables.getAuthor();
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
