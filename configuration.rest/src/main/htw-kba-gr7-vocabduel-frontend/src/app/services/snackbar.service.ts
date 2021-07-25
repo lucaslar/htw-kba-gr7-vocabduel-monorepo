@@ -19,7 +19,7 @@ export class SnackbarService {
         msgKey: string,
         args?: object,
         closeKey = 'general.close',
-        config = { duration: 3000 }
+        config = { duration: 5000 }
     ): MatSnackBarRef<TextOnlySnackBar> {
         const close = this.translate.instant(closeKey);
         const msg = this.translate.instant(msgKey, args);
