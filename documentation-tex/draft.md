@@ -66,9 +66,21 @@ Beschreibung:
 
 Für dieses Java Maven-Projekt wurde Hibernate genutzt, um aus den models
 eine MySQL Datenbank anzulegen und zu verwalten.
-Dazu wird ein EntityManager genutzt, der auf eine konfigurierte persistence.xml zugreift,
-in der steht, auf welche MySQL Datenbank mit welchem User wie zugegriffen werden soll
+Dafür wurde den models Klassen die Annotation @Entity und den Klassenattributen, welche 
+in der Datenbank Tabellenspalten darstellen sollen, die Annotation @Id, @Column oder @ElementCollection gegeben.
+Für Tabellen-Joins wurden die Annotationen @OneToMany, @ManyToOne und @OneToOne genutzt.
+
+![Screenshot]()
+
+Die EntityManagerFactory greift auf die persistence.xml zu.
+In der Persistence.xml steht, auf welche MySQL Datenbank mit welchem User wie zugegriffen
 und welche models zur Datenbankerzeugung genutzt werden sollen.
+Zudem wird der HibernateTransactionManager genutzt, dem dieses Mal über eine Bean beigebracht wird,
+mit welchem User auf welche MySQL Datenbank zugegriffen werden soll.
+Der HibernateTransactionManager besitzt per default einen EntityManager, der
+über die Annotation @PersistenceContext in die DAOs injected wird.
+
+![Screenshot2]()
 
 Auf einem Tomcat Server der Version 9.0.40 läuft der Spring RestEasy Server, welcher
 in der Rest-Schicht des configuration Moduls konfiguriert wird.
@@ -77,19 +89,27 @@ wurden als Dependencies angegeben und die Beans, in denen die REST HTTP Methoden
 dem Server hinzugefügt.
 
 Für die Benutzeroberfläche wird Angular genutzt.
+Dazu wird im Maven Executions node, npm und Angular installiert und das Angular Projekt gestartet.
+
+![Screenshot3]()
 
 Die JUnit Tests werden mit dem Mockito Framework durchgeführt.
 Normalerweise wird der MockitoJUnitRunner genutzt, um die Tests zu starten.
+Mithilfe der Annotation @Mock und dem Methodenaufbau Mockito.when().thenReturn(); werden
+Klassen, Methodenaufrufe und Returnwerte gemockt.
+
+![Screenshot4]()
+
 Bei den InvalidPwdsTests und bei den ValidPwdsTests starten die Tests allerdings parametriesiert.
 
-Über Maven Executions werden Node, npm und Angular installiert, damit das Frontend anschließend starten kann.
+![Screenshot5]()
 
 [comment]: <> (Add ideas here)
 
 # 6. Ablaufumgebung
 
 Zum Starten dieses Projektes sind eine MySQL Datenbank und ein Tomcat Server der Version 9.0.40 notwendig.
-Außerdem muss Maven der Version > 3.6 installiert sein.
+Außerdem muss Maven der Version > 3.6 installiert sein. Eine Internetverbindung wird gebraucht.
 Die Datenbank wird über die configuration_core/src/main/resources/META-INF/persistence.xml und 
 das /java/de.htwberlin.kba.gr7.vocabduel.configuration_core/EntityFactoryManagement konfiguriert.
 Der Tomcat Server wird über die .run/Tomcat 9.0.40.run.xml konfiguriert.
