@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 @Repository
@@ -19,12 +19,16 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertLanguageSet(LanguageSet languageSet) {
-        entityManager.persist(languageSet);
+    public void insertLanguageSet(LanguageSet languageSet){// throws InternalVocabularyModuleException {
+    //    try {
+            entityManager.persist(languageSet);
+    //    }catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
+    //    }
     }
 
     @Override
-    public LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws PersistenceException {
+    public LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known){// throws InternalVocabularyModuleException {
         LanguageSet languageSet = null;
         try {
             final String query = "from LanguageSet as l where l.learntLanguage like :learntLanguage and l.knownLanguage like :knownLanguage";
@@ -36,22 +40,32 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
 
         } catch (NoResultException ignored) {
             languageSet = new LanguageSet(learnt, known);
-            entityManager.persist(languageSet);
+    //        try {
+                entityManager.persist(languageSet);
+    //        } catch (Exception e){
+    //            throw new InternalVocabularyModuleException(e);
+    //        }
+    //    } catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
         }
         return languageSet;
     }
 
     @Override
-    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) {
-        final LanguageSet languageSet = (LanguageSet) entityManager
-                .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
-                .setParameter("unit", unit)
-                .getSingleResult();
-        return languageSet;
+    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit){// throws InternalVocabularyModuleException{
+    //    try {
+            final LanguageSet languageSet = (LanguageSet) entityManager
+                    .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
+                    .setParameter("unit", unit)
+                    .getSingleResult();
+            return languageSet;
+  //      } catch (Exception e){
+  //          throw new InternalVocabularyModuleException(e);
+  //      }
     }
 
     @Override
-    public List<LanguageSet> selectLanguageSets() {
+    public List<LanguageSet> selectLanguageSets(){ //throws InternalVocabularyModuleException{
         List<LanguageSet> languageSets = null;
         try {
             languageSets = (List<LanguageSet>) entityManager
@@ -60,14 +74,20 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
             initializeLazyLoadedLanguageSetData(languageSets);
         } catch (NoResultException ignored) {
             // ignored => return null (languageSets) in case of no result
+    //    } catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
         }
         return languageSets;
     }
 
     @Override
-    public boolean deleteLanguageSet(LanguageSet languageSet) throws PersistenceException {
-        entityManager.remove(languageSet);
-        return true;
+    public boolean deleteLanguageSet(LanguageSet languageSet) { //throws InternalVocabularyModuleException {
+    //    try {
+            entityManager.remove(languageSet);
+            return true;
+   //     } catch (Exception e){
+   //         throw new InternalVocabularyModuleException(e);
+   //     }
     }
 
     private void initializeLazyLoadedLanguageSetData(final List<LanguageSet> languageSets) {

@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
@@ -17,19 +18,27 @@ public class VocableListDAOImpl implements VocableListDAO {
     private EntityManager entityManager;
 
     @Override
-    public VocableList selectVocableList(VocableList vocables) throws PersistenceException {
-        return entityManager.find(VocableList.class, vocables.getId());
+    public VocableList selectVocableList(VocableList vocables) {// throws InternalVocabularyModuleException {
+    //    try{
+            return entityManager.find(VocableList.class, vocables.getId());
+    //    } catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
+    //    }
     }
 
     @Override
-    public VocableList selectVocableListById(Long id) {
-        final VocableList vocableList = entityManager.find(VocableList.class, id);
-        if (vocableList != null) initializeLazyLoadedVocableData(vocableList);
-        return vocableList;
+    public VocableList selectVocableListById(Long id) {// throws InternalVocabularyModuleException{
+    //    try {
+            final VocableList vocableList = entityManager.find(VocableList.class, id);
+            if (vocableList != null) initializeLazyLoadedVocableData(vocableList);
+            return vocableList;
+    //    } catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
+    //    }
     }
 
     @Override
-    public List<VocableList> selectVocableListsByUserId(Long userId) {
+    public List<VocableList> selectVocableListsByUserId(Long userId) {// throws InternalVocabularyModuleException {
         List<VocableList> vocableLists = null;
         try {
             vocableLists = (List<VocableList>) entityManager
@@ -39,14 +48,20 @@ public class VocableListDAOImpl implements VocableListDAO {
             vocableLists.forEach(this::initializeLazyLoadedVocableData);
         } catch (NoResultException ignored) {
             // ignored => return null (vocableLists) if no lists could be found
+    //    } catch (Exception e){
+    //        throw new InternalVocabularyModuleException(e);
         }
         return vocableLists;
     }
 
     @Override
-    public boolean deleteVocableList(VocableList vocables) throws PersistenceException {
-        entityManager.remove(vocables);
-        return true;
+    public boolean deleteVocableList(VocableList vocables) throws PersistenceException {// InternalVocabularyModuleException {
+        try {
+            entityManager.remove(vocables);
+            return true;
+        }catch (PersistenceException e){
+            throw new PersistenceException(e);
+        }
     }
 
     private void initializeLazyLoadedVocableData(VocableList vocableList) {
