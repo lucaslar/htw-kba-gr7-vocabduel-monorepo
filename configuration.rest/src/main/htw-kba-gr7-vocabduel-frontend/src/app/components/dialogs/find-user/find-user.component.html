@@ -104,7 +104,9 @@
                                 color="primary"
                                 [disabled]="
                                     navigation.isLoadingIndicated ||
-                                    !input.value.trim()
+                                    !input.value.trim() ||
+                                    (identifier === 'id' &&
+                                        !input.value.match('\\d+'))
                                 "
                                 (click)="searchByIdentifier(input.value)"
                             >
