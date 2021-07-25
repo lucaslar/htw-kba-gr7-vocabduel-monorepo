@@ -38,6 +38,9 @@
 
 %---content---
 \begin{document}
+    \renewcommand*\contentsname{Inhalt}
+    \renewcommand{\figurename}{Abbildung}
+
     \pagenumbering{gobble}
     \maketitle
     \vfill
@@ -51,6 +54,7 @@
     \setcounter{page}{1}
     \pagenumbering{arabic}
 
+    \input{./sections/0-intro-repositories.tex}
     \input{./sections/1-komponentenschnitt.tex}
     \input{./sections/2-schnittstellen.tex}
     \input{./sections/3-datenmodell.tex}
