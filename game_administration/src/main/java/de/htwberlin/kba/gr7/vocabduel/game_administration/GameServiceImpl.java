@@ -11,6 +11,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.Inte
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException {
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
@@ -148,7 +149,7 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private LanguageSet determineLanguageSetOfVocableLists(final List<VocableList> vocableLists) throws InvalidGameSetupException {
+    private LanguageSet determineLanguageSetOfVocableLists(final List<VocableList> vocableLists) throws InvalidGameSetupException, InternalVocabularyModuleException {
         final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets()
                 .stream()
                 .filter(ls -> ls.getVocableUnits().stream().anyMatch(vu -> vu.getVocableLists().stream().anyMatch(vl -> vocableLists.stream().anyMatch(gvl -> gvl.getId().equals(vl.getId())))))

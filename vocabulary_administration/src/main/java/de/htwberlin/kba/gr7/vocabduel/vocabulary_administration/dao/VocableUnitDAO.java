@@ -8,10 +8,10 @@ import javax.persistence.PersistenceException;
 
 public interface VocableUnitDAO {
 
-    void insertVocableUnit(VocableUnit unit); // throws InternalVocabularyModuleException;
+    void insertVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException;
 
-    VocableUnit selectVocableUnitByVocableList(VocableList vocables); // throws InternalVocabularyModuleException;
+    VocableUnit selectVocableUnitByVocableList(VocableList vocables) throws InternalVocabularyModuleException;
 
-    boolean deleteVocableUnit(VocableUnit unit) throws PersistenceException; //, InternalVocabularyModuleException;
+    boolean deleteVocableUnit(VocableUnit unit) throws PersistenceException, InternalVocabularyModuleException;
 
 }

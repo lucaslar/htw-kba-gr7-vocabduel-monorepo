@@ -9,14 +9,14 @@ import java.util.List;
 
 public interface LanguageSetDAO {
 
-    void insertLanguageSet(LanguageSet languageSet);// throws InternalVocabularyModuleException;
+    void insertLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException;
 
-    LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known);// throws InternalVocabularyModuleException;
+    LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws InternalVocabularyModuleException;
 
-    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit);// throws InternalVocabularyModuleException;
+    LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException;
 
-    List<LanguageSet> selectLanguageSets();// throws InternalVocabularyModuleException;
+    List<LanguageSet> selectLanguageSets() throws InternalVocabularyModuleException;
 
-    boolean deleteLanguageSet(LanguageSet languageSet);// throws InternalVocabularyModuleException;
+    boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException;
 
 }

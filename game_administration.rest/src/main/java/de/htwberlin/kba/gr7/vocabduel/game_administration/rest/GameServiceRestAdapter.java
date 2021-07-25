@@ -17,6 +17,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.Inte
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,6 +28,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,7 +62,10 @@ public class GameServiceRestAdapter {
         try {
             final User self = USER_SERVICE.getUserDataById(userId);
             final User opponent = USER_SERVICE.getUserDataById(data.getOpponentId());
-            final List<VocableList> lists = data.getVocableListIds().stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
+            final List<VocableList> lists = data.getVocableListIds().stream()
+                    // wrapper catches InternalVocabularyModuleException and throws an
+                    // unchecked Exception, which can be catched as RuntimeException (line 82)
+                    .map(wrapper(list -> this.getVocableListById(Long.parseLong(String.valueOf(list))))).collect(Collectors.toList());
             lists.forEach(session::update);
 
             final RunningVocabduelGame game = GAME_SERVICE.startGame(self, opponent, lists);
@@ -74,7 +79,7 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalVocabularyModuleException | RuntimeException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -156,5 +161,29 @@ public class GameServiceRestAdapter {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
+    }
+
+    private VocableList getVocableListById(Long id){
+        try{
+            return VOCABULARY_SERVICE.getVocableListById(id);
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @FunctionalInterface
+    public interface FunctionWithException<T, R, E extends Exception> {
+        R apply(T t) throws E;
+    }
+
+    private static <T, R, E extends Exception> Function<T, R> wrapper(FunctionWithException<T, R, E> fe){
+        return arg -> {
+            try {
+                return fe.apply(arg);
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        };
     }
 }

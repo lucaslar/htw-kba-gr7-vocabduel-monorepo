@@ -36,10 +36,15 @@ public class VocabularyServiceRestAdapter {
     @Path("/list/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getVocableListById(@PathParam("id") final long id) {
-        final VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
-        return list == null
-                ? Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").type(MediaType.TEXT_PLAIN).build()
-                : Response.ok(list).type(MediaType.APPLICATION_JSON).build();
+        try {
+            final VocableList list = VOCABULARY_SERVICE.getVocableListById(id);
+            return list == null
+                    ? Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").type(MediaType.TEXT_PLAIN).build()
+                    : Response.ok(list).type(MediaType.APPLICATION_JSON).build();
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -54,7 +59,7 @@ public class VocabularyServiceRestAdapter {
             }
             final List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
             return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -65,8 +70,13 @@ public class VocabularyServiceRestAdapter {
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllLanguageSets() {
-        final List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
-        return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
+        try {
+            final List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
+            return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -102,7 +112,7 @@ public class VocabularyServiceRestAdapter {
         } catch (UnknownLanguagesException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -114,13 +124,12 @@ public class VocabularyServiceRestAdapter {
     @Path("/delete-list/{listId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response deleteVocableList(@HeaderParam(AuthInterceptor.USER_HEADER) final Long userId, @PathParam("listId") final Long listId) {
-        final VocableList list = VOCABULARY_SERVICE.getVocableListById(listId);
-
-        if (list == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").build();
-        }
-
+        VocableList list = null;
         try {
+            list = VOCABULARY_SERVICE.getVocableListById(listId);
+            if (list == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").build();
+            }
             VOCABULARY_SERVICE.deleteVocableList(list, USER_SERVICE.getUserDataById(userId));
         } catch (DifferentAuthorException e) {
             e.printStackTrace();
@@ -128,7 +137,7 @@ public class VocabularyServiceRestAdapter {
         } catch (UndeletableListException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

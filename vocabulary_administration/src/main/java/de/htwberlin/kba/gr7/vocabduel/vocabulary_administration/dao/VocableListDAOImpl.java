@@ -18,27 +18,27 @@ public class VocableListDAOImpl implements VocableListDAO {
     private EntityManager entityManager;
 
     @Override
-    public VocableList selectVocableList(VocableList vocables) {// throws InternalVocabularyModuleException {
-    //    try{
+    public VocableList selectVocableList(VocableList vocables) throws InternalVocabularyModuleException {
+        try{
             return entityManager.find(VocableList.class, vocables.getId());
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
-    //    }
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
+        }
     }
 
     @Override
-    public VocableList selectVocableListById(Long id) {// throws InternalVocabularyModuleException{
-    //    try {
+    public VocableList selectVocableListById(Long id) throws InternalVocabularyModuleException{
+        try {
             final VocableList vocableList = entityManager.find(VocableList.class, id);
             if (vocableList != null) initializeLazyLoadedVocableData(vocableList);
             return vocableList;
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
-    //    }
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
+        }
     }
 
     @Override
-    public List<VocableList> selectVocableListsByUserId(Long userId) {// throws InternalVocabularyModuleException {
+    public List<VocableList> selectVocableListsByUserId(Long userId) throws InternalVocabularyModuleException {
         List<VocableList> vocableLists = null;
         try {
             vocableLists = (List<VocableList>) entityManager
@@ -48,19 +48,21 @@ public class VocableListDAOImpl implements VocableListDAO {
             vocableLists.forEach(this::initializeLazyLoadedVocableData);
         } catch (NoResultException ignored) {
             // ignored => return null (vocableLists) if no lists could be found
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
         return vocableLists;
     }
 
     @Override
-    public boolean deleteVocableList(VocableList vocables) throws PersistenceException {// InternalVocabularyModuleException {
+    public boolean deleteVocableList(VocableList vocables) throws PersistenceException, InternalVocabularyModuleException {
         try {
             entityManager.remove(vocables);
             return true;
         }catch (PersistenceException e){
             throw new PersistenceException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 

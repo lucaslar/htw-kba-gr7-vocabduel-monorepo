@@ -16,36 +16,36 @@ public class VocableUnitDAOImpl implements VocableUnitDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertVocableUnit(VocableUnit unit) { //throws InternalVocabularyModuleException {
-    //    try {
+    public void insertVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException {
+        try {
             entityManager.persist(unit);
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
-    //    }
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
+        }
     }
 
     @Override
-    public VocableUnit selectVocableUnitByVocableList(VocableList vocables) { //throws InternalVocabularyModuleException {
-    //    try {
+    public VocableUnit selectVocableUnitByVocableList(VocableList vocables) throws InternalVocabularyModuleException {
+        try {
             entityManager.clear();
             return (VocableUnit) entityManager
                     .createQuery("select u from VocableUnit u inner join u.vocableLists l where l = :list")
                     .setParameter("list", vocables)
                     .getSingleResult();
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
-    //    }
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
+        }
     }
 
     @Override
-    public boolean deleteVocableUnit(VocableUnit unit) throws PersistenceException {//, InternalVocabularyModuleException{
+    public boolean deleteVocableUnit(VocableUnit unit) throws PersistenceException, InternalVocabularyModuleException{
         try {
             entityManager.remove(unit);
             return true;
         } catch (PersistenceException e){
             throw new PersistenceException(e);
-    //    } catch (Exception e){
-    //        throw new InternalVocabularyModuleException(e);
+        } catch (Exception e){
+            throw new InternalVocabularyModuleException(e);
         }
     }
 

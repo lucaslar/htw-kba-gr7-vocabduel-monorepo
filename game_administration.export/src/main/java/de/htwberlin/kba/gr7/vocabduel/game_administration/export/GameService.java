@@ -7,6 +7,7 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Vocabduel
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
@@ -36,9 +37,10 @@ public interface GameService {
      * @throws InvalidGameSetupException            The setup of the game is not valid for a reason described in the given error message.
      * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game.
      * @throws InternalUserModuleException          An internal error in the user module occurred.
+     * @throws InternalVocabularyModuleException    An internal error in the vocabulary module occurred.
      */
     RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException;
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.

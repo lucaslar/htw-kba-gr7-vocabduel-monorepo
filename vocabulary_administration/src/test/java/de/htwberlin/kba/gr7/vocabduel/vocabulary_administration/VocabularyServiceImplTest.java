@@ -37,9 +37,7 @@ public class VocabularyServiceImplTest {
 
     private VocabularyServiceImpl vocabularyLib;
     private LanguageSet existingLanguageSet;
-    private LanguageSet emptyLanguagesSet;
     private VocableUnit existingVocableUnit;
-    private VocableUnit emptyVocableUnit;
     private VocableList existingVocableList1;
     private VocableList existingVocableList2;
     private User author;
@@ -101,7 +99,7 @@ public class VocabularyServiceImplTest {
         existingVocableUnit.setTitle("ES => EN - Vocabduel I");
         existingVocableUnit.setVocableLists(Stream.of(existingVocableList1, existingVocableList2).collect(Collectors.toList()));
 
-        emptyVocableUnit = new VocableUnit(456L);
+        VocableUnit emptyVocableUnit = new VocableUnit(456L);
         emptyVocableUnit.setTitle("This unit is empty");
 
         existingLanguageSet = new LanguageSet();
@@ -109,7 +107,7 @@ public class VocabularyServiceImplTest {
         existingLanguageSet.setLearntLanguage(SupportedLanguage.ES);
         existingLanguageSet.setVocableUnits(Stream.of(existingVocableUnit, emptyVocableUnit).collect(Collectors.toList()));
 
-        emptyLanguagesSet = new LanguageSet();
+        LanguageSet emptyLanguagesSet = new LanguageSet();
         emptyLanguagesSet.setKnownLanguage(SupportedLanguage.AR);
         emptyLanguagesSet.setLearntLanguage(SupportedLanguage.JA);
 
@@ -117,56 +115,56 @@ public class VocabularyServiceImplTest {
     }
 
     @Test(expected = DuplicateVocablesInSetException.class)
-    public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithDuplicateVocables() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_duplicate_vocabulary.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = DataAlreadyExistsException.class)
-    public void shouldNotImportGnuListWithExistingTitleInUnit() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithExistingTitleInUnit() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingLanguageSet);
         final String pathname = "./src/test/assets/gnu_title_already_exists.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = IncompleteVocableListException.class)
-    public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithIncompleteData() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_incomplete_list.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = InvalidVocableListException.class)
-    public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithInvalidFormat() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_invalid_format.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = IncompleteVocableListException.class)
-    public void shouldNotImportGnuListWithInvalidHeadline() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithInvalidHeadline() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_invalid_headline.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = InvalidVocableListException.class)
-    public void shouldNotImportGnuListWithInvalidVocable() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithInvalidVocable() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_invalid_translation.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = InvalidVocableListException.class)
-    public void shouldNotImportGnuListWithInvalidTranslation() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithInvalidTranslation() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_invalid_vocable.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test(expected = UnknownLanguagesException.class)
-    public void shouldNotImportGnuListWithUnknownLanguage() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldNotImportGnuListWithUnknownLanguage() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         final String pathname = "./src/test/assets/gnu_unknown_langs.txt";
         vocabularyLib.importGnuVocableList(fromFile(pathname), new User(42L));
     }
 
     @Test
-    public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldImportGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format.txt";
         final int initialListsLength = existingVocableUnit.getVocableLists().size();
@@ -183,7 +181,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldCreateNewUnitIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingLanguageSet);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_unit.txt";
         final int initialUnitsLength = existingLanguageSet.getVocableUnits().size();
@@ -200,7 +198,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException {
+    public void shouldCreateNewLanguageSetIfRequiredByGnuFile() throws DataAlreadyExistsException, DuplicateVocablesInSetException, IncompleteVocableListException, FileNotFoundException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         final String pathname = "./src/test/assets/gnu_valid_format_in_new_language_set.txt";
         final int initialLanguageSetLength = vocabularyLib.getAllLanguageSets().size();
@@ -213,19 +211,19 @@ public class VocabularyServiceImplTest {
     }
 
     @Test(expected = DifferentAuthorException.class)
-    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException {
+    public void shouldNotDeleteVocableListIfNotTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
         vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));
     }
 
     @Test(expected = PersistenceException.class)
-    public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, UndeletableListException {
+    public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         Mockito.doThrow(new PersistenceException()).when(entityManager).remove(Mockito.any());
         vocabularyLib.deleteVocableList(existingVocableList1, author);
     }
 
     @Test
-    public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException {
+    public void shouldDeleteVocableListIfTriggeredByAuthor() throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
         final int initialSize = existingVocableUnit.getVocableLists().size();
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
         final int statusCode = vocabularyLib.deleteVocableList(existingVocableList1, author);
@@ -234,7 +232,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldDeleteEmptyUnitList() throws DifferentAuthorException, UndeletableListException {
+    public void shouldDeleteEmptyUnitList() throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
         final int initialSize = existingLanguageSet.getVocableUnits().size();
         existingVocableUnit.setVocableLists(existingVocableUnit.getVocableLists().stream().filter(l -> l == existingVocableList1).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit, existingLanguageSet);
@@ -244,7 +242,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldFindVocableListByExistingId() {
+    public void shouldFindVocableListByExistingId() throws InternalVocabularyModuleException {
         Mockito.when(entityManager.find(Mockito.eq(VocableList.class), Mockito.eq(existingVocableList2.getId()))).thenReturn(existingVocableList2);
         final VocableList foundList = vocabularyLib.getVocableListById(existingVocableList2.getId());
         Assert.assertNotNull(foundList);
@@ -252,12 +250,12 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldNotFindVocableListIfUnknownId() {
+    public void shouldNotFindVocableListIfUnknownId() throws InternalVocabularyModuleException {
         Assert.assertNull(vocabularyLib.getVocableListById(123456L));
     }
 
     @Test
-    public void shouldFindVocableListsOfUser() {
+    public void shouldFindVocableListsOfUser() throws InternalVocabularyModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(existingVocableUnit.getVocableLists());
         final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(author);
         Assert.assertNotNull(foundLists);
@@ -266,14 +264,14 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldReturnNullIfUserHasNotImportedAnyList() {
+    public void shouldReturnNullIfUserHasNotImportedAnyList() throws InternalVocabularyModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<VocableList> foundLists = vocabularyLib.getVocableListsOfUser(new User(4711L));
         Assert.assertNull(foundLists);
     }
 
     @Test
-    public void shouldReturnAllLanguageSets() {
+    public void shouldReturnAllLanguageSets() throws InternalVocabularyModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(languages);
         final List<LanguageSet> languageSets = vocabularyLib.getAllLanguageSets();
         Assert.assertNotNull(languageSets);
@@ -281,7 +279,7 @@ public class VocabularyServiceImplTest {
     }
 
     @Test
-    public void shouldReturnNullIfNoLanguageSetsYet() {
+    public void shouldReturnNullIfNoLanguageSetsYet() throws InternalVocabularyModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<LanguageSet> languageSets = vocabularyLib.getAllLanguageSets();
         Assert.assertNull(languageSets);

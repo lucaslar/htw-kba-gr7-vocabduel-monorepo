@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface VocableListDAO {
 
-    VocableList selectVocableList(VocableList vocables); // throws InternalVocabularyModuleException;
+    VocableList selectVocableList(VocableList vocables) throws InternalVocabularyModuleException;
 
-    VocableList selectVocableListById(Long id); // throws InternalVocabularyModuleException;
+    VocableList selectVocableListById(Long id) throws InternalVocabularyModuleException;
 
-    List<VocableList> selectVocableListsByUserId(Long userId); // throws InternalVocabularyModuleException;
+    List<VocableList> selectVocableListsByUserId(Long userId) throws InternalVocabularyModuleException;
 
-    boolean deleteVocableList(VocableList vocables) throws PersistenceException;
+    boolean deleteVocableList(VocableList vocables) throws PersistenceException, InternalVocabularyModuleException;
 
 }

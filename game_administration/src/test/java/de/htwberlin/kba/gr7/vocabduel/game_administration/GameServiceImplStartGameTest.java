@@ -9,6 +9,7 @@ import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class GameServiceImplStartGameTest {
     private VocabularyService vocabularyService;
 
     @Before
-    public void setup() throws InternalUserModuleException {
+    public void setup() throws InternalUserModuleException, InternalVocabularyModuleException {
 
         final RunningVocabduelGameDAOImpl runningVocabduelGameDAO = new RunningVocabduelGameDAOImpl();
         runningVocabduelGameDAO.setEntityManager(entityManager);
@@ -69,7 +70,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldGetStartedGameAsInput() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldGetStartedGameAsInput() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -86,7 +87,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldNewGameWithFixedRoundList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNewGameWithFixedRoundList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -98,7 +99,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNewGameWithEnoughVocablesInMultipleLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
 
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -110,7 +111,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldStartGameWithUniqueRounds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldStartGameWithUniqueRounds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -122,7 +123,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test
-    public void shouldStartGameWithUniqueQuestions() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldStartGameWithUniqueQuestions() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -135,7 +136,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test()
-    public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldStartGameWithCorrectRoundIds() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -154,7 +155,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidGameSetupException.class)
-    public void shouldNotStartGameInSinglePlayerMode() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameInSinglePlayerMode() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockSampleUser(),
@@ -163,7 +164,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithoutVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -172,7 +173,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithoutEnoughVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -181,7 +182,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithoutEnoughVocabularyInMultipleVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -190,7 +191,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithEmptyVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithEmptyVocableLists() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         newGameRes = gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -199,7 +200,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidGameSetupException.class)
-    public void shouldNotStartGameWithNullVocabList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithNullVocabList() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         gameAdministration.startGame(
                 mock.mockSampleUser(),
                 mock.mockOpponent(),
@@ -208,7 +209,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldNotStartGameIfPlayerOneIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameIfPlayerOneIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(null);
         gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -218,7 +219,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldNotStartGameIfPlayerTwoIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameIfPlayerTwoIsUnknown() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         Mockito.when(userService.getUserDataById(12L)).thenReturn(null);
         gameAdministration.startGame(
                 mock.mockSampleUser(),
@@ -228,7 +229,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = InvalidGameSetupException.class)
-    public void shouldNotStartGameIfVocableListsAreOfDifferentLanguageSet() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameIfVocableListsAreOfDifferentLanguageSet() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         final VocableList list1 = new VocableList(123L);
         final VocableList list2 = new VocableList(456L);
 
@@ -259,7 +260,7 @@ public class GameServiceImplStartGameTest {
     }
 
     @Test(expected = NotEnoughVocabularyException.class)
-    public void shouldNotStartGameWithoutEnoughUniqueVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException {
+    public void shouldNotStartGameWithoutEnoughUniqueVocabulary() throws NotEnoughVocabularyException, InvalidGameSetupException, InvalidUserException, InternalUserModuleException, InternalVocabularyModuleException {
         final VocableList listWithoutEnoughUniques = new VocableList(42L);
 
         final List<Vocable> vocablesSharingTranslation = Arrays
