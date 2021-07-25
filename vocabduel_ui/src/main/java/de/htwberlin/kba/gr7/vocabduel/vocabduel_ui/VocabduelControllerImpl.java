@@ -587,7 +587,8 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printSuccessfullyStaredGame(game, ACTION_KEY_GAME_QUESTION);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get(ACTION_ARG_VOCABLE_LISTS));
-            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException | InternalVocabularyModuleException | InternalGameModuleException e) {
+            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException
+                     | InternalVocabularyModuleException | InternalGameModuleException | RuntimeException e) {
                 e.printStackTrace();
             }
         } else VIEW.printCouldNotDetermineUser();
