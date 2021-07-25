@@ -12,6 +12,8 @@ import { PasswordData } from '../model/internal/password-data';
 import { SnackbarService } from './snackbar.service';
 import { environment } from '../../environments/environment';
 import { RegistrationData } from '../model/internal/registration-data';
+import { MatDialog } from '@angular/material/dialog';
+import { ManageableErrorComponent } from '../components/dialogs/manageable-error/manageable-error.component';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +26,8 @@ export class AuthService {
         private readonly storage: StorageService,
         private readonly jwtHelper: JwtHelperService,
         private readonly router: Router,
-        private readonly snackbar: SnackbarService
+        private readonly snackbar: SnackbarService,
+        private readonly dialog: MatDialog
     ) {}
 
     login$(loginData: LoginData): Observable<LoggedInUser> {
@@ -36,9 +39,16 @@ export class AuthService {
 
     register(userData: RegistrationData): void {
         const url = `${environment.endpointUrl}/auth/register`;
-        this.http
-            .post<LoggedInUser>(url, userData)
-            .subscribe((result) => this.onSuccessfulAuth(result));
+        this.http.post<LoggedInUser>(url, userData).subscribe(
+            (result) => this.onSuccessfulAuth(result),
+            (err) => {
+                if (err.status === 400) {
+                    this.dialog.open(ManageableErrorComponent, {
+                        data: err.error,
+                    });
+                } else throw err;
+            }
+        );
     }
 
     get refreshToken$(): Observable<TokenData> {
@@ -65,12 +75,21 @@ export class AuthService {
 
     updatePassword(data: PasswordData): void {
         const url = `${environment.endpointUrl}/auth/update-password`;
-        this.http.put<TokenData>(url, data).subscribe(() => {
-            data.currentPassword = '';
-            data.newPassword = '';
-            data.confirm = '';
-            this.snackbar.showSnackbar('snackbar.passwordUpdated');
-        });
+        this.http.put<TokenData>(url, data).subscribe(
+            () => {
+                data.currentPassword = '';
+                data.newPassword = '';
+                data.confirm = '';
+                this.snackbar.showSnackbar('snackbar.passwordUpdated');
+            },
+            (err) => {
+                if (err.status === 400) {
+                    this.dialog.open(ManageableErrorComponent, {
+                        data: err.error,
+                    });
+                } else throw err;
+            }
+        );
     }
 
     logout(): void {

@@ -1,0 +1,19 @@
+<div mat-dialog-title class="background-primary">
+    <div class="title-content text-center d-flex flex-column">
+        <div class="error-icon-wrapper">
+            <mat-icon [inline]="true"> warning </mat-icon>
+        </div>
+        {{ 'dialog.manageable.title' | translate }}
+    </div>
+</div>
+
+<mat-dialog-content class="d-flex flex-column">
+    <p>{{ 'dialog.manageable.message' | translate }}</p>
+    <strong class="mx-auto p-3 color-primary">{{ error }}</strong>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>

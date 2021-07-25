@@ -51,6 +51,10 @@
         "finishedGame": {
             "title": "Your finished game",
             "titleAgainst": "Your game against {{ firstName }}"
+        },
+        "manageable": {
+            "title": "That did not work as expected",
+            "message": "Something went wrong on processing your request - but don't worry, it's an issue you can fix:"
         }
     },
     "snackbar": {

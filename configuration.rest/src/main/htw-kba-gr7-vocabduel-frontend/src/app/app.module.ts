@@ -48,6 +48,7 @@ import { ChartsModule } from 'ng2-charts';
 import { GameDetailsComponent } from './components/dialogs/game-details/game-details.component';
 import { LanguageSelectionComponent } from './components/dialogs/language-selection/language-selection.component';
 import { FirstObjectKeyPipe } from './pipes/first-object-key.pipe';
+import { ManageableErrorComponent } from './components/dialogs/manageable-error/manageable-error.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -86,6 +87,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         GameDetailsComponent,
         LanguageSelectionComponent,
         FirstObjectKeyPipe,
+        ManageableErrorComponent,
     ],
     imports: [
         BrowserModule,
