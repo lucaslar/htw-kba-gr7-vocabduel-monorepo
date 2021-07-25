@@ -1,5 +1,7 @@
 \section{Frameworks}\label{sec:frameworks}
 
+\subsection{Hibernate}\label{subsec:hibernate}
+
 Für dieses Java Maven-Projekt wurde Hibernate genutzt, um aus den models
 eine MySQL Datenbank anzulegen und zu verwalten.
 Dafür wurde den models Klassen die Annotation @Entity und den Klassenattributen, welche
@@ -12,6 +14,8 @@ Für Tabellen-Joins wurden die Annotationen @OneToMany, @ManyToOne und @OneToOne
     \caption[]{Beispiel für annotierte Model-Klasse (LoginData)}
     \label{fig:user-entity}
 \end{figure}
+
+\subsection{Persistenz}\label{subsec:persistenz}
 
 Die EntityManagerFactory greift auf die persistence.xml zu, in der wiederum definiert ist, auf welche MySQL Datenbank mit welchem User wie zugegriffen
 und welche models zur Datenbankerzeugung genutzt werden sollen.
@@ -26,6 +30,8 @@ Der HibernateTransactionManager besitzt per default einen EntityManager, der
     \caption[]{DAO-Klasse mit Annotation \texttt{PersistenceContext} (UserDAOImpl)}
     \label{fig:userdao}
 \end{figure}
+
+\subsection{Webserver}\label{subsec:webserver}
 
 Auf einem Tomcat Server der Version 9.0.40 läuft der Spring RestEasy Server, welcher
 in der Rest-Schicht des configuration Moduls konfiguriert wird.
@@ -42,6 +48,8 @@ Dazu wird im Maven Executions node, npm und Angular installiert und das Angular 
     \caption[]{Ausschnitt aus Build-Plugin zum Bauen des Frontends}
     \label{fig:snippet}
 \end{figure}
+
+\subsection{Mockito}\label{subsec:mockito}
 
 Die JUnit Tests werden mit dem Mockito Framework durchgeführt.
 Normalerweise wird der MockitoJUnitRunner genutzt, um die Tests zu starten.
