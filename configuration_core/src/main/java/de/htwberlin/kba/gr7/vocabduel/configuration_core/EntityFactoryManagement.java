@@ -38,6 +38,4 @@ public class EntityFactoryManagement {
         dataSource.setPassword("Test#-#44");
         return dataSource;
     }
-
-    // TODO If running, adjust tests
 }

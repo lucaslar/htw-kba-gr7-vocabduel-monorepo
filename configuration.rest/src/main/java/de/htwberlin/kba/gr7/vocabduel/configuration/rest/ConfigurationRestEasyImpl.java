@@ -22,7 +22,6 @@ public class ConfigurationRestEasyImpl extends Application {
 
     public ConfigurationRestEasyImpl() {
         // If you want to test the API with a client running on another port, you can use/configure this code for your needs:
-        // TODO Comment out when in production in order to support every port
          CorsFilter corsFilter = new CorsFilter();
          corsFilter.getAllowedOrigins().add("*"); // for dev mode only!
          corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
