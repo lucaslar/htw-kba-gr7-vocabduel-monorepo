@@ -67,10 +67,14 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             final List<RunningVocabduelGame> runningGames = (List<RunningVocabduelGame>) entityManager
                     .createQuery("select r from RunningVocabduelGame r where (playerA_id not in (select id from User) or playerB_id not in (select id from User))")
                     .getResultList();
-            runningGames.forEach(entityManager::remove);
+
+            for (final RunningVocabduelGame game : runningGames) {
+                entityManager.remove(game);
+                entityManager.flush();
+            }
             res = true;
         } catch (NoResultException ignored) {
-            // ignored => a user might have no finished game => not a problem
+            // ignored => a user might have no running game => not a problem
         } catch (Exception e){
             throw new InternalGameModuleException(e);
         }
