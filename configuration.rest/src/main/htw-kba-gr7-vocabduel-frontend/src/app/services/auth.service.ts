@@ -27,11 +27,11 @@ export class AuthService {
         private readonly snackbar: SnackbarService
     ) {}
 
-    login(loginData: LoginData): void {
+    login$(loginData: LoginData): Observable<LoggedInUser> {
         const url = `${environment.endpointUrl}/auth/login`;
-        this.http
+        return this.http
             .post<LoggedInUser>(url, loginData)
-            .subscribe((result) => this.onSuccessfulAuth(result));
+            .pipe(tap((result) => this.onSuccessfulAuth(result)));
     }
 
     register(userData: RegistrationData): void {

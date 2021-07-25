@@ -1,22 +1,31 @@
-<div class="d-flex">
-    <mat-card class="mx-auto">
+<div class="h-100 w-100 d-flex">
+    <mat-card class="m-auto">
         <mat-card-title>
             {{ 'header.actions.login' | translate }}
         </mat-card-title>
-        <mat-card-subtitle>
-            {{ 'main.login.subtitle' | translate }}
+        <mat-card-subtitle [class.color-warn]='isInvalid'>
+            {{
+                (isInvalid ? 'main.login.invalid' : 'main.login.subtitle')
+                    | translate
+            }}
         </mat-card-subtitle>
-        <form (ngSubmit)="auth.login(data)">
-            <mat-card-content class="row">
+        <mat-card-content class="row">
+            <form (ngSubmit)="login()">
                 <mat-form-field
                     appearance="outline"
                     color="primary"
                     class="col-12"
                 >
-                    <mat-icon color="primary" matSuffix>
+                    <mat-icon class="color-darkgrey" matSuffix>
                         alternate_email
                     </mat-icon>
-                    <input matInput [(ngModel)]="data.email" name="email" />
+                    <input
+                        matInput
+                        [(ngModel)]="data.email"
+                        (ngModelChange)="isInvalid = false"
+                        name="email"
+                        (focusout)="data.email = data.email.trim()"
+                    />
                     <mat-label>
                         {{ 'general.user.email' | translate }}
                     </mat-label>
@@ -27,38 +36,41 @@
                     color="primary"
                     class="col-12"
                 >
-                    <mat-icon color="primary" matSuffix>vpn_key</mat-icon>
+                    <mat-icon class="color-darkgrey" matSuffix>
+                        vpn_key
+                    </mat-icon>
                     <input
                         matInput
                         type="password"
                         [(ngModel)]="data.password"
+                        (ngModelChange)="isInvalid = false"
                         name="password"
                     />
                     <mat-label>
                         {{ 'general.user.password' | translate }}
                     </mat-label>
                 </mat-form-field>
-            </mat-card-content>
-            <div class="flex-column">
-                <button
-                    mat-flat-button
-                    class="w-100"
-                    color="primary"
-                    [disabled]="
-                        navigation.isLoadingIndicated ||
-                        !(data.email && data.password)
-                    "
-                >
-                    {{ 'main.login.login' | translate }}
-                    <mat-icon>send</mat-icon>
-                </button>
-
-                <div class="w-100 text-center mt-4">
-                    <a routerLink="/registration" class="color-primary">
-                        {{ 'main.login.orSignUp' | translate }}
-                    </a>
+                <div class="col-12">
+                    <button
+                        mat-flat-button
+                        class="w-100"
+                        color="primary"
+                        [disabled]="
+                            navigation.isLoadingIndicated ||
+                            !(data.email.trim() && data.password)
+                        "
+                    >
+                        {{ 'main.login.login' | translate }}
+                        <mat-icon>send</mat-icon>
+                    </button>
                 </div>
+            </form>
+
+            <div class="col-12 text-center mt-4">
+                <a routerLink="/registration" class="color-primary">
+                    {{ 'main.login.orSignUp' | translate }}
+                </a>
             </div>
-        </form>
+        </mat-card-content>
     </mat-card>
 </div>

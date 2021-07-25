@@ -145,7 +145,8 @@
         "login": {
             "subtitle": "Log in to your Vocabduel account",
             "login": "Sign in",
-            "orSignUp": "Don't have an account yet? Sign up"
+            "orSignUp": "Don't have an account yet? Sign up",
+            "invalid": "Invalid. Please try to log in again."
         },
         "settings": {
             "authTokens": {
