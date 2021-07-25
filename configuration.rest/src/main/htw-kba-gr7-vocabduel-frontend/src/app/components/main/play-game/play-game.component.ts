@@ -68,7 +68,21 @@ export class PlayGameComponent {
                   },
                   (err) => {
                       if (err?.status === 400) {
-                          this.router.navigate(['dashboard']).then();
+                          this.router
+                              .navigate(['/dashboard'])
+                              .then(() =>
+                                  this.snackbar.showSnackbar(
+                                      'snackbar.waitingForOpponentToFinish'
+                                  )
+                              );
+                      } else if (err?.status === 403) {
+                          this.router
+                              .navigate(['/dashboard'])
+                              .then(() =>
+                                  this.snackbar.showSnackbar(
+                                      'snackbar.noAccessToGame'
+                                  )
+                              );
                       } else throw err;
                   }
               );
@@ -104,7 +118,7 @@ export class PlayGameComponent {
                                     'snackbar.questionAlreadyAnswered'
                                 )
                             );
-                    }
+                    } else throw err;
                 }
             );
         }
