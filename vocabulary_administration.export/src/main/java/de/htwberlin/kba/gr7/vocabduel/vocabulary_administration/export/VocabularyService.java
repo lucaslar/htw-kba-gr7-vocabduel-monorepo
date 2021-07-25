@@ -1,6 +1,5 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
@@ -30,7 +29,7 @@ public interface VocabularyService {
      * @throws IncompleteVocableListException  The vocable list to be imported does not contain all required data.
      * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
      * @throws UnknownLanguagesException       One or both given language(s) are not supported or wrongly referred to.
-     * @throws InternalUserModuleException     An internal error in the vocabulary module occurred.
+     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
      */
     VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, InvalidVocableListException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InternalVocabularyModuleException;
 
@@ -42,27 +41,27 @@ public interface VocabularyService {
      * @return int database status of the delete query.
      * @throws DifferentAuthorException  The user who wants to delete the list has not the rights to do so, i.e. is not the list's author.
      * @throws UndeletableListException The list cannot be deleted because of constraint violations.
-     * @throws InternalUserModuleException     An internal error in the vocabulary module occurred.
+     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
      */
     int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException;
 
     /**
      * @param id ID the vocable list for is to be returned.
      * @return Vocable list with the given <code>id</code> or <code>null</code> if no list could be found.
-     * @throws InternalUserModuleException     An internal error in the vocabulary module occurred.
+     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
      */
     VocableList getVocableListById(Long id) throws InternalVocabularyModuleException;
 
     /**
      * @param user User whose vocable lists, i.e. the lists she/he is the author of, are to be returned.
      * @return The given user's vocable lists (can be empty).
-     * @throws InternalUserModuleException     An internal error in the vocabulary module occurred.
+     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
      */
     List<VocableList> getVocableListsOfUser(User user) throws InternalVocabularyModuleException;
 
     /**
      * @return List containing all available language sets.
-     * @throws InternalUserModuleException     An internal error in the vocabulary module occurred.
+     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
      */
     List<LanguageSet> getAllLanguageSets() throws InternalVocabularyModuleException;
 
