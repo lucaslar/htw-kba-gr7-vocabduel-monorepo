@@ -27,7 +27,6 @@ export class UserService {
             | { id: string  }
     ): Observable<User> {
         const url = `${environment.endpointUrl}/user/get`;
-        console.log(value)
         return this.http.get<User>(url, { params: value });
     }
 }

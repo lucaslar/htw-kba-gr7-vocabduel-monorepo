@@ -7,7 +7,6 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { RegistrationData } from '../../../model/internal/registration-data';
 import { pwdVal, nameValidation } from '../../../model/vocabduel-validation';
 
 @Component({

@@ -73,23 +73,9 @@ export class AuthService {
         );
     }
 
-    updatePassword(data: PasswordData): void {
+    updatePassword$(data: PasswordData): Observable<TokenData> {
         const url = `${environment.endpointUrl}/auth/update-password`;
-        this.http.put<TokenData>(url, data).subscribe(
-            () => {
-                data.currentPassword = '';
-                data.newPassword = '';
-                data.confirm = '';
-                this.snackbar.showSnackbar('snackbar.passwordUpdated');
-            },
-            (err) => {
-                if (err.status === 400) {
-                    this.dialog.open(ManageableErrorComponent, {
-                        data: err.error,
-                    });
-                } else throw err;
-            }
-        );
+        return this.http.put<TokenData>(url, data);
     }
 
     logout(): void {
