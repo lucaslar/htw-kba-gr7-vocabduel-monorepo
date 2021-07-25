@@ -215,9 +215,10 @@ public class VocabularyServiceImplTest {
         vocabularyLib.deleteVocableList(existingVocableList1, new User(4711L));
     }
 
-    @Test(expected = PersistenceException.class)
+    @Test(expected = UndeletableListException.class)
     public void shouldThrowPersistenceExceptionIfErrorOccurred() throws DifferentAuthorException, UndeletableListException, VocabularyOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingVocableUnit);
+        Mockito.when(entityManager.find(Mockito.any(), Mockito.any())).thenReturn(existingVocableList1);
         Mockito.doThrow(new PersistenceException()).when(entityManager).remove(Mockito.any());
         vocabularyLib.deleteVocableList(existingVocableList1, author);
     }
