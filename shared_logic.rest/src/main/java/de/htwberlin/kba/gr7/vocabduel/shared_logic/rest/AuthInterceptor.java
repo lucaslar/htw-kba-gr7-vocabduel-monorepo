@@ -51,7 +51,7 @@ public class AuthInterceptor implements ContainerRequestFilter {
                     }
                 } catch (InternalUserModuleException e) {
                     e.printStackTrace();
-                    requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e).build());
+                    requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build());
                 }
             }
         }

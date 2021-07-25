@@ -131,12 +131,9 @@ public class VocabularyServiceRestAdapter {
                 return Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").build();
             }
             VOCABULARY_SERVICE.deleteVocableList(list, USER_SERVICE.getUserDataById(userId));
-        } catch (DifferentAuthorException e) {
+        } catch (DifferentAuthorException | UndeletableListException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (UndeletableListException e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.FORBIDDEN).entity(e).build();
         } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
