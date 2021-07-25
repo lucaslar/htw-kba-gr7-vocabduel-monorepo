@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { LoginData } from '../../../model/internal/login-data';
 import { NavigationService } from '../../../services/navigation.service';
-import { heightTransition } from '../../../model/functions/animation';
 
 @Component({
-    animations: [heightTransition],
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
