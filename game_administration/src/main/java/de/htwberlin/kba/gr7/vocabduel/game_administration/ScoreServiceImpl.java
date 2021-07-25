@@ -3,12 +3,12 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
+    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, UserOptimisticLockException, GameOptimisticLockException {
         if (user == null || USER_SERVICE.getUserDataById(user.getId()) == null) {
             throw new InvalidUserException("User could not be found");
         }
@@ -45,7 +45,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
+    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException, UserOptimisticLockException, GameOptimisticLockException {
         final List<PersonalFinishedGame> finishedGames = getPersonalFinishedGames(user);
         if (finishedGames == null || finishedGames.isEmpty()) return new ScoreRecord(user);
         else {
@@ -57,7 +57,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException, InternalGameModuleException {
+    public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException, GameOptimisticLockException {
         RunningVocabduelGame game = null;
         if (player != null) {
             game = runningVocabduelGameDAO.selectRunningVocabduelGameByGameIdAndUser(player, gameId);

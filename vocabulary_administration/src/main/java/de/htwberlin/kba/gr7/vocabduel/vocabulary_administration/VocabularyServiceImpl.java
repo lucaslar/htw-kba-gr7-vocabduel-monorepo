@@ -38,7 +38,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException, InternalVocabularyModuleException {
+    public VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InvalidVocableListException, VocabularyOptimisticLockException {
         final List<String> lines = Arrays.stream(gnuContent.split("\n")).collect(Collectors.toList());
         if (lines.size() < 2) throw new IncompleteVocableListException("Not enough lines, expected at least two");
 
@@ -78,8 +78,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    @Transactional(rollbackFor = UndeletableListException.class)
-    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException {
+    public int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, VocabularyOptimisticLockException {
         final User author = vocables.getAuthor();
         if (author != null && !author.getId().equals(triggeringUser.getId())) {
             throw new DifferentAuthorException("You are not authorized to remove lists imported by " + author + "!");
@@ -108,17 +107,17 @@ public class VocabularyServiceImpl implements VocabularyService {
     }
 
     @Override
-    public VocableList getVocableListById(Long id) throws InternalVocabularyModuleException {
+    public VocableList getVocableListById(Long id) throws VocabularyOptimisticLockException {
         return VOCABLE_LIST_DAO.selectVocableListById(id);
     }
 
     @Override
-    public List<VocableList> getVocableListsOfUser(User user) throws InternalVocabularyModuleException {
+    public List<VocableList> getVocableListsOfUser(User user) throws VocabularyOptimisticLockException {
         return VOCABLE_LIST_DAO.selectVocableListsByUserId(user.getId());
     }
 
     @Override
-    public List<LanguageSet> getAllLanguageSets() throws InternalVocabularyModuleException {
+    public List<LanguageSet> getAllLanguageSets() throws VocabularyOptimisticLockException {
         return LANGUAGE_SET_DAO.selectLanguageSets();
     }
 
@@ -232,7 +231,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         else return lang;
     }
 
-    private VocableUnit getOrCreateLanguageUnit(final String unitName, final SupportedLanguage from, final SupportedLanguage to) throws InternalVocabularyModuleException {
+    private VocableUnit getOrCreateLanguageUnit(final String unitName, final SupportedLanguage from, final SupportedLanguage to) throws VocabularyOptimisticLockException {
         final LanguageSet ls = getOrCreateLanguageSet(from, to);
         VocableUnit unit;
         Optional<VocableUnit> foundUnit = Optional.empty();
@@ -250,7 +249,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         return unit;
     }
 
-    private LanguageSet getOrCreateLanguageSet(final SupportedLanguage from, final SupportedLanguage to) throws InternalVocabularyModuleException {
+    private LanguageSet getOrCreateLanguageSet(final SupportedLanguage from, final SupportedLanguage to) throws VocabularyOptimisticLockException {
         return LANGUAGE_SET_DAO.selectOrInsertLanguageSetBySupportedLanguages(from, to);
     }
 

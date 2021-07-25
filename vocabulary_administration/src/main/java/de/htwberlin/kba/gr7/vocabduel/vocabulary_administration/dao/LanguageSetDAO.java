@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface LanguageSetDAO {
 
-    void insertLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException;
+    void insertLanguageSet(LanguageSet languageSet) throws VocabularyOptimisticLockException;
 
-    LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws InternalVocabularyModuleException;
+    LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws VocabularyOptimisticLockException;
 
     LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException, PersistenceException;
 
-    List<LanguageSet> selectLanguageSets() throws InternalVocabularyModuleException;
+    List<LanguageSet> selectLanguageSets() throws VocabularyOptimisticLockException;
 
     boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException, PersistenceException;
 

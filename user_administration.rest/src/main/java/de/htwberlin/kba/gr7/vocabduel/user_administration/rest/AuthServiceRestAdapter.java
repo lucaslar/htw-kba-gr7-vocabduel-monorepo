@@ -57,7 +57,7 @@ public class AuthServiceRestAdapter {
         } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -82,7 +82,7 @@ public class AuthServiceRestAdapter {
                 System.out.println("A user failed to log in (email: " + data.getEmail() + ")");
                 return Response.status(Response.Status.BAD_REQUEST).entity("Invalid login, please try again.").type(MediaType.TEXT_PLAIN).build();
             }
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -94,7 +94,7 @@ public class AuthServiceRestAdapter {
     public Response currentUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String token) {
         try {
             return Response.ok(AUTH_SERVICE.fetchUser(token.replaceFirst("Bearer ", ""))).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -117,7 +117,7 @@ public class AuthServiceRestAdapter {
                     .status(Response.Status.FORBIDDEN)
                     .entity("Could not refresh. Your given Refresh Token does not seem to be valid")
                     .type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -142,7 +142,7 @@ public class AuthServiceRestAdapter {
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

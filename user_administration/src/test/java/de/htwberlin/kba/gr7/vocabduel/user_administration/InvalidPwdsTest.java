@@ -1,9 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAO;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAO;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -86,12 +84,12 @@ public class InvalidPwdsTest {
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldThrowPwdTooWeakInRegistration() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("newuser", "newuser@user.de", "New", "User", PWD, PWD);
     }
 
     @Test(expected = PwTooWeakException.class)
-    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void shouldThrowPwdTooWeakInUpdate() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         auth.updateUserPassword(existingUser, PREVIOUS_PWD, PWD, PWD);
     }
 }

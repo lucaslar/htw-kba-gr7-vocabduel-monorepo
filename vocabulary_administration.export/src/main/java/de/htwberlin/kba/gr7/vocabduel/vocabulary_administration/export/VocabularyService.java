@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export;
 
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
@@ -24,14 +25,14 @@ public interface VocabularyService {
      * @param gnuContent     Content of a GNU file as string.
      * @param triggeringUser User triggering the import and who will be set as author of the new data.
      * @return int database status of the insert query.
-     * @throws DuplicateVocablesInSetException The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
-     * @throws InvalidVocableListException     The vocable list to be imported has an invalid vocable format (is not using colon characters)
-     * @throws IncompleteVocableListException  The vocable list to be imported does not contain all required data.
-     * @throws DataAlreadyExistsException      The unit the vocable list is to be added to does already contain a vocable list with the same title.
-     * @throws UnknownLanguagesException       One or both given language(s) are not supported or wrongly referred to.
-     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
+     * @throws DuplicateVocablesInSetException   The vocable list contains duplicates concerning the vocabulary in the learnt language. Regardless of whether their respective translations differ or not.
+     * @throws InvalidVocableListException       The vocable list to be imported has an invalid vocable format (is not using colon characters)
+     * @throws IncompleteVocableListException    The vocable list to be imported does not contain all required data.
+     * @throws DataAlreadyExistsException        The unit the vocable list is to be added to does already contain a vocable list with the same title.
+     * @throws UnknownLanguagesException         One or both given language(s) are not supported or wrongly referred to.
+     * @throws VocabularyOptimisticLockException An OptimisticLock error in the vocabulary module occurred.
      */
-    VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, InvalidVocableListException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, InternalVocabularyModuleException;
+    VocableList importGnuVocableList(String gnuContent, User triggeringUser) throws DuplicateVocablesInSetException, InvalidVocableListException, IncompleteVocableListException, DataAlreadyExistsException, UnknownLanguagesException, VocabularyOptimisticLockException;
 
     /**
      * Deletes a vocable list if the triggering user is its author.
@@ -41,29 +42,29 @@ public interface VocabularyService {
      * @return int database status of the delete query.
      * @throws DifferentAuthorException  The user who wants to delete the list has not the rights to do so, i.e. is not the list's author.
      * @throws UndeletableListException The list cannot be deleted because of constraint violations.
-     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
+     * @throws VocabularyOptimisticLockException An OptimisticLock error in the vocabulary module occurred.
      */
-    int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, InternalVocabularyModuleException;
+    int deleteVocableList(VocableList vocables, User triggeringUser) throws DifferentAuthorException, UndeletableListException, VocabularyOptimisticLockException;
 
     /**
      * @param id ID the vocable list for is to be returned.
      * @return Vocable list with the given <code>id</code> or <code>null</code> if no list could be found.
-     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
+     * @throws VocabularyOptimisticLockException An OptimisticLock error in the vocabulary module occurred.
      */
-    VocableList getVocableListById(Long id) throws InternalVocabularyModuleException;
+    VocableList getVocableListById(Long id) throws VocabularyOptimisticLockException;
 
     /**
      * @param user User whose vocable lists, i.e. the lists she/he is the author of, are to be returned.
      * @return The given user's vocable lists (can be empty).
-     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
+     * @throws VocabularyOptimisticLockException An OptimisticLock error in the vocabulary module occurred.
      */
-    List<VocableList> getVocableListsOfUser(User user) throws InternalVocabularyModuleException;
+    List<VocableList> getVocableListsOfUser(User user) throws VocabularyOptimisticLockException;
 
     /**
      * @return List containing all available language sets.
-     * @throws InternalVocabularyModuleException     An internal error in the vocabulary module occurred.
+     * @throws VocabularyOptimisticLockException An OptimisticLock error in the vocabulary module occurred.
      */
-    List<LanguageSet> getAllLanguageSets() throws InternalVocabularyModuleException;
+    List<LanguageSet> getAllLanguageSets() throws VocabularyOptimisticLockException;
 
     /**
      * @return List containing all languages for learning/translating supported by this application.

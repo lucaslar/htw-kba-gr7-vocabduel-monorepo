@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.LanguageSet;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.SupportedLanguage;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableUnit;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.util.List;
@@ -20,16 +21,16 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException {
+    public void insertLanguageSet(LanguageSet languageSet) throws VocabularyOptimisticLockException {
         try {
             entityManager.persist(languageSet);
-        }catch (Exception e){
-            throw new InternalVocabularyModuleException(e);
+        }catch (OptimisticLockException e){
+            throw new VocabularyOptimisticLockException(e);
         }
     }
 
     @Override
-    public LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws InternalVocabularyModuleException {
+    public LanguageSet selectOrInsertLanguageSetBySupportedLanguages(SupportedLanguage learnt, SupportedLanguage known) throws VocabularyOptimisticLockException {
         LanguageSet languageSet = null;
         try {
             final String query = "from LanguageSet as l where l.learntLanguage like :learntLanguage and l.knownLanguage like :knownLanguage";
@@ -43,32 +44,32 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
             languageSet = new LanguageSet(learnt, known);
             try {
                 entityManager.persist(languageSet);
-            } catch (Exception e){
-                throw new InternalVocabularyModuleException(e);
+            } catch (OptimisticLockException e){
+                throw new VocabularyOptimisticLockException(e);
             }
-        } catch (Exception e){
-            throw new InternalVocabularyModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new VocabularyOptimisticLockException(e);
         }
         return languageSet;
     }
 
     @Override
-    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws InternalVocabularyModuleException, PersistenceException  {
+    public LanguageSet selectLanguageSetByVocableUnit(VocableUnit unit) throws VocabularyOptimisticLockException, PersistenceException {
         try {
             final LanguageSet languageSet = (LanguageSet) entityManager
                     .createQuery("select l from LanguageSet l inner join l.vocableUnits u where u = :unit")
                     .setParameter("unit", unit)
                     .getSingleResult();
             return languageSet;
+        } catch (OptimisticLockException e){
+            throw new VocabularyOptimisticLockException(e);
         } catch (PersistenceException e) {
             throw e;
-        } catch (Exception e){
-            throw new InternalVocabularyModuleException(e);
         }
     }
 
     @Override
-    public List<LanguageSet> selectLanguageSets()throws InternalVocabularyModuleException{
+    public List<LanguageSet> selectLanguageSets()throws VocabularyOptimisticLockException {
         List<LanguageSet> languageSets = null;
         try {
             languageSets = (List<LanguageSet>) entityManager
@@ -77,21 +78,21 @@ public class LanguageSetDAOImpl implements LanguageSetDAO {
             initializeLazyLoadedLanguageSetData(languageSets);
         } catch (NoResultException ignored) {
             // ignored => return null (languageSets) in case of no result
-        } catch (Exception e){
-            throw new InternalVocabularyModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new VocabularyOptimisticLockException(e);
         }
         return languageSets;
     }
 
     @Override
-    public boolean deleteLanguageSet(LanguageSet languageSet) throws InternalVocabularyModuleException, PersistenceException {
+    public boolean deleteLanguageSet(LanguageSet languageSet) throws VocabularyOptimisticLockException, PersistenceException {
         try {
             entityManager.remove(languageSet);
             return true;
+        } catch (OptimisticLockException e){
+            throw new VocabularyOptimisticLockException(e);
         } catch (PersistenceException e){
             throw e;
-        } catch (Exception e){
-            throw new InternalVocabularyModuleException(e);
         }
     }
 

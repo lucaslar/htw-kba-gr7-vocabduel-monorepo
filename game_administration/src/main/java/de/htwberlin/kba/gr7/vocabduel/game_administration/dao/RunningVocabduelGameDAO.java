@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
@@ -14,11 +14,11 @@ public interface RunningVocabduelGameDAO {
      *  a insert method in VocabduelRoundDAO
      * @param game RunningVocabduelGame to be inserted
      */
-    void insertRunningVocabduelGame(RunningVocabduelGame game) throws InternalGameModuleException;
+    void insertRunningVocabduelGame(RunningVocabduelGame game) throws GameOptimisticLockException;
 
-    List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User player) throws InternalGameModuleException;
+    List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User player) throws GameOptimisticLockException;
 
-    RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User user, Long gameId) throws InternalGameModuleException;
+    RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User user, Long gameId) throws GameOptimisticLockException;
 
     /**
      * delete RunningVocabduelGame and VocabduelRounds, so that
@@ -26,6 +26,6 @@ public interface RunningVocabduelGameDAO {
      * @return boolean true if everything went right
      *                 false if something bad happened
      */
-    boolean deleteRunningVocabduelGameWhereUserDoesntExist() throws InternalGameModuleException;
+    boolean deleteRunningVocabduelGameWhereUserDoesntExist() throws GameOptimisticLockException;
 
 }

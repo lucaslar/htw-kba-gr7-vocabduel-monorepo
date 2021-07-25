@@ -1,11 +1,11 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.export;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 
@@ -28,19 +28,19 @@ public interface ScoreService {
      * @param user User whose finished games are to be returned and for whom they are to be personalized.
      * @return List of finished games including result data from the given player's point of view.
      * @throws InvalidUserException         The user could not be found.
-     * @throws InternalUserModuleException  An internal error in the user module occurred.
-     * @throws InternalGameModuleException  An internal error in the game module occurred.
+     * @throws UserOptimisticLockException  An OptimisticLock error in the user module occurred.
+     * @throws GameOptimisticLockException  An OptimisticLock error in the game module occurred.
      */
-    List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException;
+    List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, UserOptimisticLockException, GameOptimisticLockException;
 
     /**
      * @param user User the record of is to be counted.
      * @return Score record for the given player.
      * @throws InvalidUserException The user could not be found.
-     * @throws InternalUserModuleException  An internal error in the user module occurred.
-     * @throws InternalGameModuleException  An internal error in the game module occurred.
+     * @throws UserOptimisticLockException  An OptimisticLock error in the user module occurred.
+     * @throws GameOptimisticLockException  An OptimisticLock error in the game module occurred.
      */
-    ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException;
+    ScoreRecord getRecordOfUser(User user) throws InvalidUserException, UserOptimisticLockException, GameOptimisticLockException;
 
     /**
      * Finishes a game, i.e. determines its final score and stores it. Afterwards, the finished game including its
@@ -55,7 +55,7 @@ public interface ScoreService {
      * @return Finished game including result and meta-data from the given player's point of view.
      * @throws UnfinishedGameException     The game does still have unfinished rounds, i.e. cannot be finished.
      * @throws NoAccessException           The triggering user/user the result is to be personalized for is not a player of the game instance.
-     * @throws InternalGameModuleException An internal error in the game module occurred.
+     * @throws GameOptimisticLockException An OptimisticLock error in the game module occurred.
      */
-    PersonalFinishedGame finishGame(User user, long gameId) throws UnfinishedGameException, NoAccessException, InternalGameModuleException;
+    PersonalFinishedGame finishGame(User user, long gameId) throws UnfinishedGameException, NoAccessException, GameOptimisticLockException;
 }

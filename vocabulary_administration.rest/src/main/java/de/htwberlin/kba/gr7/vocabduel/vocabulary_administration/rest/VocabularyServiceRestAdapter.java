@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.*;
@@ -41,7 +41,7 @@ public class VocabularyServiceRestAdapter {
             return list == null
                     ? Response.status(Response.Status.NOT_FOUND).entity("No list found for the given ID.").type(MediaType.TEXT_PLAIN).build()
                     : Response.ok(list).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -59,7 +59,7 @@ public class VocabularyServiceRestAdapter {
             }
             final List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
             return Response.ok(lists).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
+        } catch (UserOptimisticLockException | VocabularyOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -73,7 +73,7 @@ public class VocabularyServiceRestAdapter {
         try {
             final List<LanguageSet> sets = VOCABULARY_SERVICE.getAllLanguageSets();
             return Response.ok(sets).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -112,7 +112,7 @@ public class VocabularyServiceRestAdapter {
         } catch (UnknownLanguagesException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
+        } catch (UserOptimisticLockException | VocabularyOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -134,7 +134,10 @@ public class VocabularyServiceRestAdapter {
         } catch (DifferentAuthorException | UndeletableListException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException | InternalVocabularyModuleException e) {
+        } catch (UndeletableListException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.FORBIDDEN).entity(e).build();
+        } catch (UserOptimisticLockException | VocabularyOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

@@ -1,14 +1,14 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.ScoreRecord;
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class ScoreServiceRestAdapter {
         } catch (UnfinishedGameException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -64,7 +64,7 @@ public class ScoreServiceRestAdapter {
             return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -92,7 +92,7 @@ public class ScoreServiceRestAdapter {
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

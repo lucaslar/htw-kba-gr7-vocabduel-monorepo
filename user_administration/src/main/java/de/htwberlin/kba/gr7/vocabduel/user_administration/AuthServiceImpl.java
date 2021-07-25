@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public LoggedInUser registerUser(String username, String email, String firstname, String lastname, String password, String confirmPassword) throws PasswordsDoNotMatchException, PwTooWeakException, InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         Validation.completeDataValidation(username, email, firstname, lastname, password, confirmPassword);
         Validation.uniqueUserDataValidation(username, email, USER_SERVICE);
         Validation.nameValidation(firstname);
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoggedInUser loginUser(String email, String password) throws InternalUserModuleException {
+    public LoggedInUser loginUser(String email, String password) throws UserOptimisticLockException {
         LoginData loginData = LOGIN_DATA_DAO.selectLoginDataByUserEmail(email);
 
         if (loginData != null && validatePassword(loginData.getPasswordHash(), password)) {
@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User fetchUser(final String token) throws InternalUserModuleException {
+    public User fetchUser(final String token) throws UserOptimisticLockException {
         if (token != null) {
             try {
                 final Claims claims = parseToken(token);
@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthTokens refreshAuthTokens(final String refreshToken) throws InternalUserModuleException {
+    public AuthTokens refreshAuthTokens(final String refreshToken) throws UserOptimisticLockException {
         try {
             final User user = fetchUser(refreshToken);
             if (user != null) {
@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException, InternalUserModuleException {
+    public int updateUserPassword(final User user, final String currentPassword, final String password, final String confirmPassword) throws InvalidUserException, InvalidFirstPwdException, PasswordsDoNotMatchException, PwTooWeakException, UserOptimisticLockException {
         if (user == null) throw new InvalidUserException("Invalid user");
 
         LoginData loginData = LOGIN_DATA_DAO.selectLoginDataByUser(user);
@@ -126,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean hasAccessRights(final String token) throws InternalUserModuleException {
+    public boolean hasAccessRights(final String token) throws UserOptimisticLockException {
         return validateToken(token);
     }
 
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
         return BCrypt.verifyer().verify(pwd.toCharArray(), hashedPwd).verified;
     }
 
-    private AuthTokens insertNewUserTokens(final User user) throws InternalUserModuleException {
+    private AuthTokens insertNewUserTokens(final User user) throws UserOptimisticLockException {
         final String refreshToken = generateRefreshToken(user);
         final String token = generateAuthToken(user);
         STORED_REFRESH_TOKEN_DAO.removeUserTokensIfFiveOrMorePresent(user);

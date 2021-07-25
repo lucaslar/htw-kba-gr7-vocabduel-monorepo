@@ -4,10 +4,10 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 
 import java.util.List;
@@ -36,21 +36,21 @@ public interface GameService {
      * @throws InvalidUserException                 One of the given users could not be found.
      * @throws InvalidGameSetupException            The setup of the game is not valid for a reason described in the given error message.
      * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game.
-     * @throws InternalUserModuleException          An internal error in the user module occurred.
-     * @throws InternalVocabularyModuleException    An internal error in the vocabulary module occurred.
-     * @throws InternalGameModuleException          An internal error in the game module occurred.
+     * @throws UserOptimisticLockException          An OptimisticLock error in the user module occurred.
+     * @throws VocabularyOptimisticLockException    An OptimisticLock error in the vocabulary module occurred.
+     * @throws GameOptimisticLockException          An OptimisticLock error in the game module occurred.
      */
     RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException, InternalGameModuleException;
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, UserOptimisticLockException, VocabularyOptimisticLockException, GameOptimisticLockException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.
      *
      * @param user User the pending/challenged matches of are to be returned.
      * @return List of all unfinished games the given <code>user</code> has been challenged to or has started.
-     * @throws InternalGameModuleException          An internal error in the game module occurred.
+     * @throws GameOptimisticLockException An OptimisticLock error in the game module occurred.
      */
-    List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws InternalGameModuleException;
+    List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws GameOptimisticLockException;
 
     /**
      * Starts the next round of a given game as a given player, i.e. returns the respective next round object.
@@ -60,9 +60,9 @@ public interface GameService {
      * @return Current <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what.
      * @throws NoAccessException           The given user is no participant of the given round or it could not be found at all.
-     * @throws InternalGameModuleException An internal error in the game module occurred.
+     * @throws GameOptimisticLockException An OptimisticLock error in the game module occurred.
      */
-    VocabduelRound startRound(User player, long gameId) throws NoAccessException, InternalGameModuleException;
+    VocabduelRound startRound(User player, long gameId) throws NoAccessException, GameOptimisticLockException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
@@ -81,15 +81,15 @@ public interface GameService {
      * @return Result for the given <code>round</code> from the perspective of the given <code>player</code> incl. the correct answer in case of having submitted a wrong one.
      * @throws InvalidVocabduelGameNrException The question has already been answered by the current user or an invalid answer number has been stated.
      * @throws NoAccessException               The given user is no participant of the given round or it could not be found at all.
-     * @throws InternalGameModuleException     An internal error in the game module occurred.
+     * @throws GameOptimisticLockException     An OptimisticLock error in the game module occurred.
      */
-    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, InternalGameModuleException;
+    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, GameOptimisticLockException;
 
     /**
      * Removes all running games with at least one removed user and all finished games with two removed users.
      *
      * @return 0 in case of success
-     * @throws InternalGameModuleException An internal error in the game module occurred.
+     * @throws GameOptimisticLockException An internal error in the game module occurred.
      */
-    int removeWidowGames() throws InternalGameModuleException;
+    int removeWidowGames() throws GameOptimisticLockException;
 }

@@ -2,7 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.shared_logic.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.StandardizedUnauthorized;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.AuthService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.springframework.stereotype.Controller;
@@ -49,7 +49,7 @@ public class AuthInterceptor implements ContainerRequestFilter {
                         if (user == null) requestContext.abortWith(ACCESS_DENIED_NO_USER);
                         else requestContext.getHeaders().add(USER_HEADER, String.valueOf(user.getId()));
                     }
-                } catch (InternalUserModuleException e) {
+                } catch (UserOptimisticLockException e) {
                     e.printStackTrace();
                     requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build());
                 }

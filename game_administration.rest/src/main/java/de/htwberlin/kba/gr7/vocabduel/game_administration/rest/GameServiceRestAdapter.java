@@ -10,11 +10,11 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.StartGameDa
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.AuthInterceptor;
 import de.htwberlin.kba.gr7.vocabduel.shared_logic.rest.model.MissingData;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.VocableList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -60,7 +60,7 @@ public class GameServiceRestAdapter {
             final User self = USER_SERVICE.getUserDataById(userId);
             final User opponent = USER_SERVICE.getUserDataById(data.getOpponentId());
             final List<VocableList> lists = data.getVocableListIds().stream()
-                    // wrapper catches InternalVocabularyModuleException and throws an
+                    // wrapper catches VocabularyOptimisticLockException and throws an
                     // unchecked Exception, which can be catched as RuntimeException (line 82)
                     .map(wrapper(list -> this.getVocableListById(Long.parseLong(String.valueOf(list))))).collect(Collectors.toList());
             lists.forEach(session::update);
@@ -76,7 +76,7 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException | InternalVocabularyModuleException | InternalGameModuleException | RuntimeException e) {
+        } catch (UserOptimisticLockException | VocabularyOptimisticLockException | GameOptimisticLockException | RuntimeException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -93,7 +93,7 @@ public class GameServiceRestAdapter {
             games.forEach(session::update);
             final List<MinimizedPersonalGameInfo> minimizedGameInfo = games.stream().map(g -> new MinimizedPersonalGameInfo(g, user)).collect(Collectors.toList());
             return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -111,7 +111,7 @@ public class GameServiceRestAdapter {
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -138,7 +138,7 @@ public class GameServiceRestAdapter {
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -154,7 +154,7 @@ public class GameServiceRestAdapter {
             GAME_SERVICE.removeWidowGames();
             System.out.println("Successfully removed widow games (if existent).");
             return Response.noContent().build();
-        } catch (InternalUserModuleException | InternalGameModuleException e) {
+        } catch (UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -163,7 +163,7 @@ public class GameServiceRestAdapter {
     private VocableList getVocableListById(Long id){
         try{
             return VOCABULARY_SERVICE.getVocableListById(id);
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
             return null;
         }

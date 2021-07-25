@@ -1,9 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAO;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.LoginDataDAOImpl;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAO;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.dao.StoredRefreshTokenDAOImpl;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.*;
@@ -61,7 +59,7 @@ public class AuthServiceImplTest {
     private final long UNKNOWN_ID = 1234567L;
 
     @Before
-    public void setup() throws InternalUserModuleException {
+    public void setup() throws UserOptimisticLockException {
         final StoredRefreshTokenDAOImpl storedRefreshTokenDAO = new StoredRefreshTokenDAOImpl();
         storedRefreshTokenDAO.setEntityManager(entityManager);
         final LoginDataDAOImpl loginDataDAO = new LoginDataDAOImpl();
@@ -103,62 +101,62 @@ public class AuthServiceImplTest {
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
-    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldThrowPwdsDoNotMatch() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD + "thisSuffixWillCauseTrouble!");
     }
 
     @Test(expected = AlreadyRegisteredUsernameException.class)
-    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldThrowUsernameAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser(existingUser.getUsername(), "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldThrowMailAlreadyRegistered() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", existingUser.getEmail(), "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidOrRegisteredMailException.class)
-    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldThrowMailInvalid() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "invalidmail", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = InvalidNameException.class)
-    public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithEmptyTrimmedData() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PwTooWeakException, PasswordsDoNotMatchException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "invalidmail@gmail.com", "    ", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataUsername() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser(null, "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataEmail() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", null, "Arnold", "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataFirstname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "mail@mail.de", null, "Schwarzenegger", STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataLastname() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "mail@mail.de", "Arnold", null, STRONG_PWD, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", null, STRONG_PWD);
     }
 
     @Test(expected = IncompleteUserDataException.class)
-    public void shouldNotRegisterUserWithIncompleteDataConfirmPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldNotRegisterUserWithIncompleteDataConfirmPwd() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         auth.registerUser("username", "mail@mail.de", "Arnold", "Schwarzenegger", STRONG_PWD, null);
     }
 
     @Test
-    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, InternalUserModuleException {
+    public void shouldRegisterUser() throws AlreadyRegisteredUsernameException, InvalidOrRegisteredMailException, PasswordsDoNotMatchException, PwTooWeakException, IncompleteUserDataException, InvalidNameException, UserOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(
                 new LoginData(new User(21L, newUser.getUsername(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName()),
                         BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
@@ -184,23 +182,23 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldNotLoginNotExistingUser() throws InternalUserModuleException {
+    public void shouldNotLoginNotExistingUser() throws UserOptimisticLockException {
         Assert.assertNull(auth.loginUser(UNKNOWN_MAIL, STRONG_PWD));
     }
 
     @Test
-    public void shouldNotLoginIfPwdIsWrong() throws InternalUserModuleException {
+    public void shouldNotLoginIfPwdIsWrong() throws UserOptimisticLockException {
         Assert.assertNull(auth.loginUser(existingUser.getEmail(), STRONG_PWD + "thisSuffixWillCauseTrouble!"));
     }
 
     @Test
-    public void shouldNotLoginIfNOTfOUND() throws InternalUserModuleException {
+    public void shouldNotLoginIfNOTfOUND() throws UserOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         Assert.assertNull(auth.loginUser("does not matter anyway", STRONG_PWD + "thisSuffixWillCauseTrouble!"));
     }
 
     @Test
-    public void shouldLoginUser() throws InternalUserModuleException {
+    public void shouldLoginUser() throws UserOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenReturn(existingUser);
         final User expected = userService.getUserDataByEmail(existingUser.getEmail());
         Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, STRONG_PWD.toCharArray())));
@@ -224,50 +222,50 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldNotFetchUserDueToNoToken() throws InternalUserModuleException {
+    public void shouldNotFetchUserDueToNoToken() throws UserOptimisticLockException {
         Assert.assertNull(auth.fetchUser(null));
     }
 
     @Test
-    public void shouldNotFetchUserDueToExpiredToken() throws InternalUserModuleException {
+    public void shouldNotFetchUserDueToExpiredToken() throws UserOptimisticLockException {
         Assert.assertNull(auth.fetchUser(expiredAuthToken));
     }
 
     @Test
-    public void shouldNotFetchUserDueToNoMatchingUser() throws InternalUserModuleException {
+    public void shouldNotFetchUserDueToNoMatchingUser() throws UserOptimisticLockException {
         Assert.assertNull(auth.fetchUser(authTokenOfUnknownUser));
     }
 
     @Test
-    public void shouldFetchUser() throws InternalUserModuleException {
+    public void shouldFetchUser() throws UserOptimisticLockException {
         final User fetchedUser = auth.fetchUser(validAuthToken);
         Assert.assertNotNull(fetchedUser);
         Assert.assertEquals(existingUser.toString(), fetchedUser.toString());
     }
 
     @Test
-    public void shouldNotRefreshTokensIfRefreshIsNull() throws InternalUserModuleException {
+    public void shouldNotRefreshTokensIfRefreshIsNull() throws UserOptimisticLockException {
         Assert.assertNull(auth.refreshAuthTokens(null));
     }
 
     @Test
-    public void shouldNotRefreshTokensIfNotFound() throws InternalUserModuleException {
+    public void shouldNotRefreshTokensIfNotFound() throws UserOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         Assert.assertNull(auth.refreshAuthTokens(validRefreshToken));
     }
 
     @Test
-    public void shouldNotRefreshTokensIfRefreshTokenExpired() throws InternalUserModuleException {
+    public void shouldNotRefreshTokensIfRefreshTokenExpired() throws UserOptimisticLockException {
         Assert.assertNull(auth.refreshAuthTokens(expiredRefreshToken));
     }
 
     @Test
-    public void shouldNotRefreshTokensIfNoUserIsFoundForToken() throws InternalUserModuleException {
+    public void shouldNotRefreshTokensIfNoUserIsFoundForToken() throws UserOptimisticLockException {
         Assert.assertNull(auth.refreshAuthTokens(refreshTokenOfUnknownUser));
     }
 
     @Test
-    public void shouldRefreshTokens() throws InternalUserModuleException {
+    public void shouldRefreshTokens() throws UserOptimisticLockException {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -283,7 +281,7 @@ public class AuthServiceImplTest {
     // Tests concerning valid (= should not throw exception)/invalid passwords => ValidPwdsTest / InvalidPwdsTest
 
     @Test(expected = InvalidFirstPwdException.class)
-    public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void updatingPasswordShouldFailIfPrevPwdWrong() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         final String falsePwd = "123thisWasNotMyPrevPwd";
         final String dbPwd = "PR€T7Y_5TR0NG_P@S$W0RD_2";
         Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, dbPwd.toCharArray())));
@@ -292,18 +290,18 @@ public class AuthServiceImplTest {
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldThrowInvalidUserExceptionIfUserNotFound() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void shouldThrowInvalidUserExceptionIfUserNotFound() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         auth.updateUserPassword(existingUser, "does", "not", "matter");
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldThrowInvalidUserExceptionIfUserIsNull() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void shouldThrowInvalidUserExceptionIfUserIsNull() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         auth.updateUserPassword(existingUser, "does", "not", "matter");
     }
 
     @Test(expected = PasswordsDoNotMatchException.class)
-    public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void updatingPasswordShouldFailIfPwdsDoNotMatch() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         final String currentPwd = "123thisWasNotMyPrevPwd";
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String newPwd2 = "PR€T7Y_5TR0NG_P@S$W0RD2";
@@ -314,7 +312,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, InternalUserModuleException {
+    public void updatingPasswordShouldHaveDbStatus0() throws PasswordsDoNotMatchException, PwTooWeakException, InvalidFirstPwdException, InvalidUserException, UserOptimisticLockException {
         final String newPwd = "PR€T7Y_5TR0NG_P@S$W0RD";
         final String currentPwd = "pr€V10U5PwD";
         Mockito.when(queryMock.getSingleResult()).thenReturn(new LoginData(existingUser, BCrypt.withDefaults().hashToString(12, currentPwd.toCharArray())));
@@ -323,17 +321,17 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void shouldNotHaveAccessRightsIfAuthTokenNull() throws InternalUserModuleException {
+    public void shouldNotHaveAccessRightsIfAuthTokenNull() throws UserOptimisticLockException {
         Assert.assertFalse(auth.hasAccessRights(null));
     }
 
     @Test
-    public void shouldNotHaveAccessRightsIfAuthTokenExpired() throws InternalUserModuleException {
+    public void shouldNotHaveAccessRightsIfAuthTokenExpired() throws UserOptimisticLockException {
         Assert.assertFalse(auth.hasAccessRights(expiredAuthToken));
     }
 
     @Test
-    public void shouldHaveAccessRightsIfAuthTokenIsValid() throws InternalUserModuleException {
+    public void shouldHaveAccessRightsIfAuthTokenIsValid() throws UserOptimisticLockException {
         Assert.assertTrue(auth.hasAccessRights(validAuthToken));
     }
 

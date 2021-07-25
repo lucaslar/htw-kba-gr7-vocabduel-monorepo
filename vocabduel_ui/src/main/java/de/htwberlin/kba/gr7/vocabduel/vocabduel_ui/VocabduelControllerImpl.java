@@ -296,7 +296,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     STORAGE.setLoggedInUser(user);
                     VIEW.printSuccessfulLogin(user);
                 }
-            } catch (InternalUserModuleException e) {
+            } catch (UserOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -333,7 +333,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 }
 
                 if (user == null) VIEW.printInvalidLoginWithToken();
-            } catch (InternalUserModuleException e) {
+            } catch (UserOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -360,7 +360,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 final VocableList result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
                 if (result != null) VIEW.printGnuImportSuccessful(args.get(ACTION_ARG_FILE));
-            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException | InternalVocabularyModuleException e) {
+            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException | VocabularyOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -382,7 +382,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 final LoggedInUser loggedInUser = AUTH_SERVICE.registerUser(args.get(ACTION_ARG_USERNAME), args.get(ACTION_ARG_EMAIL), args.get(ACTION_ARG_FIRSTNAME), args.get(ACTION_ARG_LASTNAME), args.get(ACTION_ARG_PWD), args.get(ACTION_ARG_CONFIRM));
                 STORAGE.setLoggedInUser(loggedInUser);
                 VIEW.printSuccessfulRegistration(loggedInUser);
-            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException | InternalUserModuleException e) {
+            } catch (PasswordsDoNotMatchException | PwTooWeakException | InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidNameException | UserOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -406,7 +406,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 USER_SERVICE.updateUser(user);
                 VIEW.printSuccessfulUserUpdate(user);
-            } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException | InternalUserModuleException e) {
+            } catch (InvalidOrRegisteredMailException | AlreadyRegisteredUsernameException | IncompleteUserDataException | InvalidUserException | InvalidNameException | UserOptimisticLockException e) {
                 user.setEmail(prevEmail);
                 user.setUsername(prevUsername);
                 user.setFirstName(prevFirstname);
@@ -420,7 +420,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         try {
             AUTH_SERVICE.updateUserPassword(STORAGE.getLoggedInUser(), args.get(ACTION_ARG_CURRENT_PWD), args.get(ACTION_ARG_NEW_PWD), args.get(ACTION_ARG_CONFIRM));
             VIEW.printSuccessfulPwdUpdate();
-        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException | InternalUserModuleException e) {
+        } catch (InvalidFirstPwdException | PasswordsDoNotMatchException | PwTooWeakException | InvalidUserException | UserOptimisticLockException e) {
             e.printStackTrace();
         }
     }
@@ -459,7 +459,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 options.add(new String[]{ACTION_ARG_VOCAB, "See previous command + vocables of each list"});
                 VIEW.printConfigurableThroughParam(ACTION_ARG_LEVEL, options);
             }
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
         }
     }
@@ -472,7 +472,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             else VIEW.printNoVocableListFound();
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
         }
     }
@@ -485,7 +485,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(user, lists);
                 else VIEW.printNoVocableListsByUser(user);
             }
-        }catch (InternalVocabularyModuleException e){
+        }catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
         }
     }
@@ -495,7 +495,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(STORAGE.getLoggedInUser());
             if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(STORAGE.getLoggedInUser(), lists);
             else VIEW.printNoVocableListsByUser(STORAGE.getLoggedInUser());
-        } catch (InternalVocabularyModuleException e){
+        } catch (VocabularyOptimisticLockException e){
             e.printStackTrace();
         }
     }
@@ -524,7 +524,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printDeterminingUserBy(ACTION_ARG_EMAIL);
                 user = USER_SERVICE.getUserDataByEmail(args.get(ACTION_ARG_EMAIL));
             } else VIEW.printPleaseAddParamForUser();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
         }
 
@@ -546,7 +546,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
         } catch (UndeletableListException e) {
             VIEW.printVocableListInRunningGame();
-        } catch (DifferentAuthorException | InternalVocabularyModuleException e) {
+        } catch (DifferentAuthorException | VocabularyOptimisticLockException e) {
             e.printStackTrace();
         }
     }
@@ -556,7 +556,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         List<User> users = null;
         try {
             users = USER_SERVICE.findUsersByUsername(searchStr);
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
         }
         if (users == null || users.size() == 0) VIEW.printNoUsersFound();
@@ -568,7 +568,7 @@ public class VocabduelControllerImpl implements VocabduelController {
 
         try {
             opponent = USER_SERVICE.getUserDataById(Long.parseLong(args.get(ACTION_ARG_OPPONENT)));
-        } catch (NumberFormatException | InternalUserModuleException e) {
+        } catch (NumberFormatException | UserOptimisticLockException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_OPPONENT));
         }
 
@@ -587,8 +587,8 @@ public class VocabduelControllerImpl implements VocabduelController {
                 VIEW.printSuccessfullyStaredGame(game, ACTION_KEY_GAME_QUESTION);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get(ACTION_ARG_VOCABLE_LISTS));
-            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException
-                     | InternalVocabularyModuleException | InternalGameModuleException | RuntimeException e) {
+            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | UserOptimisticLockException
+                     | VocabularyOptimisticLockException | GameOptimisticLockException | RuntimeException e) {
                 e.printStackTrace();
             }
         } else VIEW.printCouldNotDetermineUser();
@@ -625,7 +625,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                     VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ROUND));
                 } catch (UnfinishedGameException e) {
                     VIEW.printGameNotFinishedByOpponent();
-                } catch (InvalidVocabduelGameNrException | NoAccessException | InternalGameModuleException e){
+                } catch (InvalidVocabduelGameNrException | NoAccessException | GameOptimisticLockException e){
                 e.printStackTrace();
                 }
             }
@@ -639,7 +639,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printQuestionAndAnswers(round, ACTION_KEY_GAME_ANSWER);
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
-        } catch (NoAccessException | InternalGameModuleException e) {
+        } catch (NoAccessException | GameOptimisticLockException e) {
             e.printStackTrace();
         }
     }
@@ -648,7 +648,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         try {
             final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
             VIEW.printGames(games, STORAGE.getLoggedInUser());
-        } catch (InternalGameModuleException e){
+        } catch (GameOptimisticLockException e){
             e.printStackTrace();
         }
     }
@@ -658,7 +658,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             final List<PersonalFinishedGame> hist = SCORE_SERVICE.getPersonalFinishedGames(STORAGE.getLoggedInUser());
             if (hist != null && !hist.isEmpty()) VIEW.printOwnScores(hist);
             else VIEW.printNoFinishedGamesYet();
-        } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
+        } catch (InvalidUserException | UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
         }
     }
@@ -671,7 +671,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 hist = SCORE_SERVICE.getPersonalFinishedGames(user);
                 if (hist != null && !hist.isEmpty()) VIEW.printUserScores(hist, user);
                 else VIEW.printNoFinishedGamesYet();
-            } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
+            } catch (InvalidUserException | UserOptimisticLockException | GameOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -680,7 +680,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onScoreRecordCalled() {
         try {
             VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(STORAGE.getLoggedInUser()));
-        } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
+        } catch (InvalidUserException | UserOptimisticLockException | GameOptimisticLockException e) {
             e.printStackTrace();
         }
     }
@@ -690,7 +690,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (user != null) {
             try {
                 VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(user));
-            } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
+            } catch (InvalidUserException | UserOptimisticLockException | GameOptimisticLockException e) {
                 e.printStackTrace();
             }
         }
@@ -705,7 +705,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 GAME_SERVICE.removeWidowGames();
                 STORAGE.setLoggedInUser(null);
                 VIEW.printYouWillBeMissed(firstname);
-            } catch (InternalUserModuleException | InternalGameModuleException e) {
+            } catch (UserOptimisticLockException | GameOptimisticLockException e) {
                 e.printStackTrace();
             }
         } else VIEW.printConfirmUserDeletion(firstname, confirmFlag);

@@ -43,7 +43,7 @@ public class UserServiceRestAdapter {
             users = USER_SERVICE.findUsersByUsername(searchStr);
             System.out.println("Incoming search for users with username: \"" + searchStr + "\" => " + users.size() + " result(s)");
             return Response.ok(users).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -83,7 +83,7 @@ public class UserServiceRestAdapter {
 
             System.out.println("A user has been found successfully: " + user);
             return Response.ok(user).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -110,7 +110,7 @@ public class UserServiceRestAdapter {
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (UserOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

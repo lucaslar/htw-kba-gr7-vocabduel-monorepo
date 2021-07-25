@@ -1,11 +1,12 @@
 package de.htwberlin.kba.gr7.vocabduel.user_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> selectUsersByUsername(String searchString) throws InternalUserModuleException {
+    public List<User> selectUsersByUsername(String searchString) throws UserOptimisticLockException {
         List<User> users = null;
         try {
             final String query = "select u from User u where lower(u.username) like :searchString";
@@ -30,14 +31,14 @@ public class UserDAOImpl implements UserDAO {
                     .getResultList();
         } catch (NoResultException ignored) {
             // ignored => return null (users) if no users could be found
-        } catch (Exception e) {
-            throw new InternalUserModuleException(e);
+        } catch (OptimisticLockException e) {
+            throw new UserOptimisticLockException(e);
         }
         return users;
     }
 
     @Override
-    public User selectUserByEmail(String email) throws InternalUserModuleException {
+    public User selectUserByEmail(String email) throws UserOptimisticLockException {
         User user = null;
         try {
             final String query = "from User as u where u.email like :email";
@@ -47,23 +48,23 @@ public class UserDAOImpl implements UserDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (user) if no user could be found
-        } catch (Exception e) {
-            throw new InternalUserModuleException(e);
+        } catch (OptimisticLockException e) {
+            throw new UserOptimisticLockException(e);
         }
         return user;
     }
 
     @Override
-    public User selectUserById(Long userId) throws InternalUserModuleException {
+    public User selectUserById(Long userId) throws UserOptimisticLockException {
         try {
             return entityManager.find(User.class, userId);
-        } catch (Exception e) {
-            throw new InternalUserModuleException(e);
+        } catch (OptimisticLockException e) {
+            throw new UserOptimisticLockException(e);
         }
     }
 
     @Override
-    public User selectUserByUsername(String username) throws InternalUserModuleException {
+    public User selectUserByUsername(String username) throws UserOptimisticLockException {
         User user = null;
         try {
             final String query = "from User as u where u.username like :username";
@@ -73,19 +74,19 @@ public class UserDAOImpl implements UserDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (user) if no user could be found
-        } catch (Exception e) {
-            throw new InternalUserModuleException(e);
+        } catch (OptimisticLockException e) {
+            throw new UserOptimisticLockException(e);
         }
         return user;
     }
 
     @Override
-    public boolean updateUser(User user) throws InternalUserModuleException {
+    public boolean updateUser(User user) throws UserOptimisticLockException {
         try {
             entityManager.merge(user);
             return true;
-        } catch (Exception e) {
-            throw new InternalUserModuleException(e);
+        } catch (OptimisticLockException e) {
+            throw new UserOptimisticLockException(e);
         }
     }
 }

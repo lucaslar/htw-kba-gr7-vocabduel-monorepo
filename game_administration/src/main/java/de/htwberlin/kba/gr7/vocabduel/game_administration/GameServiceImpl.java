@@ -7,11 +7,11 @@ import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
-import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InternalUserModuleException;
+import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.UserOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.exceptions.InvalidUserException;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.VocabularyService;
-import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.InternalVocabularyModuleException;
+import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.exceptions.VocabularyOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.vocabulary_administration.export.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException, InternalGameModuleException {
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, UserOptimisticLockException, VocabularyOptimisticLockException, GameOptimisticLockException {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
@@ -53,7 +53,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws InternalGameModuleException {
+    public List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws GameOptimisticLockException {
         List<RunningVocabduelGame> games = null;
         if (user != null) {
             games = RUNNING_VOCABDUEL_GAME_DAO.selectRunningVocabduelGamesByUser(user);
@@ -62,7 +62,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public VocabduelRound startRound(User player, long gameId) throws NoAccessException, InternalGameModuleException {
+    public VocabduelRound startRound(User player, long gameId) throws NoAccessException, GameOptimisticLockException {
 
         VocabduelRound round = null;
         if (player != null) {
@@ -74,7 +74,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, InternalGameModuleException {
+    public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, GameOptimisticLockException {
         if (answerNr < 0 || answerNr > 3) {
             throw new InvalidVocabduelGameNrException("Invalid answer nr. Must be 0-3 (a = 0, b = 1, ...)");
         } else if (roundNr < 1 || roundNr > getFixNumberOfRoundsPerGame()) {
@@ -114,7 +114,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public int removeWidowGames() throws InternalGameModuleException {
+    public int removeWidowGames() throws GameOptimisticLockException {
         RUNNING_VOCABDUEL_GAME_DAO.deleteRunningVocabduelGameWhereUserDoesntExist();
 
         FINISHED_VOCABDUEL_GAME_DAO.deleteFinishedVocabduelGamesWhereUserDoesntExist();
@@ -122,7 +122,7 @@ public class GameServiceImpl implements GameService {
         return 0;
     }
 
-    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException, InternalUserModuleException {
+    private void verifyGameSetup(User playerA, User playerB, List<VocableList> vocableLists) throws InvalidGameSetupException, NotEnoughVocabularyException, InvalidUserException, UserOptimisticLockException {
         if (vocableLists == null) throw new InvalidGameSetupException("No vocable lists provided!");
         if (playerA == null) throw new InvalidGameSetupException("No user (initiator) given/found! ");
         if (playerB == null) throw new InvalidGameSetupException("No user (opponent) given/found!");
@@ -149,7 +149,7 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private LanguageSet determineLanguageSetOfVocableLists(final List<VocableList> vocableLists) throws InvalidGameSetupException, InternalVocabularyModuleException {
+    private LanguageSet determineLanguageSetOfVocableLists(final List<VocableList> vocableLists) throws InvalidGameSetupException, VocabularyOptimisticLockException {
         final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets()
                 .stream()
                 .filter(ls -> ls.getVocableUnits().stream().anyMatch(vu -> vu.getVocableLists().stream().anyMatch(vl -> vocableLists.stream().anyMatch(gvl -> gvl.getId().equals(vl.getId())))))

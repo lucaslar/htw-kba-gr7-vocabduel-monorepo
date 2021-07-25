@@ -1,6 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,7 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
     private EntityManager entityManager;
 
     @Override
-    public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) throws InternalGameModuleException {
+    public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) throws GameOptimisticLockException {
         try {
             final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
             finishedGame.setFinishedTimestamp(new Date());
@@ -29,13 +30,13 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             entityManager.persist(finishedGame);
             entityManager.remove(game);
             return finishedGame;
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
     }
 
     @Override
-    public List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User user) throws InternalGameModuleException {
+    public List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User user) throws GameOptimisticLockException {
         List<FinishedVocabduelGame> games = null;
         entityManager.clear();
         try {
@@ -46,14 +47,14 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
 
         } catch (NoResultException ignored) {
             // ignored => return null (games) if a user has no finished games yet
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
         return games;
     }
 
     @Override
-    public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() throws InternalGameModuleException {
+    public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() throws GameOptimisticLockException {
         boolean res = false;
         entityManager.clear();
         try {
@@ -64,8 +65,8 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             res = true;
         } catch (NoResultException ignored) {
             // ignored => if no orphaned finished games to be deleted are found, it's not a problem
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
         return res;
     }

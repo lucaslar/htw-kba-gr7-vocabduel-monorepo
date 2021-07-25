@@ -42,11 +42,11 @@ public class Validation {
         return password.length() >= 8 && matches >= 2;
     }
 
-    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, InternalUserModuleException {
+    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, UserOptimisticLockException {
         uniqueUserDataValidation(username, email, userService, null);
     }
 
-    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService, final Long id) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, InternalUserModuleException {
+    public static void uniqueUserDataValidation(final String username, final String email, final UserService userService, final Long id) throws InvalidOrRegisteredMailException, AlreadyRegisteredUsernameException, UserOptimisticLockException {
         if (!Pattern.compile("^(.+)@(.+)$").matcher(email).matches()) {
             throw new InvalidOrRegisteredMailException("Invalid mail format");
         } else {

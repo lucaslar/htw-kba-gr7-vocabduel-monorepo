@@ -1,12 +1,13 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.GameOptimisticLockException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -17,16 +18,16 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertRunningVocabduelGame(RunningVocabduelGame game) throws InternalGameModuleException {
+    public void insertRunningVocabduelGame(RunningVocabduelGame game) throws GameOptimisticLockException {
         try {
             entityManager.persist(game);
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
     }
 
     @Override
-    public List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User user) throws InternalGameModuleException {
+    public List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User user) throws GameOptimisticLockException {
         List<RunningVocabduelGame> games = null;
         try {
             games = (List<RunningVocabduelGame>) entityManager
@@ -35,14 +36,14 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getResultList();
         } catch (NoResultException ignored) {
             // ignored => return null (games) in case of no result
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
         return games;
     }
 
     @Override
-    public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) throws InternalGameModuleException {
+    public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) throws GameOptimisticLockException {
         RunningVocabduelGame myGame = null;
         entityManager.clear();
         try {
@@ -53,14 +54,14 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (myGame) in case of no result
-        } catch (Exception e){
-            throw new InternalGameModuleException(e);
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
         }
         return myGame;
     }
 
     @Override
-    public boolean deleteRunningVocabduelGameWhereUserDoesntExist() throws InternalGameModuleException {
+    public boolean deleteRunningVocabduelGameWhereUserDoesntExist() throws GameOptimisticLockException {
         boolean res = false;
         entityManager.clear();
         try {
@@ -74,6 +75,9 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             }
             res = true;
         } catch (NoResultException ignored) {
+            // ignored => a user might have no finished game => not a problem
+        } catch (OptimisticLockException e){
+            throw new GameOptimisticLockException(e);
             // ignored => a user might have no running game => not a problem
         } catch (Exception e){
             throw new InternalGameModuleException(e);
