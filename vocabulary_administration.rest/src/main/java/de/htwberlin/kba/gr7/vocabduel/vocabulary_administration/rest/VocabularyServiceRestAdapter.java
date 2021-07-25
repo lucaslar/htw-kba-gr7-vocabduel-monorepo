@@ -134,9 +134,6 @@ public class VocabularyServiceRestAdapter {
         } catch (DifferentAuthorException | UndeletableListException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (UndeletableListException e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.FORBIDDEN).entity(e).build();
         } catch (UserOptimisticLockException | VocabularyOptimisticLockException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
