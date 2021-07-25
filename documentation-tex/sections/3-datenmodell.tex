@@ -1,16 +1,22 @@
 \section{Konzeptionelles Datenmodell}\label{sec:konzeptionelles-datenmodell}
 
-Im Anhang an dieses Dokument befindet sich ein Klassendiagramm, das das konzeptionelle Datenmodell beschreibt.
+Das folgende Klassendiagramm ist als \texttt{svg}-Datei im Rootverzeichnis des Repositorys gespeichert (\texttt{./class-diagram.svg}).
+Ebenso befindet sich dort ein zweites Klassendiagramm, das ebenfalls zusätzlich Interfaces, Exception- und Service-Klassen beinhaltet.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{class-diagram}
+    \caption[]{Klassendiagramm}
+    \label{fig:classes}
+\end{figure}
 
 Im Folgenden wird das konzeptionelle Datenmodell beschrieben, welches auch tatsächlich in ein physikalisches Datenmodell überführt wurde.
-Weitere Klassen, wie Interfaces, Exception-Klassen, Service-Klassen oder Konfigurationen,
-werden weiter unten zum sogenannten "kompletten" Klassendiagramm beschrieben.
-Dieses befindet sich ebenfalls im Anhang.
 
 Die Entität LoginData erbt vom User Username, Email, Vor- und Zuname und speichert validierte, verschlüsselte Passwörter, die der User zum Login benötigt.
 Ist der User eingeloggt, stellen die StoredRefreshToken sicher, dass der User mit gültigen Token versorgt wird, was etwa
 einer gültigen Web-Session des Users auf einer Web-Applikation gleich kommt.
 User mit StoredRefreshToken werden im LoggedInUser festgehalten, was aber kein Bestandteil des physikalischen Datenmodells ist.
+
 Zur Verwaltung von Vokabellisten werden Begriffe in Synonyme und zusätzliche Informationen (additionalInfo) getrennt und in TranslationGroups einander zugeordnet.
 Mit dem Erhalt einer zusätzlichen Id wird aus dem Begriff eine UntranslatedVocable.
 Eine Vokabel ist schließlich die Zuordnung einer UntranslatedVocable mit anderen Begriffen.
