@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -90,13 +91,13 @@ public class ScoreServiceImplTest {
     }
 
     @Test(expected = InvalidUserException.class)
-    public void shouldThrowExceptionIfUserInvalid() throws InvalidUserException, InternalUserModuleException {
+    public void shouldThrowExceptionIfUserInvalid() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(null);
         scoreAdministration.getPersonalFinishedGames(playerA);
     }
 
     @Test
-    public void shouldNotReturnPersonalFinishedGamesForUserWithoutGames() throws InvalidUserException, InternalUserModuleException {
+    public void shouldNotReturnPersonalFinishedGamesForUserWithoutGames() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerD);
         final List<PersonalFinishedGame> games = scoreAdministration.getPersonalFinishedGames(playerD);
@@ -104,7 +105,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyLost() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyLost() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         final User player = playerA;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(player.getId()) ||
@@ -120,7 +121,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyWon() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnCorrectPersonalFinishedGamesIfOnlyWon() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         final User player = playerC;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(player.getId()) ||
@@ -136,7 +137,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfDraw() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnCorrectPersonalFinishedGamesIfDraw() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         final User player = playerE;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(player.getId()) ||
@@ -152,7 +153,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnCorrectPersonalFinishedGamesIfWonAndLost() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnCorrectPersonalFinishedGamesIfWonAndLost() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         final User player = playerB;
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(player.getId()) ||
@@ -165,7 +166,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnScoreRecordsForUserWithNoFinishedGames() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnScoreRecordsForUserWithNoFinishedGames() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(new ArrayList());
         Mockito.when(userService.getUserDataById(Mockito.anyLong())).thenReturn(playerD);
         Assert.assertTrue(new ReflectionEquals(new ScoreRecord(playerD))
@@ -173,7 +174,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnScoreRecordsForUserIfOnlyLost() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnScoreRecordsForUserIfOnlyLost() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(playerA.getId()) ||
                         g.getPlayerA().getId().equals(playerA.getId())).collect(Collectors.toList()));
@@ -183,7 +184,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnScoreRecordsIfWonAndLost() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnScoreRecordsIfWonAndLost() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(playerB.getId()) ||
                         g.getPlayerA().getId().equals(playerB.getId())).collect(Collectors.toList()));
@@ -193,7 +194,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnScoreRecordsForUserIfOnlyWon() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnScoreRecordsForUserIfOnlyWon() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(t ->
                 t.getPlayerB().getId().equals(playerC.getId()) ||
                         t.getPlayerA().getId().equals(playerC.getId())).collect(Collectors.toList()));
@@ -203,7 +204,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldReturnScoreRecordsForUserIfDraw() throws InvalidUserException, InternalUserModuleException {
+    public void shouldReturnScoreRecordsForUserIfDraw() throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(finishedGames.stream().filter(g ->
                 g.getPlayerB().getId().equals(playerE.getId()) ||
                         g.getPlayerA().getId().equals(playerE.getId())).collect(Collectors.toList()));
@@ -214,7 +215,7 @@ public class ScoreServiceImplTest {
 
 
     @Test(expected = NoAccessException.class)
-    public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, NoAccessException {
+    public void shouldThrowExceptionIfToBePersonalizedForOtherUserThanPlayer() throws UnfinishedGameException, NoAccessException, InternalGameModuleException {
         final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
@@ -222,7 +223,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test(expected = UnfinishedGameException.class)
-    public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException, NoAccessException {
+    public void shouldNotFinishGameWithOpenRounds() throws UnfinishedGameException, NoAccessException, InternalGameModuleException {
         final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), new VocabduelRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(game);
@@ -230,7 +231,7 @@ public class ScoreServiceImplTest {
     }
 
     @Test
-    public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException, NoAccessException {
+    public void shouldFinishGameWithFinishedRoundsProperly() throws UnfinishedGameException, NoAccessException, InternalGameModuleException {
         final RunningVocabduelGame game = new RunningVocabduelGame(11L, playerA, playerB, null, null, null);
         game.setRounds(Stream.of(mockedFinishedRound(), mockedFinishedRound(), mockedFinishedRound()).collect(Collectors.toList()));
         Mockito.when(queryMock.getSingleResult()).thenReturn(game);

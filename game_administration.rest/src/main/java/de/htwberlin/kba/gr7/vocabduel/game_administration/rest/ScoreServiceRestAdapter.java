@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.PersonalFinishedGame;
@@ -47,7 +48,7 @@ public class ScoreServiceRestAdapter {
         } catch (UnfinishedGameException e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -63,7 +64,7 @@ public class ScoreServiceRestAdapter {
             return Response.ok(games).type(MediaType.APPLICATION_JSON).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -91,7 +92,7 @@ public class ScoreServiceRestAdapter {
         } catch (InvalidUserException e) {
             e.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

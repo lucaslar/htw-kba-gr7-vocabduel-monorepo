@@ -1,6 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -47,14 +48,14 @@ public class GameServiceImplRemoveWidowGamesTest {
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenZeroGamesToRemove() {
+    public void shouldRemoveWidowGamesWhenZeroGamesToRemove() throws InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final int statusCode = gameService.removeWidowGames();
         Assert.assertEquals(0, statusCode);
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenFinishedAndRunningGameToRemove() {
+    public void shouldRemoveWidowGamesWhenFinishedAndRunningGameToRemove() throws InternalGameModuleException {
         final RunningVocabduelGame runningGame = new RunningVocabduelGame();
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
                 new RunningVocabduelGame(1L, null, null, null, null, null)
@@ -66,7 +67,7 @@ public class GameServiceImplRemoveWidowGamesTest {
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenFinishedGameToRemove() {
+    public void shouldRemoveWidowGamesWhenFinishedGameToRemove() throws InternalGameModuleException {
         final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(
                 new RunningVocabduelGame(1L, null, null, null, null, null)
         );
@@ -77,7 +78,7 @@ public class GameServiceImplRemoveWidowGamesTest {
     }
 
     @Test
-    public void shouldRemoveWidowGamesWhenRunningGameToRemove() {
+    public void shouldRemoveWidowGamesWhenRunningGameToRemove() throws InternalGameModuleException {
         final RunningVocabduelGame runningGame = new RunningVocabduelGame();
         Mockito.when(queryMock.getResultList()).thenReturn(
                 Stream.of(runningGame).collect(Collectors.toList())).thenThrow(NoResultException.class);

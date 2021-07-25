@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.springframework.stereotype.Repository;
@@ -16,12 +17,16 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
     private EntityManager entityManager;
 
     @Override
-    public void insertRunningVocabduelGame(RunningVocabduelGame game) {
-        entityManager.persist(game);
+    public void insertRunningVocabduelGame(RunningVocabduelGame game) throws InternalGameModuleException {
+        try {
+            entityManager.persist(game);
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
+        }
     }
 
     @Override
-    public List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User user) {
+    public List<RunningVocabduelGame> selectRunningVocabduelGamesByUser(User user) throws InternalGameModuleException {
         List<RunningVocabduelGame> games = null;
         try {
             games = (List<RunningVocabduelGame>) entityManager
@@ -30,12 +35,14 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getResultList();
         } catch (NoResultException ignored) {
             // ignored => return null (games) in case of no result
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return games;
     }
 
     @Override
-    public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) {
+    public RunningVocabduelGame selectRunningVocabduelGameByGameIdAndUser(User player, Long gameId) throws InternalGameModuleException {
         RunningVocabduelGame myGame = null;
         entityManager.clear();
         try {
@@ -46,12 +53,14 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
                     .getSingleResult();
         } catch (NoResultException ignored) {
             // ignored => return null (myGame) in case of no result
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return myGame;
     }
 
     @Override
-    public boolean deleteRunningVocabduelGameWhereUserDoesntExist() {
+    public boolean deleteRunningVocabduelGameWhereUserDoesntExist() throws InternalGameModuleException {
         boolean res = false;
         entityManager.clear();
         try {
@@ -62,6 +71,8 @@ public class RunningVocabduelGameDAOImpl implements RunningVocabduelGameDAO {
             res = true;
         } catch (NoResultException ignored) {
             // ignored => a user might have no finished game => not a problem
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return res;
     }

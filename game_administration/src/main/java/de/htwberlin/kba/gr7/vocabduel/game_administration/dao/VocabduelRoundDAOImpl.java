@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.model.User;
 import org.hibernate.Hibernate;
@@ -16,13 +17,17 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
     private EntityManager entityManager;
 
     @Override
-    public boolean updateVocabduelRound(VocabduelRound round) {
-        entityManager.merge(round);
-        return true;
+    public boolean updateVocabduelRound(VocabduelRound round) throws InternalGameModuleException {
+        try {
+            entityManager.merge(round);
+            return true;
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
+        }
     }
 
     @Override
-    public VocabduelRound selectVocabduelRoundByGameIdAndUser(User player, Long gameId) {
+    public VocabduelRound selectVocabduelRoundByGameIdAndUser(User player, Long gameId) throws InternalGameModuleException {
         VocabduelRound round = null;
         try {
             round = (VocabduelRound) entityManager
@@ -34,6 +39,8 @@ public class VocabduelRoundDAOImpl implements VocabduelRoundDAO {
             initializeLazyLoadedRoundVocableData(round);
         } catch (NoResultException ignored) {
             // ignored => return null (round) if no round could be found
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return round;
     }

@@ -43,7 +43,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException {
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException, InternalGameModuleException {
         verifyGameSetup(playerA, playerB, vocableLists);
 
         final LanguageSet languageSet = determineLanguageSetOfVocableLists(vocableLists);
@@ -53,7 +53,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<RunningVocabduelGame> getPersonalChallengedGames(User user) {
+    public List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws InternalGameModuleException {
         List<RunningVocabduelGame> games = null;
         if (user != null) {
             games = RUNNING_VOCABDUEL_GAME_DAO.selectRunningVocabduelGamesByUser(user);
@@ -62,7 +62,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public VocabduelRound startRound(User player, long gameId) throws NoAccessException {
+    public VocabduelRound startRound(User player, long gameId) throws NoAccessException, InternalGameModuleException {
 
         VocabduelRound round = null;
         if (player != null) {
@@ -74,7 +74,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException {
+    public CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, InternalGameModuleException {
         if (answerNr < 0 || answerNr > 3) {
             throw new InvalidVocabduelGameNrException("Invalid answer nr. Must be 0-3 (a = 0, b = 1, ...)");
         } else if (roundNr < 1 || roundNr > getFixNumberOfRoundsPerGame()) {
@@ -114,7 +114,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public int removeWidowGames() {
+    public int removeWidowGames() throws InternalGameModuleException {
         RUNNING_VOCABDUEL_GAME_DAO.deleteRunningVocabduelGameWhereUserDoesntExist();
 
         FINISHED_VOCABDUEL_GAME_DAO.deleteFinishedVocabduelGamesWhereUserDoesntExist();

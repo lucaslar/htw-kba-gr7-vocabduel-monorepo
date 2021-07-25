@@ -38,17 +38,19 @@ public interface GameService {
      * @throws NotEnoughVocabularyException         The provided VocableLists do not contain enough Vocables for <object>GameAdministration.NR_OF_ROUNDS</object> rounds per game.
      * @throws InternalUserModuleException          An internal error in the user module occurred.
      * @throws InternalVocabularyModuleException    An internal error in the vocabulary module occurred.
+     * @throws InternalGameModuleException          An internal error in the game module occurred.
      */
     RunningVocabduelGame startGame(User playerA, User playerB, List<VocableList> vocableLists)
-            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException;
+            throws InvalidUserException, InvalidGameSetupException, NotEnoughVocabularyException, InternalUserModuleException, InternalVocabularyModuleException, InternalGameModuleException;
 
     /**
      * Collects all pending, i.e. not finished, games a given user has been challenged to and returns them.
      *
      * @param user User the pending/challenged matches of are to be returned.
      * @return List of all unfinished games the given <code>user</code> has been challenged to or has started.
+     * @throws InternalGameModuleException          An internal error in the game module occurred.
      */
-    List<RunningVocabduelGame> getPersonalChallengedGames(User user);
+    List<RunningVocabduelGame> getPersonalChallengedGames(User user) throws InternalGameModuleException;
 
     /**
      * Starts the next round of a given game as a given player, i.e. returns the respective next round object.
@@ -57,8 +59,10 @@ public interface GameService {
      * @param gameId Id of the game the next round of is to be returned for the given <code>user</code>.
      * @return Current <code>{@link VocabduelRound}</code> of a given game for a given user.
      * including the 1 correct and the other wrong answer possibilities without knowing which is what.
+     * @throws NoAccessException           The given user is no participant of the given round or it could not be found at all.
+     * @throws InternalGameModuleException An internal error in the game module occurred.
      */
-    VocabduelRound startRound(User player, long gameId) throws NoAccessException;
+    VocabduelRound startRound(User player, long gameId) throws NoAccessException, InternalGameModuleException;
 
     /**
      * Checks and stores the result for an answer submitted in a given <code>round</code> by a given
@@ -76,14 +80,16 @@ public interface GameService {
      * @param answerNr  Nr of the answer submitted by the given <code>player</code>.
      * @return Result for the given <code>round</code> from the perspective of the given <code>player</code> incl. the correct answer in case of having submitted a wrong one.
      * @throws InvalidVocabduelGameNrException The question has already been answered by the current user or an invalid answer number has been stated.
-     * @throws NoAccessException The given user is no participant of the given round or it could not be found at all.
+     * @throws NoAccessException               The given user is no participant of the given round or it could not be found at all.
+     * @throws InternalGameModuleException     An internal error in the game module occurred.
      */
-    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException;
+    CorrectAnswerResult answerQuestion(final User player, final long gameId, final int roundNr, final int answerNr) throws InvalidVocabduelGameNrException, NoAccessException, InternalGameModuleException;
 
     /**
      * Removes all running games with at least one removed user and all finished games with two removed users.
      *
      * @return 0 in case of success
+     * @throws InternalGameModuleException An internal error in the game module occurred.
      */
-    int removeWidowGames();
+    int removeWidowGames() throws InternalGameModuleException;
 }

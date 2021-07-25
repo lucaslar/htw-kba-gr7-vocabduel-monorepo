@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelRound;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -22,7 +23,6 @@ import javax.persistence.Query;
 public class GameServiceImplStartRoundTest {
 
     private GameServiceImpl gameAdministration;
-    private VocabduelRound newRoundRes;
     private GameDataMock mock;
     @Mock
     private Query queryMock;
@@ -53,8 +53,8 @@ public class GameServiceImplStartRoundTest {
     }
 
     @Test()
-    public void shouldHaveRoundData() throws NoAccessException {
-        newRoundRes = gameAdministration.startRound(
+    public void shouldHaveRoundData() throws NoAccessException, InternalGameModuleException {
+        VocabduelRound newRoundRes = gameAdministration.startRound(
                 mock.mockSampleUser(), mock.mockVocabduelGame().getId()
         );
         Assert.assertNotNull(newRoundRes);
@@ -63,7 +63,7 @@ public class GameServiceImplStartRoundTest {
     }
 
     @Test(expected = NoAccessException.class)
-    public void shouldThrowNoAccessExceptionIfNoRoundFound() throws NoAccessException {
+    public void shouldThrowNoAccessExceptionIfNoRoundFound() throws NoAccessException, InternalGameModuleException {
         Mockito.when(queryMock.getSingleResult()).thenThrow(NoResultException.class);
         gameAdministration.startRound(mock.mockSampleUser(), mock.mockVocabduelGame().getId());
     }

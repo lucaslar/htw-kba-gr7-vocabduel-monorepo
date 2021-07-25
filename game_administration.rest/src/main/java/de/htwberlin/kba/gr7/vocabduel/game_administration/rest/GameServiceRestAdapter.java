@@ -1,10 +1,7 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.rest;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.GameService;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidGameSetupException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InvalidVocabduelGameNrException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
-import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NotEnoughVocabularyException;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.*;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.CorrectAnswerResult;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.rest.model.MinimizedPersonalGameInfo;
@@ -79,7 +76,7 @@ public class GameServiceRestAdapter {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         } catch (InvalidUserException e) {
             return Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
-        } catch (InternalUserModuleException | InternalVocabularyModuleException | RuntimeException e) {
+        } catch (InternalUserModuleException | InternalVocabularyModuleException | InternalGameModuleException | RuntimeException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -96,7 +93,7 @@ public class GameServiceRestAdapter {
             games.forEach(session::update);
             final List<MinimizedPersonalGameInfo> minimizedGameInfo = games.stream().map(g -> new MinimizedPersonalGameInfo(g, user)).collect(Collectors.toList());
             return Response.ok(minimizedGameInfo).type(MediaType.APPLICATION_JSON).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -114,7 +111,7 @@ public class GameServiceRestAdapter {
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -141,7 +138,7 @@ public class GameServiceRestAdapter {
         } catch (NoAccessException e) {
             e.printStackTrace();
             return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }
@@ -157,7 +154,7 @@ public class GameServiceRestAdapter {
             GAME_SERVICE.removeWidowGames();
             System.out.println("Successfully removed widow games (if existent).");
             return Response.noContent().build();
-        } catch (InternalUserModuleException e) {
+        } catch (InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
         }

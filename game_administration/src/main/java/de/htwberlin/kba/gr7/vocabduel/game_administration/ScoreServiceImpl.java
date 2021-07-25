@@ -3,6 +3,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.FinishedVocabduelGameDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.RunningVocabduelGameDAO;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.ScoreService;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.UnfinishedGameException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.NoAccessException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.*;
@@ -31,7 +32,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException {
+    public List<PersonalFinishedGame> getPersonalFinishedGames(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         if (user == null || USER_SERVICE.getUserDataById(user.getId()) == null) {
             throw new InvalidUserException("User could not be found");
         }
@@ -44,7 +45,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException {
+    public ScoreRecord getRecordOfUser(User user) throws InvalidUserException, InternalUserModuleException, InternalGameModuleException {
         final List<PersonalFinishedGame> finishedGames = getPersonalFinishedGames(user);
         if (finishedGames == null || finishedGames.isEmpty()) return new ScoreRecord(user);
         else {
@@ -56,7 +57,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException {
+    public PersonalFinishedGame finishGame(User player, long gameId) throws UnfinishedGameException, NoAccessException, InternalGameModuleException {
         RunningVocabduelGame game = null;
         if (player != null) {
             game = runningVocabduelGameDAO.selectRunningVocabduelGameByGameIdAndUser(player, gameId);

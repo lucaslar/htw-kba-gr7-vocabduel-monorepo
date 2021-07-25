@@ -2,6 +2,7 @@ package de.htwberlin.kba.gr7.vocabduel.game_administration;
 
 import de.htwberlin.kba.gr7.vocabduel.game_administration.assets.GameDataMock;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.dao.*;
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.VocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.user_administration.export.UserService;
@@ -54,14 +55,14 @@ public class GameServiceImplUnfinishedGamesTest {
     }
 
     @Test()
-    public void shouldGetNullIfNoUnfinishedGames() {
+    public void shouldGetNullIfNoUnfinishedGames() throws InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenThrow(NoResultException.class);
         final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(new User(4711L));
         Assert.assertNull(unfinishedGames);
     }
 
     @Test()
-    public void shouldGetUnfinishedGamesListWithEveryGameOnce() {
+    public void shouldGetUnfinishedGamesListWithEveryGameOnce() throws InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(mock.mockUnfinishedGameList());
         final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(mock.mockSampleUser());
         Assert.assertNotNull(unfinishedGames);
@@ -71,7 +72,7 @@ public class GameServiceImplUnfinishedGamesTest {
     }
 
     @Test()
-    public void shouldGetUnfinishedGamesTheUserIsPlayerOf() {
+    public void shouldGetUnfinishedGamesTheUserIsPlayerOf() throws InternalGameModuleException {
         Mockito.when(queryMock.getResultList()).thenReturn(mock.mockUnfinishedGameList());
         final User user = mock.mockSampleUser();
         final List<RunningVocabduelGame> unfinishedGames = gameAdministration.getPersonalChallengedGames(user);

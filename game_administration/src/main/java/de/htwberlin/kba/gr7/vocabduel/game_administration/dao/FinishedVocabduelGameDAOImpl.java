@@ -1,5 +1,6 @@
 package de.htwberlin.kba.gr7.vocabduel.game_administration.dao;
 
+import de.htwberlin.kba.gr7.vocabduel.game_administration.export.exceptions.InternalGameModuleException;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.FinishedVocabduelGame;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.Result;
 import de.htwberlin.kba.gr7.vocabduel.game_administration.export.model.RunningVocabduelGame;
@@ -19,18 +20,22 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
     private EntityManager entityManager;
 
     @Override
-    public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) {
-        final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
-        finishedGame.setFinishedTimestamp(new Date());
-        finishedGame.setTotalPointsA((int) game.getRounds().stream().filter(r -> r.getResultPlayerA() == Result.WIN).count());
-        finishedGame.setTotalPointsB((int) game.getRounds().stream().filter(r -> r.getResultPlayerB() == Result.WIN).count());
-        entityManager.persist(finishedGame);
-        entityManager.remove(game);
-        return finishedGame;
+    public FinishedVocabduelGame insertFinishedVocabduelGame(RunningVocabduelGame game) throws InternalGameModuleException {
+        try {
+            final FinishedVocabduelGame finishedGame = new FinishedVocabduelGame(game);
+            finishedGame.setFinishedTimestamp(new Date());
+            finishedGame.setTotalPointsA((int) game.getRounds().stream().filter(r -> r.getResultPlayerA() == Result.WIN).count());
+            finishedGame.setTotalPointsB((int) game.getRounds().stream().filter(r -> r.getResultPlayerB() == Result.WIN).count());
+            entityManager.persist(finishedGame);
+            entityManager.remove(game);
+            return finishedGame;
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
+        }
     }
 
     @Override
-    public List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User user) {
+    public List<FinishedVocabduelGame> selectFinishedVocabduelGamesByUser(User user) throws InternalGameModuleException {
         List<FinishedVocabduelGame> games = null;
         entityManager.clear();
         try {
@@ -41,12 +46,14 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
 
         } catch (NoResultException ignored) {
             // ignored => return null (games) if a user has no finished games yet
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return games;
     }
 
     @Override
-    public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() {
+    public boolean deleteFinishedVocabduelGamesWhereUserDoesntExist() throws InternalGameModuleException {
         boolean res = false;
         entityManager.clear();
         try {
@@ -57,6 +64,8 @@ public class FinishedVocabduelGameDAOImpl implements FinishedVocabduelGameDAO {
             res = true;
         } catch (NoResultException ignored) {
             // ignored => if no orphaned finished games to be deleted are found, it's not a problem
+        } catch (Exception e){
+            throw new InternalGameModuleException(e);
         }
         return res;
     }
