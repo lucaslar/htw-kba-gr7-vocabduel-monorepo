@@ -15,8 +15,8 @@ export class LoginComponent {
     isInvalid = false;
 
     constructor(
-        readonly auth: AuthService,
-        readonly navigation: NavigationService
+        readonly navigation: NavigationService,
+        private readonly auth: AuthService
     ) {}
 
     login(): void {

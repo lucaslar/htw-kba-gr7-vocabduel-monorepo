@@ -7,7 +7,7 @@
             {{ 'main.registration.subtitle' | translate }}
         </mat-card-subtitle>
 
-        <form (ngSubmit)="auth.register(user)">
+        <form [formGroup]="form" (ngSubmit)="register()">
             <mat-card-content class="row">
                 <div class="col-12 d-flex">
                     <mat-icon class="flex-grow-0 my-auto mr-3">
@@ -31,12 +31,18 @@
                 >
                     <input
                         matInput
-                        [(ngModel)]="user.username"
+                        formControlName="username"
                         name="username"
                     />
                     <mat-label>{{
                         'general.user.username' | translate
                     }}</mat-label>
+                    <mat-error *ngIf="usernameCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
 
                 <mat-form-field
@@ -44,10 +50,16 @@
                     color="primary"
                     class="col-12 col-md-6 col-xl-3"
                 >
-                    <input matInput [(ngModel)]="user.email" name="email" />
+                    <input matInput formControlName="email" name="email" />
                     <mat-label>{{
                         'general.user.email' | translate
                     }}</mat-label>
+                    <mat-error *ngIf="emailCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
 
                 <mat-form-field
@@ -57,12 +69,18 @@
                 >
                     <input
                         matInput
-                        [(ngModel)]="user.firstName"
+                        formControlName="firstName"
                         name="firstName"
                     />
                     <mat-label>
                         {{ 'general.user.firstName' | translate }}
                     </mat-label>
+                    <mat-error *ngIf="firstNameCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
 
                 <mat-form-field
@@ -72,12 +90,18 @@
                 >
                     <input
                         matInput
-                        [(ngModel)]="user.lastName"
+                        formControlName="lastName"
                         name="lastName"
                     />
                     <mat-label>{{
                         'general.user.lastName' | translate
                     }}</mat-label>
+                    <mat-error *ngIf="lastNameCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
 
                 <div class="col-12 d-flex">
@@ -103,12 +127,18 @@
                     <input
                         matInput
                         type="password"
-                        [(ngModel)]="user.password"
+                        formControlName="password"
                         name="password"
                     />
-                    <mat-label>{{
-                        'general.user.password' | translate
-                    }}</mat-label>
+                    <mat-label>
+                        {{ 'general.user.password' | translate }}
+                    </mat-label>
+                    <mat-error *ngIf="passwordCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field
                     appearance="outline"
@@ -118,12 +148,18 @@
                     <input
                         matInput
                         type="password"
-                        [(ngModel)]="user.confirm"
+                        formControlName="confirmPassword"
                         name="confirmPassword"
                     />
                     <mat-label>
-                        {{ 'general.user.confirm' | translate }}</mat-label
-                    >
+                        {{ 'general.user.confirm' | translate }}
+                    </mat-label>
+                    <mat-error *ngIf="confirmPasswordCtrl.errors as err">
+                        {{
+                            'general.formValidation.' + (err | firstObjectKey)
+                                | translate
+                        }}
+                    </mat-error>
                 </mat-form-field>
 
                 <div class="col-12">
@@ -138,14 +174,11 @@
                         color="primary"
                         [disabled]="
                             navigation.isLoadingIndicated ||
-                            !(
-                                user.username &&
-                                user.email &&
-                                user.firstName &&
-                                user.lastName &&
-                                user.password &&
-                                user.confirm
-                            )
+                            form.invalid ||
+                            !emailCtrl.value.trim() ||
+                            !firstNameCtrl.value.trim() ||
+                            !lastNameCtrl.value.trim() ||
+                            !usernameCtrl.value.trim()
                         "
                     >
                         {{ 'main.registration.register' | translate }}

@@ -21,7 +21,7 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-di
 import { LoginComponent } from './components/main/login/login.component';
 import { RegistrationComponent } from './components/main/registration/registration.component';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './helpers/auth-interceptor';
 import { SettingsComponent } from './components/main/settings/settings.component';
 import { PersonSearchComponent } from './components/shared/person-search/person-search.component';
@@ -47,6 +47,7 @@ import { UserRecordComponent } from './components/shared/user-record/user-record
 import { ChartsModule } from 'ng2-charts';
 import { GameDetailsComponent } from './components/dialogs/game-details/game-details.component';
 import { LanguageSelectionComponent } from './components/dialogs/language-selection/language-selection.component';
+import { FirstObjectKeyPipe } from './pipes/first-object-key.pipe';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -84,6 +85,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         UserRecordComponent,
         GameDetailsComponent,
         LanguageSelectionComponent,
+        FirstObjectKeyPipe,
     ],
     imports: [
         BrowserModule,
@@ -101,6 +103,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         FormsModule,
         NgxDropzoneModule,
         ChartsModule,
+        ReactiveFormsModule,
     ],
     providers: [
         {
