@@ -1,0 +1,18 @@
+<div mat-dialog-title class="background-fast-world">
+    <div class="title-content text-center d-flex flex-column">
+        <div class="error-icon-wrapper">
+            <mat-icon [inline]="true"> not_interested </mat-icon>
+        </div>
+        {{ 'dialog.fastWorld.title' | translate }}
+    </div>
+</div>
+
+<mat-dialog-content class="d-flex flex-column">
+    <p>{{ 'dialog.fastWorld.message' | translate }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+        {{ 'general.close' | translate }}
+    </button>
+</mat-dialog-actions>

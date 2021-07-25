@@ -49,6 +49,7 @@ import { GameDetailsComponent } from './components/dialogs/game-details/game-det
 import { LanguageSelectionComponent } from './components/dialogs/language-selection/language-selection.component';
 import { FirstObjectKeyPipe } from './pipes/first-object-key.pipe';
 import { ManageableErrorComponent } from './components/dialogs/manageable-error/manageable-error.component';
+import { RemovedSourceComponent } from './components/dialogs/removed-source/removed-source.component';
 
 const HttpLoaderFactory = (http: HttpClient) => {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -88,6 +89,7 @@ const HttpLoaderFactory = (http: HttpClient) => {
         LanguageSelectionComponent,
         FirstObjectKeyPipe,
         ManageableErrorComponent,
+        RemovedSourceComponent,
     ],
     imports: [
         BrowserModule,

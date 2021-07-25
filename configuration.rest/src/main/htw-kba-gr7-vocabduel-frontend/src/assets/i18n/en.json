@@ -55,6 +55,10 @@
         "manageable": {
             "title": "That did not work as expected",
             "message": "Something went wrong on processing your request - but don't worry, it's an issue you can fix:"
+        },
+        "fastWorld": {
+            "title": "We're living in a fast world...",
+            "message": "Some data you tried to access is not available any more. Most likely, it has been removed in the meantime."
         }
     },
     "snackbar": {
