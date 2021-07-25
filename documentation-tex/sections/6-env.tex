@@ -1,1 +1,91 @@
 \section{Ablaufumgebung}\label{sec:ablaufumgebung}
+
+\subsection{Voraussetzungen}\label{subsec:voraussetzungen}
+
+\subsubsection{Maven}
+
+Um das Projekt lokal aufzusetzen, wird \textit{Maven} in der Version \texttt{3.6} oder h\"oher ben\"otigt.
+Ob bzw. in welcher Version \textit{Maven} bereits installiert ist, kann mithilfe des folgenden Befehls ermittelt werden:
+
+\begin{lstlisting}[label={lst:mvnv}]
+mvn -v
+\end{lstlisting}
+
+
+
+
+\subsubsection{MySQL}
+
+Zus\"atzlich ist für die Datenverwaltung eine lokale \textit{MySQL}-Datenbank auf Port \texttt{3306} (default) erforderlich,
+in der f\"ur den Nutzer \texttt{ROOT} das folgendes Passwort festzulegen ist: \texttt{Test\#-\#44}
+
+Um die Datenbank aufzusetzen, gibt es wiederum zwei M\"oglichkeiten, die sich im Rahmen der Entwicklung als gleichermaßen geeignet erwiesen:
+
+\begin{itemize}
+    \item \textbf{Manuell:} Einrichtung mithilfe des MySQL Installers (\url{https://dev.mysql.com/downloads/}).
+    \item \textbf{Docker:} Starten von MySQL als Docker Container.
+    Folgender Befehl kann hierf\"ur genutzt werden:
+\end{itemize}
+
+\begin{lstlisting}[label={lst:dockerdb}]
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD="Test#-#44" --name vdb -d mysql
+\end{lstlisting}
+
+Die Parameter \texttt{--name <...>} zur Namensgebung sowie \texttt{-d} zum Starten im detached-Modus sind empfohlen, aber optional.
+
+
+\subsubsection{Tomcat Server}
+
+Voraussetzung für die REST-API bzw. die Webanwendung ist zudem \textit{Tomcat Server} (getestet in Version \texttt{9.0.40}).
+
+\subsection{Bauen der Anwendungen}\label{subsec:bauen-der-anwendungen}
+
+Zum Intallieren aller Abhängigkeiten und zum Bauen der Module ist folgender Befehl auszuf\"uhren:
+
+\begin{lstlisting}[label={lst:mvncleaninstall}]
+mvn clean install
+\end{lstlisting}
+
+Mithilfe des Plugins \textit{frontend-maven-plugin}, genutzt im REST-Konfigurationsmodul, 
+wird darüber hinaus in diesem Kontext direkt die Webanwendung gebaut.
+Hierfür werden lokal \textit{Node/NPM} sowie \textit{Angular} installiert und
+im Anschluss alle Abhängigkeiten der Frontendanwendung geladen und das Projekt gebaut. Ablage unter: 
+\newline\texttt{./configuration.rest/src/main/webapp/app}
+
+Somit sind \textit{Angular} bzw. \textit{Node/NPM} nur für die Entwicklung erforderlich, nicht aber zum Bauen aller Module. 
+Alle für diese lokale Konfiguration geladenen Dateien werden in \texttt{./configuration.rest/node} gespeichert
+(dieser Ordner wird von der Versionsverwaltung ignoriert).
+
+
+
+\subsection{Starten der Anwendung}
+
+\subsubsection{Konsolenoberfläche (veraltet)}
+
+Um die als Konsolenanwendung implementierte Konfiguration zu starten, ist die \texttt{main}-Methode der 
+Klasse \texttt{ConfigurationSpringImpl.java} des Moduls \texttt{configuration} als Java-Anwendung zu starten.
+
+\subsubsection{REST-API und Webanwendung}
+
+Über das Modul \texttt{configuration.rest} lässt sich ein Server starten, der die REST-Schnittstelle sowie die Weboberfläche bereitstellt.
+Hierfür ist die für dieses Modul generierte \texttt{war}-Datei in einer Tomcat-Konfiguration als zu deployendes Artefakt anzugeben.
+Für die Nutzung in \textit{IntelliJ} liegt im Repository unter \texttt{./.run} eine direkt nutzbare Konfiguration für Tomcat \texttt{9.0.40} bereit.
+
+Die von dem Modul bereitgestellte Webkonfiguration
+\linebreak(\texttt{./configuration.rest/src/main/webapp/WEB-INF/web.xml}) sieht folgende Pfade vor:
+
+\begin{itemize}
+    \item \textbf{\texttt{<host>:<port>/api/...}}: REST-Schnittstelle
+    \item \textbf{\texttt{<host>:<port>/app/...}}: Webanwendung
+\end{itemize}
+
+Ein großer Vorteil des Deployments auf demselben Server liegt darin, auf diesem Weg Cross-Origin-Zugriffe auszuschließen.
+Für die lokale Entwicklung kann allerdings im Konstruktor der Klasse \texttt{ConfigurationRestEasyImpl} ein CORS-Filter konfiguriert werden.
+Der Code hierfür ist im produktiven System jedoch aus Sicherheitsgründen auszukommentieren.
+
+\begin{lstlisting}[label={lst:cors}]
+CorsFilter corsFilter = new CorsFilter();
+corsFilter.getAllowedOrigins().add("*"); // for dev mode only!
+corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
+SINGLETONS.add(corsFilter);
+\end{lstlisting}

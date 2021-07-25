@@ -28,6 +28,7 @@
 \usepackage{fancyvrb}
 \usepackage{color}
 \usepackage{fancyhdr}
+\usepackage{listings}
 
 \setstretch{1.3}
 \setlength{\parskip}{6pt}
@@ -35,6 +36,15 @@
 \renewcommand{\footnotesize}{\fontsize{9pt}{11pt}\selectfont}
 
 \graphicspath{ {./images/} }
+
+\lstset
+{
+    basicstyle=\tt\footnotesize\color{white},
+    backgroundcolor=\color{darkgray},
+    showstringspaces=false,
+    commentstyle=\color{red},
+    keywordstyle=\color{green}
+}
 
 %---content---
 \begin{document}
