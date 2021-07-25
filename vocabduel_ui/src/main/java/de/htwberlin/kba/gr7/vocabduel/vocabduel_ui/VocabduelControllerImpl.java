@@ -22,6 +22,7 @@ import javax.naming.InvalidNameException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -359,7 +360,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             try {
                 final VocableList result = VOCABULARY_SERVICE.importGnuVocableList(gnuContent.toString(), STORAGE.getLoggedInUser());
                 if (result != null) VIEW.printGnuImportSuccessful(args.get(ACTION_ARG_FILE));
-            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException e) {
+            } catch (DuplicateVocablesInSetException | IncompleteVocableListException | DataAlreadyExistsException | UnknownLanguagesException | InvalidVocableListException | InternalVocabularyModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -446,16 +447,20 @@ public class VocabduelControllerImpl implements VocabduelController {
     }
 
     private void onVocabListsCalled(final HashMap<String, String> args) {
-        final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets();
-        VIEW.printLanguageSets(languageSets, args == null ? null : args.get(ACTION_ARG_LEVEL));
+        try {
+            final List<LanguageSet> languageSets = VOCABULARY_SERVICE.getAllLanguageSets();
+            VIEW.printLanguageSets(languageSets, args == null ? null : args.get(ACTION_ARG_LEVEL));
 
-        if (languageSets != null && !languageSets.isEmpty()) {
-            List<String[]> options = new ArrayList<>();
-            options.add(new String[]{ACTION_ARG_LANG, "Only list the language sets"});
-            options.add(new String[]{ACTION_ARG_UNIT, "See previous command + vocable units of each language set"});
-            options.add(new String[]{ACTION_ARG_LIST, "See previous command + vocable lists of each unit"});
-            options.add(new String[]{ACTION_ARG_VOCAB, "See previous command + vocables of each list"});
-            VIEW.printConfigurableThroughParam(ACTION_ARG_LEVEL, options);
+            if (languageSets != null && !languageSets.isEmpty()) {
+                List<String[]> options = new ArrayList<>();
+                options.add(new String[]{ACTION_ARG_LANG, "Only list the language sets"});
+                options.add(new String[]{ACTION_ARG_UNIT, "See previous command + vocable units of each language set"});
+                options.add(new String[]{ACTION_ARG_LIST, "See previous command + vocable lists of each unit"});
+                options.add(new String[]{ACTION_ARG_VOCAB, "See previous command + vocables of each list"});
+                VIEW.printConfigurableThroughParam(ACTION_ARG_LEVEL, options);
+            }
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
         }
     }
 
@@ -467,22 +472,32 @@ public class VocabduelControllerImpl implements VocabduelController {
             else VIEW.printNoVocableListFound();
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
         }
     }
 
     private void onGetVocabListsByUserCalled(final HashMap<String, String> args) {
-        final User user = findUser(args);
-        if (user != null) {
-            List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
-            if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(user, lists);
-            else VIEW.printNoVocableListsByUser(user);
+        try {
+            final User user = findUser(args);
+            if (user != null) {
+                List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(user);
+                if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(user, lists);
+                else VIEW.printNoVocableListsByUser(user);
+            }
+        }catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
         }
     }
 
     private void onGetOwnVocabListsCalled() {
-        List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(STORAGE.getLoggedInUser());
-        if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(STORAGE.getLoggedInUser(), lists);
-        else VIEW.printNoVocableListsByUser(STORAGE.getLoggedInUser());
+        try {
+            List<VocableList> lists = VOCABULARY_SERVICE.getVocableListsOfUser(STORAGE.getLoggedInUser());
+            if (lists != null && lists.size() > 0) VIEW.printVocableListsByUser(STORAGE.getLoggedInUser(), lists);
+            else VIEW.printNoVocableListsByUser(STORAGE.getLoggedInUser());
+        } catch (InternalVocabularyModuleException e){
+            e.printStackTrace();
+        }
     }
 
     private void onFindUserCalled(final HashMap<String, String> args) {
@@ -529,10 +544,10 @@ public class VocabduelControllerImpl implements VocabduelController {
             }
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
-        } catch (DifferentAuthorException e) {
-            e.printStackTrace();
         } catch (UndeletableListException e) {
             VIEW.printVocableListInRunningGame();
+        } catch (DifferentAuthorException | InternalVocabularyModuleException e) {
+            e.printStackTrace();
         }
     }
 
@@ -566,13 +581,13 @@ public class VocabduelControllerImpl implements VocabduelController {
                 ));
 
                 final List<VocableList> vocableLists = uniqueVocabIds
-                        .stream().map(VOCABULARY_SERVICE::getVocableListById).collect(Collectors.toList());
+                        .stream().map(wrapper(vocableList -> VOCABULARY_SERVICE.getVocableListById(Long.parseLong(String.valueOf(vocableList))))).collect(Collectors.toList());
 
                 final RunningVocabduelGame game = GAME_SERVICE.startGame(STORAGE.getLoggedInUser(), opponent, vocableLists);
                 VIEW.printSuccessfullyStaredGame(game, ACTION_KEY_GAME_QUESTION);
             } catch (NumberFormatException e) {
                 VIEW.printInvalidIdPartFormat(args.get(ACTION_ARG_VOCABLE_LISTS));
-            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException e) {
+            } catch (NotEnoughVocabularyException | InvalidGameSetupException | InvalidUserException | InternalUserModuleException | InternalVocabularyModuleException | InternalGameModuleException e) {
                 e.printStackTrace();
             }
         } else VIEW.printCouldNotDetermineUser();
@@ -607,10 +622,10 @@ public class VocabduelControllerImpl implements VocabduelController {
                     }
                 } catch (NumberFormatException e) {
                     VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ROUND));
-                } catch (InvalidVocabduelGameNrException | NoAccessException e) {
-                    e.printStackTrace();
                 } catch (UnfinishedGameException e) {
                     VIEW.printGameNotFinishedByOpponent();
+                } catch (InvalidVocabduelGameNrException | NoAccessException | InternalGameModuleException e){
+                e.printStackTrace();
                 }
             }
         }
@@ -623,14 +638,18 @@ public class VocabduelControllerImpl implements VocabduelController {
             VIEW.printQuestionAndAnswers(round, ACTION_KEY_GAME_ANSWER);
         } catch (NumberFormatException e) {
             VIEW.printInvalidIdFormat(args.get(ACTION_ARG_ID));
-        } catch (NoAccessException e) {
+        } catch (NoAccessException | InternalGameModuleException e) {
             e.printStackTrace();
         }
     }
 
     private void onGameListCalled() {
-        final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
-        VIEW.printGames(games, STORAGE.getLoggedInUser());
+        try {
+            final List<RunningVocabduelGame> games = GAME_SERVICE.getPersonalChallengedGames(STORAGE.getLoggedInUser());
+            VIEW.printGames(games, STORAGE.getLoggedInUser());
+        } catch (InternalGameModuleException e){
+            e.printStackTrace();
+        }
     }
 
     private void onScoreHistCalled() {
@@ -638,7 +657,7 @@ public class VocabduelControllerImpl implements VocabduelController {
             final List<PersonalFinishedGame> hist = SCORE_SERVICE.getPersonalFinishedGames(STORAGE.getLoggedInUser());
             if (hist != null && !hist.isEmpty()) VIEW.printOwnScores(hist);
             else VIEW.printNoFinishedGamesYet();
-        } catch (InvalidUserException | InternalUserModuleException e) {
+        } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
         }
     }
@@ -651,7 +670,7 @@ public class VocabduelControllerImpl implements VocabduelController {
                 hist = SCORE_SERVICE.getPersonalFinishedGames(user);
                 if (hist != null && !hist.isEmpty()) VIEW.printUserScores(hist, user);
                 else VIEW.printNoFinishedGamesYet();
-            } catch (InvalidUserException | InternalUserModuleException e) {
+            } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -660,7 +679,7 @@ public class VocabduelControllerImpl implements VocabduelController {
     private void onScoreRecordCalled() {
         try {
             VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(STORAGE.getLoggedInUser()));
-        } catch (InvalidUserException | InternalUserModuleException e) {
+        } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
             e.printStackTrace();
         }
     }
@@ -670,7 +689,7 @@ public class VocabduelControllerImpl implements VocabduelController {
         if (user != null) {
             try {
                 VIEW.printRecord(SCORE_SERVICE.getRecordOfUser(user));
-            } catch (InvalidUserException | InternalUserModuleException e) {
+            } catch (InvalidUserException | InternalUserModuleException | InternalGameModuleException e) {
                 e.printStackTrace();
             }
         }
@@ -685,9 +704,24 @@ public class VocabduelControllerImpl implements VocabduelController {
                 GAME_SERVICE.removeWidowGames();
                 STORAGE.setLoggedInUser(null);
                 VIEW.printYouWillBeMissed(firstname);
-            } catch (InternalUserModuleException e) {
+            } catch (InternalUserModuleException | InternalGameModuleException e) {
                 e.printStackTrace();
             }
         } else VIEW.printConfirmUserDeletion(firstname, confirmFlag);
+    }
+
+    @FunctionalInterface
+    public interface FunctionWithException<T, R, E extends Exception> {
+        R apply(T t) throws E;
+    }
+
+    private static <T, R, E extends Exception> Function<T, R> wrapper(FunctionWithException<T, R, E> fe){
+        return arg -> {
+            try {
+                return fe.apply(arg);
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        };
     }
 }
