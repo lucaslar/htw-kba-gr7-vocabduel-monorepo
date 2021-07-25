@@ -76,7 +76,9 @@ export class AuthInterceptor implements HttpInterceptor {
                 }),
                 catchError((err) => {
                     return err instanceof HttpErrorResponse &&
-                        err.status === 403
+                        err.status === 403 &&
+                        err.error === // most likely faster than subscribing on headers:
+                            'Could not refresh. Your given Refresh Token does not seem to be valid'
                         ? this.logoutAndThrow(err)
                         : throwError(err);
                 })
