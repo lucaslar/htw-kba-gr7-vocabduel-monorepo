@@ -7,6 +7,7 @@ Das Informationssystem besteht aus folgenden Komponenten:
 - user_administration
 - vocabduel_ui
 - configuration
+- shared_logik.rest
 
 vocabulary_administration ist für die Vokabel-Management zuständig:
 Die Komponente stellt den Lese- und Schreibzugriff von Vokabellisten auf der Datenbank,
@@ -28,10 +29,12 @@ gültig, so wird ein neuer erzeugt und dem noch immer eingeloggten Nutzer
 zugeordnet sowie übergeben (an den Client).
 
 Die Komponente vocabduel_ui stellt das User Interface zum Projekt, welches auf der Konsole ausgeführt wird.
+Die Komponente shared_logik.rest wird in der Rest-Schicht der Administrations-Komponenten genutzt, um RefreshToken
+zur Web-Session und fehlende Daten beim API-Aufruf zu managen. 
 
 Schließlich gibt es noch die configuration Komponente, welche die Konfiguration zu den Technologien 
-Hibernate EntityManager und Spring RestEasy beinhalten. Außerdem sind hier das Angular Frontend und die 
-Starter-Datei zum Konsolen UI zu finden.
+Hibernate EntityManager im Modul configuration_core und Spring RestEasy mit dem Angular Frontend im Modul configuration.rest beinhalten. 
+Die Starter-Datei zum Konsolen UI ist im Modul configuration zu finden.
 
 [comment]: <> (Add ideas here)
 
@@ -52,9 +55,33 @@ Output directory: /.javadoc
 # 3. Konzeptionelles Datenmodell
 ![](.././class-diagram.svg)
 
+Beschreibung: 
+Im Folgenden wird das Konzeptionelle Datenmodell beschrieben, welches auch tatsächlich in ein physikalisches Datenmodell überführt wurde.
+Weitere Klassen, wie Interfaces, Exception-Klassen, Service-Klassen oder Konfigurationen,
+werden weiter unten zum sogenannten "kompletten" Klassendiagramm beschrieben.
+
+Die Entität LoginData erbt vom User Username, Email, Vor- und Zuname und speichert validierte Passwörter, die der User zum Login benötigt.
+Ist der User eingeloggt, stellen die storedRefreshToken sicher, dass der User mit gültigen Token versorgt wird, was etwa 
+einer gültigen Web-Session des Users auf einer Web-Applikation gleich kommt. User mit StoredRefreshToken werden im LoggedInUser festgehalten, was aber kein 
+Bestandteil des physikalischen Datenmodells ist.
+Zur Verwaltung von Vokabellisten werden Begriffe in Synonyme und zusätzliche Info (additionalInfo) getrennt und in Translationgroups einander zugeordnet.
+Mit dem Erhalt einer zusätzlichen Id wird aus dem Begriff eine untranslatedVocable. Eine Vokabel ist schließlich die Zuordnung einer
+untranslatedVocable mit anderen Begriffen. Da untranslatedVocable und Vocable eine gemeinsame Datenbank Tabelle darstellen,
+wird zusätzlich die Spalte Datentyp (DTYPE) gestellt, um zwischen beiden Entitäten zu unterscheiden.
+Beispielsatzbausteine in Lern- (untranslatedVocable) oder Wissenssprache (Vocable) können auch in dieser Tabelle gespeichert werden.
+Aus mehreren Vokabeln, Autor-Angabe, Titel und createdTimestamp wird eine Vokabelliste und aus mehreren Vokabellisten und titel
+wird eine VokabelUnit. VokabelUnits werden mit Lern- und Wissenssprache zu einem LanguageSet.
+Um mit Vokabellisten spielen zu können, werden die Spiele in runningVocabduelGames mit Lern- und Wissenssprache sowie zwei User- und einer Vokabellist-Zuordnungen  gespeichert.
+Beim Spiel ist so festgehalten, welche Vokabelliste für dieses Spiel genutzt wird. Die Duell-Runden werden einzelnen Translationgroups zugeordnet, um einen Begriff zum Übersetzen zu haben.
+Die möglichen Antwortmöglichkeiten zur Runde werden nicht in der Datenbank gespeichert, ebensowenig, wie die richtige Übersetzung für die Runde lautet.
+Da wir die richtige Übersetzung bereits aus der Vokabel erhalten, wird für die fertig gespielte Runde nur das Ergebnis "WIN" oder "LOSS" gespeichert.
+noch laufende Runden und fertig gespielte Runden werden in derselben physikalischen Tabelle gespeichert und sind am Eintrag des Rundenergebnisses zu erkennen.
+Wurden alle Runden eines Spiels gespielt, so wird ein fertig gespieltes Spiel gespeichert. Hier steht die erreichte Endpunktzahl zum Spiel von jedem Teilnehmer drin. 
+Ob ein Spieler damit gewonnen, verloren oder unentschieden gespielt hat, wird nicht in der Datenbank gespeichert, sondern auf dem Server ermittelt.
+
 ![](.././complete-class-diagram.svg)
 
-Beschreibung:
+Beschreibung: 
 
 [comment]: <> (Add ideas here)
 
